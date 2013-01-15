@@ -8,6 +8,6 @@ package tonegod.gui.controls.buttons;
  *
  * @author t0neg0d
  */
-public class CheckBoxGroup {
+public class CheckBox {
 	
 }
