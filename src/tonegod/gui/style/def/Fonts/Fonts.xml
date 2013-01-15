@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="Font">
+		<font>
+			<property name="defaultFont" type="String" value="tonegod/gui/style/def/Fonts/base-font-white.fnt" />
+		</font>
+		<attributes></attributes>
+		<images></images>
+		<effects></effects>
+	</element>
+</root>

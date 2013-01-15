@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="Common">
+		<font></font>
+		<attributes></attributes>
+		<images>
+			<property name="blankImg" type="String" value="tonegod/gui/style/def/Blank.png" />
+			<property name="arrowUp" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_up.png" />
+			<property name="arrowDown" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_down.png" />
+			<property name="arrowLeft" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_left.png" />
+			<property name="arrowRight" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_right.png" />
+		</images>
+		<effects></effects>
+	</element>
+</root>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<root>
+	<style control="Font" path="tonegod/gui/style/def/Fonts/Fonts.xml" />
+	<style control="Common" path="tonegod/gui/style/def/Common/Common.xml" />
+	<style control="Scrolling" path="tonegod/gui/style/def/Scrolling/Scrolling.xml" />
+	<style control="Window" path="tonegod/gui/style/def/Window/Window.xml" />
+	<style control="Button" path="tonegod/gui/style/def/Button/Button.xml" />
+	<style control="Menu" path="tonegod/gui/style/def/Menu/Menu.xml" />
+	<style control="Label" path="tonegod/gui/style/def/Label/Label.xml" />
+	<style control="TextField" path="tonegod/gui/style/def/TextField/TextField.xml" />
+</root>

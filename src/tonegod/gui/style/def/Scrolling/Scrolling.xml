@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="ScrollArea">
+		<font></font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="14" />
+				<y value="14" />
+				<z value="14" />
+				<w value="14" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="320" />
+				<y value="120" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Window/panel_x_inner.png" />
+		</images>
+		<effects></effects>
+	</element>
+	<element name="ScrollArea#VScrollBar">
+		<font></font>
+		<attributes>
+			<property name="trackResizeBorders" type="Vector4f">
+				<x value="5" />
+				<y value="5" />
+				<z value="5" />
+				<w value="5" />
+			</property>
+			<property name="thumbResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="btnUpResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="btnDownResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="useBtnUpArrowIcon" type="boolean" value="true" />
+			<property name="useBtnDownArrowIcon" type="boolean" value="true" />
+		</attributes>
+		<images>
+			<property name="trackImg" type="String" value="tonegod/gui/style/def/Scrolling/scroll_track_x.png" />
+			<property name="thumbImg" type="String" value="tonegod/gui/style/def/Button/button_x_u.png" />
+			<property name="thumbHoverImg" type="String" value="tonegod/gui/style/def/Button/button_x_h.png" />
+			<property name="thumbPressedImg" type="String" value="tonegod/gui/style/def/Button/button_x_d.png" />
+			<property name="btnUpImg" type="String" value="tonegod/gui/style/def/Button/button_x_u.png" />
+			<property name="btnUpHoverImg" type="String" value="tonegod/gui/style/def/Button/button_x_h.png" />
+			<property name="btnUpPressedImg" type="String" value="tonegod/gui/style/def/Button/button_x_d.png" />
+			<property name="btnDownImg" type="String" value="tonegod/gui/style/def/Button/button_x_u.png" />
+			<property name="btnDownHoverImg" type="String" value="tonegod/gui/style/def/Button/button_x_h.png" />
+			<property name="btnDownPressedImg" type="String" value="tonegod/gui/style/def/Button/button_x_d.png" />
+		</images>
+		<effects></effects>
+	</element>
+</root>

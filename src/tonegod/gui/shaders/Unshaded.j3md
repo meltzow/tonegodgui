@@ -1,0 +1,85 @@
+MaterialDef Unshaded {
+
+    MaterialParameters {
+		Texture2D EffectMap
+		Boolean UseEffect : false
+		Boolean EffectPulse : false
+		Boolean EffectFade : false
+		Float EffectStep
+		
+        Texture2D ColorMap
+        Texture2D LightMap
+        Color Color (Color)
+        Boolean VertexColor (UseVertexColor)
+        Boolean SeparateTexCoord
+		Boolean UseClipping : false
+		Vector4 Clipping
+		Boolean IsTextField
+		Boolean HasTabFocus : false
+		Float CaretX : 1.0
+		Float CaretSpeed : 10.0
+		Float LastUpdate
+		Boolean ShowTextRange : false
+		Float TextRangeStart : 0.0
+		Float TextRangeEnd : 0.0
+		
+        // Texture of the glowing parts of the material
+        Texture2D GlowMap
+        // The glow color of the object
+        Color GlowColor
+    }
+
+    Technique {
+        VertexShader GLSL100:   tonegod/gui/shaders/Unshaded.vert
+        FragmentShader GLSL100: tonegod/gui/shaders/Unshaded.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            WorldViewMatrix
+			Time
+        }
+
+        Defines {
+            SEPARATE_TEXCOORD : SeparateTexCoord
+            HAS_COLORMAP : ColorMap
+            HAS_LIGHTMAP : LightMap
+            HAS_VERTEXCOLOR : VertexColor
+            HAS_COLOR : Color
+			IS_TEXTFIELD : IsTextField
+        }
+    }
+
+    Technique {
+    }
+
+      Technique PreNormalPass {
+
+            VertexShader GLSL100 :   Common/MatDefs/SSAO/normal.vert
+            FragmentShader GLSL100 : Common/MatDefs/SSAO/normal.frag
+
+            WorldParameters {
+                WorldViewProjectionMatrix
+                NormalMatrix
+            }
+
+            RenderState {
+            }
+        }
+
+
+    Technique Glow {
+
+        VertexShader GLSL100:   Common/MatDefs/Misc/Unshaded.vert
+        FragmentShader GLSL100: Common/MatDefs/Light/Glow.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+
+        Defines {
+            NEED_TEXCOORD1
+            HAS_GLOWMAP : GlowMap
+            HAS_GLOWCOLOR : GlowColor
+        }
+    }
+}
