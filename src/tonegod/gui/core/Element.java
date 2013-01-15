@@ -30,15 +30,64 @@ import tonegod.gui.effects.Effect;
  * @author t0neg0d
  */
 public class Element extends Node {
+	/**
+	 *
+	 */
 	public static enum Borders {
-		NW, N, NE, W, E, SW, S, SE;
+		/**
+		 *
+		 */
+		NW,
+		/**
+		 *
+		 */
+		N,
+		/**
+		 *
+		 */
+		NE,
+		/**
+		 *
+		 */
+		W,
+		/**
+		 *
+		 */
+		E,
+		/**
+		 *
+		 */
+		SW,
+		/**
+		 *
+		 */
+		S,
+		/**
+		 *
+		 */
+		SE;
 	};
+	/**
+	 *
+	 */
 	public static enum Orientation {
+		/**
+		 *
+		 */
 		VERTICAL,
+		/**
+		 *
+		 */
 		HORIZONTAL
 	}
 	
+	/**
+	 *
+	 */
 	protected Application app;
+	/**
+	 *
+	 */
 	protected Screen screen;
 	private String UID;
 	private Vector2f position;
@@ -72,19 +121,34 @@ public class Element extends Node {
 	private Material mat;
 	private Texture defaultTex;
 	
+	/**
+	 *
+	 */
 	protected BitmapText textElement;
 	private Vector2f textPosition = new Vector2f(0,0);
 	private LineWrapMode textWrap = LineWrapMode.Word;
 	private BitmapFont.Align textAlign = BitmapFont.Align.Left;
 	private BitmapFont.VAlign textVAlign = BitmapFont.VAlign.Top;
 	private String text = "";
+	/**
+	 *
+	 */
 	protected BitmapFont font;
+	/**
+	 *
+	 */
 	protected float fontSize = 20;
 	private float textPadding = 0;
+	/**
+	 *
+	 */
 	protected ColorRGBA fontColor = ColorRGBA.White;
 	private ColorRGBA defaultColor = new ColorRGBA(1,1,1,0);
 	
 	private Element elementParent = null;
+	/**
+	 *
+	 */
 	protected Map<String, Element> elementChildren = new HashMap();
 	
 	private boolean isClipped = false;
@@ -97,6 +161,21 @@ public class Element extends Node {
 	
 	private Map<Effect.EffectEvent, Effect> effects = new HashMap();
 	
+	/**
+	 * The Element class is the single primitive for all controls in the gui library.
+	 * Each element consists of an ElementQuadMesh for rendering resizable textures,
+	 * as well as a BitmapText element if setText(String text) is called.
+	 * 
+	 * Behaviors, such as movement and resizing, are common to all elements and can
+	 * be enabled/disabled to ensure the element reacts to user input as needed.
+	 * 
+	 * @param screen The Screen control the element or it's absolute parent element is being added to
+	 * @param UID A unique String identifier used when looking up elements by screen.getElementByID()
+	 * @param position A Vector2f containing the x/y coordinates (relative to it's parent elements x/y) for positioning
+	 * @param dimensions A Vector2f containing the dimensions of the element, x being width, y being height
+	 * @param resizeBorders A Vector4f containing the size of each border used for scaling images without distorting them (x = N, y = W, x = E, w = S)
+	 * @param texturePath A String path to the default image to be rendered on the element's mesh
+	 */
 	public Element(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String texturePath) {
 		this.app = screen.getApplication();
 		this.screen = screen;
@@ -152,6 +231,10 @@ public class Element extends Node {
 		this.setLocalTranslation(position.x, position.y, 0);
 	}
 	
+	/**
+	 * Adds the specified Element as a child to this Element.
+	 * @param child The Element to add as a child
+	 */
 	public void addChild(Element child) {
 		child.elementParent = this;
 		child.setQueueBucket(RenderQueue.Bucket.Gui);
@@ -161,6 +244,10 @@ public class Element extends Node {
 	}
 	
 	// Z-ORDER 
+	/**
+	 * Recursive call made by the screen control to properly initialize z-order (depth) placement
+	 * @param zOrder The depth to place the Element at. (Relative to the parent's z-order)
+	 */
 	protected void initZOrder(float zOrder) {
 		setLocalTranslation(getLocalTranslation().setZ(
 			zOrder
@@ -247,15 +334,35 @@ public class Element extends Node {
 		return this.mat;
 	}
 	
+	/**
+	 * A way to override the default material of the element.
+	 * 
+	 * NOTE: It is important that the shader used with the new material is either:
+	 * A: The provided Unshaded material contained with this library, or
+	 * B: The custom shader contains the caret, text range, clipping and effect 
+	 *    handling provided in the default shader.
+	 * 
+	 * @param mat The Material to use for rendering this Element.
+	 */
 	public void setLocalMaterial(Material mat) {
 		this.mat = mat;
 		this.setMaterial(mat);
 	}
 	
+	/**
+	 * Informs the screen control that this Element should be ignored by mouse events.
+	 * 
+	 * @param ignoreMouse boolean
+	 */
 	public void setIgnoreMouse(boolean ignoreMouse) {
 		this.ignoreMouse = ignoreMouse;
 	}
 	
+	/**
+	 * Returns if the element is set to ingnore mouse events
+	 * 
+	 * @return boolean ignoreMouse
+	 */
 	public boolean getIgnoreMouse() {
 		return this.ignoreMouse;
 	}
@@ -356,98 +463,215 @@ public class Element extends Node {
 		return this.resizeE;
 	}
 	
+	/**
+	 * Enables north docking of element (disables south docking of Element).  This
+	 * determines how the Element should retain positioning on parent resize events.
+	 * 
+	 * @param dockN boolean
+	 */
 	public void setDockN(boolean dockN) {
 		this.dockS = dockN;
 		this.dockN = !dockN;
 	}
 	
+	/**
+	 * Returns if the Element is docked to the north quadrant of it's parent element.
+	 * @return boolean dockN
+	 */
 	public boolean getDockN() {
 		return this.dockS;
 	}
 	
+	/**
+	 * Enables west docking of Element (disables east docking of Element).  This
+	 * determines how the Element should retain positioning on parent resize events.
+	 * 
+	 * @param dockW boolean
+	 */
 	public void setDockW(boolean dockW) {
 		this.dockW = dockW;
 		this.dockE = !dockW;
 	}
 	
+	/**
+	 * Returns if the Element is docked to the west quadrant of it's parent element.
+	 * @return boolean dockW
+	 */
 	public boolean getDockW() {
 		return this.dockW;
 	}
 	
+	/**
+	 * Enables east docking of Element (disables west docking of Element).  This
+	 * determines how the Element should retain positioning on parent resize events.
+	 * 
+	 * @param dockE boolean
+	 */
 	public void setDockE(boolean dockE) {
 		this.dockE = dockE;
 		this.dockW = !dockE;
 	}
 	
+	/**
+	 * Returns if the Element is docked to the east quadrant of it's parent element.
+	 * @return boolean dockE
+	 */
 	public boolean getDockE() {
 		return this.dockE;
 	}
 	
+	/**
+	 * Enables south docking of Element (disables north docking of Element).  This
+	 * determines how the Element should retain positioning on parent resize events.
+	 * 
+	 * @param dockS boolean
+	 */
 	public void setDockS(boolean dockS) {
 		this.dockN = dockS;
 		this.dockS = !dockS;
 	}
 	
+	/**
+	 * Returns if the Element is docked to the south quadrant of it's parent element.
+	 * @return boolean dockS
+	 */
 	public boolean getDockS() {
 		return this.dockN;
 	}
 	
+	/**
+	 * Determines if the element should scale with parent when resized vertically.
+	 * @param scaleNS boolean
+	 */
 	public void setScaleNS(boolean scaleNS) {
 		this.scaleNS = scaleNS;
 	}
 	
+	/**
+	 * Returns if the Element is set to scale vertically when it's parent Element is
+	 * resized.
+	 * 
+	 * @return boolean scaleNS
+	 */
 	public boolean getScaleNS() {
 		return this.scaleNS;
 	}
 	
+	/**
+	 * Determines if the element should scale with parent when resized horizontally.
+	 * @param scaleEW boolean
+	 */
 	public void setScaleEW(boolean scaleEW) {
 		this.scaleEW = scaleEW;
 	}
 	
+	/**
+	 * Returns if the Element is set to scale horizontally when it's parent Element is
+	 * resized.
+	 * 
+	 * @return boolean scaleEW
+	 */
 	public boolean getScaleEW() {
 		return this.scaleEW;
 	}
 	
+	/**
+	 * Sets the element to pass certain events (movement, resizing) to it direct parent instead
+	 * of effecting itself.
+	 * 
+	 * @param effectParent boolean
+	 */
 	public void setEffectParent(boolean effectParent) {
 		this.effectParent = effectParent;
 	}
 	
+	/**
+	 * Returns if the Element is set to pass events to it's direct parent
+	 * @return boolean effectParent
+	 */
 	public boolean getEffectParent() {
 		return this.effectParent;
 	}
 	
+	/**
+	 * Sets the element to pass certain events (movement, resizing) to it absolute
+	 * parent instead of effecting itself.
+	 * 
+	 * The Elements absolute parent is the element farthest up in it's nesting order, 
+	 * or simply put, was added to the screen.
+	 * 
+	 * @param effectAbsoluteParent boolean
+	 */
 	public void setEffectAbsoluteParent(boolean effectAbsoluteParent) {
 		this.effectAbsoluteParent = effectAbsoluteParent;
 	}
 	
+	/**
+	 * Returns if the Element is set to pass events to it's absolute parent
+	 * @return boolean effectParent
+	 */
 	public boolean getEffectAbsoluteParent() {
 		return this.effectAbsoluteParent;
 	}
 	
+	/**
+	 * Forces the object to stay within the constrainst of it's parent Elements
+	 * dimensions.
+	 * 
+	 * @param lockToParentBounds boolean
+	 */
 	public void setlockToParentBounds(boolean lockToParentBounds) {
 		this.lockToParentBounds = lockToParentBounds;
 	}
 	
+	/**
+	 * Returns if the Element has been constrained to it's parent Element's dimensions.
+	 * 
+	 * @return boolean lockToParentBounds
+	 */
 	public boolean getLockToParentBounds() {
 		return this.lockToParentBounds;
 	}
 	
+	/**
+	 * Set the x,y coordinates of the Element.  X and y are relative to the parent
+	 * Element.
+	 * 
+	 * @param position Vector2f screen poisition of Element
+	 */
 	public void setPosition(Vector2f position) {
 		this.position = position;
 		updateNodeLocation();
 	}
 	
+	/**
+	 * Set the x,y coordinates of the Element.  X and y are relative to the parent
+	 * Element.
+	 * 
+	 * @param x The x coordinate screen poisition of Element
+	 * @param y The y coordinate screen poisition of Element
+	 */
 	public void setPosition(float x, float y) {
 		this.position.setX(x);
 		this.position.setY(y);
 		updateNodeLocation();
 	}
 	
+	/**
+	 * Set the x coordinates of the Element.  X is relative to the parent Element.
+	 * 
+	 * @param x The x coordinate screen poisition of Element
+	 */
 	public void setX(float x) {
 		this.position.setX(x);
 		updateNodeLocation();
 	}
 	
+	/**
+	 * Set the y coordinates of the Element.  Y is relative to the parent Element.
+	 * 
+	 * @param y The y coordinate screen poisition of Element
+	 */
 	public void setY(float y) {
 		this.position.setY(y);
 		updateNodeLocation();
@@ -458,18 +682,34 @@ public class Element extends Node {
 		updateClipping();
 	}
 	
+	/**
+	 * Returns the current screen location of the Element
+	 * @return Vector2f position
+	 */
 	public Vector2f getPosition() {
 		return position;
 	}
 	
+	/**
+	 * Gets the relative x coordinate of the Element from it's parent Element's x
+	 * @return  float
+	 */
 	public float getX() {
 		return position.x;
 	}
 	
+	/**
+	 * Gets the relative y coordinate of the Element from it's parent Element's y
+	 * @return  float
+	 */
 	public float getY() {
 		return position.y;
 	}
 	
+	/**
+	 * Returns the x coord of an element from screen x 0, ignoring the nesting order.
+	 * @return  float x
+	 */
 	public float getAbsoluteX() {
 		float x = getX();
 		Element el = this;
@@ -480,6 +720,10 @@ public class Element extends Node {
 		return x;
 	}
 	
+	/**
+	 * Returns the y coord of an element from screen y 0, ignoring the nesting order.
+	 * @return float
+	 */
 	public float getAbsoluteY() {
 		float y = getY();
 		Element el = this;
@@ -490,6 +734,11 @@ public class Element extends Node {
 		return y;
 	}
 	
+	/**
+	 * Sets the width and height of the element
+	 * @param w float
+	 * @param h float
+	 */
 	public void setDimensions(float w, float h) {
 		this.dimensions.setX(w);
 		this.dimensions.setY(h);
@@ -501,6 +750,10 @@ public class Element extends Node {
 		updateClipping();
 	}
 	
+	/**
+	 * Sets the width and height of the element
+	 * @param dimensions Vector2f
+	 */
 	public void setDimensions(Vector2f dimensions) {
 		this.dimensions = dimensions;
 		getModel().updateDimensions(dimensions.x, dimensions.y);
@@ -511,6 +764,10 @@ public class Element extends Node {
 		updateClipping();
 	}
 	
+	/**
+	 * Sets the width of the element
+	 * @param width float
+	 */
 	public void setWidth(float width) {
 		this.dimensions.setX(width);
 		getModel().updateWidth(dimensions.x);
@@ -521,6 +778,10 @@ public class Element extends Node {
 		updateClipping();
 	}
 	
+	/**
+	 * Sets the height of the element
+	 * @param height float
+	 */
 	public void setHeight(float height) {
 		this.dimensions.setY(height);
 		getModel().updateHeight(dimensions.y);
@@ -531,26 +792,54 @@ public class Element extends Node {
 		updateClipping();
 	}
 	
+	/**
+	 * Returns a Vector2f containing the actual width and height of an Element
+	 * @return float
+	 */
 	public Vector2f getDimensions() {
 		return dimensions;
 	}
 	
+	/**
+	 * Returns the actual width of an Element
+	 * @return float
+	 */
 	public float getWidth() {
 		return dimensions.x;
 	}
 	
+	/**
+	 * Returns the actual height of an Element
+	 * @return float
+	 */
 	public float getHeight() {
 		return dimensions.y;
 	}
 	
+	/**
+	 * Returns the width of an Element from screen x 0
+	 * @return float
+	 */
 	public float getAbsoluteWidth() {
 		return getAbsoluteX() + getWidth();
 	}
 	
+	/**
+	 * Returns the height of an Element from screen y 0
+	 * @return float
+	 */
 	public float getAbsoluteHeight() {
 		return getAbsoluteY() + getHeight();
 	}
 	
+	/**
+	 * The preferred method for resizing Elements if the resize must effect nested
+	 * Elements as well.
+	 * 
+	 * @param x the absolute x coordinate from screen x 0
+	 * @param y the absolute y coordinate from screen y 0
+	 * @param dir The Element.Borders used to determine the direction of the resize event
+	 */
 	public void resize(float x, float y, Borders dir) {
 		float prevWidth = getWidth();
 		float prevHeight = getHeight();
@@ -658,10 +947,18 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * Overridable method for extending the resize event
+	 */
 	public void controlResizeHook() {
 		
 	}
 	
+	/**
+	 * Moves the Element to the specified coordinates
+	 * @param x The new x screen coordinate of the Element
+	 * @param y The new y screen coordinate of the Element
+	 */
 	public void moveTo(float x, float y) {
 		if (getLockToParentBounds()) {
 			if (x < 0) { x = 0; }
@@ -678,16 +975,16 @@ public class Element extends Node {
 		controlMoveHook();
 	}
 	
+	/**
+	 * Overridable method for extending the move event
+	 */
 	public void controlMoveHook() {
 		
 	}
 	
 	/**
 	 * Set the north, west, east and south borders in number of pixels
-	 * @param nBorder float
-	 * @param wBorder float
-	 * @param eBorder float
-	 * @param sBorder float
+	 * @param borderSize 
 	 */
 	public void setResizeBorders(float borderSize) {
 		borders.set(borderSize,borderSize,borderSize,borderSize);
@@ -739,34 +1036,73 @@ public class Element extends Node {
 		borders.setW(sBorder);
 	}
 	
+	/**
+	 * Returns the height of the north resize border
+	 * 
+	 * @return float
+	 */
 	public float getResizeBorderNorthSize() {
 		return this.borders.x;
 	}
 	
+	/**
+	 * Returns the width of the west resize border
+	 * 
+	 * @return float
+	 */
 	public float getResizeBorderWestSize() {
 		return this.borders.y;
 	}
 	
+	/**
+	 * Returns the width of the east resize border
+	 * 
+	 * @return float
+	 */
 	public float getResizeBorderEastSize() {
 		return this.borders.z;
 	}
 	
+	/**
+	 * Returns the height of the south resize border
+	 * 
+	 * @return float
+	 */
 	public float getResizeBorderSouthSize() {
 		return this.borders.w;
 	}
 	
+	/**
+	 * Returns the default material for the element
+	 * @param mat 
+	 */
 	public void setElementMaterial(Material mat) {
 		this.mat = mat;
 	}
 	
+	/**
+	 * Returns a pointer to the Material used for rendering this Element.
+	 * 
+	 * @return Material mat
+	 */
 	public Material getElementMaterial() {
 		return this.mat;
 	}
 	
+	/**
+	 * Returns the default Texture for the Element
+	 * 
+	 * @return Texture defaultTexture
+	 */
 	public Texture getElementTexture() {
 		return this.defaultTex;
 	}
 	
+	/**
+	 * Returns a pointer to the custom mesh used to render the Element.
+	 * 
+	 * @return ElementGridQuad model
+	 */
 	public ElementQuadGrid getModel() {
 		return this.model;
 	}
@@ -825,7 +1161,8 @@ public class Element extends Node {
 	
 	/**
 	 * Sets the element's text layer horizontal alignment
-	 * @param align Align textAlign
+	 * 
+	 * @param textAlign 
 	 */
 	public void setTextAlign(BitmapFont.Align textAlign) {
 		this.textAlign = textAlign;
@@ -841,7 +1178,8 @@ public class Element extends Node {
 	
 	/**
 	 * Sets the element's text layer vertical alignment
-	 * @param valign VAlign textVAlign
+	 * 
+	 * @param textVAlign 
 	 */
 	public void setTextVAlign(BitmapFont.VAlign textVAlign) {
 		this.textVAlign = textVAlign;
@@ -945,15 +1283,32 @@ public class Element extends Node {
 		return this.text;
 	}
 	
+	/**
+	 * Returns a pointer to the BitmapText element of this Element.  Returns null
+	 * if setText() has not been called.
+	 * 
+	 * @return BitmapText textElement
+	 */
 	public BitmapText getTextElement() {
 		return this.textElement;
 	}
 	
 	// Clipping
+	/**
+	 * This may be remove soon and probably should not be used as the method of handling
+	 * hide show was updated making this unnecissary.
+	 * 
+	 * @param wasVisible boolean
+	 */
 	public void setDefaultWasVisible(boolean wasVisible) {
 		this.wasVisible = wasVisible;
 	}
 	
+	/**
+	 * Sets this Element and any Element contained within it's nesting order to visible.
+	 * 
+	 * NOTE: Hide and Show relies on shader-based clipping
+	 */
 	public void show() {
 		if (!isVisible) {
 			screen.updateZOrder(getAbsoluteParent());
@@ -973,6 +1328,11 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * Recursive call for properly showing children of the Element.  I'm thinking this
+	 * this needs to be a private method, however I need to verify this before I
+	 * update it.
+	 */
 	public void childShow() {
 		this.isVisible = wasVisible;
 		this.isClipped = wasClipped;
@@ -985,8 +1345,17 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * An overridable method for extending the show event.
+	 */
 	public void controlShowHook() {  }
 	
+	/**
+	 * Recursive call that sets this Element and any Element contained within it's 
+	 * nesting order to hidden.
+	 * 
+	 * NOTE: Hide and Show relies on shader-based clipping
+	 */
 	public void hide() {
 		if (isVisible) {
 			this.wasVisible = isVisible;
@@ -1001,8 +1370,16 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * An overridable method for extending the hide event.
+	 */
 	public void controlHideHook() {  }
 	
+	/**
+	 * Return if the Element is visible
+	 * 
+	 * @return boolean isVisible
+	 */
 	public boolean getIsVisible() {
 		return this.isVisible;
 	}
@@ -1025,6 +1402,11 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * Returns if the Element's clipping layer has been set
+	 * 
+	 * @return boolean isClipped
+	 */
 	public boolean getIsClipped() {
 		return isClipped;
 	}
@@ -1047,6 +1429,8 @@ public class Element extends Node {
 	
 	/**
 	 * Updates the clipping bounds for any element that has a clipping layer
+	 * 
+	 * See updateLocalClipping
 	 */
 	public void updateClipping() {
 		updateLocalClipping();
@@ -1056,6 +1440,9 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * Updates the clipping bounds for any element that has a clipping layer
+	 */
 	private void updateLocalClipping() {
 		if (isVisible) {
 			if (clippingLayer != null) {
@@ -1073,6 +1460,11 @@ public class Element extends Node {
 		setFontPages();
 	}
 	
+	/**
+	 * Shrinks the clipping area by set number of pixels
+	 * 
+	 * @param textClipPadding The number of pixels to pad the clipping area with on each side
+	 */
 	public void setTextClipPadding(float textClipPadding) {
 		this.textClipPadding = textClipPadding;
 	}
@@ -1103,6 +1495,14 @@ public class Element extends Node {
 	}
 	
 	// Effects
+	/**
+	 * Associates an Effect with this Element.  Effects are not automatically associated
+	 * with the specified event, but instead, the event type is used to retrieve the Effect
+	 * at a later point
+	 * 
+	 * @param effectEvent The Effect.EffectEvent the Effect is to be registered with
+	 * @param effect The Effect to store
+	 */
 	public void addEffect(Effect.EffectEvent effectEvent, Effect effect) {
 		if (!effects.containsKey(effectEvent)) {
 			effect.setElement(this);
@@ -1110,10 +1510,20 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * Removes the Effect associated with the Effect.EffectEvent specified
+	 * @param effectEvent 
+	 */
 	public void removeEffect(Effect.EffectEvent effectEvent) {
 		effects.remove(effectEvent);
 	}
 	
+	/**
+	 * Retrieves the Effect associated with the specified Effect.EffectEvent
+	 * 
+	 * @param effectEvent
+	 * @return 
+	 */
 	public Effect getEffect(Effect.EffectEvent effectEvent) {
 		Effect effect = null;
 		if (effects.get(effectEvent) != null)
@@ -1121,6 +1531,11 @@ public class Element extends Node {
 		return effect;
 	}
 	
+	/**
+	 * Called by controls during construction to prepopulate effects based on Styles.
+	 * 
+	 * @param styleName The String identifier of the Style
+	 */
 	protected void populateEffects(String styleName) {
 		int index = 0;
 		Effect effect;
