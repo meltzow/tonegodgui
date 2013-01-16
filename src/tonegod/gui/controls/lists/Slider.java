@@ -43,6 +43,15 @@ public abstract class Slider extends Button {
 	private Vector2f evalDimensions = new Vector2f();
 	private MouseButtonEvent trackEvt;
 	
+	/**
+	 * Creates a new instance of the Slider control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param trackSurroundsThumb Boolean used to determine thumb placement when control is configured
+	 */
 	public Slider(Screen screen, String UID, Vector2f position, Orientation orientation, boolean trackSurroundsThumb) {
 		this(screen, UID, position,
 			screen.getStyle("Slider").getVector2f("defaultSize"),
@@ -53,6 +62,16 @@ public abstract class Slider extends Button {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the Slider control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param trackSurroundsThumb  Boolean used to determine thumb placement when control is configured
+	 */
 	public Slider(Screen screen, String UID, Vector2f position, Vector2f dimensions, Orientation orientation, boolean trackSurroundsThumb) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Slider").getVector4f("resizeBorders"),
@@ -62,6 +81,18 @@ public abstract class Slider extends Button {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the Slider control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Slider's track
+	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param trackSurroundsThumb  Boolean used to determine thumb placement when control is configured
+	 */
 	public Slider(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation, boolean trackSurroundsThumb) {
 		super(screen, UID, position, dimensions, resizeBorders, 
 			screen.getStyle("ScrollArea#VScrollBar").getString("trackImg")
@@ -240,6 +271,14 @@ public abstract class Slider extends Button {
 		}
 	}
 	
+	/**
+	 * Adds a step value to the Slider.  When 2 or more step values are associated with
+	 * a slider, the thumb movement becomes stepped and advances to the next/previous slot
+	 * position as the mouse is moved.  Each slot added has an associated value that is
+	 * returned via the onChange event or getSelectedValue() method.
+	 * 
+	 * @param value The string value to add for the next step.
+	 */
 	public void addStepValue(String value) {
 		stepValues.add(value);
 		if (stepValues.size() >= 2) {
@@ -249,6 +288,11 @@ public abstract class Slider extends Button {
 		}
 	}
 	
+	/**
+	 * Removes a step value by the value originally added.
+	 * 
+	 * @param value The string value of the step to be removed.
+	 */
 	public void removeStepValue(String value) {
 		stepValues.remove(value);
 		if (stepValues.size() < 2) {
@@ -275,16 +319,33 @@ public abstract class Slider extends Button {
 		System.out.println("Slider: " + (getHeight()-controlSize));
 	}
 	
+	/**
+	 * Returns the text value of the current selected step.
+	 * 
+	 * @return String stepValue
+	 */
 	public int getSelectedIndex() {
 		return selectedIndex;
 	}
 	
+	/**
+	 * Sets the Slider's selected index to the selected step index specified and
+	 * moves the Slider's thumb to appropriate x/y coordinates to reflect this change.
+	 * 
+	 * @param selectedIndex The index to set the Slider's selectedIndex to.
+	 */
 	private void setSelectedIndex(int selectedIndex) {
 		this.selectedIndex = selectedIndex;
 		if( isStepped)	onChange(selectedIndex, stepValues.get(selectedIndex));
 		else			onChange(selectedIndex, String.valueOf(selectedIndex));
 	}
 	
+	/**
+	 * Event called when the Slider's selectedIndex changes.
+	 * 
+	 * @param selectedIndex The Slider's current selectedIndex
+	 * @param value The string value associated with this index
+	 */
 	public abstract void onChange(int selectedIndex, String value);
 	
 	@Override
