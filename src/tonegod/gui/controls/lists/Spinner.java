@@ -18,7 +18,7 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public class Spinner extends TextField {
+public abstract class Spinner extends TextField {
 	public static enum Orientation {
 		VERTICAL,
 		HORIZONTAL
@@ -161,6 +161,7 @@ public class Spinner extends TextField {
 			}
 		}
 		displaySelectedStep();
+		onChange(selectedIndex, stepValues.get(selectedIndex));
 	}
 	
 	private void decStep() {
@@ -173,9 +174,12 @@ public class Spinner extends TextField {
 			}
 		}
 		displaySelectedStep();
+		onChange(selectedIndex, stepValues.get(selectedIndex));
 	}
 	
 	private void displaySelectedStep() {
 		this.setText(stepValues.get(selectedIndex));
 	}
+	
+	public abstract void onChange(int selectedIndex, String value);
 }
