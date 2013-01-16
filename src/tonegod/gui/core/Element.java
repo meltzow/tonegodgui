@@ -195,7 +195,9 @@ public class Element extends Node {
 		font.setPages(pages);
 		
 		float imgWidth = 100;
-		float pixelSize = 1f/imgWidth;
+		float imgHeight = 100;
+		float pixelWidth = 1f/imgWidth;
+		float pixelHeight = 1f/imgHeight;
 		
 		if (texturePath != null) {
 			defaultTex = app.getAssetManager().loadTexture(texturePath);
@@ -204,7 +206,9 @@ public class Element extends Node {
 			defaultTex.setWrap(Texture.WrapMode.Repeat);
 
 			imgWidth = defaultTex.getImage().getWidth();
-			pixelSize = 1f/defaultTex.getImage().getWidth();
+			imgHeight = defaultTex.getImage().getHeight();
+			pixelWidth = 1f/imgWidth;
+			pixelHeight = 1f/imgHeight;
 		}
 		mat = new Material(app.getAssetManager(), "tonegod/gui/shaders/Unshaded.j3md");
 		if (texturePath != null) {
@@ -216,7 +220,7 @@ public class Element extends Node {
 		mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
 		mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
 		
-		this.model = new ElementQuadGrid(this.dimensions, borders, imgWidth, pixelSize);
+		this.model = new ElementQuadGrid(this.dimensions, borders, imgWidth, imgHeight, pixelWidth, pixelHeight);
 		
 		this.setName(UID + ":Node");
 		geom = new Geometry(UID + ":Geometry");
@@ -1294,6 +1298,15 @@ public class Element extends Node {
 	}
 	
 	// Clipping
+	public void setAlphaMap(String alphaMap) {
+		Texture alpha = app.getAssetManager().loadTexture(alphaMap);
+		alpha.setMinFilter(Texture.MinFilter.BilinearNearestMipMap);
+		alpha.setMagFilter(Texture.MagFilter.Bilinear);
+		alpha.setWrap(Texture.WrapMode.Repeat);
+		
+		mat.setTexture("AlphaMap", alpha);
+	}
+	
 	/**
 	 * This may be remove soon and probably should not be used as the method of handling
 	 * hide show was updated making this unnecissary.
@@ -1443,7 +1456,7 @@ public class Element extends Node {
 	/**
 	 * Updates the clipping bounds for any element that has a clipping layer
 	 */
-	private void updateLocalClipping() {
+	public void updateLocalClipping() {
 		if (isVisible) {
 			if (clippingLayer != null) {
 				clippingBounds.set(clippingLayer.getAbsoluteX(), clippingLayer.getAbsoluteY(), clippingLayer.getAbsoluteWidth(), clippingLayer.getAbsoluteHeight());

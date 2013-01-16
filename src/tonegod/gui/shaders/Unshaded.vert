@@ -1,4 +1,4 @@
-#if defined(HAS_COLORMAP) || (defined(HAS_LIGHTMAP) && !defined(SEPARATE_TEXCOORD))
+#if defined(HAS_COLORMAP) || defined(HAS_ALPHAMAP) || (defined(HAS_LIGHTMAP) && !defined(SEPARATE_TEXCOORD))
     #define NEED_TEXCOORD1
 #endif
 

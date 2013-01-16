@@ -2,6 +2,10 @@
     #define NEED_TEXCOORD1
 #endif
 
+#ifdef HAS_ALPHAMAP
+	uniform sampler2D m_AlphaMap;
+#endif
+
 uniform float g_Time;
 
 varying vec4 pos;
@@ -113,6 +117,10 @@ void main(){
 	} else {
 		color.a = vec4(0.0);
 	}
+	#endif
+	
+	#if defined(HAS_ALPHAMAP)
+		color.a *= texture2D(m_AlphaMap, texCoord1).r;
 	#endif
 	
     gl_FragColor = color;
