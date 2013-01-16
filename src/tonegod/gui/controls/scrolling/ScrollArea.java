@@ -25,6 +25,14 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	private VScrollBar vScrollBar;
 	private float scrollSize = 25;
 	
+	/**
+	 * Creates a new instance of the ScrollArea control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
+	 */
 	public ScrollArea(Screen screen, String UID, Vector2f position, boolean isTextOnly) {
 		this(screen, UID, position,
 			screen.getStyle("ScrollArea").getVector2f("defaultSize"),
@@ -34,6 +42,15 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the ScrollArea control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
+	 */
 	public ScrollArea(Screen screen, String UID, Vector2f position, Vector2f dimensions, boolean isTextOnly) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
@@ -42,6 +59,17 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the ScrollArea control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Slider's track
+	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
+	 */
 	public ScrollArea (Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isTextOnly) {
 		super (screen, UID, position, dimensions, resizeBorders, defaultImg);
 		

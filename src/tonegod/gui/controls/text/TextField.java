@@ -46,6 +46,13 @@ public class TextField extends Element implements KeyboardListener {
 	
 	boolean isEnabled = true;
 	
+	/**
+	 * Creates a new instance of the TextField control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
 	public TextField(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("TextField").getVector2f("defaultSize"),
@@ -54,6 +61,14 @@ public class TextField extends Element implements KeyboardListener {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the TextField control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
 	public TextField(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
@@ -61,6 +76,16 @@ public class TextField extends Element implements KeyboardListener {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the TextField control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Slider's track
+	 */
 	public TextField(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
