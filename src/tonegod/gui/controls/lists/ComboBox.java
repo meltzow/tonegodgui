@@ -37,6 +37,13 @@ public class ComboBox extends TextField {
 	private String ssValue;
 	private String ssCaption;
 	
+	/**
+	 * Creates a new instance of the ComboBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
 	public ComboBox(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("TextField").getVector2f("defaultSize"),
@@ -45,6 +52,14 @@ public class ComboBox extends TextField {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the ComboBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
 	public ComboBox(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
@@ -52,6 +67,16 @@ public class ComboBox extends TextField {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the ComboBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Slider's track
+	 */
 	public ComboBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
@@ -94,6 +119,12 @@ public class ComboBox extends TextField {
 		this.addChild(btnArrowDown);
 	}
 	
+	/**
+	 * Adds a new list item to the drop-down list associated with this control
+	 * 
+	 * @param caption The String to display as the list item
+	 * @param value A String value to associate with this list item
+	 */
 	public void addListItem(String caption, String value) {
 		if (DDList == null) {
 			DDList = new Menu(screen, ddUID, new Vector2f(0,0), true) {
@@ -108,6 +139,11 @@ public class ComboBox extends TextField {
 		DDList.addMenuItem(caption, value, null);
 	}
 	
+	/**
+	 * Method needs to be called once last list item has been added.  This eventually
+	 * will be updated to automatically be called when a new item is added to, instert into
+	 * the list or an item is removed from the list.
+	 */
 	public void pack() {
 		DDList.pack();
 		DDList.setIsResizable(true);
