@@ -40,6 +40,14 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	
 	private int currentMenuItemIndex = -1;
 	
+	/**
+	 * Creates a new instance of the Menu control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param isScrollable Boolean defining if the menu is a scrollable list
+	 */
 	public Menu(Screen screen, String UID, Vector2f position, boolean isScrollable) {
 		this(screen, UID, position,
 			screen.getStyle("Menu").getVector2f("defaultSize"),
@@ -49,6 +57,15 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the Menu control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param isScrollable Boolean defining if the menu is a scrollable list
+	 */
 	public Menu(Screen screen, String UID, Vector2f position, Vector2f dimensions, boolean isScrollable) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Menu").getVector4f("resizeBorders"),
@@ -57,6 +74,17 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the Menu control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Slider's track
+	 * @param isScrollable Boolean defining if the menu is a scrollable list
+	 */
 	public Menu(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isScrollable) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg, false);
 		
@@ -248,11 +276,14 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		this.show();
 	}
 	
+	/**
+	 * Hides the menu
+	 */
 	public void hideMenu() {
 		hide();
 	}
 	
-	public void hideAllSubmenus(boolean upChain) {
+	protected void hideAllSubmenus(boolean upChain) {
 		for (MenuItem mi : menuItems) {
 			if (mi.getSubMenu() != null)
 				mi.getSubMenu().hideMenu();
@@ -262,11 +293,17 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		}
 	}
 	
-	public void handleMenuItemClick(MenuItem menuItem, int menuItemIndex, String value) {
+	private void handleMenuItemClick(MenuItem menuItem, int menuItemIndex, String value) {
 		onMenuItemClicked(menuItemIndex, value);
 		hide();
 	}
 	
+	/**
+	 * Abstract method for handling menu item selection
+	 * 
+	 * @param index Index of MenuItem clicked
+	 * @param value String value of MenuItem clicked
+	 */
 	public abstract void onMenuItemClicked(int index, String value);
 	
 	@Override
@@ -277,7 +314,6 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		if (currentMenuItemIndex != (int)Math.floor(y/menuItemHeight)) {
 			currentMenuItemIndex = (int)Math.floor(y/menuItemHeight);
 			
-			System.out.println(currentMenuItemIndex);
 			if (currentMenuItemIndex > -1 && currentMenuItemIndex < menuItems.size()) {
 				setHighlight(currentMenuItemIndex);
 				this.hideAllSubmenus(false);
@@ -287,10 +323,15 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 				}
 			}
 		}
-	//	System.out.println(miIndex);
 		
 	}
 	
+	/**
+	 * Sets the highlight Element's current position to the Y position of the supplied
+	 * MenuItem index
+	 * 
+	 * @param index int
+	 */
 	public void setHighlight(int index) {
 		if (highlight.getParent() == null)
 			this.attachChild(highlight);
