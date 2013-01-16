@@ -19,6 +19,13 @@ import tonegod.gui.core.Screen;
 public class Window extends Element {
 	Element dragBar;
 	
+	/**
+	 * Creates a new instance of the Window control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
 	public Window(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("Window").getVector2f("defaultSize"),
@@ -27,6 +34,14 @@ public class Window extends Element {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the Window control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
 	public Window(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Window").getVector4f("resizeBorders"),
@@ -34,6 +49,16 @@ public class Window extends Element {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the Window control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Slider's track
+	 */
 	public Window(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
@@ -67,9 +92,18 @@ public class Window extends Element {
 		populateEffects("Window");
 	}
 	
+	/**
+	 * Returns a pointer to the Element used as a window dragbar
+	 * @return Element
+	 */
 	public Element getDragBar() {
 		return this.dragBar;
 	}
+	
+	/**
+	 * Sets the Window title text
+	 * @param title String
+	 */
 	public void setWindowTitle(String title) {
 		dragBar.setText(title);
 	}
