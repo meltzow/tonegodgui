@@ -40,6 +40,13 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	private float intervalsPerSecond = 4;
 	private float trackInterval = (4/1000), currentTrack = 0;
 	
+	/**
+	 * Creates a new instance of the Button control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
 	public Button(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("Button").getVector2f("defaultSize"),
@@ -48,6 +55,14 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the Button control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
 	public Button(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Button").getVector4f("resizeBorders"),
@@ -55,6 +70,16 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the Button control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Slider's track
+	 */
 	public Button(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
@@ -82,23 +107,47 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		populateEffects("Button");
 	}
 	
+	/**
+	 * Clears current hover and pressed images set by Style defines
+	 */
 	public void clearAltImages() {
 		setButtonHoverInfo(null, null);
 		setButtonPressedInfo(null, null);
 	}
 	
+	/**
+	 * Sets if the button is to interact as a Toggle Button
+	 * Click once to activate / Click once to deactivate
+	 * 
+	 * @param isToggleButton boolean
+	 */
 	public void setIsToggleButton(boolean isToggleButton) {
 		this.isToggleButton = isToggleButton;
 	}
 	
+	/**
+	 * Returns if the Button is flagged as a Toggle Button
+	 * 
+	 * @return boolean isToggleButton
+	 */
 	public boolean getIsToggleButton() {
 		return this.isToggleButton;
 	}
 	
+	/**
+	 * Returns the current toggle state of the Button if the Button has been flagged as 
+	 * isToggle
+	 * @return boolean isToggle
+	 */
 	public boolean getIsToggled() {
 		return this.isToggled;
 	}
 	
+	/**
+	 * Sets the texture image path and color to use when the button has mouse focus
+	 * @param pathHoverImg String path to image for mouse focus event
+	 * @param hoverFontColor ColorRGBA to use for mouse focus event
+	 */
 	public final void setButtonHoverInfo(String pathHoverImg, ColorRGBA hoverFontColor) {
 		if (pathHoverImg != null) {
 			this.hoverImg = app.getAssetManager().loadTexture(pathHoverImg);
@@ -111,10 +160,20 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		}
 	}
 	
+	/**
+	 * Returns the Texture used when button has mouse focus
+	 * 
+	 * @return Texture
+	 */
 	public Texture getButtonHoverImg() {
 		return this.hoverImg;
 	}
 	
+	/**
+	 * Sets the image and font color to use when the button is depressed
+	 * @param pathPressedImg Path to the image for pressed state
+	 * @param pressedFontColor ColorRGBA to use for pressed state
+	 */
 	public final void setButtonPressedInfo(String pathPressedImg, ColorRGBA pressedFontColor) {
 		if (pathPressedImg != null) {
 			this.pressedImg = app.getAssetManager().loadTexture(pathPressedImg);
@@ -127,10 +186,22 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		}
 	}
 	
+	/**
+	 * Returns the texture to be used when the button is depressed
+	 * 
+	 * @return Texture
+	 */
 	public Texture getButtonPressedImg() {
 		return this.pressedImg;
 	}
 	
+	/**
+	 * If called, an overlay icon is added to the button.  This icon is centered by default
+	 * 
+	 * @param width width to display icon
+	 * @param heightheight to display icon
+	 * @param texturePath The path of the image to use as the icon overlay
+	 */
 	public void setButtonIcon(float width, float height, String texturePath) {
 		if (icon != null) {
 			if (icon.getParent() != null) {
@@ -277,6 +348,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	public abstract void onButtonFocus(MouseMotionEvent evt);
 	public abstract void onButtonLostFocus(MouseMotionEvent evt);
 	
+	/**
+	 * Returns if the button is still pressed
+	 * @return boolean
+	 */
 	public boolean getIsStillPressed() {
 		return this.isStillPressed;
 	}
@@ -307,8 +382,21 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		}
 	}
 	
+	/**
+	 * Abstract method for handling interval updates while the button is still pressed
+	 * 
+	 * NOTE: This is only called if the button's setInterval method has been previously called
+	 */
 	public abstract void onStillPressedInterval();
 	
+	/**
+	 * This method registers the button as a JME Control creating an interval event to be
+	 * processed every time the interval limit has been reached.
+	 * 
+	 * See onStillPressedInterval()
+	 * 
+	 * @param intervalsPerSecond The number of calls to onStillPressedInterval per second.
+	 */
 	public void setInterval(float intervalsPerSecond) {
 		if (intervalsPerSecond > 0) {
 			this.useInterval = true;
