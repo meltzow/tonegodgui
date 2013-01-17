@@ -76,6 +76,10 @@ public class CheckBox extends Button {
 			new Vector2f(getWidth(), 0),
 			new Vector2f(100,getHeight())
 		);
+		label.setDockS(true);
+		label.setDockW(true);
+		label.setScaleEW(true);
+		label.setScaleEW(false);
 		label.setIgnoreMouse(true);
 		label.setTextWrap(LineWrapMode.NoWrap);
 		
