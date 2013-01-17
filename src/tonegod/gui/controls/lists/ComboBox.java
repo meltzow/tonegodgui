@@ -80,6 +80,9 @@ public class ComboBox extends TextField {
 	public ComboBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
+		setScaleNS(false);
+		setScaleEW(false);
+		
 		ddUID = UID + ":ddMenu";
 		
 		btnArrowDown = new Button(screen, UID + ":ArrowDown", new Vector2f(getWidth(),0), new Vector2f(btnHeight, btnHeight)) {
@@ -94,7 +97,7 @@ public class ComboBox extends TextField {
 			@Override
 			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
 				Menu m = ((Menu)screen.getElementById(ddUID));
-				m.showMenu(null, getElementParent().getX(), getElementParent().getY()-m.getHeight());
+				m.showMenu(null, getElementParent().getAbsoluteX(), getElementParent().getAbsoluteY()-m.getHeight());
 				((ComboBox)getElementParent()).setTabFocus();
 			}
 			@Override
@@ -115,7 +118,8 @@ public class ComboBox extends TextField {
 			}
 		};
 		btnArrowDown.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowDown"));
-		
+		btnArrowDown.setDockS(true);
+		btnArrowDown.setDockW(true);
 		this.addChild(btnArrowDown);
 	}
 	
@@ -190,7 +194,7 @@ public class ComboBox extends TextField {
 			}
 			if (miIndexOf > -1 && miIndexOf < DDList.getMenuItems().size()-1)
 				handleHightlight(miIndexOf);
-			if (!DDList.getIsVisible()) DDList.showMenu(null, getX(), getY()-DDList.getHeight());
+			if (!DDList.getIsVisible()) DDList.showMenu(null, getAbsoluteX(), getAbsoluteY()-DDList.getHeight());
 		} else {
 			if (evt.getKeyCode() == KeyInput.KEY_UP) {
 				if (hlIndex > 0) {
