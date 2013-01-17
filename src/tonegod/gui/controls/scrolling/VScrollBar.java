@@ -4,17 +4,12 @@
  */
 package tonegod.gui.controls.scrolling;
 
-import com.jme3.app.Application;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.control.Control;
 import tonegod.gui.controls.buttons.Button;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
@@ -247,15 +242,6 @@ public class VScrollBar extends Element {
 	public void setScrollableArea(ScrollArea scrollableArea) {
 		this.scrollableArea = scrollableArea;
 	}
-	
-//	@Override
-//	public void controlResizeHook() {
-	//	if (this.scrollableArea != null) {
-//			setThumbScale();
-	//	} else {
-			
-	//	}
-//	}
 	
 	private void scrollScrollableArea() {
 		if (this.scrollableArea != null) {
