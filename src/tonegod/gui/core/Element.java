@@ -93,6 +93,7 @@ public class Element extends Node {
 	private Vector2f position;
 	private Vector2f dimensions;
 	private Vector4f borders = new Vector4f(1,1,1,1);
+	private Vector2f minDimensions;
 	
 	private boolean ignoreMouse = false;
 	private boolean isMovable = false;
@@ -182,6 +183,7 @@ public class Element extends Node {
 		this.UID = UID;
 		this.position = position;
 		this.dimensions = dimensions;
+		this.minDimensions = dimensions.clone();
 		this.borders = resizeBorders;
 		
 		BitmapFont tempFont = app.getAssetManager().loadFont(screen.getStyle("Font").getString("defaultFont"));
@@ -1412,6 +1414,14 @@ public class Element extends Node {
 			this.wasClipped = false;
 			this.clippingLayer = null;
 			this.mat.setBoolean("UseClipping", false);
+		}
+	}
+	
+	public void setControlClippingLayer(Element clippingLayer) {
+		setClippingLayer(clippingLayer);
+		Set<String> keys = elementChildren.keySet();
+		for (String key : keys) {
+			elementChildren.get(key).setControlClippingLayer(clippingLayer);
 		}
 	}
 	
