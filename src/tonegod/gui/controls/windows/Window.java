@@ -4,7 +4,6 @@
  */
 package tonegod.gui.controls.windows;
 
-import com.jme3.app.Application;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
 import com.jme3.math.Vector2f;
