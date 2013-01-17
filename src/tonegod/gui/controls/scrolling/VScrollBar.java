@@ -95,7 +95,7 @@ public class VScrollBar extends Element {
 		btnScrollTrack.setScaleEW(false);
 		btnScrollTrack.setScaleNS(true);
 		btnScrollTrack.setDockS(true);
-		btnScrollTrack.setInterval(4);
+		btnScrollTrack.setInterval(100);
 		this.addChild(btnScrollTrack);
 		
 		btnScrollTrack.removeEffect(Effect.EffectEvent.Hover);
@@ -178,7 +178,7 @@ public class VScrollBar extends Element {
 		btnScrollUp.setScaleNS(false);
 		btnScrollUp.setDockN(true);
 		btnScrollUp.setDockW(true);
-		btnScrollUp.setInterval(4);
+		btnScrollUp.setInterval(100);
 		if (screen.getStyle("ScrollArea#VScrollBar").getBoolean("useBtnUpArrowIcon")) {
 			btnScrollUp.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowUp"));
 		}
@@ -221,7 +221,7 @@ public class VScrollBar extends Element {
 		btnScrollDown.setScaleNS(false);
 		btnScrollDown.setDockS(true);
 		btnScrollDown.setDockW(true);
-		btnScrollDown.setInterval(4);
+		btnScrollDown.setInterval(100);
 		if (screen.getStyle("ScrollArea#VScrollBar").getBoolean("useBtnDownArrowIcon")) {
 			btnScrollDown.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowDown"));
 		}
