@@ -4,7 +4,6 @@
  */
 package tonegod.gui.controls.buttons;
 
-import com.jme3.app.Application;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.MouseButtonEvent;
