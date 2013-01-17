@@ -4,11 +4,8 @@
  */
 package tonegod.gui.controls.lists;
 
-import com.jme3.input.KeyInput;
-import com.jme3.input.event.KeyInputEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import tonegod.gui.controls.menuing.MenuItem;
 import tonegod.gui.core.Screen;
 
 /**
