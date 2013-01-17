@@ -6,7 +6,6 @@ package tonegod.gui.controls.lists;
 
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
@@ -100,6 +99,10 @@ public abstract class Slider extends Button {
 		
 		this.orientation = orientation;
 		this.trackSurroundsThumb = trackSurroundsThumb;;
+		setScaleNS(false);
+		setScaleEW(false);
+		setDockN(true);
+		setDockW(true);
 		
 		if (orientation == Orientation.VERTICAL) {
 			controlSize = dimensions.x;
@@ -184,7 +187,9 @@ public abstract class Slider extends Button {
 				controlMoveHook();
 			}
 		};
-		elThumbLock.setDockN(true);
+		elThumbLock.setScaleNS(false);
+		elThumbLock.setScaleEW(false);
+		elThumbLock.setDockS(true);
 		elThumbLock.setDockW(true);
 		elThumbLock.setlockToParentBounds(true);
 		addChild(elThumbLock);
@@ -216,18 +221,20 @@ public abstract class Slider extends Button {
 		elThumbLock.addChild(elThumb);
 		
 		if (orientation == Orientation.VERTICAL) {
-			this.setScaleNS(true);
-			elThumb.setScaleNS(false);
-			this.setScaleEW(false);
-			elThumb.setScaleEW(false);
+		//	this.setScaleNS(true);
+		//	elThumb.setScaleNS(false);
+		//	this.setScaleEW(false);
+		//	elThumb.setScaleEW(false);
 		} else {
-			this.setScaleNS(false);
-			elThumb.setScaleNS(false);
-			this.setScaleEW(true);
-			elThumb.setScaleEW(false);
+		//	this.setScaleNS(false);
+		//	elThumb.setScaleNS(false);
+		//	this.setScaleEW(true);
+		//	elThumb.setScaleEW(false);
 		}
 		
-		elThumb.setDockN(true);
+		elThumb.setScaleNS(false);
+		elThumb.setScaleEW(false);
+		elThumb.setDockS(true);
 		elThumb.setDockW(true);
 		elThumb.setIsMovable(true);
 		elThumb.setEffectParent(true);
