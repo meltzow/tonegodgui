@@ -4,12 +4,11 @@
  */
 package tonegod.gui.controls.scrolling;
 
-import com.jme3.font.Rectangle;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import com.jme3.renderer.queue.RenderQueue;
+import java.util.Set;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.listeners.MouseWheelListener;
@@ -155,6 +154,15 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	public void controlResizeHook() {
 		if (vScrollBar != null) {
 			vScrollBar.setThumbScale();
+		}
+	}
+	
+	@Override
+	public void setControlClippingLayer(Element clippingLayer) {
+	//	setClippingLayer(clippingLayer);
+		Set<String> keys = elementChildren.keySet();
+		for (String key : keys) {
+			elementChildren.get(key).setControlClippingLayer(clippingLayer);
 		}
 	}
 	
