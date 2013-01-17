@@ -39,6 +39,8 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	private boolean useInterval = false;
 	private float intervalsPerSecond = 4;
 	private float trackInterval = (4/1000), currentTrack = 0;
+	private boolean initClickPause = false;
+	private float initClickInterval = 0.25f, currentInitClickTrack = 0;
 	
 	/**
 	 * Creates a new instance of the Button control
@@ -250,6 +252,8 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			setFontColor(pressedFontColor);
 		}
 		isStillPressed = true;
+		initClickPause = true;
+		currentInitClickTrack = 0;
 		onMouseLeftDown(evt, isToggled);
 	}
 
@@ -290,6 +294,8 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			}
 		}
 		isStillPressed = false;
+		initClickPause = false;
+		currentInitClickTrack = 0;
 		onMouseLeftUp(evt, isToggled);
 	}
 
@@ -374,10 +380,18 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	@Override
 	public void update(float tpf) {
 		if (useInterval && isStillPressed) {
-			currentTrack += tpf;
-			if (currentTrack >= trackInterval) {
-				onStillPressedInterval();
-				currentTrack = 0;
+			if (initClickPause) {
+				currentInitClickTrack += tpf;
+				if (currentInitClickTrack >= initClickInterval) {
+					initClickPause = false;
+					currentInitClickTrack = 0;
+				}
+			} else {
+				currentTrack += tpf;
+				if (currentTrack >= trackInterval) {
+					onStillPressedInterval();
+					currentTrack = 0;
+				}
 			}
 		}
 	}
