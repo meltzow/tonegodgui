@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.buttons.Button;
 import tonegod.gui.controls.text.TextField;
+import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 
 /**
@@ -26,7 +27,7 @@ public abstract class Spinner extends TextField {
 	
 	protected List<String> stepValues = new ArrayList();
 	private boolean cycle = false;
-	private int selectedIndex = -1;
+	private int selectedIndex = 0;
 	private Orientation orientation;
 	
 	Button btnInc, btnDec;
@@ -56,6 +57,10 @@ public abstract class Spinner extends TextField {
 		
 		this.orientation = orientation;
 		this.cycle = cycle;
+		setScaleEW(false);
+		setScaleNS(false);
+		setDockN(true);
+		setDockW(true);
 		
 		btnInc = new Button(
 			screen,
@@ -85,6 +90,9 @@ public abstract class Spinner extends TextField {
 	//	if (screen.getStyle("ScrollArea#VScrollBar").getBoolean("useBtnDownArrowIcon")) {
 			btnInc.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowRight"));
 	//	}
+		btnInc.setDockS(true);
+		btnInc.setDockW(true);
+		
 		addChild(btnInc);
 		
 		btnDec = new Button(
@@ -115,6 +123,9 @@ public abstract class Spinner extends TextField {
 	//	if (screen.getStyle("ScrollArea#VScrollBar").getBoolean("useBtnDownArrowIcon")) {
 			btnDec.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowLeft"));
 	//	}
+		btnDec.setDockS(true);
+		btnDec.setDockW(true);
+		
 		addChild(btnDec);
 		
 		setIsEnabled(false);
