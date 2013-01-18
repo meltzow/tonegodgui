@@ -36,7 +36,7 @@ public abstract class DialogBox extends AlertBox {
 	public DialogBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
-		btnCancel = new Button(screen, UID + ":btnCancel", new Vector2f(17, 19)) {
+		btnCancel = new Button(screen, UID + ":btnCancel", new Vector2f(17, getHeight()-25-22)) {
 			@Override
 			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				onBtnCancelMouseLeftDown(evt, toggled);

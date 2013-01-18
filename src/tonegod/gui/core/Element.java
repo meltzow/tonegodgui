@@ -243,6 +243,7 @@ public class Element extends Node {
 	 */
 	public void addChild(Element child) {
 		child.elementParent = this;
+		child.setY(this.getHeight()-child.getHeight()-child.getY());
 		child.setQueueBucket(RenderQueue.Bucket.Gui);
 		
 		elementChildren.put(child.getUID(), child);

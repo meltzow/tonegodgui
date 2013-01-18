@@ -8,6 +8,7 @@ import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
+import com.jme3.renderer.queue.RenderQueue;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 
@@ -66,7 +67,7 @@ public class Window extends Element {
 		this.setScaleEW(false);
 	//	this.setClippingLayer(this);
 		
-		dragBar = new Element(screen, UID + ":DragBar", new Vector2f(5, getHeight()-25-5), new Vector2f(getWidth()-10, 25),
+		dragBar = new Element(screen, UID + ":DragBar", new Vector2f(5, 5), new Vector2f(getWidth()-10, 25),
 			screen.getStyle("Window#Dragbar").getVector4f("resizeBorders"),
 			screen.getStyle("Window#Dragbar").getString("defaultImg")
 		);
@@ -99,6 +100,10 @@ public class Window extends Element {
 		return this.dragBar;
 	}
 	
+	public float getDragBarHeight() {
+		return dragBar.getHeight();
+	}
+	
 	/**
 	 * Sets the Window title text
 	 * @param title String
@@ -106,4 +111,19 @@ public class Window extends Element {
 	public void setWindowTitle(String title) {
 		dragBar.setText(title);
 	}
+	
+	/*
+	@Override
+	public void addChild(Element child) {
+		child.setElementParent(this);
+		float dBDiff = 0;
+		if (child != dragBar)
+			dBDiff = dragBar.getHeight()+5;
+		child.setY((this.getHeight())-child.getHeight()-child.getY());
+		child.setQueueBucket(RenderQueue.Bucket.Gui);
+		
+		elementChildren.put(child.getUID(), child);
+		this.attachChild(child);
+	}
+	*/
 }

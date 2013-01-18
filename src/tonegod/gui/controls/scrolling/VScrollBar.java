@@ -98,7 +98,7 @@ public class VScrollBar extends Element {
 		btnScrollTrack.removeEffect(Effect.EffectEvent.Release);
 		
 		btnScrollThumb = new Button(screen, UID + "btnScrollThumb",
-			new Vector2f(0, btnScrollTrack.getHeight()-getWidth()),
+			new Vector2f(0, 0),//btnScrollTrack.getHeight()-getWidth()),
 			new Vector2f(getWidth(), getWidth()),
 			screen.getStyle("ScrollArea#VScrollBar").getVector4f("thumbResizeBorders"),
 			screen.getStyle("ScrollArea#VScrollBar").getString("thumbImg")
@@ -137,7 +137,7 @@ public class VScrollBar extends Element {
 		btnScrollTrack.addChild(btnScrollThumb);
 		
 		btnScrollUp = new Button(screen, UID + "btnScrollUp",
-			new Vector2f(0, getHeight()-getWidth()),
+			new Vector2f(0, 0),
 			new Vector2f(getWidth(), getWidth()),
 			screen.getStyle("ScrollArea#VScrollBar").getVector4f("btnUpResizeBorders"),
 			screen.getStyle("ScrollArea#VScrollBar").getString("btnUpImg")
@@ -180,7 +180,7 @@ public class VScrollBar extends Element {
 		this.addChild(btnScrollUp);
 		
 		btnScrollDown = new Button(screen, UID + "btnScrollDown",
-			new Vector2f(0, 0),
+			new Vector2f(0, getHeight()-getWidth()),
 			new Vector2f(getWidth(), getWidth()),
 			screen.getStyle("ScrollArea#VScrollBar").getVector4f("btnDownResizeBorders"),
 			screen.getStyle("ScrollArea#VScrollBar").getString("btnDownImg")

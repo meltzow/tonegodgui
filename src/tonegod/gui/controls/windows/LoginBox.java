@@ -45,23 +45,24 @@ public abstract class LoginBox extends Window {
 	public LoginBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
-		lblUserName = new Label(screen, UID + ":Lbl:UserName", new Vector2f(15, getHeight()-70), new Vector2f((getWidth()/3)-30, 25));
+		lblUserName = new Label(screen, UID + ":Lbl:UserName", new Vector2f(15, 40), new Vector2f((getWidth()/3)-30, 25));
 		lblUserName.setTextAlign(BitmapFont.Align.Right);
 		lblUserName.setText("User ID:");
 		this.addChild(lblUserName);
 		
-		userName = new TextField(screen, UID + ":userName", new Vector2f(getWidth()/3, getHeight()-70), new Vector2f(getWidth()-(getWidth()/3)-15, 25));
+		userName = new TextField(screen, UID + ":userName", new Vector2f(getWidth()/3, 40), new Vector2f(getWidth()-(getWidth()/3)-15, 25));
 		this.addChild(userName);
 		
-		lblPassword = new Label(screen, UID + ":Lbl:Password", new Vector2f(15, getHeight()-100), new Vector2f((getWidth()/3)-30, 25));
+		lblPassword = new Label(screen, UID + ":Lbl:Password", new Vector2f(15, 70), new Vector2f((getWidth()/3)-30, 25));
 		lblPassword.setTextAlign(BitmapFont.Align.Right);
 		lblPassword.setText("Password:");
 		this.addChild(lblPassword);
 		
-		password = new Password(screen, UID + "password", new Vector2f(getWidth()/3, getHeight()-100), new Vector2f(getWidth()-(getWidth()/3)-15, 25));
+		password = new Password(screen, UID + "password", new Vector2f(getWidth()/3, 70), new Vector2f(getWidth()-(getWidth()/3)-15, 25));
 		this.addChild(password);
+		password.hide();
 		
-		btnLogin = new Button(screen,  UID + ":btnOk", new Vector2f(getWidth()-100-17, 19)) {
+		btnLogin = new Button(screen,  UID + ":btnOk", new Vector2f(getWidth()-100-17, getHeight()-25-22)) {
 			@Override
 			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				onBtnLoginMouseLeftDown(evt, toggled);
@@ -95,7 +96,7 @@ public abstract class LoginBox extends Window {
 	//	btnLogin.setClippingLayer(this);
 		addChild(btnLogin);
 		
-		btnCancel = new Button(screen, UID + ":btnCancel", new Vector2f(17, 19)) {
+		btnCancel = new Button(screen, UID + ":btnCancel", new Vector2f(17, getHeight()-25-22)) {
 			@Override
 			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				onBtnCancelMouseLeftDown(evt, toggled);

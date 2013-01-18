@@ -41,7 +41,7 @@ public abstract class AlertBox extends Window {
 	public AlertBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
-		dlg = new ScrollArea(screen, UID + ":dialog", new Vector2f(10, 60), new Vector2f(getWidth()-45, getHeight()-60-35), true);
+		dlg = new ScrollArea(screen, UID + ":dialog", new Vector2f(10, 10+getDragBarHeight()), new Vector2f(getWidth()-45, getHeight()-60-35), true);
 		dlg.setFontColor(ColorRGBA.LightGray);
 		dlg.setTextAlign(BitmapFont.Align.Left);
 		dlg.setTextPosition(5,5);
@@ -53,7 +53,7 @@ public abstract class AlertBox extends Window {
 		dlg.setPadding(5);
 		addChild(dlg);
 		
-		btnOk = new Button(screen,  UID + ":btnOk", new Vector2f(getWidth()-100-17, 19)) {
+		btnOk = new Button(screen,  UID + ":btnOk", new Vector2f(getWidth()-100-17, getHeight()-25-22)) {
 			@Override
 			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				onBtnOkMouseLeftDown(evt, toggled);

@@ -12,7 +12,7 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public class SelectBox extends ComboBox {
+public abstract class SelectBox extends ComboBox {
 	/**
 	 * Creates a new instance of the SelectBox control
 	 * 

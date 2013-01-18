@@ -80,6 +80,8 @@ public class Screen implements Control, RawInputListener {
 	private EffectManager effectManager;
 	private Node t0neg0dGUI = new Node("t0neg0dGUI");
 	
+	private Vector2f mouseXY = new Vector2f(0,0);
+	;
 	public Screen(Application app, String styleMap) {
 		this.app = app;
 		this.elementZOrderRay.setDirection(Vector3f.UNIT_Z);
@@ -119,6 +121,9 @@ public class Screen implements Control, RawInputListener {
 	
 	public void addElement(Element element) {
 		elements.put(element.getUID(), element);
+		
+		element.setY(getHeight()-element.getHeight()-element.getY());
+		
 		t0neg0dGUI.attachChild(element);
 		
 		// Set initla z-order
@@ -187,6 +192,14 @@ public class Screen implements Control, RawInputListener {
 		return this.zOrderStepMinor;
 	}
 	
+	private void setMouseXY(float x, float y) {
+		mouseXY.set(x, y);
+	}
+	
+	public Vector2f getMouseXY() {
+		return this.mouseXY;
+	}
+	
 	// Raw Input handlers
 	@Override
 	public void beginInput() {
@@ -210,6 +223,7 @@ public class Screen implements Control, RawInputListener {
 
 	@Override
 	public void onMouseMotionEvent(MouseMotionEvent evt) {
+		setMouseXY(evt.getX(),evt.getY());
 		if (!mousePressed) {
 			mouseFocusElement = getEventElement(evt.getX(), evt.getY());
 			if (mouseFocusElement != previousMouseFocusElement) {

@@ -221,7 +221,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	
 	private void addSubmenuArrow(int index) {
 		Element elArrow = new Element(screen, getUID() + ":Arrow:" + index,
-				new Vector2f(getWidth()-menuItemHeight-(menuPadding*2), (menuItems.size()*menuItemHeight)-menuItemHeight+menuPadding-(index*menuItemHeight)),
+				new Vector2f(getWidth()-menuItemHeight-(menuPadding*2), -(menuItems.size()*menuItemHeight)+(menuItemHeight+(index*menuItemHeight))),//(menuItems.size()*menuItemHeight)-menuItemHeight+menuPadding-(index*menuItemHeight)),
 				new Vector2f(menuItemHeight, menuItemHeight),
 				new Vector4f(0,0,0,0),
 				screen.getStyle("Common").getString("arrowRight")

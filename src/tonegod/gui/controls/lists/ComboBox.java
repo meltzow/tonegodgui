@@ -20,7 +20,7 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public class ComboBox extends TextField {
+public abstract class ComboBox extends TextField {
 	private Button btnArrowDown;
 	private Menu DDList = null;
 	float btnHeight = 25;
@@ -167,6 +167,7 @@ public class ComboBox extends TextField {
 		this.selectedCaption = caption;
 		this.selectedValue = value;
 		setTextFieldText(selectedCaption);
+		onChange(selectedIndex, selectedValue);
 	}
 	
 	@Override
@@ -239,4 +240,6 @@ public class ComboBox extends TextField {
 	private void handleHightlight(int index) {
 		if (DDList.getIsVisible()) DDList.setHighlight(index);
 	}
+	
+	public abstract void onChange(int selectedIndex, String value);
 }
