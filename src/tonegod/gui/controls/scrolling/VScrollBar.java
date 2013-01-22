@@ -243,6 +243,16 @@ public class VScrollBar extends Element {
 		this.scrollableArea = scrollableArea;
 	}
 	
+	protected void scrollToTop() {
+		
+	}
+	
+	protected void scrollToBottom() {
+		setThumbScale();
+		btnScrollThumb.setY(0);
+		setByThumbPosition();
+	}
+	
 	private void scrollScrollableArea() {
 		if (this.scrollableArea != null) {
 			setByThumbPosition();
@@ -272,12 +282,13 @@ public class VScrollBar extends Element {
 	
 	protected void setThumbScale() {
 		float scrollLayerHeight = scrollableArea.getScrollableHeight();
-		System.out.println(scrollLayerHeight);
+	//	System.out.println(scrollLayerHeight);
 		float diff = scrollLayerHeight-scrollableArea.getHeight();
 		if (diff > 0) {
 			float scale = 1/scrollLayerHeight*diff;
 			btnScrollThumb.setHeight(btnScrollTrack.getHeight()-(btnScrollTrack.getHeight()*scale));
-			btnScrollThumb.setY(btnScrollTrack.getHeight()-btnScrollThumb.getHeight());
+		//	if (btnScrollThumb.getY()+btnScrollThumb.getHeight() > btnScrollTrack.getHeight())
+				btnScrollThumb.setY(btnScrollTrack.getHeight()-btnScrollThumb.getHeight());
 		} else {
 			btnScrollThumb.setY(0);
 			btnScrollThumb.setHeight(btnScrollTrack.getHeight());
