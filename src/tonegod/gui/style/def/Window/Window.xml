@@ -17,6 +17,14 @@
 				<x value="350" />
 				<y value="200" />
 			</property>
+			<property name="contentIndents" type="Vector4f">
+				<x value="12" />
+				<y value="12" />
+				<z value="12" />
+				<w value="12" />
+			</property>
+			<property name="clipPadding" type="float" value="6" />
+			<property name="buttonAreaHeight" type="float" value="40" />
 		</attributes>
 		<images>
 			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Window/panel_x.png" />
@@ -50,6 +58,13 @@
 				<z value="6" />
 				<w value="6" />
 			</property>
+			<property name="indents" type="Vector4f">
+				<x value="7" />
+				<y value="7" />
+				<z value="7" />
+				<w value="7" />
+			</property>
+			<property name="defaultControlSize" type="float" value="25" />
 		</attributes>
 		<images>
 			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Window/dragbar_x.png" />

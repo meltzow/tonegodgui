@@ -23,6 +23,7 @@ import com.jme3.texture.Texture;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import tonegod.gui.controls.form.Form;
 import tonegod.gui.effects.Effect;
 
 /**
@@ -93,6 +94,7 @@ public class Element extends Node {
 	private Vector2f position;
 	private Vector2f dimensions;
 	private Vector4f borders = new Vector4f(1,1,1,1);
+	private Vector4f borderHandles = new Vector4f(12,12,12,12);
 	private Vector2f minDimensions;
 	
 	private boolean ignoreMouse = false;
@@ -156,10 +158,15 @@ public class Element extends Node {
 	private boolean wasClipped = false;
 	private Element clippingLayer;
 	private Vector4f clippingBounds = new Vector4f();
+	private float clipPadding = 0;
 	private float textClipPadding = 0;
 	private boolean isVisible = true;
 	private boolean wasVisible = true;
 	
+	private Form form;
+	private int tabIndex = 0;
+	
+	private float zOrder;
 	private Map<Effect.EffectEvent, Effect> effects = new HashMap();
 	
 	/**
@@ -250,6 +257,21 @@ public class Element extends Node {
 		this.attachChild(child);
 	}
 	
+	public void removeChild(Element child) {
+		Element e = elementChildren.remove(child.getUID());
+		e.removeFromParent();
+	}
+	
+	public void removeAllChildren() {
+		Set<String> keys = elementChildren.keySet();
+		Element e;
+		for (String key : keys) {
+			e = elementChildren.get(key);
+			e.removeFromParent();
+		}
+		elementChildren.clear();
+	}
+	
 	// Z-ORDER 
 	/**
 	 * Recursive call made by the screen control to properly initialize z-order (depth) placement
@@ -268,6 +290,15 @@ public class Element extends Node {
 		for (String key : keys) {
 			elementChildren.get(key).initZOrder(screen.getZOrderStepMinor());
 		}
+	}
+	
+	public float getZOrder() {
+		return this.zOrder;
+	}
+	
+	public void setZOrder(float zOrder) {
+		this.zOrder = zOrder;
+		initZOrder(zOrder);
 	}
 	
 	// Recursive & non-recursive parent/child element searches
@@ -1049,7 +1080,7 @@ public class Element extends Node {
 	 * @return float
 	 */
 	public float getResizeBorderNorthSize() {
-		return this.borders.x;
+		return this.borderHandles.x;
 	}
 	
 	/**
@@ -1058,7 +1089,7 @@ public class Element extends Node {
 	 * @return float
 	 */
 	public float getResizeBorderWestSize() {
-		return this.borders.y;
+		return this.borderHandles.y;
 	}
 	
 	/**
@@ -1067,7 +1098,7 @@ public class Element extends Node {
 	 * @return float
 	 */
 	public float getResizeBorderEastSize() {
-		return this.borders.z;
+		return this.borderHandles.z;
 	}
 	
 	/**
@@ -1076,7 +1107,7 @@ public class Element extends Node {
 	 * @return float
 	 */
 	public float getResizeBorderSouthSize() {
-		return this.borders.w;
+		return this.borderHandles.w;
 	}
 	
 	/**
@@ -1451,6 +1482,14 @@ public class Element extends Node {
 		return this.clippingBounds;
 	}
 	
+	public void setClipPadding(float clipPadding) {
+		this.clipPadding = clipPadding;
+	}
+	
+	public float getClipPadding() {
+		return clipPadding;
+	}
+	
 	/**
 	 * Updates the clipping bounds for any element that has a clipping layer
 	 * 
@@ -1470,7 +1509,15 @@ public class Element extends Node {
 	public void updateLocalClipping() {
 		if (isVisible) {
 			if (clippingLayer != null) {
-				clippingBounds.set(clippingLayer.getAbsoluteX(), clippingLayer.getAbsoluteY(), clippingLayer.getAbsoluteWidth(), clippingLayer.getAbsoluteHeight());
+				float cPadding = 0;
+				if (clippingLayer != this)
+					cPadding = clippingLayer.getClipPadding();
+				clippingBounds.set(
+					clippingLayer.getAbsoluteX()+cPadding,
+					clippingLayer.getAbsoluteY()+cPadding,
+					clippingLayer.getAbsoluteWidth()-cPadding,
+					clippingLayer.getAbsoluteHeight()-cPadding
+				);
 				mat.setVector4("Clipping", clippingBounds);
 				mat.setBoolean("UseClipping", true);
 			} else {
@@ -1569,5 +1616,22 @@ public class Element extends Node {
 			this.addEffect(effect.getEffectEvent(), effect);
 			index++;
 		}
+	}
+	
+	// Tab focus
+	public void setForm(Form form) {
+		this.form = form;
+	}
+	
+	public Form getForm() {
+		return this.form;
+	}
+	
+	public void setTabIndex(int tabIndex) {
+		this.tabIndex = tabIndex;
+	}
+	
+	public int getTabIndex() {
+		return tabIndex;
 	}
 }

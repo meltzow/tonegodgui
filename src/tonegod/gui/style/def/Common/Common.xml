@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<element name="Common">
-		<font></font>
-		<attributes></attributes>
+		<font>
+			<property name="fontSize" type="float" value="22" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Top" />
+			<property name="textWrap" type="String" value="Word" />
+			<property name="textPadding" type="float" value="3" />
+		</font>
+		<attributes>
+			<property name="defaultControlSize" type="float" value="25" />
+			<property name="defaultControlSpacing" type="float" value="5" />
+		</attributes>
 		<images>
 			<property name="blankImg" type="String" value="tonegod/gui/style/def/Blank.png" />
 			<property name="arrowUp" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_up.png" />

@@ -3,6 +3,12 @@
 	<element name="Menu">
 		<font></font>
 		<attributes>
+			<property name="highlightColor" type="ColorRGBA">
+				<r value="0.7" />
+				<g value="0.7" />
+				<b value="0.7" />
+				<a value="0.5" />
+			</property>
 			<property name="resizeBorders" type="Vector4f">
 				<x value="14" />
 				<y value="14" />
@@ -17,7 +23,6 @@
 				<x value="350" />
 				<y value="200" />
 			</property>
-			<property name="menuItemHeight" type="float" value="25" />
 			<property name="menuPadding" type="float" value="4" />
 			<property name="menuOverhang" type="float" value="8" />
 		</attributes>

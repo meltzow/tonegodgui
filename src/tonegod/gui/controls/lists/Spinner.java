@@ -142,6 +142,7 @@ public abstract class Spinner extends TextField {
 	
 	public void addStepValue(String value) {
 		stepValues.add(value);
+		displaySelectedStep();
 	}
 	
 	public void removeStepValue(String value) {

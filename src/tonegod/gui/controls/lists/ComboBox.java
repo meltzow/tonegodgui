@@ -85,7 +85,16 @@ public abstract class ComboBox extends TextField {
 		
 		ddUID = UID + ":ddMenu";
 		
-		btnArrowDown = new Button(screen, UID + ":ArrowDown", new Vector2f(getWidth(),0), new Vector2f(btnHeight, btnHeight)) {
+		btnArrowDown = new Button(screen, UID + ":ArrowDown",
+			new Vector2f(
+				getWidth(),
+				0
+			),
+			new Vector2f(
+				btnHeight,
+				btnHeight
+			)
+		) {
 			@Override
 			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				

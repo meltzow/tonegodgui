@@ -56,6 +56,7 @@ public class Screen implements Control, RawInputListener {
 	
 	private Element eventElement = null;
 	private Element keyboardElement = null;
+	private Element tabFocusElement = null;
 	private Vector2f eventElementOriginXY = new Vector2f();
 	private float eventElementOffsetX = 0;
 	private float eventElementOffsetY = 0;
@@ -715,5 +716,16 @@ public class Screen implements Control, RawInputListener {
 				}
 			}
 		}
+	}
+	
+	// Forms and tab focus
+	public void setTabFocusElement(Element element) {
+		tabFocusElement = element;
+		if (tabFocusElement instanceof TextField)
+			keyboardElement = element;
+	}
+	
+	public void resetTabFocusElement() {
+		this.tabFocusElement = null;
 	}
 }

@@ -88,10 +88,11 @@ public class TextField extends Element implements KeyboardListener {
 		this.setDockN(true);
 		this.setDockW(true);
 		
-		this.setFontSize(20);
-		this.setTextPadding(3);
-		this.setTextWrap(LineWrapMode.Clip);
-		this.setTextVAlign(BitmapFont.VAlign.Center);
+		this.setFontSize(screen.getStyle("TextField").getFloat("fontSize"));
+		this.setTextPadding(screen.getStyle("TextField").getFloat("textPadding"));
+		this.setTextWrap(LineWrapMode.valueOf(screen.getStyle("TextField").getString("textWrap")));
+		this.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("TextField").getString("textAlign")));
+		this.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("TextField").getString("textVAlign")));
 		
 		caret = new Element(screen, UID + ":Caret", new Vector2f(0,0), new Vector2f(dimensions.x, dimensions.y), new Vector4f(0,0,0,0), null);
 		
@@ -108,7 +109,7 @@ public class TextField extends Element implements KeyboardListener {
 		caret.setDockS(true);
 		caret.setDockW(true);
 		
-		setTextFieldFontColor(ColorRGBA.Black);
+		setTextFieldFontColor(screen.getStyle("TextField").getColorRGBA("fontColor"));
 		this.addChild(caret);
 		
 		this.setText("");
