@@ -65,9 +65,14 @@ public class Window extends Element {
 		this.setIsResizable(true);
 		this.setScaleNS(false);
 		this.setScaleEW(false);
+		this.setClipPadding(screen.getStyle("Window").getFloat("clipPadding"));
 	//	this.setClippingLayer(this);
 		
-		dragBar = new Element(screen, UID + ":DragBar", new Vector2f(5, 5), new Vector2f(getWidth()-10, 25),
+		Vector4f dbIndents = screen.getStyle("Window#Dragbar").getVector4f("indents");
+		
+		dragBar = new Element(screen, UID + ":DragBar",
+			new Vector2f(dbIndents.y, dbIndents.z),
+			new Vector2f(getWidth()-dbIndents.y-dbIndents.z, screen.getStyle("Window#Dragbar").getFloat("defaultControlSize")),
 			screen.getStyle("Window#Dragbar").getVector4f("resizeBorders"),
 			screen.getStyle("Window#Dragbar").getString("defaultImg")
 		);

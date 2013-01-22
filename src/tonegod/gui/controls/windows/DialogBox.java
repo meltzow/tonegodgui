@@ -36,7 +36,14 @@ public abstract class DialogBox extends AlertBox {
 	public DialogBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
-		btnCancel = new Button(screen, UID + ":btnCancel", new Vector2f(17, getHeight()-25-22)) {
+		Vector4f indents = screen.getStyle("Window").getVector4f("contentIndents");
+		
+		btnCancel = new Button(screen, UID + ":btnCancel",
+			new Vector2f(
+				indents.y,
+				getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
+			)
+		) {
 			@Override
 			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				onBtnCancelMouseLeftDown(evt, toggled);
@@ -60,14 +67,9 @@ public abstract class DialogBox extends AlertBox {
 			@Override
 			public void onButtonLostFocus(MouseMotionEvent evt) {  }
 		};
-	//	btnCancel.setButtonHoverInfo("Textures/button_x_h.png", ColorRGBA.White);
-	//	btnCancel.setButtonPressedInfo("Textures/button_x_d.png", ColorRGBA.DarkGray);
-	//	btnCancel.setFontColor(ColorRGBA.LightGray);
-	//	btnCancel.setFontSize(16);
 		btnCancel.setText("Cancel");
 		btnCancel.setDockS(true);
 		btnCancel.setDockW(true);
-	//	btnCancel.setClippingLayer(this);
 		addChild(btnCancel);
 	}
 	

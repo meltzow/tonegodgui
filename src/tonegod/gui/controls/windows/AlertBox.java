@@ -41,7 +41,20 @@ public abstract class AlertBox extends Window {
 	public AlertBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
-		dlg = new ScrollArea(screen, UID + ":dialog", new Vector2f(10, 10+getDragBarHeight()), new Vector2f(getWidth()-45, getHeight()-60-35), true);
+		Vector4f indents = screen.getStyle("Window").getVector4f("contentIndents");
+		float controlSpacing = screen.getStyle("Common").getFloat("defaultControlSpacing");
+		
+		dlg = new ScrollArea(screen, UID + ":dialog",
+			new Vector2f(
+				indents.y,
+				indents.x+getDragBarHeight()+controlSpacing
+			),
+			new Vector2f(
+				getWidth()-indents.y-indents.z-screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize"),
+				getHeight()-indents.x-indents.w-getDragBarHeight()-screen.getStyle("Window").getFloat("buttonAreaHeight")-(controlSpacing*2)
+			),
+			true
+		);
 		dlg.setFontColor(ColorRGBA.LightGray);
 		dlg.setTextAlign(BitmapFont.Align.Left);
 		dlg.setTextPosition(5,5);
@@ -53,7 +66,12 @@ public abstract class AlertBox extends Window {
 		dlg.setPadding(5);
 		addChild(dlg);
 		
-		btnOk = new Button(screen,  UID + ":btnOk", new Vector2f(getWidth()-100-17, getHeight()-25-22)) {
+		btnOk = new Button(screen,  UID + ":btnOk",
+			new Vector2f(
+				getWidth()-screen.getStyle("Button").getVector2f("defaultSize").x-indents.z,
+				getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
+			)
+		) {
 			@Override
 			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				onBtnOkMouseLeftDown(evt, toggled);
@@ -77,14 +95,9 @@ public abstract class AlertBox extends Window {
 			@Override
 			public void onButtonLostFocus(MouseMotionEvent evt) {  }
 		};
-	//	btnOk.setButtonHoverInfo("Textures/button_x_h.png", ColorRGBA.White);
-	//	btnOk.setButtonPressedInfo("Textures/button_x_d.png", ColorRGBA.DarkGray);
-	//	btnOk.setFontColor(ColorRGBA.LightGray);
-	//	btnOk.setFontSize(16);
 		btnOk.setText("Ok");
 		btnOk.setDockS(true);
 		btnOk.setDockE(true);
-	//	btnOk.setClippingLayer(this);
 		addChild(btnOk);
 	}
 	
