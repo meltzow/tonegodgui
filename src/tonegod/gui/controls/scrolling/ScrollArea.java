@@ -22,7 +22,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	private boolean isTextOnly = true;
 	private boolean isScrollable = true;
 	private VScrollBar vScrollBar;
-	private float scrollSize = 25;
+	private float scrollSize;
 	
 	/**
 	 * Creates a new instance of the ScrollArea control
@@ -73,6 +73,8 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		super (screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 		this.isTextOnly = isTextOnly;
+		
+		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 		
 		if (!isTextOnly) {
 			createScrollableArea();
@@ -185,15 +187,18 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	}
 	
 	public void scrollToBottom() {
+		vScrollBar.scrollToBottom();
+		/*
 		if (scrollableArea == null) {
 			if (textElement.getHeight() > getHeight()) {
-				textElement.setLocalTranslation(textElement.getLocalTranslation().setY(0+this.getTextPadding()));
+				textElement.setLocalTranslation(textElement.getLocalTranslation().setY(0));
 			}
 		} else {
 			if (scrollableArea.getHeight() > getHeight()) {
 				scrollableArea.setY(0+scrollableArea.getTextPadding());
 			}
 		}
+		*/
 	}
 	
 	public void scrollToTop() {
