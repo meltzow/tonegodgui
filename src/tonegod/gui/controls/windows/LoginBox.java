@@ -11,6 +11,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.text.Label;
 import tonegod.gui.controls.text.Password;
 import tonegod.gui.controls.text.TextField;
@@ -26,6 +27,7 @@ public abstract class LoginBox extends Window {
 	Element responseMsg, lblUserName, lblPassword;
 	TextField userName;
 	Password password;
+	Form form;
 	
 	public LoginBox(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,
@@ -44,6 +46,8 @@ public abstract class LoginBox extends Window {
 	
 	public LoginBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
+		
+		form = new Form(screen);
 		
 		Vector4f indents = screen.getStyle("Window").getVector4f("contentIndents");
 		float controlSize = screen.getStyle("Common").getFloat("defaultControlSize");
@@ -74,6 +78,7 @@ public abstract class LoginBox extends Window {
 			)
 		);
 		this.addChild(userName);
+		form.addFormElement(userName);
 		
 		lblPassword = new Label(screen, UID + ":Lbl:Password",
 			new Vector2f(
@@ -100,6 +105,7 @@ public abstract class LoginBox extends Window {
 			)
 		);
 		this.addChild(password);
+		form.addFormElement(password);
 		
 		btnLogin = new Button(screen,  UID + ":btnOk",
 			new Vector2f(
@@ -134,6 +140,7 @@ public abstract class LoginBox extends Window {
 		btnLogin.setDockS(true);
 		btnLogin.setDockE(true);
 		addChild(btnLogin);
+		form.addFormElement(btnLogin);
 		
 		btnCancel = new Button(screen, UID + ":btnCancel",
 			new Vector2f(
@@ -168,6 +175,7 @@ public abstract class LoginBox extends Window {
 		btnCancel.setDockS(true);
 		btnCancel.setDockW(true);
 		addChild(btnCancel);
+		form.addFormElement(btnCancel);
 		
 		this.setWindowTitle("Login");
 	}

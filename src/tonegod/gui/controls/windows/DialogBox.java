@@ -71,6 +71,7 @@ public abstract class DialogBox extends AlertBox {
 		btnCancel.setDockS(true);
 		btnCancel.setDockW(true);
 		addChild(btnCancel);
+		form.addFormElement(btnCancel);
 	}
 	
 	public void setButtonCancelText(String text) {

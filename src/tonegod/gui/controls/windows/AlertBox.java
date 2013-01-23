@@ -12,6 +12,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.core.Screen;
 
@@ -22,6 +23,7 @@ import tonegod.gui.core.Screen;
 public abstract class AlertBox extends Window {
 	private ScrollArea dlg;
 	private Button btnOk;
+	Form form;
 	
 	public AlertBox(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,
@@ -40,6 +42,8 @@ public abstract class AlertBox extends Window {
 	
 	public AlertBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
+		
+		form = new Form(screen);
 		
 		Vector4f indents = screen.getStyle("Window").getVector4f("contentIndents");
 		float controlSpacing = screen.getStyle("Common").getFloat("defaultControlSpacing");
@@ -99,6 +103,7 @@ public abstract class AlertBox extends Window {
 		btnOk.setDockS(true);
 		btnOk.setDockE(true);
 		addChild(btnOk);
+		form.addFormElement(btnOk);
 	}
 	
 	public void setMsg(String text) {
