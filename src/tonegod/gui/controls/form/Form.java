@@ -16,12 +16,17 @@ import tonegod.gui.core.Screen;
 public class Form {
 	private Screen screen;
 	private List<Element> elements = new ArrayList();
+	private int nextIndex = 0;
 	private int currentTabIndex = 0;
 	
 	public Form(Screen screen) {
-		
+		this.screen = screen;
 	}
+	
 	public void addFormElement(Element element) {
+		element.setForm(this);
+		element.setTabIndex(nextIndex);
+		nextIndex++;
 		elements.add(element);
 	}
 	
