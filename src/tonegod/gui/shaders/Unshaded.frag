@@ -13,9 +13,11 @@ uniform bool m_UseClipping;
 uniform vec4 m_Clipping;
 
 uniform sampler2D m_EffectMap;
+uniform vec4 m_EffectColor;
 uniform bool m_UseEffect;
 uniform bool m_EffectFade;
 uniform bool m_EffectPulse;
+uniform bool m_EffectPulseColor;
 uniform float m_EffectStep;
 
 
@@ -54,11 +56,13 @@ void main(){
         color *= texture2D(m_ColorMap, texCoord1);
 		
 		if (m_UseEffect) {
-			if (m_EffectFade || m_EffectPulse) {
-				if (m_EffectPulse)
+			if (m_EffectFade || m_EffectPulse || m_EffectPulseColor) {
+				if (m_EffectPulse) {
 					color = mix(color, texture2D(m_EffectMap, texCoord1), m_EffectStep);
-				else if (m_EffectFade) {
+				} else if (m_EffectFade) {
 					color.a *= m_EffectStep;
+				} else if (m_EffectPulseColor) {
+					color =  mix(color, m_EffectColor, m_EffectStep*0.5);
 				}
 			} else {
 				color = mix(color, texture2D(m_EffectMap, texCoord1), 1.0);
