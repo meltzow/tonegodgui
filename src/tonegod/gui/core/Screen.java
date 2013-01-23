@@ -6,6 +6,7 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.font.plugins.BitmapFontLoader;
+import com.jme3.input.KeyInput;
 import com.jme3.input.RawInputListener;
 import com.jme3.input.event.JoyAxisEvent;
 import com.jme3.input.event.JoyButtonEvent;
@@ -34,6 +35,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import tonegod.gui.controls.form.Form;
+import tonegod.gui.controls.lists.ComboBox;
+import tonegod.gui.controls.lists.SelectBox;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.core.Element.Borders;
@@ -57,6 +61,7 @@ public class Screen implements Control, RawInputListener {
 	private Element eventElement = null;
 	private Element keyboardElement = null;
 	private Element tabFocusElement = null;
+	private Form focusForm = null;
 	private Vector2f eventElementOriginXY = new Vector2f();
 	private float eventElementOffsetX = 0;
 	private float eventElementOffsetY = 0;
@@ -82,7 +87,8 @@ public class Screen implements Control, RawInputListener {
 	private Node t0neg0dGUI = new Node("t0neg0dGUI");
 	
 	private Vector2f mouseXY = new Vector2f(0,0);
-	;
+	private boolean SHIFT = false;
+	
 	public Screen(Application app, String styleMap) {
 		this.app = app;
 		this.elementZOrderRay.setDirection(Vector3f.UNIT_Z);
@@ -271,12 +277,14 @@ public class Screen implements Control, RawInputListener {
 	public void onMouseButtonEvent(MouseButtonEvent evt) {
 		if (evt.isPressed()) {
 			mousePressed = true;
+			resetTabFocusElement();
 			switch (evt.getButtonIndex()) {
 				case 0:
 					mouseLeftPressed = true;
 					eventElement = getEventElement(evt.getX(), evt.getY());
 					if (eventElement != null) {
 						updateZOrder(eventElement.getAbsoluteParent());
+						this.setTabFocusElement(eventElement);
 						if (eventElement.getIsResizable()) {
 							float offsetX = evt.getX();
 							float offsetY = evt.getY();
@@ -305,19 +313,19 @@ public class Screen implements Control, RawInputListener {
 								}
 							}
 							if (keyboardElement != null) {
-								((TextField)keyboardElement).resetTabFocus();
+								if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
 							}
 							keyboardElement = null;
 						} else if (eventElement.getIsMovable() && eventElementResizeDirection == null) {
 							eventElementResizeDirection = null;
 							if (keyboardElement != null) {
-								((TextField)keyboardElement).resetTabFocus();
+								if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
 							}
 							keyboardElement = null;
 							eventElementOriginXY.set(eventElement.getPosition());
 						} else if (eventElement instanceof KeyboardListener) {
 							if (keyboardElement != null) {
-								((TextField)keyboardElement).resetTabFocus();
+								if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
 							}
 							keyboardElement = eventElement;
 							if (keyboardElement instanceof TextField) {
@@ -328,7 +336,7 @@ public class Screen implements Control, RawInputListener {
 						} else {
 							eventElementResizeDirection = null;
 							if (keyboardElement != null) {
-								((TextField)keyboardElement).resetTabFocus();
+								if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
 							}
 							keyboardElement = null;
 						}
@@ -386,11 +394,22 @@ public class Screen implements Control, RawInputListener {
 	
 	@Override
 	public void onKeyEvent(KeyInputEvent evt) {
-		if (keyboardElement != null) {
-			if (evt.isPressed()) {
-				((KeyboardListener)keyboardElement).onKeyPress(evt);
-			} else if (evt.isReleased()) {
-				((KeyboardListener)keyboardElement).onKeyRelease(evt);
+		if (evt.getKeyCode() == KeyInput.KEY_LSHIFT || evt.getKeyCode() == KeyInput.KEY_RSHIFT) {
+			if (evt.isPressed()) SHIFT = true;
+			else SHIFT = false;
+		}
+		if (evt.getKeyCode() == KeyInput.KEY_TAB && evt.isPressed()) {
+			if (focusForm != null) {
+				if (!SHIFT)	focusForm.tabNext();
+				else		focusForm.tabPrev();
+			}
+		} else {
+			if (keyboardElement != null) {
+				if (evt.isPressed()) {
+					((KeyboardListener)keyboardElement).onKeyPress(evt);
+				} else if (evt.isReleased()) {
+					((KeyboardListener)keyboardElement).onKeyRelease(evt);
+				}
 			}
 		}
 	}
@@ -720,12 +739,32 @@ public class Screen implements Control, RawInputListener {
 	
 	// Forms and tab focus
 	public void setTabFocusElement(Element element) {
-		tabFocusElement = element;
-		if (tabFocusElement instanceof TextField)
-			keyboardElement = element;
+		resetFocusElement();
+		focusForm = element.getForm();
+		if (focusForm != null) {
+			tabFocusElement = element;
+			focusForm.setSelectedTabIndex(element);
+			if (tabFocusElement instanceof TabFocusListener) {
+				((TabFocusListener)element).setTabFocus();
+			}
+		}
 	}
 	
 	public void resetTabFocusElement() {
+		resetFocusElement();
 		this.tabFocusElement = null;
+		this.focusForm = null;
+	}
+	
+	private void resetFocusElement() {
+		if (tabFocusElement != null) {
+			if (tabFocusElement instanceof TabFocusListener) {
+				((TabFocusListener)tabFocusElement).resetTabFocus();
+			}
+		}
+	}
+	
+	public void setKeyboardElemeent(Element element) {
+		keyboardElement = element;
 	}
 }
