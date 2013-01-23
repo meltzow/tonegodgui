@@ -4,8 +4,11 @@
  */
 package tonegod.gui.controls.lists;
 
+import com.jme3.input.KeyInput;
+import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
@@ -203,11 +206,15 @@ public abstract class Slider extends Button {
 			screen.getStyle("Button").getString("defaultImg")
 		) {
 			@Override
-			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {  }
+			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
+			
+			}
 			@Override
 			public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
+			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
+				screen.setTabFocusElement(getElementParent());
+			}
 			@Override
 			public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
@@ -219,18 +226,6 @@ public abstract class Slider extends Button {
 			
 		};
 		elThumbLock.addChild(elThumb);
-		
-		if (orientation == Orientation.VERTICAL) {
-		//	this.setScaleNS(true);
-		//	elThumb.setScaleNS(false);
-		//	this.setScaleEW(false);
-		//	elThumb.setScaleEW(false);
-		} else {
-		//	this.setScaleNS(false);
-		//	elThumb.setScaleNS(false);
-		//	this.setScaleEW(true);
-		//	elThumb.setScaleEW(false);
-		}
 		
 		elThumb.setScaleNS(false);
 		elThumb.setScaleEW(false);
@@ -434,5 +429,43 @@ public abstract class Slider extends Button {
 				} else			setSelectedIndex(percent);
 			}
 		}
+	}
+	
+	// Tab focus
+	@Override
+	public void setTabFocus() {
+		screen.setKeyboardElemeent(this);
+		Effect effect = elThumb.getEffect(Effect.EffectEvent.TabFocus);
+		if (effect != null) {
+			effect.setColor(ColorRGBA.DarkGray);
+			screen.getEffectManager().applyEffect(effect);
+		}
+	}
+	
+	@Override
+	public void resetTabFocus() {
+		screen.setKeyboardElemeent(null);
+		Effect effect = elThumb.getEffect(Effect.EffectEvent.LoseTabFocus);
+		if (effect != null) {
+			effect.setColor(ColorRGBA.White);
+			screen.getEffectManager().applyEffect(effect);
+		}
+	}
+	
+	// Default keyboard interaction
+	@Override
+	public void onKeyPress(KeyInputEvent evt) {
+		if (evt.getKeyCode() == KeyInput.KEY_LEFT) {
+			trackEvt = new MouseButtonEvent(0,true,(int)this.getAbsoluteX(),(int)this.getAbsoluteY());
+			updateThumbByTrackClick();
+		} else if (evt.getKeyCode() == KeyInput.KEY_RIGHT) {
+			trackEvt = new MouseButtonEvent(0,true,(int)this.getAbsoluteWidth()+1,(int)this.getAbsoluteHeight()+1);
+			updateThumbByTrackClick();
+		}
+	}
+	
+	@Override
+	public void onKeyRelease(KeyInputEvent evt) {
+		
 	}
 }
