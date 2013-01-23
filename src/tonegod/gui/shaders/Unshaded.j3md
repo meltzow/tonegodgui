@@ -2,8 +2,10 @@ MaterialDef Unshaded {
 
     MaterialParameters {
 		Texture2D EffectMap
+		Color EffectColor
 		Boolean UseEffect : false
 		Boolean EffectPulse : false
+		Boolean EffectPulseColor : false
 		Boolean EffectFade : false
 		Float EffectStep
 		
