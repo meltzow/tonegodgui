@@ -4,6 +4,8 @@
  */
 package tonegod.gui.controls.lists;
 
+import com.jme3.input.KeyInput;
+import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.Vector2f;
@@ -11,6 +13,7 @@ import com.jme3.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.menuing.MenuItem;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
@@ -70,6 +73,7 @@ public abstract class Spinner extends TextField {
 		) {
 			@Override
 			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
+				screen.setTabFocusElement((Spinner)getElementParent());
 				((Spinner)getElementParent()).incStep();
 			}
 			@Override
@@ -103,6 +107,7 @@ public abstract class Spinner extends TextField {
 		) {
 			@Override
 			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
+				screen.setTabFocusElement((Spinner)getElementParent());
 				((Spinner)getElementParent()).decStep();
 			}
 			@Override
@@ -192,6 +197,19 @@ public abstract class Spinner extends TextField {
 	private void displaySelectedStep() {
 		this.setText(stepValues.get(selectedIndex));
 	}
+	
+	@Override
+	public void controlKeyPressHook(KeyInputEvent evt, String text) {
+		if (evt.getKeyCode() == KeyInput.KEY_LEFT) {
+			decStep();
+		} else if (evt.getKeyCode() == KeyInput.KEY_RIGHT) {
+			incStep();
+		} else {
+			displaySelectedStep();
+		}
+	}
+	
+	
 	
 	public abstract void onChange(int selectedIndex, String value);
 }
