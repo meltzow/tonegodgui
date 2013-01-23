@@ -4,6 +4,7 @@
  */
 package tonegod.gui.effects;
 
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.texture.Texture;
@@ -24,6 +25,8 @@ public class Effect implements Cloneable {
 		SpinIn,
 		SpinOut,
 		Pulse,
+		ColorSwap,
+		PulseColor,
 		ImageSwap
 	}
 	
@@ -34,7 +37,9 @@ public class Effect implements Cloneable {
 		Hide,
 		Hover,
 		Press,
-		Release
+		Release,
+		TabFocus,
+		LoseTabFocus
 	}
 	
 	private Element element;
@@ -45,6 +50,7 @@ public class Effect implements Cloneable {
 	private float speed;
 	private boolean isActive = true;
 	private Texture blendImage;
+	private ColorRGBA blendColor;
 	private boolean init = false;
 	private Vector2f def = new Vector2f();
 	private Vector2f diff = new Vector2f();
@@ -64,6 +70,10 @@ public class Effect implements Cloneable {
 		this.blendImage = blendImage;
 	}
 	
+	public void setColor(ColorRGBA blendColor) {
+		this.blendColor = blendColor;
+	}
+	
 	public Element getElement() {
 		return this.element;
 	}
@@ -75,6 +85,7 @@ public class Effect implements Cloneable {
 	public EffectEvent getEffectEvent() {
 		return this.event;
 	}
+	
 	public void update(float tpf) {
 		if (type == EffectType.ZoomIn) {
 			if (!init) {
@@ -135,10 +146,21 @@ public class Effect implements Cloneable {
 				init = true;
 				isActive = false;
 			}
+		} else if (type == EffectType.ColorSwap) {
+			if (!init) {
+				element.getElementMaterial().setBoolean("UseEffect", true);
+				element.getElementMaterial().setBoolean("EffectFade", false);
+				element.getElementMaterial().setBoolean("EffectPulse", false);
+				element.getElementMaterial().setBoolean("EffectPulseColor", false);
+				element.getElementMaterial().setColor("EffectColor", blendColor);
+				element.getElementMaterial().setFloat("EffectStep", 1.0f);
+				init = true;
+				isActive = false;
+			}
 		}
 
 		if (isActive) {
-			if (type != EffectType.Pulse) {
+			if (type != EffectType.Pulse && type != EffectType.PulseColor) {
 				pass += tpf*speed;
 				if (pass >= 1.0) {
 
@@ -158,7 +180,25 @@ public class Effect implements Cloneable {
 						element.getElementMaterial().setBoolean("UseEffect", true);
 						element.getElementMaterial().setBoolean("EffectFade", false);
 						element.getElementMaterial().setBoolean("EffectPulse", true);
+						element.getElementMaterial().setBoolean("EffectPulseColor", false);
 						element.getElementMaterial().setTexture("EffectMap", blendImage);
+						init = true;
+					}
+					element.getElementMaterial().setFloat("EffectStep", pass);
+				} else if (type == EffectType.PulseColor) {
+					if (pass >= 1.0f) {
+						direction = false;
+					} else if (pass <= -1.0f) {
+						direction = true;
+					}
+					if (direction) pass += tpf*speed;
+					else pass -= tpf*speed;
+					if (!init) {
+						element.getElementMaterial().setBoolean("UseEffect", true);
+						element.getElementMaterial().setBoolean("EffectFade", false);
+						element.getElementMaterial().setBoolean("EffectPulse", false);
+						element.getElementMaterial().setBoolean("EffectPulseColor", true);
+						element.getElementMaterial().setColor("EffectColor", blendColor);
 						init = true;
 					}
 					element.getElementMaterial().setFloat("EffectStep", pass);
