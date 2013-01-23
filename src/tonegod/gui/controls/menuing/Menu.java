@@ -40,6 +40,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	BitmapText sizeEval;
 	ColorRGBA highlightColor;
 	private int currentMenuItemIndex = -1;
+	private int currentHighlightIndex = 0;
 	
 	/**
 	 * Creates a new instance of the Menu control
@@ -369,6 +370,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	 * @param index int
 	 */
 	public void setHighlight(int index) {
+		currentHighlightIndex = index;
 		if (highlight.getParent() == null)
 			this.attachChild(highlight);
 		highlight.setY(scrollableArea.getHeight()+scrollableArea.getY()-(index*menuItemHeight)-menuItemHeight);
@@ -395,5 +397,10 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	public void controlHideHook() {
 		highlight.removeFromParent();
 		currentMenuItemIndex = -1;
+	}
+	@Override
+	public void controlScrollHook() {
+		highlight.setY(scrollableArea.getHeight()+scrollableArea.getY()-(currentHighlightIndex*menuItemHeight)-menuItemHeight);
+		screen.setTabFocusElement(getCallerElement());
 	}
 }

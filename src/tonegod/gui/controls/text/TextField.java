@@ -228,6 +228,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 			caretIndex++;
 		}
 		this.setText(getVisibleText());
+		setCaretPositionToEnd();
 	}
 	
 	@Override
@@ -327,6 +328,17 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		}
 	}
 	
+	public void setCaretPositionToEnd() {
+		int index1 = visibleText.length();
+		if (visibleText.length() > 0) {
+			widthTest.setText(visibleText.substring(0, index1));
+			caretX = widthTest.getLineWidth();
+		}
+		caretIndex = head+index1;
+		setCaretPosition(getAbsoluteX()+caretX);
+		resetTextRange();
+	}
+	
 	private void setTextRangeStart(int head) {
 		if (!visibleText.equals("")) {
 			System.out.println("Setting text range start to: " + head);
@@ -410,14 +422,9 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	@Override
 	public void resetTabFocus() {
 		hasTabFocus = false;
-		caretIndex = 0;
 		shift = false;
 		ctrl = false;
 		alt = false;
-	//	head = 0;
-	//	tail = 0;
-	//	rangeHead = -1;
-	//	rangeTail = -1;
 		caret.getMaterial().setBoolean("HasTabFocus", false);
 		screen.setKeyboardElemeent(null);
 		controlTextFieldResetTabFocusHook();

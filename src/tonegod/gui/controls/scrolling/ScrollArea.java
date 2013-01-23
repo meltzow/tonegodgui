@@ -171,6 +171,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	public void scrollThumbYTo(float y) {
 		vScrollBar.scrollYTo(y);
 	}
+	
 	public void scrollYTo(float y) {
 		if (scrollableArea == null) {
 			textElement.setLocalTranslation(textElement.getLocalTranslation().setY(y));
@@ -178,7 +179,10 @@ public class ScrollArea extends Element implements MouseWheelListener {
 			scrollableArea.setY(0);
 			scrollableArea.setY(y);
 		}
+		controlScrollHook();
 	}
+	
+	public void controlScrollHook() {  }
 	
 	public void scrollYBy(float yInc) {
 		if (scrollableArea == null) {
