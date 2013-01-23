@@ -6,6 +6,8 @@ package tonegod.gui.controls.buttons;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
+import com.jme3.input.KeyInput;
+import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.ColorRGBA;
@@ -19,14 +21,16 @@ import com.jme3.texture.Texture;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.effects.Effect;
+import tonegod.gui.listeners.KeyboardListener;
 import tonegod.gui.listeners.MouseButtonListener;
 import tonegod.gui.listeners.MouseFocusListener;
+import tonegod.gui.listeners.TabFocusListener;
 
 /**
  *
  * @author t0neg0d
  */
-public abstract class Button extends Element implements Control, MouseButtonListener, MouseFocusListener {
+public abstract class Button extends Element implements Control, MouseButtonListener, MouseFocusListener, KeyboardListener, TabFocusListener {
 	Element icon;
 	Texture hoverImg = null, pressedImg = null;
 	private ColorRGBA hoverFontColor = null, pressedFontColor = null;
@@ -420,6 +424,43 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			this.useInterval = false;
 			this.intervalsPerSecond = intervalsPerSecond;
 			this.removeControl(Button.class);
+		}
+	}
+	
+	// Tab focus
+	@Override
+	public void setTabFocus() {
+		screen.setKeyboardElemeent(this);
+		Effect effect = getEffect(Effect.EffectEvent.TabFocus);
+		if (effect != null) {
+			System.out.println(getUID() + ": Effect Found");
+			effect.setColor(ColorRGBA.DarkGray);
+			screen.getEffectManager().applyEffect(effect);
+		}
+	}
+	
+	@Override
+	public void resetTabFocus() {
+		screen.setKeyboardElemeent(null);
+		Effect effect = getEffect(Effect.EffectEvent.LoseTabFocus);
+		if (effect != null) {
+			effect.setColor(ColorRGBA.White);
+			screen.getEffectManager().applyEffect(effect);
+		}
+	}
+	
+	// Default keyboard interaction
+	@Override
+	public void onKeyPress(KeyInputEvent evt) {
+		if (evt.getKeyCode() == KeyInput.KEY_SPACE) {
+			onMouseLeftPressed(new MouseButtonEvent(0,true,0,0));
+		}
+	}
+	
+	@Override
+	public void onKeyRelease(KeyInputEvent evt) {
+		if (evt.getKeyCode() == KeyInput.KEY_SPACE) {
+			onMouseLeftReleased(new MouseButtonEvent(0,false,0,0));
 		}
 	}
 }
