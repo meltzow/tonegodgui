@@ -58,6 +58,17 @@
 				<effect value="ImageSwap" />
 				<speed value="0" />
 			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value="3" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
 		</effects>
 	</element>
 	<element name="CheckBox">
@@ -116,6 +127,16 @@
 			<property name="event2" type="Effect">
 				<event value="LoseFocus" />
 				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value="3" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
 				<speed value="0" />
 			</property>
 		</effects>
