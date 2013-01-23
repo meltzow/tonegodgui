@@ -33,6 +33,17 @@
 		<images>
 			<property name="defaultImg" type="String" value="tonegod/gui/style/def/TextField/text_field_x.png" />
 		</images>
-		<effects></effects>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value="3" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
 	</element>
 </root>
