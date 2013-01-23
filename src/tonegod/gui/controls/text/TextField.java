@@ -17,14 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.KeyboardListener;
+import tonegod.gui.listeners.TabFocusListener;
 
 
 /**
  *
  * @author t0neg0d
  */
-public class TextField extends Element implements KeyboardListener {
+public class TextField extends Element implements KeyboardListener, TabFocusListener {
 	
 	Element caret;
 	Material caretMat;
@@ -113,6 +115,8 @@ public class TextField extends Element implements KeyboardListener {
 		this.addChild(caret);
 		
 		this.setText("");
+		
+		populateEffects("TextField");
 	}
 
 	@Override
@@ -293,19 +297,6 @@ public class TextField extends Element implements KeyboardListener {
 		return visibleText;
 	}
 	
-	public void setTabFocus() {
-	//	System.out.println("Setting tab focus for: " + getUID());
-		hasTabFocus = true;
-		if (isEnabled)
-			caret.getMaterial().setBoolean("HasTabFocus", true);
-	}
-	
-	public void resetTabFocus() {
-	//	System.out.println("Resetting tab focus for: " + getUID());
-		hasTabFocus = false;
-		caret.getMaterial().setBoolean("HasTabFocus", false);
-	}
-	
 	
 	private void setCaretPosition(float caretX) {
 		if (textElement != null) {
@@ -400,4 +391,36 @@ public class TextField extends Element implements KeyboardListener {
 	public boolean getIsEnabled() {
 		return this.isEnabled;
 	}
+	
+	@Override
+	public void setTabFocus() {
+		hasTabFocus = true;
+		setTextRangeStart(caretIndex);
+		if (isEnabled)
+			caret.getMaterial().setBoolean("HasTabFocus", true);
+		screen.setKeyboardElemeent(this);
+		controlTextFieldSetTabFocusHook();
+		Effect effect = getEffect(Effect.EffectEvent.TabFocus);
+		if (effect != null) {
+			effect.setColor(ColorRGBA.DarkGray);
+			screen.getEffectManager().applyEffect(effect);
+		}
+	}
+	
+	@Override
+	public void resetTabFocus() {
+		hasTabFocus = false;
+		caret.getMaterial().setBoolean("HasTabFocus", false);
+		screen.setKeyboardElemeent(null);
+		controlTextFieldResetTabFocusHook();
+		Effect effect = getEffect(Effect.EffectEvent.LoseTabFocus);
+		if (effect != null) {
+			effect.setColor(ColorRGBA.White);
+			screen.getEffectManager().applyEffect(effect);
+		}
+	}
+	
+	public void controlTextFieldSetTabFocusHook() {  }
+	public void controlTextFieldResetTabFocusHook() {  }
+	
 }
