@@ -379,6 +379,8 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	}
 	
 	private void pasteTextInto() {
+		// TODO: Disabled this feature for the time being.  Will re-enable at a later date.
+		/*
 		String text = screen.getClipboardText();
 		int index = caretIndex;
 		if (text.length() > 0) {
@@ -389,6 +391,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 			caretIndex += index;
 			getVisibleText();
 		}
+		*/
 	}
 	
 	public final void setTextFieldFontColor(ColorRGBA fontColor) {
