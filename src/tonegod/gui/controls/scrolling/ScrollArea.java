@@ -168,6 +168,9 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		}
 	}
 	
+	public void scrollThumbYTo(float y) {
+		vScrollBar.scrollYTo(y);
+	}
 	public void scrollYTo(float y) {
 		if (scrollableArea == null) {
 			textElement.setLocalTranslation(textElement.getLocalTranslation().setY(y));

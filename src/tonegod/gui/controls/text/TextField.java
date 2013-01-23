@@ -410,6 +410,14 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	@Override
 	public void resetTabFocus() {
 		hasTabFocus = false;
+		caretIndex = 0;
+		shift = false;
+		ctrl = false;
+		alt = false;
+	//	head = 0;
+	//	tail = 0;
+	//	rangeHead = -1;
+	//	rangeTail = -1;
 		caret.getMaterial().setBoolean("HasTabFocus", false);
 		screen.setKeyboardElemeent(null);
 		controlTextFieldResetTabFocusHook();

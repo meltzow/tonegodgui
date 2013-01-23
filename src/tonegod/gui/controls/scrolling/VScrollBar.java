@@ -259,6 +259,18 @@ public class VScrollBar extends Element {
 		}
 	}
 	
+	public void scrollYTo(float y) {
+		float scrollLayerHeight = scrollableArea.getScrollableHeight();
+		float diff = scrollLayerHeight-scrollableArea.getHeight();
+		float scale = 1/diff*y;
+		float trackArea = btnScrollTrack.getHeight()-btnScrollThumb.getHeight();
+		if (-(trackArea*scale) < 0)
+			btnScrollThumb.setY(0);
+		else
+			btnScrollThumb.setY(-(trackArea*scale));
+		setByThumbPosition();
+	}
+	
 	public void scrollByYInc(float yInc) {
 		if (this.scrollableArea != null) {
 			// TODO: Add bounds constaints and adjust Inc accordingly
@@ -304,7 +316,7 @@ public class VScrollBar extends Element {
 	}
 	
 	private void setByThumbPosition() {
-		float scrollLayerHeight = scrollableArea.getScrollableHeight();//.getHeight()+(scrollableArea.getTextPadding()*2);
+		float scrollLayerHeight = scrollableArea.getScrollableHeight();
 		float diff = btnScrollTrack.getHeight()-btnScrollThumb.getHeight();
 		float sadiff = scrollLayerHeight-scrollableArea.getHeight()+(scrollableArea.getPadding());
 		float yLoc = sadiff*(btnScrollThumb.getY()/diff);
@@ -321,23 +333,6 @@ public class VScrollBar extends Element {
 			} else {
 				scrollableArea.scrollYTo(-sadiff);
 			}
-		}
-	}
-	
-	private void setByScrollAreaPosition() {
-		float scrollLayerHeight = scrollableArea.getTextElement().getHeight()+(scrollableArea.getTextPadding()*2);
-		float diff = btnScrollTrack.getHeight()-btnScrollThumb.getHeight();
-		float sadiff = scrollLayerHeight-scrollableArea.getHeight()+(scrollableArea.getTextPadding());
-		float yLoc = sadiff*(btnScrollThumb.getY()/diff);
-		
-		if (yLoc < sadiff) {
-			scrollableArea.getTextElement().setLocalTranslation(scrollableArea.getTextElement().getLocalTranslation().setY(
-				scrollLayerHeight-yLoc-scrollableArea.getTextPadding()
-			));
-		} else {
-			scrollableArea.getTextElement().setLocalTranslation(scrollableArea.getTextElement().getLocalTranslation().setY(
-				scrollLayerHeight-sadiff
-			));
 		}
 	}
 }

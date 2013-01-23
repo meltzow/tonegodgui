@@ -200,7 +200,7 @@ public abstract class ComboBox extends TextField {
 					int rIndex = DDList.getMenuItems().size()-miIndexOf;
 					float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);
 					
-					DDList.scrollYTo(
+					DDList.scrollThumbYTo(
 						( DDList.getHeight()-diff )
 					);
 					break;
@@ -209,7 +209,7 @@ public abstract class ComboBox extends TextField {
 			}
 			if (miIndexOf > -1 && miIndexOf < DDList.getMenuItems().size()-1)
 				handleHightlight(miIndexOf);
-			if (!DDList.getIsVisible()) DDList.showMenu(null, getAbsoluteX(), getAbsoluteY()-DDList.getHeight());
+			if (!DDList.getIsVisible() && evt.getKeyCode() != KeyInput.KEY_LSHIFT && evt.getKeyCode() != KeyInput.KEY_RSHIFT) DDList.showMenu(null, getAbsoluteX(), getAbsoluteY()-DDList.getHeight());
 		} else {
 			if (evt.getKeyCode() == KeyInput.KEY_UP) {
 				if (hlIndex > 0) {
@@ -219,7 +219,7 @@ public abstract class ComboBox extends TextField {
 					int rIndex = DDList.getMenuItems().size()-hlIndex;
 					float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);
 					
-					DDList.scrollYTo(
+					DDList.scrollThumbYTo(
 						( DDList.getHeight()-diff )
 					);
 					handleHightlight(hlIndex);
@@ -233,7 +233,7 @@ public abstract class ComboBox extends TextField {
 					int rIndex = DDList.getMenuItems().size()-hlIndex;
 					float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);
 					
-					DDList.scrollYTo(
+					DDList.scrollThumbYTo(
 						( DDList.getHeight()-diff )
 					);
 					handleHightlight(hlIndex);
