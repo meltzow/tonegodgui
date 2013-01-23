@@ -36,8 +36,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import tonegod.gui.controls.form.Form;
-import tonegod.gui.controls.lists.ComboBox;
-import tonegod.gui.controls.lists.SelectBox;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.core.Element.Borders;
