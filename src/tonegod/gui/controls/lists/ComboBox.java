@@ -107,7 +107,7 @@ public abstract class ComboBox extends TextField {
 			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
 				Menu m = ((Menu)screen.getElementById(ddUID));
 				m.showMenu(null, getElementParent().getAbsoluteX(), getElementParent().getAbsoluteY()-m.getHeight());
-				((ComboBox)getElementParent()).setTabFocus();
+				screen.setTabFocusElement((ComboBox)getElementParent());
 			}
 			@Override
 			public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {
@@ -144,6 +144,7 @@ public abstract class ComboBox extends TextField {
 				@Override
 				public void onMenuItemClicked(int index, String value) {
 					((ComboBox)getCallerElement()).setSelected(index, DDList.getMenuItem(index).getCaption(), value);
+					screen.setTabFocusElement(((ComboBox)getCallerElement()));
 					hide();
 				}
 			};
@@ -177,6 +178,10 @@ public abstract class ComboBox extends TextField {
 		this.selectedValue = value;
 		setTextFieldText(selectedCaption);
 		onChange(selectedIndex, selectedValue);
+	}
+	
+	public void hideDropDownList() {
+		this.DDList.hideMenu();
 	}
 	
 	@Override
@@ -251,4 +256,9 @@ public abstract class ComboBox extends TextField {
 	}
 	
 	public abstract void onChange(int selectedIndex, String value);
+	
+	@Override
+	public void controlTextFieldResetTabFocusHook() {
+	//	DDList.hideMenu();
+	}
 }
