@@ -87,6 +87,22 @@ public class Screen implements Control, RawInputListener {
 	private Vector2f mouseXY = new Vector2f(0,0);
 	private boolean SHIFT = false;
 	
+	/**
+	 * Creates a new instance of the Screen control using the default style information
+	 * provided with the library.
+	 * 
+	 * @param app A JME Application
+	 */
+	public Screen(Application app) {
+		this(app, "tonegod/gui/style/def/style_map.xml");
+	}
+	
+	/**
+	 * Creates an instance of the Screen control.
+	 * 
+	 * @param app A JME Application
+	 * @param styleMap A path to the style_map.xml file containing the custom theme information
+	 */
 	public Screen(Application app, String styleMap) {
 		this.app = app;
 		this.elementZOrderRay.setDirection(Vector3f.UNIT_Z);
@@ -99,17 +115,35 @@ public class Screen implements Control, RawInputListener {
 		effectManager = new EffectManager();
 	}
 	
+	/**
+	 * Returns the JME application associated with the Screen
+	 * @return Application app
+	 */
 	public Application getApplication() {
 		return this.app;
 	}
 	
+	/**
+	 * Return the width of the current Viewport
+	 * 
+	 * @return float width
+	 */
 	public float getWidth() {
 		return app.getViewPort().getCamera().getWidth();
 	}
 	
+	/**
+	 * Returns the height of the current Viewport
+	 * 
+	 * @return  float height
+	 */
 	public float getHeight() {
 		return app.getViewPort().getCamera().getHeight();
 	}
+	
+	/**
+	 * Initializes the Screen control
+	 */
 	public void initialize() {
 		app.getInputManager().addRawInputListener(this);
 	}
@@ -124,6 +158,10 @@ public class Screen implements Control, RawInputListener {
 	//	throw new UnsupportedOperationException("Not supported yet.");
 	}
 	
+	/**
+	 *  Adds an Element to the Screen and scene graph
+	 * @param element The Element to add
+	 */
 	public void addElement(Element element) {
 		elements.put(element.getUID(), element);
 		
@@ -137,6 +175,10 @@ public class Screen implements Control, RawInputListener {
 		element.resize(element.getX()+element.getWidth(), element.getY()+element.getHeight(), Borders.SE);
 	}
 	
+	/**
+	 * Removes an Element from the Screen and scene graph
+	 * @param element The Element to remove
+	 */
 	public void removeElement(Element element) {
 		elements.remove(element.getUID());
 		float shiftZ = element.getLocalTranslation().getZ();
@@ -150,6 +192,11 @@ public class Screen implements Control, RawInputListener {
 		element.removeFromParent();
 	}
 	
+	/**
+	 * Returns the Element with the associated ID.  If not found, returns null
+	 * @param UID The String ID of Element to find
+	 * @return Element element
+	 */
 	public Element getElementById(String UID) {
 		Element ret = null;
 		if (elements.containsKey(UID)) {
@@ -167,6 +214,11 @@ public class Screen implements Control, RawInputListener {
 	}
 	
 	// Z-ORDER
+	/**
+	 * Returns the next available z-order
+	 * @param stepMajor Return the z-order incremented by a major step if true, a minor step if false
+	 * @return float zOrder
+	 */
 	public float getNextZOrder(boolean stepMajor) {
 		if (stepMajor)
 			zOrderCurrent += zOrderStepMajor;
@@ -175,6 +227,12 @@ public class Screen implements Control, RawInputListener {
 		return zOrderCurrent;
 	}
 	
+	/**
+	 * Brings the element specified to the front of the zOrder list shifting other below to keep all
+	 * Elements within the current z-order range.
+	 * 
+	 * @param topMost The Element to bring to the front
+	 */
 	public void updateZOrder(Element topMost) {
 	//	zOrderCurrent = zOrderInit;
 		String topMostUID = topMost.getUID();
@@ -189,18 +247,35 @@ public class Screen implements Control, RawInputListener {
 		topMost.setLocalTranslation(topMost.getLocalTranslation().setZ(Float.valueOf(zOrderCurrent)));
 	}
 	
+	/**
+	 * Returns the zOrder major step value
+	 * @return float
+	 */
 	public float getZOrderStepMajor() {
 		return this.zOrderStepMajor;
 	}
 	
+	/**
+	 * Returns the zOrder minor step value
+	 * @return float
+	 */
 	public float getZOrderStepMinor() {
 		return this.zOrderStepMinor;
 	}
 	
+	/**
+	 * Stored the current mouse position as a Vector2f
+	 * @param x The mouse's current X coord
+	 * @param y The mouse's current Y coord
+	 */
 	private void setMouseXY(float x, float y) {
 		mouseXY.set(x, y);
 	}
 	
+	/**
+	 * Returns a Vector2f containing the last stored mouse X/Y coords
+	 * @return Vector2f mouseXY
+	 */
 	public Vector2f getMouseXY() {
 		return this.mouseXY;
 	}
@@ -417,6 +492,12 @@ public class Screen implements Control, RawInputListener {
 	//	throw new UnsupportedOperationException("Not supported yet.");
 	}
 	
+	/**
+	 * Determines and returns the current mouse focus Element
+	 * @param x The current mouse X coord
+	 * @param y The current mouse Y coord
+	 * @return Element eventElement
+	 */
 	private Element getEventElement(float x, float y) {
 		guiRayOrigin.set(x, y, 0f);
 		
@@ -471,14 +552,27 @@ public class Screen implements Control, RawInputListener {
 		}
 	}
 	
+	/**
+	 * Sets the current stored text to the internal clipboard.  This is probably going
+	 * to vanish quickly.
+	 * @param text The text to store
+	 */
 	public void setClipboardText(String text) {
 		this.clipboardText = text;
 	}
 	
+	/**
+	 * Returns the internal clipboard's current stored text
+	 * @return String text
+	 */
 	public String getClipboardText() {
 		return this.clipboardText;
 	}
 	
+	/**
+	 * Returns a pointer to the EffectManager
+	 * @return EffectManager effectManager
+	 */
 	public EffectManager getEffectManager() {
 		return this.effectManager;
 	}
@@ -703,6 +797,11 @@ public class Screen implements Control, RawInputListener {
 		}
 	}
 	
+	/**
+	 * Returns the Style object associated to the provided key
+	 * @param key The String key of the Style
+	 * @return Style style
+	 */
 	public Style getStyle(String key) {
 		return styles.get(key);
 	}
@@ -736,6 +835,10 @@ public class Screen implements Control, RawInputListener {
 	}
 	
 	// Forms and tab focus
+	/**
+	 * Method for setting the tab focus element
+	 * @param element The Element to set tab focus to
+	 */
 	public void setTabFocusElement(Element element) {
 		resetFocusElement();
 		focusForm = element.getForm();
@@ -748,6 +851,10 @@ public class Screen implements Control, RawInputListener {
 		}
 	}
 	
+	/**
+	 * Resets the tab focus element to null after calling the TabFocusListener's
+	 * resetTabFocus method.
+	 */
 	public void resetTabFocusElement() {
 		resetFocusElement();
 		this.tabFocusElement = null;
@@ -762,6 +869,10 @@ public class Screen implements Control, RawInputListener {
 		}
 	}
 	
+	/**
+	 * Sets the current Keyboard focus Element
+	 * @param element The Element to set keyboard focus to
+	 */
 	public void setKeyboardElemeent(Element element) {
 		keyboardElement = element;
 	}
