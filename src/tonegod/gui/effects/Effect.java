@@ -90,14 +90,14 @@ public class Effect implements Cloneable {
 		if (type == EffectType.ZoomIn) {
 			if (!init) {
 				def.set(element.getPosition().clone());
-				diff.set(element.getDimensions().divide(2));
-				fract.setX(1/diff.x);
-				fract.setY(1/diff.y);
-			//	element.setPosition(element.getPosition().add(diff));
+				diff.set(element.getWidth()/2,element.getHeight()/2);
+				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+				element.setPosition(def.add(diff.subtract(inc)));
 				element.setLocalScale(pass);
 				init = true;
 			} else if (isActive) {
-			//	element.setPosition(element.getX()-(diff.x*pass), element.getY()-(diff.y*pass));
+				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+				element.setPosition(def.add(diff.subtract(inc)));
 				element.setLocalScale(pass);
 			}
 			if (pass >= 1.0) {
@@ -105,12 +105,59 @@ public class Effect implements Cloneable {
 				element.setLocalScale(pass);
 			}
 		} else if (type == EffectType.ZoomOut) {
-			element.setLocalScale(1.0f-pass);
+			if (!init) {
+				def.set(element.getPosition().clone());
+				diff.set(element.getWidth()/2,element.getHeight()/2);
+				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+				element.setPosition(def.subtract(inc));
+				element.setLocalScale(1-pass);
+				init = true;
+			} else if (isActive) {
+				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+				element.setPosition(def.subtract(inc));
+				element.setLocalScale(1-pass);
+			}
+			if (pass >= 1.0) {
+				element.hide();
+				element.setPosition(def);
+				element.setLocalScale(1);
+			}
 		} else if (type == EffectType.SpinIn) {
-			element.setLocalScale(pass);
+			if (!init) {
+				def.set(element.getPosition().clone());
+				diff.set(element.getWidth()/2,element.getHeight()/2);
+				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+				element.setPosition(def.add(diff.subtract(inc)));
+				element.setLocalScale(pass);
+				init = true;
+			} else if (isActive) {
+				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+				element.setPosition(def.add(diff.subtract(inc)));
+				element.setLocalScale(pass);
+			}
+			if (pass >= 1.0) {
+				element.setPosition(def);
+				element.setLocalScale(pass);
+			}
 			element.setLocalRotation(element.getLocalRotation().fromAngles(0, 0, 360*FastMath.DEG_TO_RAD*pass));
 		} else if (type == EffectType.SpinOut) {
-			element.setLocalScale(1.0f-pass);
+			if (!init) {
+				def.set(element.getPosition().clone());
+				diff.set(element.getWidth()/2,element.getHeight()/2);
+				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+				element.setPosition(def.subtract(inc));
+				element.setLocalScale(1-pass);
+				init = true;
+			} else if (isActive) {
+				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+				element.setPosition(def.subtract(inc));
+				element.setLocalScale(1-pass);
+			}
+			if (pass >= 1.0) {
+				element.hide();
+				element.setPosition(def);
+				element.setLocalScale(1);
+			}
 			element.setLocalRotation(element.getLocalRotation().fromAngles(0, 0, 360*FastMath.DEG_TO_RAD*(1.0f-pass)));
 		} else if (type == EffectType.BlendFrom) {
 		//	if (pass == 0.0) element.getElementMaterial().setTexture("BlendImg", element.getHoverImg);
