@@ -116,9 +116,6 @@ public class Element extends Node {
 	private boolean effectParent = false;
 	private boolean effectAbsoluteParent = false;
 	
-//	private float zOrderStepMajor = 10f;
-//	private float zOrderStepMinor = 0.1f;
-	
 	private Geometry geom;
 	private ElementQuadGrid model;
 	private Material mat;
@@ -257,11 +254,19 @@ public class Element extends Node {
 		this.attachChild(child);
 	}
 	
+	/**
+	 * Removes the specified Element
+	 * @param child Element to remove
+	 */
 	public void removeChild(Element child) {
 		Element e = elementChildren.remove(child.getUID());
-		e.removeFromParent();
+		if (e != null)
+			e.removeFromParent();
 	}
 	
+	/**
+	 * Remove all child Elements from this Element
+	 */
 	public void removeAllChildren() {
 		Set<String> keys = elementChildren.keySet();
 		Element e;
@@ -292,10 +297,18 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * Returns the Element's zOrder
+	 * @return float zOrder
+	 */
 	public float getZOrder() {
 		return this.zOrder;
 	}
 	
+	/**
+	 * Sets the Elements zOrder (I would suggest NOT using this method)
+	 * @param zOrder 
+	 */
 	public void setZOrder(float zOrder) {
 		this.zOrder = zOrder;
 		initZOrder(zOrder);
@@ -1332,6 +1345,10 @@ public class Element extends Node {
 	}
 	
 	// Clipping
+	/**
+	 * Adds an alpha map to the Elements material
+	 * @param alphaMap A String path to the alpha map
+	 */
 	public void setAlphaMap(String alphaMap) {
 		Texture alpha = app.getAssetManager().loadTexture(alphaMap);
 		alpha.setMinFilter(Texture.MinFilter.BilinearNearestMipMap);
@@ -1449,6 +1466,10 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * Recursive update of all child Elements clipping layer
+	 * @param clippingLayer The clipping layer to apply
+	 */
 	public void setControlClippingLayer(Element clippingLayer) {
 		setClippingLayer(clippingLayer);
 		Set<String> keys = elementChildren.keySet();
@@ -1482,10 +1503,19 @@ public class Element extends Node {
 		return this.clippingBounds;
 	}
 	
+	/**
+	 * Adds a padding to the clippinglayer, in effect this contracts the size of the clipping
+	 * bounds by the specified number of pixels
+	 * @param clipPadding The number of pixels to pad the clipping area
+	 */
 	public void setClipPadding(float clipPadding) {
 		this.clipPadding = clipPadding;
 	}
 	
+	/**
+	 * Returns the current clipPadding
+	 * @return float clipPadding
+	 */
 	public float getClipPadding() {
 		return clipPadding;
 	}
@@ -1619,18 +1649,34 @@ public class Element extends Node {
 	}
 	
 	// Tab focus
+	/**
+	 * For use by the Form control (Do not call this method directly)
+	 * @param form The form the Element has been added to
+	 */
 	public void setForm(Form form) {
 		this.form = form;
 	}
 	
+	/**
+	 * Returns the form the Element is controlled by
+	 * @return Form form
+	 */
 	public Form getForm() {
 		return this.form;
 	}
 	
+	/**
+	 * Sets the tab index (This is assigned by the Form control. Do not call this method directly)
+	 * @param tabIndex The tab index assigned to the Element
+	 */
 	public void setTabIndex(int tabIndex) {
 		this.tabIndex = tabIndex;
 	}
 	
+	/**
+	 * Returns the tab index assigned by the Form control
+	 * @return 
+	 */
 	public int getTabIndex() {
 		return tabIndex;
 	}
