@@ -69,7 +69,6 @@
 				<speed value="0" />
 			</property>
 		</effects>
-		</effects>
 	</element>
 	<element name="CheckBox">
 		<font>
