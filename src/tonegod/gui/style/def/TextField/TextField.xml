@@ -7,7 +7,7 @@
 				<r value="0" />
 				<g value="0" />
 				<b value="0" />
-				<a value="0" />
+				<a value="1" />
 			</property>
 			<property name="textAlign" type="String" value="Left" />
 			<property name="textVAlign" type="String" value="Center" />
