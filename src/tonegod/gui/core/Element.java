@@ -187,7 +187,7 @@ public class Element extends Node {
 		this.UID = UID;
 		this.position = position;
 		this.dimensions = dimensions;
-		this.minDimensions = dimensions.clone();
+	//	this.minDimensions = dimensions.clone();
 		this.borders = resizeBorders;
 		
 		BitmapFont tempFont = app.getAssetManager().loadFont(screen.getStyle("Font").getString("defaultFont"));
