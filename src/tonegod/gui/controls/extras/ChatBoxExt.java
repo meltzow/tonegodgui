@@ -27,7 +27,7 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public abstract class ChatBox extends Panel {
+public abstract class ChatBoxExt extends Panel {
 	ScrollArea saChatArea;
 	TextField tfChatInput;
 	Button btnChatSendMsg;
@@ -44,7 +44,7 @@ public abstract class ChatBox extends Panel {
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public ChatBox(Screen screen, String UID, Vector2f position) {
+	public ChatBoxExt(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("Window").getVector2f("defaultSize"),
 			screen.getStyle("Window").getVector4f("resizeBorders"),
@@ -60,7 +60,7 @@ public abstract class ChatBox extends Panel {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public ChatBox(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
+	public ChatBoxExt(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Window").getVector4f("resizeBorders"),
 			screen.getStyle("Window").getString("defaultImg")
@@ -77,7 +77,7 @@ public abstract class ChatBox extends Panel {
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Slider's track
 	 */
-	public ChatBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public ChatBoxExt(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 		this.setIsMovable(true);
@@ -85,11 +85,29 @@ public abstract class ChatBox extends Panel {
 		this.setScaleNS(false);
 		this.setScaleEW(false);
 		
-		saChatArea = new ScrollArea(screen, UID + ":ChatArea",
-			new Vector2f(10, 35),
-			new Vector2f(getWidth()-45, getHeight()-85),
+		spnChannels = new Spinner(
+			screen,
+			UID + ":Channels",
+			new Vector2f(getWidth()-120-30,10),
+			new Vector2f(120, 20),
+			Spinner.Orientation.HORIZONTAL,
 			true
-		);
+		) {
+			@Override
+			public void onChange(int selectedIndex, String value) {
+			//	throw new UnsupportedOperationException("Not supported yet.");
+			}
+		};
+		spnChannels.setFontSize(16);
+		spnChannels.setDockN(true);
+		spnChannels.setDockE(true);
+		spnChannels.setScaleEW(false);
+		spnChannels.setScaleNS(false);
+		spnChannels.addStepValue("All");
+		
+		addChild(spnChannels);
+		
+		saChatArea = new ScrollArea(screen, UID + ":ChatArea", new Vector2f(10, 35), new Vector2f(getWidth()-45, getHeight()-85), true);
 		saChatArea.setFontColor(ColorRGBA.LightGray);
 		saChatArea.setTextAlign(BitmapFont.Align.Left);
 		saChatArea.setTextPosition(5,5);
