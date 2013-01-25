@@ -4,6 +4,7 @@
  */
 package tonegod.gui.controls.extras;
 
+import com.jme3.font.BitmapFont;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
@@ -25,6 +26,7 @@ public class Indicator extends Element {
 	private String alphaMapPath;
 	private String overlayImg;
 	private Element elIndicator, elOverlay;
+	private boolean displayValues = false, displayPercentages = false;
 	
 	/**
 	 * Creates a new instance of the Indicator control
@@ -128,6 +130,9 @@ public class Indicator extends Element {
 			overlayImg
 		);
 		elOverlay.setIgnoreMouse(true);
+		elOverlay.setTextAlign(BitmapFont.Align.Center);
+		elOverlay.setTextVAlign(BitmapFont.VAlign.Center);
+		
 		addChild(elOverlay);
 		
 	}
@@ -146,9 +151,17 @@ public class Indicator extends Element {
 		refactorIndicator();
 	}
 	
+	public float getMaxValue() {
+		return this.maxValue;
+	}
+	
 	public void setCurrentValue(float currentValue) {
 		this.currentValue = currentValue;
 		refactorIndicator();
+	}
+	
+	public float getCurrentValue() {
+		return this.currentValue;
 	}
 	
 	private void refactorIndicator() {
@@ -174,6 +187,14 @@ public class Indicator extends Element {
 			}
 			elIndicator.updateLocalClipping();
 		}
+		
+		if (this.displayValues) {
+			elOverlay.setText(String.valueOf((int)this.currentValue) + "/" + String.valueOf((int)this.maxValue));
+		} else if (this.displayPercentages) {
+			elOverlay.setText(String.valueOf((int)this.percentage) + "%");
+		} else {
+			elOverlay.setText("");
+		}
 	}
 	
 	public float getCurrentPercentage() {
@@ -183,5 +204,24 @@ public class Indicator extends Element {
 	public void setIndicatorAlphaMap(String alphaMapPath) {
 		this.alphaMapPath = alphaMapPath;
 		elIndicator.setAlphaMap(this.alphaMapPath);
+	}
+	
+	public Element getTextDisplayElement() {
+		return this.elOverlay;
+	}
+	
+	public void setDisplayValues() {
+		this.displayPercentages = false;
+		this.displayValues = true;
+	}
+	
+	public void setDisplayPercentage() {
+		this.displayPercentages = true;
+		this.displayValues = false;
+	}
+	
+	public void setHideText() {
+		this.displayPercentages = false;
+		this.displayValues = false;
 	}
 }
