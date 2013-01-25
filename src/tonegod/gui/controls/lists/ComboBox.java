@@ -165,7 +165,8 @@ public abstract class ComboBox extends TextField {
 		DDList.setResizeW(false);
 		DDList.setResizeE(true);
 		DDList.setResizeS(true);
-		DDList.resize(getWidth()+(getTextPadding()*2), DDList.getMenuItemHeight()*4, Borders.SE);
+		if (DDList.getWidth() < getWidth())
+			DDList.resize(getWidth()+(getTextPadding()*2), DDList.getMenuItemHeight()*4, Borders.SE);
 		DDList.setResizeE(false);
 		
 		screen.addElement(DDList);
