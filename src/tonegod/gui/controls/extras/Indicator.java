@@ -8,6 +8,8 @@ import com.jme3.font.BitmapFont;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
+import com.jme3.texture.Image;
+import com.jme3.texture.Texture;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 
@@ -223,5 +225,15 @@ public class Indicator extends Element {
 	public void setHideText() {
 		this.displayPercentages = false;
 		this.displayValues = false;
+	}
+	
+	public void setBaseImage(String imgPath) {
+		Texture tex = screen.getApplication().getAssetManager().loadTexture(imgPath);
+		tex.setMinFilter(Texture.MinFilter.BilinearNearestMipMap);
+		tex.setMagFilter(Texture.MagFilter.Bilinear);
+		tex.setWrap(Texture.WrapMode.Repeat);
+		
+		this.getElementMaterial().setTexture("ColorMap", tex);
+		this.getElementMaterial().setColor("Color", ColorRGBA.White);
 	}
 }
