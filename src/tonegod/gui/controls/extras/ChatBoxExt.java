@@ -16,6 +16,7 @@ import com.jme3.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.lists.SelectBox;
 import tonegod.gui.controls.lists.Spinner;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.controls.text.Label;
@@ -32,6 +33,7 @@ public abstract class ChatBoxExt extends Panel {
 	TextField tfChatInput;
 	Button btnChatSendMsg;
 	Spinner spnChannels;
+	SelectBox sbDefaultChannel;
 	
 	int sendKey;
 	int chatHistorySize = 30;
@@ -120,11 +122,36 @@ public abstract class ChatBoxExt extends Panel {
 		saChatArea.setText("");
 		addChild(saChatArea);
 		
+		sbDefaultChannel = new SelectBox(
+			screen,
+			UID + ":DefaultChannel",
+			new Vector2f(10, getHeight()-25-15),
+			new Vector2f(75, 25)
+		) {
+			@Override
+			public void onChange(int selectedIndex, String value) {
+			//	throw new UnsupportedOperationException("Not supported yet.");
+			}
+		};
+		sbDefaultChannel.setDockS(true);
+		sbDefaultChannel.setDockW(true);
+		sbDefaultChannel.setScaleEW(false);
+		sbDefaultChannel.setScaleNS(false);
+		addChild(sbDefaultChannel);
+		sbDefaultChannel.addListItem("Default", "Default");
+		sbDefaultChannel.addListItem("Say", "Say");
+		sbDefaultChannel.addListItem("Shout", "Shout");
+		sbDefaultChannel.addListItem("Group", "Group");
+		sbDefaultChannel.addListItem("OOC", "OOC");
+		sbDefaultChannel.addListItem("General", "General");
+		sbDefaultChannel.addListItem("Another", "Another");
+		sbDefaultChannel.pack();
+		
 		tfChatInput = new TextField(
 			screen,
 			UID + ":ChatInput",
-			new Vector2f(10, getHeight()-25-15),
-			new Vector2f(getWidth()-20-95, 25)
+			new Vector2f(110, getHeight()-25-15),
+			new Vector2f(getWidth()-20-195, 25)
 		) {
 			@Override
 			public void controlKeyPressHook(KeyInputEvent evt, String text) {
