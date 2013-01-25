@@ -66,6 +66,7 @@ public class Window extends Element {
 		this.setScaleNS(false);
 		this.setScaleEW(false);
 		this.setClipPadding(screen.getStyle("Window").getFloat("clipPadding"));
+		this.setMinDimensions(screen.getStyle("Window").getVector2f("minSize"));
 	//	this.setClippingLayer(this);
 		
 		Vector4f dbIndents = screen.getStyle("Window#Dragbar").getVector4f("indents");
