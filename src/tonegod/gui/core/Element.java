@@ -95,7 +95,7 @@ public class Element extends Node {
 	private Vector2f dimensions;
 	private Vector4f borders = new Vector4f(1,1,1,1);
 	private Vector4f borderHandles = new Vector4f(12,12,12,12);
-	private Vector2f minDimensions;
+	private Vector2f minDimensions = null; //new Vector2f(100, 50);
 	
 	private boolean ignoreMouse = false;
 	private boolean isMovable = false;
@@ -815,6 +815,10 @@ public class Element extends Node {
 		updateClipping();
 	}
 	
+	public void setMinDimensions(Vector2f minDimensions) {
+		this.minDimensions = minDimensions;
+	}
+	
 	/**
 	 * Sets the width of the element
 	 * @param width float
@@ -900,17 +904,26 @@ public class Element extends Node {
 		float nextX, nextY;
 		if (dir == Borders.NW) {
 			if (getLockToParentBounds()) { if (x <= 0) { x = 0; } }
+			if (minDimensions != null) {
+				if (getX()+getWidth()-x <= minDimensions.x) { x = getX()+getWidth()-minDimensions.x; }
+			}
 			if (resizeW) {
 				setWidth(getX()+getWidth()-x);
 				setX(x);
 			}
 			if (getLockToParentBounds()) { if (y <= 0) { y = 0; } }
+			if (minDimensions != null) {
+				if (getY()+getHeight()-y <= minDimensions.y) { y = getY()+getHeight()-minDimensions.y; }
+			}
 			if (resizeN) {
 				setHeight(getY()+getHeight()-y);
 				setY(y);
 			}
 		} else if (dir == Borders.N) {
 			if (getLockToParentBounds()) { if (y <= 0) { y = 0; } }
+			if (minDimensions != null) {
+				if (getY()+getHeight()-y <= minDimensions.y) { y = getY()+getHeight()-minDimensions.y; }
+			}
 			if (resizeN) {
 				setHeight(getY()+getHeight()-y);
 				setY(y);
@@ -918,16 +931,25 @@ public class Element extends Node {
 		} else if (dir == Borders.NE) {
 			nextX = oX-getAbsoluteX();
 			if (getLockToParentBounds()) { if (nextX >= getElementParent().getWidth()-getX()) { nextX = getElementParent().getWidth()-getX(); } }
+			if (minDimensions != null) {
+				if (nextX <= minDimensions.x) { nextX = minDimensions.x; }
+			}
 			if (resizeE) {
 				setWidth(nextX);
 			}
 			if (getLockToParentBounds()) { if (y <= 0) { y = 0; } }
+			if (minDimensions != null) {
+				if (getY()+getHeight()-y <= minDimensions.y) { y = getY()+getHeight()-minDimensions.y; }
+			}
 			if (resizeN) {
 				setHeight(getY()+getHeight()-y);
 				setY(y);
 			}
 		} else if (dir == Borders.W) {
 			if (getLockToParentBounds()) { if (x <= 0) { x = 0; } }
+			if (minDimensions != null) {
+				if (getX()+getWidth()-x <= minDimensions.x) { x = getX()+getWidth()-minDimensions.x; }
+			}
 			if (resizeW) {
 				setWidth(getX()+getWidth()-x);
 				setX(x);
@@ -935,34 +957,52 @@ public class Element extends Node {
 		} else if (dir == Borders.E) {
 			nextX = oX-getAbsoluteX();
 			if (getLockToParentBounds()) { if (nextX >= getElementParent().getWidth()-getX()) { nextX = getElementParent().getWidth()-getX(); } }
+			if (minDimensions != null) {
+				if (nextX <= minDimensions.x) { nextX = minDimensions.x; }
+			}
 			if (resizeE) {
 				setWidth(nextX);
 			}
 		} else if (dir == Borders.SW) {
 			if (getLockToParentBounds()) { if (x <= 0) { x = 0; } }
+			if (minDimensions != null) {
+				if (getX()+getWidth()-x <= minDimensions.x) { x = getX()+getWidth()-minDimensions.x; }
+			}
 			if (resizeW) {
 				setWidth(getX()+getWidth()-x);
 				setX(x);
 			}
 			nextY = oY-getAbsoluteY();
 			if (getLockToParentBounds()) { if (nextY >= getElementParent().getHeight()-getY()) { nextY = getElementParent().getHeight()-getY(); } }
+			if (minDimensions != null) {
+				if (nextY <= minDimensions.y) { nextY = minDimensions.y; }
+			}
 			if (resizeS) {
 				setHeight(nextY);
 			}
 		} else if (dir == Borders.S) {
 			nextY = oY-getAbsoluteY();
 			if (getLockToParentBounds()) { if (nextY >= getElementParent().getHeight()-getY()) { nextY = getElementParent().getHeight()-getY(); } }
+			if (minDimensions != null) {
+				if (nextY <= minDimensions.y) { nextY = minDimensions.y; }
+			}
 			if (resizeS) {
 				setHeight(nextY);
 			}
 		} else if (dir == Borders.SE) {
 			nextX = oX-getAbsoluteX();
 			if (getLockToParentBounds()) { if (nextX >= getElementParent().getWidth()-getX()) { nextX = getElementParent().getWidth()-getX(); } }
+			if (minDimensions != null) {
+				if (nextX <= minDimensions.x) { nextX = minDimensions.x; }
+			}
 			if (resizeE) {
 				setWidth(nextX);
 			}
 			nextY = oY-getAbsoluteY();
 			if (getLockToParentBounds()) { if (nextY >= getElementParent().getHeight()-getY()) { nextY = getElementParent().getHeight()-getY(); } }
+			if (minDimensions != null) {
+				if (nextY <= minDimensions.y) { nextY = minDimensions.y; }
+			}
 			if (resizeS) {
 				setHeight(nextY);
 			}
