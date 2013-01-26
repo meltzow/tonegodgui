@@ -258,6 +258,18 @@ public abstract class ComboBox extends TextField {
 	
 	public abstract void onChange(int selectedIndex, String value);
 	
+	public int getSelectIndex() {
+		return this.selectedIndex;
+	}
+	
+	public MenuItem getSelectedListItem() {
+		return this.DDList.getMenuItem(selectedIndex);
+	}
+	
+	public MenuItem getListItemByIndex(int index) {
+		return this.DDList.getMenuItem(index);
+	}
+	
 	@Override
 	public void controlTextFieldResetTabFocusHook() {
 	//	DDList.hideMenu();

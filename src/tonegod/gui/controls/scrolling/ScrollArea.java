@@ -109,6 +109,10 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		this.addChild(scrollableArea);
 	}
 	
+	public Element getScrollableArea() {
+		return this.scrollableArea;
+	}
+	
 	public boolean getIsTextOnly() {
 		return isTextOnly;
 	}

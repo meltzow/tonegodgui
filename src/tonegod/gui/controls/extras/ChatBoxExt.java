@@ -14,7 +14,10 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import tonegod.gui.controls.buttons.Button;
 import tonegod.gui.controls.lists.SelectBox;
 import tonegod.gui.controls.lists.Spinner;
@@ -37,7 +40,10 @@ public abstract class ChatBoxExt extends Panel {
 	
 	int sendKey;
 	int chatHistorySize = 30;
-	List<String> chatMessages = new ArrayList();
+	List<ChatMessage> chatMessages = new ArrayList();
+	
+	Map<String, ChatChannel> channels = new HashMap();
+	String defaultCommand;
 	
 	/**
 	 * Creates a new instance of the ChatBox control
@@ -109,7 +115,7 @@ public abstract class ChatBoxExt extends Panel {
 		
 		addChild(spnChannels);
 		
-		saChatArea = new ScrollArea(screen, UID + ":ChatArea", new Vector2f(10, 35), new Vector2f(getWidth()-45, getHeight()-85), true);
+		saChatArea = new ScrollArea(screen, UID + ":ChatArea", new Vector2f(10, 35), new Vector2f(getWidth()-45, getHeight()-85), false);
 		saChatArea.setFontColor(ColorRGBA.LightGray);
 		saChatArea.setTextAlign(BitmapFont.Align.Left);
 		saChatArea.setTextPosition(5,5);
@@ -139,12 +145,6 @@ public abstract class ChatBoxExt extends Panel {
 		sbDefaultChannel.setScaleNS(false);
 		addChild(sbDefaultChannel);
 		sbDefaultChannel.addListItem("Default", "Default");
-		sbDefaultChannel.addListItem("Say", "Say");
-		sbDefaultChannel.addListItem("Shout", "Shout");
-		sbDefaultChannel.addListItem("Group", "Group");
-		sbDefaultChannel.addListItem("OOC", "OOC");
-		sbDefaultChannel.addListItem("General", "General");
-		sbDefaultChannel.addListItem("Another", "Another");
 		sbDefaultChannel.pack();
 		
 		tfChatInput = new TextField(
@@ -206,14 +206,17 @@ public abstract class ChatBoxExt extends Panel {
 	private void sendMsg() {
 		if (tfChatInput.getText().length() > 0) {
 			if (!tfChatInput.getText().equals("")) {
-				onSendMsg(tfChatInput.getText());
+				String command = sbDefaultChannel.getSelectedListItem().getValue();
+				onSendMsg(command, tfChatInput.getText());
 				tfChatInput.setTextFieldText("");
 			}
 		}
 	}
 	
-	public void receiveMsg(String msg) {
-		chatMessages.add(msg);
+	public void receiveMsg(String command, String msg) {
+		System.out.println(command);
+		ChatChannel channel = getChannelByCommand(command);
+		chatMessages.add(new ChatMessage(channel, msg));
 		updateChatHistory();
 	}
 	
@@ -227,14 +230,45 @@ public abstract class ChatBoxExt extends Panel {
 	private void rebuildChat() {
 		String displayText = "";
 		int index = 0;
-		for (String s : chatMessages) {
+		saChatArea.getScrollableArea().removeAllChildren();
+		float totalHeight = 0;
+		for (ChatMessage cm : chatMessages) {
+			String s = cm.getMsg();
+			Label l = new Label(
+				screen,
+				getUID() + ":Label" + index,
+				new Vector2f(0, totalHeight),
+				new Vector2f(saChatArea.getWidth(),25)
+			);
+			l.setTextWrap(LineWrapMode.Word);
+			l.setScaleEW(true);
+			l.setScaleNS(false);
+			l.setDockN(true);
+			l.setDockW(true);
+			l.setIsResizable(false);
+			l.setIsMovable(false);
+			l.setIgnoreMouse(true);
+			l.setClippingLayer(saChatArea);
+			l.setFontColor(cm.getChannel().getColor());
+			l.setText("[" + cm.getChannel().getName() + "] " + s);
+			l.setHeight(l.getTextElement().getHeight());
+			l.setIgnoreMouse(true);
+			saChatArea.addScrollableChild(l);
+			totalHeight += l.getTextElement().getHeight();
+		//	System.out.println(saChatArea.getScrollableHeight());
+			/*
+			if (cm.getChannel() != null)
+				s = "[" + cm.getChannel().getName() + "] " + s;
 			if (index > 0)
 				displayText += "\n" + s;
 			else
 				displayText += s;
+			*/
 			index++;
 		}
-		saChatArea.setText(displayText);
+		if (totalHeight > saChatArea.getHeight())
+			saChatArea.getScrollableArea().setHeight(totalHeight);
+	//	saChatArea.setText(displayText);
 		saChatArea.scrollToBottom();
 	}
 	
@@ -242,5 +276,71 @@ public abstract class ChatBoxExt extends Panel {
 		this.sendKey = sendKey;
 	}
 	
-	public abstract void onSendMsg(String msg);
+	public abstract void onSendMsg(String command, String msg);
+	
+	public void addChatChannel(String name, String command, ColorRGBA color) {
+		channels.put(command, new ChatChannel(name, command, color));
+		this.spnChannels.addStepValue(name);
+		this.sbDefaultChannel.addListItem(name, command);
+	}
+	
+	private ChatChannel getChannelByCommand(String command) {
+		ChatChannel c = null;
+		Set<String> keys = channels.keySet();
+		for (String key : keys) {
+			if (channels.get(key).getCommand().equals(command)) {
+				c = channels.get(key);
+				break;
+			}
+		}
+		return c;
+	}
+	
+	private ChatChannel getChannelByName(String name) {
+		ChatChannel c = null;
+		Set<String> keys = channels.keySet();
+		for (String key : keys) {
+			if (channels.get(key).getName().equals(name)) {
+				c = channels.get(key);
+				break;
+			}
+		}
+		return c;
+	}
+	
+	public class ChatMessage {
+		private ChatChannel channel;
+		private String msg;
+		public ChatMessage(ChatChannel channel, String msg) {
+			this.channel = channel;
+			this.msg = msg;
+		}
+		
+		public ChatChannel getChannel() {
+			return channel;
+		}
+		public String getMsg() {
+			return this.msg;
+		}
+	}
+	
+	public class ChatChannel {
+		private String name, command;
+		private ColorRGBA color;
+		public ChatChannel(String name, String command, ColorRGBA color) {
+			this.name = name;
+			this.command = command;
+			this.color = color;
+		}
+		
+		public String getName() {
+			return this.name;
+		}
+		public String getCommand() {
+			return this.command;
+		}
+		public ColorRGBA getColor() {
+			return this.color;
+		}
+	}
 }

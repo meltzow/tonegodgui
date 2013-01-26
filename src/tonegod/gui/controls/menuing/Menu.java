@@ -401,6 +401,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	@Override
 	public void controlScrollHook() {
 		highlight.setY(scrollableArea.getHeight()+scrollableArea.getY()-(currentHighlightIndex*menuItemHeight)-menuItemHeight);
-		screen.setTabFocusElement(getCallerElement());
+		if (getCallerElement() != null)
+			screen.setTabFocusElement(getCallerElement());
 	}
 }
