@@ -22,7 +22,7 @@ import tonegod.gui.effects.Effect;
  *
  * @author t0neg0d
  */
-public abstract class Slider extends Button {
+public class Slider extends Button {
 	public static enum Orientation {
 		VERTICAL,
 		HORIZONTAL
@@ -206,24 +206,9 @@ public abstract class Slider extends Button {
 			screen.getStyle("Button").getString("defaultImg")
 		) {
 			@Override
-			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
-			
-			}
-			@Override
-			public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
 				screen.setTabFocusElement(getElementParent());
 			}
-			@Override
-			public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onButtonFocus(MouseMotionEvent evt) {  }
-			@Override
-			public void onButtonLostFocus(MouseMotionEvent evt) {  }
-			@Override
-			public void onStillPressedInterval() {  }
-			
 		};
 		elThumbLock.addChild(elThumb);
 		
@@ -348,41 +333,16 @@ public abstract class Slider extends Button {
 	 * @param selectedIndex The Slider's current selectedIndex
 	 * @param value The string value associated with this index
 	 */
-	public abstract void onChange(int selectedIndex, String value);
+	public void onChange(int selectedIndex, String value) {  }
 	
 	@Override
-	public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
+	public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 		trackEvt = evt;
 		updateThumbByTrackClick();
 	}
 	
 	@Override
-	public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {
-		
-	}
-	
-	@Override
-	public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-		
-	}
-	
-	@Override
-	public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {
-		
-	}
-	
-	@Override
-	public void onButtonFocus(MouseMotionEvent evt) {
-		
-	}
-	
-	@Override
-	public void onButtonLostFocus(MouseMotionEvent evt) {
-		
-	}
-	
-	@Override
-	public void onStillPressedInterval() {
+	public void onButtonStillPressedInterval() {
 		updateThumbByTrackClick();
 	}
 	

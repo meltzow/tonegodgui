@@ -22,7 +22,7 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public abstract class Spinner extends TextField {
+public class Spinner extends TextField {
 	public static enum Orientation {
 		VERTICAL,
 		HORIZONTAL
@@ -72,28 +72,16 @@ public abstract class Spinner extends TextField {
 			new Vector2f(getHeight(), getHeight())
 		) {
 			@Override
-			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
+			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				screen.setTabFocusElement((Spinner)getElementParent());
 				((Spinner)getElementParent()).incStep();
 			}
 			@Override
-			public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onButtonFocus(MouseMotionEvent evt) {  }
-			@Override
-			public void onButtonLostFocus(MouseMotionEvent evt) {  }
-			@Override
-			public void onStillPressedInterval() {
+			public void onButtonStillPressedInterval() {
 				((Spinner)getElementParent()).incStep();
 			}
 		};
-	//	if (screen.getStyle("ScrollArea#VScrollBar").getBoolean("useBtnDownArrowIcon")) {
-			btnInc.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowRight"));
-	//	}
+		btnInc.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowRight"));
 		btnInc.setDockS(true);
 		btnInc.setDockW(true);
 		
@@ -106,28 +94,16 @@ public abstract class Spinner extends TextField {
 			new Vector2f(getHeight(), getHeight())
 		) {
 			@Override
-			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
+			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				screen.setTabFocusElement((Spinner)getElementParent());
 				((Spinner)getElementParent()).decStep();
 			}
 			@Override
-			public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onButtonFocus(MouseMotionEvent evt) {  }
-			@Override
-			public void onButtonLostFocus(MouseMotionEvent evt) {  }
-			@Override
-			public void onStillPressedInterval() {
+			public void onButtonStillPressedInterval() {
 				((Spinner)getElementParent()).decStep();
 			}
 		};
-	//	if (screen.getStyle("ScrollArea#VScrollBar").getBoolean("useBtnDownArrowIcon")) {
-			btnDec.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowLeft"));
-	//	}
+		btnDec.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowLeft"));
 		btnDec.setDockS(true);
 		btnDec.setDockW(true);
 		
@@ -209,7 +185,5 @@ public abstract class Spinner extends TextField {
 		}
 	}
 	
-	
-	
-	public abstract void onChange(int selectedIndex, String value);
+	public void onChange(int selectedIndex, String value) {  }
 }

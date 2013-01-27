@@ -31,7 +31,7 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public abstract class ChatBoxExt extends Panel {
+public class ChatBoxExt extends Panel {
 	ScrollArea saChatArea;
 	TextField tfChatInput;
 	Button btnChatSendMsg;
@@ -44,6 +44,9 @@ public abstract class ChatBoxExt extends Panel {
 	
 	Map<String, ChatChannel> channels = new HashMap();
 	String defaultCommand;
+	
+	List<Label> displayMessages = new ArrayList();
+	List<ChatChannel> filteredChannels = new ArrayList();
 	
 	/**
 	 * Creates a new instance of the ChatBox control
@@ -103,7 +106,7 @@ public abstract class ChatBoxExt extends Panel {
 		) {
 			@Override
 			public void onChange(int selectedIndex, String value) {
-			//	throw new UnsupportedOperationException("Not supported yet.");
+				addFilteredChannel(value);
 			}
 		};
 		spnChannels.setFontSize(16);
@@ -115,7 +118,26 @@ public abstract class ChatBoxExt extends Panel {
 		
 		addChild(spnChannels);
 		
-		saChatArea = new ScrollArea(screen, UID + ":ChatArea", new Vector2f(10, 35), new Vector2f(getWidth()-45, getHeight()-85), false);
+		saChatArea = new ScrollArea(screen, UID + ":ChatArea", new Vector2f(10, 35), new Vector2f(getWidth()-45, getHeight()-85), false) {
+			@Override
+			public void controlResizeHook() {
+				float totalHeight = 0;
+				int index = 0;
+				for (Label l : displayMessages) {
+					l.setHeight(l.getTextElement().getHeight());
+					totalHeight += l.getHeight();
+					index++;
+				}
+				if (totalHeight > saChatArea.getHeight()) {
+					saChatArea.getScrollableArea().setHeight(totalHeight+(saChatArea.getPadding()*2));
+				}
+				totalHeight = 0;
+				for (Label l : displayMessages) {
+					totalHeight += l.getHeight();
+					l.setY(saChatArea.getScrollableArea().getHeight()-totalHeight);
+				}
+			}
+		};
 		saChatArea.setFontColor(ColorRGBA.LightGray);
 		saChatArea.setTextAlign(BitmapFont.Align.Left);
 		saChatArea.setTextPosition(5,5);
@@ -144,8 +166,7 @@ public abstract class ChatBoxExt extends Panel {
 		sbDefaultChannel.setScaleEW(false);
 		sbDefaultChannel.setScaleNS(false);
 		addChild(sbDefaultChannel);
-		sbDefaultChannel.addListItem("Default", "Default");
-		sbDefaultChannel.pack();
+	//	sbDefaultChannel.pack();
 		
 		tfChatInput = new TextField(
 			screen,
@@ -175,21 +196,9 @@ public abstract class ChatBoxExt extends Panel {
 			new Vector2f(100,25)
 		) {
 			@Override
-			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
 				sendMsg();
 			}
-			@Override
-			public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onButtonFocus(MouseMotionEvent evt) {  }
-			@Override
-			public void onButtonLostFocus(MouseMotionEvent evt) {  }
-			@Override
-			public void onStillPressedInterval() {  }
 		};
 		btnChatSendMsg.setScaleEW(false);
 		btnChatSendMsg.setScaleNS(false);
@@ -201,6 +210,8 @@ public abstract class ChatBoxExt extends Panel {
 		addChild(tfChatInput);
 		
 		populateEffects("Window");
+		
+		this.addChatChannel("Default", "/say", ColorRGBA.White, true);
 	}
 	
 	private void sendMsg() {
@@ -231,57 +242,74 @@ public abstract class ChatBoxExt extends Panel {
 		String displayText = "";
 		int index = 0;
 		saChatArea.getScrollableArea().removeAllChildren();
+		saChatArea.getScrollableArea().setIgnoreMouse(true);
+		saChatArea.getScrollableArea().setY(0);
+		saChatArea.getScrollableArea().setHeight(saChatArea.getHeight());
+		saChatArea.getScrollableArea().setDockS(true);
+		displayMessages.clear();
+		
 		float totalHeight = 0;
 		for (ChatMessage cm : chatMessages) {
-			String s = cm.getMsg();
-			Label l = new Label(
-				screen,
-				getUID() + ":Label" + index,
-				new Vector2f(0, totalHeight),
-				new Vector2f(saChatArea.getWidth(),25)
-			);
-			l.setTextWrap(LineWrapMode.Word);
-			l.setScaleEW(true);
-			l.setScaleNS(false);
-			l.setDockN(true);
-			l.setDockW(true);
-			l.setIsResizable(false);
-			l.setIsMovable(false);
-			l.setIgnoreMouse(true);
-			l.setClippingLayer(saChatArea);
-			l.setFontColor(cm.getChannel().getColor());
-			l.setText("[" + cm.getChannel().getName() + "] " + s);
-			l.setHeight(l.getTextElement().getHeight());
-			l.setIgnoreMouse(true);
-			saChatArea.addScrollableChild(l);
-			totalHeight += l.getTextElement().getHeight();
-		//	System.out.println(saChatArea.getScrollableHeight());
-			/*
-			if (cm.getChannel() != null)
-				s = "[" + cm.getChannel().getName() + "] " + s;
-			if (index > 0)
-				displayText += "\n" + s;
-			else
-				displayText += s;
-			*/
-			index++;
+			if (!filteredChannels.contains(cm.getChannel())) {
+				Label l = createMessageLabel(index, cm);
+				displayMessages.add(l);
+				saChatArea.addScrollableChild(l);
+				l.setHeight(l.getTextElement().getHeight());
+				totalHeight += l.getHeight();
+			//	l.setY(saChatArea.getScrollableArea().getHeight()-totalHeight);
+				index++;
+			}
 		}
-		if (totalHeight > saChatArea.getHeight())
-			saChatArea.getScrollableArea().setHeight(totalHeight);
-	//	saChatArea.setText(displayText);
+		if (totalHeight > saChatArea.getHeight()) {
+			saChatArea.getScrollableArea().setHeight(totalHeight+(saChatArea.getPadding()*2));
+		}
+		totalHeight = 0;
+		for (Label l : displayMessages) {
+			totalHeight += l.getHeight();
+			l.setY(saChatArea.getScrollableArea().getHeight()-totalHeight);
+		}
 		saChatArea.scrollToBottom();
+	}
+	
+	private Label createMessageLabel(int index, ChatMessage cm) {
+		String s = cm.getMsg();
+		Label l = new Label(
+			screen,
+			getUID() + ":Label" + index,
+			new Vector2f(0, 0),
+			new Vector2f(saChatArea.getWidth(),25)
+		);
+		l.setTextWrap(LineWrapMode.Word);
+		l.setScaleEW(true);
+		l.setScaleNS(false);
+		l.setDockS(true);
+		l.setDockW(true);
+		l.setIsResizable(false);
+		l.setIsMovable(false);
+		l.setIgnoreMouse(true);
+		l.setClippingLayer(saChatArea);
+		l.setFontColor(cm.getChannel().getColor());
+		l.setFontSize(saChatArea.getFontSize());
+		l.setText("[" + cm.getChannel().getName() + "] " + s);
+		l.setHeight(l.getTextElement().getLineHeight()*l.getTextElement().getLineCount());
+		l.setIgnoreMouse(true);
+		
+		return l;
 	}
 	
 	public void setSendKey(int sendKey) {
 		this.sendKey = sendKey;
 	}
 	
-	public abstract void onSendMsg(String command, String msg);
+	public void onSendMsg(String command, String msg) {  }
 	
-	public void addChatChannel(String name, String command, ColorRGBA color) {
-		channels.put(command, new ChatChannel(name, command, color));
+	public final void addChatChannel(String name, String command, ColorRGBA color, boolean visibleToUser) {
+		channels.put(command, new ChatChannel(name, command, color, visibleToUser));
 		this.spnChannels.addStepValue(name);
-		this.sbDefaultChannel.addListItem(name, command);
+		if (visibleToUser) {
+			this.sbDefaultChannel.addListItem(name, command);
+			this.sbDefaultChannel.pack();
+		}
 	}
 	
 	private ChatChannel getChannelByCommand(String command) {
@@ -327,10 +355,12 @@ public abstract class ChatBoxExt extends Panel {
 	public class ChatChannel {
 		private String name, command;
 		private ColorRGBA color;
-		public ChatChannel(String name, String command, ColorRGBA color) {
+		private boolean visibleToUser;
+		public ChatChannel(String name, String command, ColorRGBA color, boolean visibleToUser) {
 			this.name = name;
 			this.command = command;
 			this.color = color;
+			this.visibleToUser = visibleToUser;
 		}
 		
 		public String getName() {
@@ -342,5 +372,11 @@ public abstract class ChatBoxExt extends Panel {
 		public ColorRGBA getColor() {
 			return this.color;
 		}
+	}
+	
+	public void addFilteredChannel(String name) {
+		filteredChannels.clear();
+		filteredChannels.add(this.getChannelByName(name));
+		rebuildChat();
 	}
 }

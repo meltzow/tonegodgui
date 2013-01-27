@@ -30,7 +30,7 @@ import tonegod.gui.listeners.TabFocusListener;
  *
  * @author t0neg0d
  */
-public abstract class Button extends Element implements Control, MouseButtonListener, MouseFocusListener, KeyboardListener, TabFocusListener {
+public class Button extends Element implements Control, MouseButtonListener, MouseFocusListener, KeyboardListener, TabFocusListener {
 	Element icon;
 	Texture hoverImg = null, pressedImg = null;
 	private ColorRGBA hoverFontColor = null, pressedFontColor = null;
@@ -257,7 +257,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		isStillPressed = true;
 		initClickPause = true;
 		currentInitClickTrack = 0;
-		onMouseLeftDown(evt, isToggled);
+		onButtonMouseLeftDown(evt, isToggled);
 	}
 
 	@Override
@@ -299,19 +299,19 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		isStillPressed = false;
 		initClickPause = false;
 		currentInitClickTrack = 0;
-		onMouseLeftUp(evt, isToggled);
+		onButtonMouseLeftUp(evt, isToggled);
 	}
 
 	@Override
 	public void onMouseRightPressed(MouseButtonEvent evt) {
 	//	throw new UnsupportedOperationException("Not supported yet.");
-		onMouseRightDown(evt, isToggled);
+		onButtonMouseRightDown(evt, isToggled);
 	}
 
 	@Override
 	public void onMouseRightReleased(MouseButtonEvent evt) {
 	//	throw new UnsupportedOperationException("Not supported yet.");
-		onMouseRightUp(evt, isToggled);
+		onButtonMouseRightUp(evt, isToggled);
 	}
 
 	@Override
@@ -350,12 +350,12 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		hasFocus = false;
 	}
 	
-	public abstract void onMouseLeftDown(MouseButtonEvent evt, boolean toggled);
-	public abstract void onMouseRightDown(MouseButtonEvent evt, boolean toggled);
-	public abstract void onMouseLeftUp(MouseButtonEvent evt, boolean toggled);
-	public abstract void onMouseRightUp(MouseButtonEvent evt, boolean toggled);
-	public abstract void onButtonFocus(MouseMotionEvent evt);
-	public abstract void onButtonLostFocus(MouseMotionEvent evt);
+	public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {  }
+	public void onButtonMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
+	public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
+	public void onButtonMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
+	public void onButtonFocus(MouseMotionEvent evt) {  }
+	public void onButtonLostFocus(MouseMotionEvent evt) {  }
 	
 	/**
 	 * Returns if the button is still pressed
@@ -392,7 +392,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			} else {
 				currentTrack += tpf;
 				if (currentTrack >= trackInterval) {
-					onStillPressedInterval();
+					onButtonStillPressedInterval();
 					currentTrack = 0;
 				}
 			}
@@ -404,15 +404,15 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 * 
 	 * NOTE: This is only called if the button's setInterval method has been previously called
 	 */
-	public abstract void onStillPressedInterval();
+	public void onButtonStillPressedInterval() {  }
 	
 	/**
 	 * This method registers the button as a JME Control creating an interval event to be
 	 * processed every time the interval limit has been reached.
 	 * 
-	 * See onStillPressedInterval()
+	 * See onButtonStillPressedInterval()
 	 * 
-	 * @param intervalsPerSecond The number of calls to onStillPressedInterval per second.
+	 * @param intervalsPerSecond The number of calls to onButtonStillPressedInterval per second.
 	 */
 	public void setInterval(float intervalsPerSecond) {
 		if (intervalsPerSecond > 0) {

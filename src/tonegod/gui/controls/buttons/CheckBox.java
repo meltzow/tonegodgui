@@ -125,26 +125,4 @@ public class CheckBox extends Button {
 	public boolean getIsChecked() {
 		return this.getIsToggled();
 	}
-	
-	@Override
-	public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {  }
-
-	@Override
-	public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
-
-	@Override
-	public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
-
-	@Override
-	public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
-
-	@Override
-	public void onButtonFocus(MouseMotionEvent evt) {  }
-
-	@Override
-	public void onButtonLostFocus(MouseMotionEvent evt) {  }
-
-	@Override
-	public void onStillPressedInterval() {  }
-	
 }

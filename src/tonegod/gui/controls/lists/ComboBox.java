@@ -20,7 +20,7 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public abstract class ComboBox extends TextField {
+public class ComboBox extends TextField {
 	private Button btnArrowDown;
 	private Menu DDList = null;
 	float btnHeight = 25;
@@ -96,34 +96,10 @@ public abstract class ComboBox extends TextField {
 			)
 		) {
 			@Override
-			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
-				
-			}
-			@Override
-			public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {
-			//	throw new UnsupportedOperationException("Not supported yet.");
-			}
-			@Override
-			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
 				Menu m = ((Menu)screen.getElementById(ddUID));
 				m.showMenu(null, getElementParent().getAbsoluteX(), getElementParent().getAbsoluteY()-m.getHeight());
 				screen.setTabFocusElement((ComboBox)getElementParent());
-			}
-			@Override
-			public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {
-			//	throw new UnsupportedOperationException("Not supported yet.");
-			}
-			@Override
-			public void onButtonFocus(MouseMotionEvent evt) {
-			//	throw new UnsupportedOperationException("Not supported yet.");
-			}
-			@Override
-			public void onButtonLostFocus(MouseMotionEvent evt) {
-			//	throw new UnsupportedOperationException("Not supported yet.");
-			}
-			@Override
-			public void onStillPressedInterval() {
-			//	throw new UnsupportedOperationException("Not supported yet.");
 			}
 		};
 		btnArrowDown.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowDown"));
@@ -256,7 +232,7 @@ public abstract class ComboBox extends TextField {
 		if (DDList.getIsVisible()) DDList.setHighlight(index);
 	}
 	
-	public abstract void onChange(int selectedIndex, String value);
+	public void onChange(int selectedIndex, String value) {  }
 	
 	public int getSelectIndex() {
 		return this.selectedIndex;

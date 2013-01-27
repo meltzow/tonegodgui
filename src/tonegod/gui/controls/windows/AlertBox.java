@@ -20,7 +20,7 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public abstract class AlertBox extends Window {
+public class AlertBox extends Window {
 	private ScrollArea dlg;
 	private Button btnOk;
 	Form form;
@@ -77,27 +77,9 @@ public abstract class AlertBox extends Window {
 			)
 		) {
 			@Override
-			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
-				onBtnOkMouseLeftDown(evt, toggled);
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
+				onButtonOkPressed(evt, toggled);
 			}
-			@Override
-			public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {
-				onBtnOkMouseRightDown(evt, toggled);
-			}
-			@Override
-			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-				onBtnOkMouseLeftUp(evt, toggled);
-			}
-			@Override
-			public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {
-				onBtnOkMouseRightUp(evt, toggled);
-			}
-			@Override
-			public void onStillPressedInterval() { onBtnOkInterval(); }
-			@Override
-			public void onButtonFocus(MouseMotionEvent evt) {  }
-			@Override
-			public void onButtonLostFocus(MouseMotionEvent evt) {  }
 		};
 		btnOk.setText("Ok");
 		btnOk.setDockS(true);
@@ -114,9 +96,5 @@ public abstract class AlertBox extends Window {
 		btnOk.setText(text);
 	}
 	
-	public abstract void onBtnOkMouseLeftDown(MouseButtonEvent evt, boolean toggled);
-	public abstract void onBtnOkMouseLeftUp(MouseButtonEvent evt, boolean toggled);
-	public abstract void onBtnOkMouseRightDown(MouseButtonEvent evt, boolean toggled);
-	public abstract void onBtnOkMouseRightUp(MouseButtonEvent evt, boolean toggled);
-	public abstract void onBtnOkInterval();
+	public void onButtonOkPressed(MouseButtonEvent evt, boolean toggled) {  }
 }

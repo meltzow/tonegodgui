@@ -40,7 +40,7 @@ public class VScrollBar extends Element {
 			screen.getStyle("ScrollArea#VScrollBar").getString("trackImg")
 		) {
 			@Override
-			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
+			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				trackEvent = evt;
 				if (trackEvent.getY()-getAbsoluteY() < btnScrollThumb.getY()) {
 					if (btnScrollThumb.getY()-trackInc > 0) {
@@ -59,13 +59,13 @@ public class VScrollBar extends Element {
 				}
 			}
 			@Override
-			public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
+			public void onButtonMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
+			public void onButtonMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onStillPressedInterval() {
+			public void onButtonStillPressedInterval() {
 				if (trackEvent.getY()-getAbsoluteY() < btnScrollThumb.getY()) {
 					if (btnScrollThumb.getY()-trackInc > 0) {
 						btnScrollThumb.setY(btnScrollThumb.getY()-trackInc);
@@ -104,15 +104,15 @@ public class VScrollBar extends Element {
 			screen.getStyle("ScrollArea#VScrollBar").getString("thumbImg")
 		) {
 			@Override
-			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {  }
+			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
+			public void onButtonMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
+			public void onButtonMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onStillPressedInterval() {
+			public void onButtonStillPressedInterval() {
 				
 			}
 			@Override
@@ -143,20 +143,20 @@ public class VScrollBar extends Element {
 			screen.getStyle("ScrollArea#VScrollBar").getString("btnUpImg")
 		) {
 			@Override
-			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
+			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				if (btnScrollThumb.getY() < (btnScrollTrack.getHeight()-btnScrollThumb.getHeight())) {
 					btnScrollThumb.setY(btnScrollThumb.getY()+btnInc);
 				}
 				scrollScrollableArea();
 			}
 			@Override
-			public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
+			public void onButtonMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
+			public void onButtonMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onStillPressedInterval() {
+			public void onButtonStillPressedInterval() {
 				if (btnScrollThumb.getY() < (btnScrollTrack.getHeight()-btnScrollThumb.getHeight())) {
 					btnScrollThumb.setY(btnScrollThumb.getY()+btnInc);
 				}
@@ -186,20 +186,20 @@ public class VScrollBar extends Element {
 			screen.getStyle("ScrollArea#VScrollBar").getString("btnDownImg")
 		) {
 			@Override
-			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
+			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				if (btnScrollThumb.getY() > 0) {
 					btnScrollThumb.setY(btnScrollThumb.getY()-btnInc);
 				}
 				scrollScrollableArea();
 			}
 			@Override
-			public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
+			public void onButtonMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
+			public void onButtonMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
 			@Override
-			public void onStillPressedInterval() {
+			public void onButtonStillPressedInterval() {
 				if (btnScrollThumb.getY() > 0) {
 					btnScrollThumb.setY(btnScrollThumb.getY()-btnInc);
 				}

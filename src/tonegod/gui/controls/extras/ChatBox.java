@@ -27,7 +27,7 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public abstract class ChatBox extends Panel {
+public class ChatBox extends Panel {
 	ScrollArea saChatArea;
 	TextField tfChatInput;
 	Button btnChatSendMsg;
@@ -130,21 +130,9 @@ public abstract class ChatBox extends Panel {
 			new Vector2f(100,25)
 		) {
 			@Override
-			public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
 				sendMsg();
 			}
-			@Override
-			public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
-			@Override
-			public void onButtonFocus(MouseMotionEvent evt) {  }
-			@Override
-			public void onButtonLostFocus(MouseMotionEvent evt) {  }
-			@Override
-			public void onStillPressedInterval() {  }
 		};
 		btnChatSendMsg.setScaleEW(false);
 		btnChatSendMsg.setScaleNS(false);
@@ -197,5 +185,5 @@ public abstract class ChatBox extends Panel {
 		this.sendKey = sendKey;
 	}
 	
-	public abstract void onSendMsg(String msg);
+	public void onSendMsg(String msg) {  }
 }

@@ -21,7 +21,7 @@ import tonegod.gui.effects.Effect;
  *
  * @author t0neg0d
  */
-public abstract class Dial extends Button {
+public class Dial extends Button {
 	Element elCenter, elPosition;
 	protected List<String> stepValues = new ArrayList();
 	
@@ -182,41 +182,11 @@ public abstract class Dial extends Button {
 	 * @param selectedIndex The Slider's current selectedIndex
 	 * @param value The string value associated with this index
 	 */
-	public abstract void onChange(int selectedIndex, String value);
+	public void onChange(int selectedIndex, String value) {  }
+	
 	@Override
-	public void onMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
-	//	throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	public void onMouseRightDown(MouseButtonEvent evt, boolean toggled) {
-	//	throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	public void onMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-	//	throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	public void onMouseRightUp(MouseButtonEvent evt, boolean toggled) {
-	//	throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	public void onButtonFocus(MouseMotionEvent evt) {
-	//	throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	public void onButtonLostFocus(MouseMotionEvent evt) {
-	//	throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	public void onStillPressedInterval() {
+	public void onButtonStillPressedInterval() {
 		Vector2f pos = new Vector2f(elCenter.getAbsoluteX(), elCenter.getAbsoluteY());
-	//	float angle = pos.angleBetween(screen.getMouseXY());
 		currentAngle = (float)Math.atan2(screen.getMouseXY().x-elCenter.getAbsoluteX(), screen.getMouseXY().y-elCenter.getAbsoluteY())*FastMath.RAD_TO_DEG;
 		if (currentAngle < -180+gap)
 			currentAngle = -180+gap;
