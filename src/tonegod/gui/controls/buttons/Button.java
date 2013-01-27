@@ -30,7 +30,7 @@ import tonegod.gui.listeners.TabFocusListener;
  *
  * @author t0neg0d
  */
-public class Button extends Element implements Control, MouseButtonListener, MouseFocusListener, KeyboardListener, TabFocusListener {
+public abstract class Button extends Element implements Control, MouseButtonListener, MouseFocusListener, KeyboardListener, TabFocusListener {
 	Element icon;
 	Texture hoverImg = null, pressedImg = null;
 	private ColorRGBA hoverFontColor = null, pressedFontColor = null;
@@ -350,12 +350,18 @@ public class Button extends Element implements Control, MouseButtonListener, Mou
 		hasFocus = false;
 	}
 	
-	public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {  }
-	public void onButtonMouseRightDown(MouseButtonEvent evt, boolean toggled) {  }
-	public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {  }
-	public void onButtonMouseRightUp(MouseButtonEvent evt, boolean toggled) {  }
-	public void onButtonFocus(MouseMotionEvent evt) {  }
-	public void onButtonLostFocus(MouseMotionEvent evt) {  }
+	public abstract void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled);
+	public abstract void onButtonMouseRightDown(MouseButtonEvent evt, boolean toggled);
+	public abstract void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled);
+	public abstract void onButtonMouseRightUp(MouseButtonEvent evt, boolean toggled);
+	public abstract void onButtonFocus(MouseMotionEvent evt);
+	public abstract void onButtonLostFocus(MouseMotionEvent evt);
+	/**
+	 * Abstract method for handling interval updates while the button is still pressed
+	 * 
+	 * NOTE: This is only called if the button's setInterval method has been previously called
+	 */
+	public void onButtonStillPressedInterval() {  }
 	
 	/**
 	 * Returns if the button is still pressed
@@ -398,13 +404,6 @@ public class Button extends Element implements Control, MouseButtonListener, Mou
 			}
 		}
 	}
-	
-	/**
-	 * Abstract method for handling interval updates while the button is still pressed
-	 * 
-	 * NOTE: This is only called if the button's setInterval method has been previously called
-	 */
-	public void onButtonStillPressedInterval() {  }
 	
 	/**
 	 * This method registers the button as a JME Control creating an interval event to be

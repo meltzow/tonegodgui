@@ -4,15 +4,13 @@
  */
 package tonegod.gui.controls.lists;
 
-import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
-import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.effects.Effect;
@@ -21,7 +19,7 @@ import tonegod.gui.effects.Effect;
  *
  * @author t0neg0d
  */
-public class Dial extends Button {
+public abstract class Dial extends ButtonAdapter {
 	Element elCenter, elPosition;
 	protected List<String> stepValues = new ArrayList();
 	
@@ -182,7 +180,7 @@ public class Dial extends Button {
 	 * @param selectedIndex The Slider's current selectedIndex
 	 * @param value The string value associated with this index
 	 */
-	public void onChange(int selectedIndex, String value) {  }
+	public abstract void onChange(int selectedIndex, String value);
 	
 	@Override
 	public void onButtonStillPressedInterval() {

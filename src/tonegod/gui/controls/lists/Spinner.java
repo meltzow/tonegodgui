@@ -13,6 +13,7 @@ import com.jme3.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.menuing.MenuItem;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.core.Element;
@@ -22,7 +23,7 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public class Spinner extends TextField {
+public abstract class Spinner extends TextField {
 	public static enum Orientation {
 		VERTICAL,
 		HORIZONTAL
@@ -33,7 +34,7 @@ public class Spinner extends TextField {
 	private int selectedIndex = 0;
 	private Orientation orientation;
 	
-	Button btnInc, btnDec;
+	ButtonAdapter btnInc, btnDec;
 	
 	public Spinner(Screen screen, String UID, Vector2f position, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UID, position,
@@ -65,7 +66,7 @@ public class Spinner extends TextField {
 		setDockN(true);
 		setDockW(true);
 		
-		btnInc = new Button(
+		btnInc = new ButtonAdapter(
 			screen,
 			UID + ":btnInc",
 			new Vector2f(getWidth(), 0),
@@ -87,7 +88,7 @@ public class Spinner extends TextField {
 		
 		addChild(btnInc);
 		
-		btnDec = new Button(
+		btnDec = new ButtonAdapter(
 			screen,
 			UID + ":btnDec",
 			new Vector2f(-getHeight(), 0),
@@ -185,5 +186,5 @@ public class Spinner extends TextField {
 		}
 	}
 	
-	public void onChange(int selectedIndex, String value) {  }
+	public abstract void onChange(int selectedIndex, String value);
 }

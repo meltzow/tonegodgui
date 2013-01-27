@@ -7,11 +7,10 @@ package tonegod.gui.controls.windows;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.core.Screen;
@@ -20,9 +19,9 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public class AlertBox extends Window {
+public abstract class AlertBox extends Window {
 	private ScrollArea dlg;
-	private Button btnOk;
+	private ButtonAdapter btnOk;
 	Form form;
 	
 	public AlertBox(Screen screen, String UID, Vector2f position) {
@@ -70,7 +69,7 @@ public class AlertBox extends Window {
 		dlg.setPadding(5);
 		addChild(dlg);
 		
-		btnOk = new Button(screen,  UID + ":btnOk",
+		btnOk = new ButtonAdapter(screen,  UID + ":btnOk",
 			new Vector2f(
 				getWidth()-screen.getStyle("Button").getVector2f("defaultSize").x-indents.z,
 				getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
@@ -96,5 +95,5 @@ public class AlertBox extends Window {
 		btnOk.setText(text);
 	}
 	
-	public void onButtonOkPressed(MouseButtonEvent evt, boolean toggled) {  }
+	public abstract void onButtonOkPressed(MouseButtonEvent evt, boolean toggled);
 }

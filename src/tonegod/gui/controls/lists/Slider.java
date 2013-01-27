@@ -7,13 +7,12 @@ package tonegod.gui.controls.lists;
 import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
-import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.effects.Effect;
@@ -22,7 +21,7 @@ import tonegod.gui.effects.Effect;
  *
  * @author t0neg0d
  */
-public class Slider extends Button {
+public abstract class Slider extends ButtonAdapter {
 	public static enum Orientation {
 		VERTICAL,
 		HORIZONTAL
@@ -30,7 +29,7 @@ public class Slider extends Button {
 	
 	protected List<String> stepValues = new ArrayList();
 	Element elThumbLock;
-	Button elThumb;
+	ButtonAdapter elThumb;
 	
 	protected Orientation orientation;
 	int selectedIndex = 0;
@@ -197,7 +196,7 @@ public class Slider extends Button {
 		elThumbLock.setlockToParentBounds(true);
 		addChild(elThumbLock);
 		
-		elThumb = new Button(
+		elThumb = new ButtonAdapter(
 			screen,
 			UID + ":Thumb",
 			thumbPosition,
@@ -333,7 +332,7 @@ public class Slider extends Button {
 	 * @param selectedIndex The Slider's current selectedIndex
 	 * @param value The string value associated with this index
 	 */
-	public void onChange(int selectedIndex, String value) {  }
+	public abstract void onChange(int selectedIndex, String value);
 	
 	@Override
 	public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {

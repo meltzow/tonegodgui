@@ -25,7 +25,7 @@ import tonegod.gui.listeners.MouseWheelListener;
  *
  * @author t0neg0d
  */
-public class Menu extends ScrollArea implements MouseMovementListener, MouseWheelListener, MouseButtonListener {
+public abstract class Menu extends ScrollArea implements MouseMovementListener, MouseWheelListener, MouseButtonListener {
 	private List<MenuItem> menuItems = new ArrayList();
 	private Element highlight;
 	private int miIndex = 0;
@@ -340,7 +340,7 @@ public class Menu extends ScrollArea implements MouseMovementListener, MouseWhee
 	 * @param index Index of MenuItem clicked
 	 * @param value String value of MenuItem clicked
 	 */
-	public void onMenuItemClicked(int index, String value) {  }
+	public abstract void onMenuItemClicked(int index, String value);
 	
 	@Override
 	public void onMouseMove(MouseMotionEvent evt) {

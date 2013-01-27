@@ -7,10 +7,9 @@ package tonegod.gui.controls.lists;
 import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.menuing.MenuItem;
 import tonegod.gui.controls.text.TextField;
@@ -20,8 +19,8 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public class ComboBox extends TextField {
-	private Button btnArrowDown;
+public abstract class ComboBox extends TextField {
+	private ButtonAdapter btnArrowDown;
 	private Menu DDList = null;
 	float btnHeight = 25;
 	String ddUID;
@@ -85,7 +84,7 @@ public class ComboBox extends TextField {
 		
 		ddUID = UID + ":ddMenu";
 		
-		btnArrowDown = new Button(screen, UID + ":ArrowDown",
+		btnArrowDown = new ButtonAdapter(screen, UID + ":ArrowDown",
 			new Vector2f(
 				getWidth(),
 				0
@@ -232,7 +231,7 @@ public class ComboBox extends TextField {
 		if (DDList.getIsVisible()) DDList.setHighlight(index);
 	}
 	
-	public void onChange(int selectedIndex, String value) {  }
+	public abstract void onChange(int selectedIndex, String value);
 	
 	public int getSelectIndex() {
 		return this.selectedIndex;

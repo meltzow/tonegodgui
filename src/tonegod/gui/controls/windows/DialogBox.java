@@ -5,18 +5,17 @@
 package tonegod.gui.controls.windows;
 
 import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Screen;
 
 /**
  *
  * @author t0neg0d
  */
-public class DialogBox extends AlertBox {
-	private Button btnCancel;
+public abstract class DialogBox extends AlertBox {
+	private ButtonAdapter btnCancel;
 	
 	public DialogBox(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,
@@ -38,7 +37,7 @@ public class DialogBox extends AlertBox {
 		
 		Vector4f indents = screen.getStyle("Window").getVector4f("contentIndents");
 		
-		btnCancel = new Button(screen, UID + ":btnCancel",
+		btnCancel = new ButtonAdapter(screen, UID + ":btnCancel",
 			new Vector2f(
 				indents.y,
 				getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
@@ -60,5 +59,5 @@ public class DialogBox extends AlertBox {
 		btnCancel.setText(text);
 	}
 	
-	public void onButtonCancelPressed(MouseButtonEvent evt, boolean toggled) {  }
+	public abstract void onButtonCancelPressed(MouseButtonEvent evt, boolean toggled);
 }

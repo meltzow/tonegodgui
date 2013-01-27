@@ -6,10 +6,8 @@ package tonegod.gui.controls.extras;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
-import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
@@ -18,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.lists.SelectBox;
 import tonegod.gui.controls.lists.Spinner;
 import tonegod.gui.controls.scrolling.ScrollArea;
@@ -31,10 +29,10 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public class ChatBoxExt extends Panel {
+public abstract class ChatBoxExt extends Panel {
 	ScrollArea saChatArea;
 	TextField tfChatInput;
-	Button btnChatSendMsg;
+	ButtonAdapter btnChatSendMsg;
 	Spinner spnChannels;
 	SelectBox sbDefaultChannel;
 	
@@ -189,7 +187,7 @@ public class ChatBoxExt extends Panel {
 		tfChatInput.setDockS(true);
 		tfChatInput.setDockW(true);
 		
-		btnChatSendMsg = new Button(
+		btnChatSendMsg = new ButtonAdapter(
 			screen,
 			UID + ":ChatSendMsg",
 			new Vector2f(getWidth()-10-100, getHeight()-25-15),
@@ -301,7 +299,7 @@ public class ChatBoxExt extends Panel {
 		this.sendKey = sendKey;
 	}
 	
-	public void onSendMsg(String command, String msg) {  }
+	public abstract void onSendMsg(String command, String msg);
 	
 	public final void addChatChannel(String name, String command, ColorRGBA color, boolean visibleToUser) {
 		channels.put(command, new ChatChannel(name, command, color, visibleToUser));

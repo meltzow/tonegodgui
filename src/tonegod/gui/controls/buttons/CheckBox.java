@@ -6,8 +6,6 @@ package tonegod.gui.controls.buttons;
 
 import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
-import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.controls.text.Label;
@@ -18,7 +16,7 @@ import tonegod.gui.effects.Effect;
  *
  * @author t0neg0d
  */
-public class CheckBox extends Button {
+public class CheckBox extends ButtonAdapter {
 	
 	Label label;
 	

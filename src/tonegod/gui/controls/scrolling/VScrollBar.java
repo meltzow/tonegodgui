@@ -10,7 +10,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.effects.Effect;
@@ -20,7 +20,7 @@ import tonegod.gui.effects.Effect;
  * @author t0neg0d
  */
 public class VScrollBar extends Element {
-	Button btnScrollTrack, btnScrollUp, btnScrollDown, btnScrollThumb;
+	ButtonAdapter btnScrollTrack, btnScrollUp, btnScrollDown, btnScrollThumb;
 	int btnInc = 1, trackInc = 10;
 	MouseButtonEvent trackEvent = null;
 	ScrollArea scrollableArea = null;
@@ -33,7 +33,7 @@ public class VScrollBar extends Element {
 		this.setDockN(true);
 		this.setDockE(true);
 		
-		btnScrollTrack = new Button(screen, UID + "btnScrollTrack",
+		btnScrollTrack = new ButtonAdapter(screen, UID + "btnScrollTrack",
 			new Vector2f(0, getWidth()),
 			new Vector2f(getWidth(), getHeight()-(getWidth()*2)),
 			screen.getStyle("ScrollArea#VScrollBar").getVector4f("trackResizeBorders"),
@@ -97,7 +97,7 @@ public class VScrollBar extends Element {
 		btnScrollTrack.removeEffect(Effect.EffectEvent.Press);
 		btnScrollTrack.removeEffect(Effect.EffectEvent.Release);
 		
-		btnScrollThumb = new Button(screen, UID + "btnScrollThumb",
+		btnScrollThumb = new ButtonAdapter(screen, UID + "btnScrollThumb",
 			new Vector2f(0, 0),//btnScrollTrack.getHeight()-getWidth()),
 			new Vector2f(getWidth(), getWidth()),
 			screen.getStyle("ScrollArea#VScrollBar").getVector4f("thumbResizeBorders"),
@@ -136,7 +136,7 @@ public class VScrollBar extends Element {
 		btnScrollThumb.setDockN(true);
 		btnScrollTrack.addChild(btnScrollThumb);
 		
-		btnScrollUp = new Button(screen, UID + "btnScrollUp",
+		btnScrollUp = new ButtonAdapter(screen, UID + "btnScrollUp",
 			new Vector2f(0, 0),
 			new Vector2f(getWidth(), getWidth()),
 			screen.getStyle("ScrollArea#VScrollBar").getVector4f("btnUpResizeBorders"),
@@ -179,7 +179,7 @@ public class VScrollBar extends Element {
 		}
 		this.addChild(btnScrollUp);
 		
-		btnScrollDown = new Button(screen, UID + "btnScrollDown",
+		btnScrollDown = new ButtonAdapter(screen, UID + "btnScrollDown",
 			new Vector2f(0, getHeight()-getWidth()),
 			new Vector2f(getWidth(), getWidth()),
 			screen.getStyle("ScrollArea#VScrollBar").getVector4f("btnDownResizeBorders"),

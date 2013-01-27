@@ -6,19 +6,16 @@ package tonegod.gui.controls.extras;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
-import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
-import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.lists.Spinner;
 import tonegod.gui.controls.scrolling.ScrollArea;
-import tonegod.gui.controls.text.Label;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.controls.windows.Panel;
 import tonegod.gui.core.Screen;
@@ -27,10 +24,10 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public class ChatBox extends Panel {
+public abstract class ChatBox extends Panel {
 	ScrollArea saChatArea;
 	TextField tfChatInput;
-	Button btnChatSendMsg;
+	ButtonAdapter btnChatSendMsg;
 	Spinner spnChannels;
 	
 	int sendKey;
@@ -123,7 +120,7 @@ public class ChatBox extends Panel {
 		tfChatInput.setDockS(true);
 		tfChatInput.setDockW(true);
 		
-		btnChatSendMsg = new Button(
+		btnChatSendMsg = new ButtonAdapter(
 			screen,
 			UID + ":ChatSendMsg",
 			new Vector2f(getWidth()-10-100, getHeight()-25-15),
@@ -185,5 +182,5 @@ public class ChatBox extends Panel {
 		this.sendKey = sendKey;
 	}
 	
-	public void onSendMsg(String msg) {  }
+	public abstract void onSendMsg(String msg);
 }

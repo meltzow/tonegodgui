@@ -6,11 +6,9 @@ package tonegod.gui.controls.windows;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.input.event.MouseMotionEvent;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import tonegod.gui.controls.buttons.Button;
+import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.text.Label;
 import tonegod.gui.controls.text.Password;
@@ -22,8 +20,8 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public class LoginBox extends Window {
-	Button btnLogin, btnCancel;
+public abstract class LoginBox extends Window {
+	ButtonAdapter btnLogin, btnCancel;
 	Element responseMsg, lblUserName, lblPassword;
 	TextField userName;
 	Password password;
@@ -107,7 +105,7 @@ public class LoginBox extends Window {
 		this.addChild(password);
 		form.addFormElement(password);
 		
-		btnLogin = new Button(screen,  UID + ":btnOk",
+		btnLogin = new ButtonAdapter(screen,  UID + ":btnOk",
 			new Vector2f(
 				getWidth()-screen.getStyle("Button").getVector2f("defaultSize").x-indents.z,
 				getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
@@ -124,7 +122,7 @@ public class LoginBox extends Window {
 		addChild(btnLogin);
 		form.addFormElement(btnLogin);
 		
-		btnCancel = new Button(screen, UID + ":btnCancel",
+		btnCancel = new ButtonAdapter(screen, UID + ":btnCancel",
 			new Vector2f(
 				indents.y,
 				getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
@@ -152,11 +150,11 @@ public class LoginBox extends Window {
 		btnLogin.setText(text);
 	}
 	
-	public void onButtonLoginPressed(MouseButtonEvent evt, boolean toggled) {  }
+	public abstract void onButtonLoginPressed(MouseButtonEvent evt, boolean toggled);
 	
 	public void setButtonCancelText(String text) {
 		btnCancel.setText(text);
 	}
 	
-	public void onButtonCancelPressed(MouseButtonEvent evt, boolean toggled) {  }
+	public abstract void onButtonCancelPressed(MouseButtonEvent evt, boolean toggled);
 }
