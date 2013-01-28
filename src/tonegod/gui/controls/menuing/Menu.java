@@ -89,9 +89,27 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	public Menu(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isScrollable) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg, false);
 		
-		setFontSize(20);
+	//	setFontSize(20);
 		
+		menuOverhang = screen.getStyle("Menu").getFloat("menuOverhang");
+		menuPadding = screen.getStyle("Menu").getFloat("menuPadding");
 		highlightColor = screen.getStyle("Menu").getColorRGBA("highlightColor");
+		
+		// Load default font info
+		setFontColor(screen.getStyle("Menu").getColorRGBA("fontColor"));
+		setFontSize(screen.getStyle("Menu").getFloat("fontSize"));
+		setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Menu").getString("textAlign")));
+		setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("Menu").getString("textVAlign")));
+		setTextWrap(LineWrapMode.valueOf(screen.getStyle("Menu").getString("textWrap")));
+		setTextPadding(screen.getStyle("Menu").getFloat("textPadding"));
+		setTextClipPadding(screen.getStyle("Menu").getFloat("textPadding"));
+		scrollableArea.setFontColor(screen.getStyle("Menu").getColorRGBA("fontColor"));
+		scrollableArea.setFontSize(screen.getStyle("Menu").getFloat("fontSize"));
+		scrollableArea.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Menu").getString("textAlign")));
+		scrollableArea.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("Menu").getString("textVAlign")));
+		scrollableArea.setTextWrap(LineWrapMode.valueOf(screen.getStyle("Menu").getString("textWrap")));
+		scrollableArea.setTextPadding(screen.getStyle("Menu").getFloat("textPadding"));
+		scrollableArea.setTextClipPadding(menuPadding+screen.getStyle("Menu").getFloat("textPadding"));
 		
 		sizeEval = new BitmapText(font);
 		sizeEval.setSize(fontSize);
@@ -99,17 +117,10 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		sizeEval.setText(" ");
 		menuItemHeight = sizeEval.getLineHeight();
 		
-		scrollableArea.setFontSize(fontSize);
-		scrollableArea.setTextWrap(LineWrapMode.Clip);
-		scrollableArea.setTextVAlign(BitmapFont.VAlign.Center);
-		scrollableArea.setTextPadding(0);
 		scrollableArea.setText(" ");
 		scrollableArea.setIgnoreMouse(true);
-	//	scrollableArea.setClipPadding(menuPadding);
 		scrollableArea.setHeight(menuItemHeight);
 		
-		menuOverhang = screen.getStyle("Menu").getFloat("menuOverhang");
-		menuPadding = screen.getStyle("Menu").getFloat("menuPadding");
 		initWidth = menuItemHeight*3;
 		this.isScrollable = isScrollable;
 		
@@ -239,17 +250,21 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		scrollableArea.setY(menuPadding);
 		scrollableArea.setHeight(currentHeight);//+(menuPadding*2));
 		
+	//	this.updateClipping();
+	//	scrollableArea.updateClipping();
+		
 		if (highlight.getParent() == null) {
 			highlight.setX(menuPadding);
 			highlight.setWidth(width);
 			highlight.setHeight(menuItemHeight);
 			highlight.getElementMaterial().setColor("Color", highlightColor);
 			highlight.setClippingLayer(this);
+			highlight.setClipPadding(menuPadding);
 			scrollableArea.addChild(highlight);
 		}
 		
 		if (getVScrollBar() != null)
-			getVScrollBar().setX(width);
+			getVScrollBar().setX(width+(menuPadding*2));
 	}
 	
 	private void addSubmenuArrow(int index) {

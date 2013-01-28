@@ -14,6 +14,7 @@ import com.jme3.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.buttons.ButtonAdapter;
+import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.lists.Spinner;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.controls.text.TextField;
@@ -29,6 +30,8 @@ public abstract class ChatBox extends Panel {
 	TextField tfChatInput;
 	ButtonAdapter btnChatSendMsg;
 	Spinner spnChannels;
+	
+	Form chatForm;
 	
 	int sendKey;
 	int chatHistorySize = 30;
@@ -82,28 +85,41 @@ public abstract class ChatBox extends Panel {
 		this.setScaleNS(false);
 		this.setScaleEW(false);
 		
+		chatForm = new Form(screen);
+		
+		Vector4f indents = screen.getStyle("Window").getVector4f("contentIndents");
+		float controlSpacing = screen.getStyle("Common").getFloat("defaultControlSpacing");
+		float controlSize = screen.getStyle("Common").getFloat("defaultControlSize");
+		float buttonWidth = screen.getStyle("Button").getVector2f("defaultSize").x;
+		
 		saChatArea = new ScrollArea(screen, UID + ":ChatArea",
-			new Vector2f(10, 35),
-			new Vector2f(getWidth()-45, getHeight()-85),
+			new Vector2f(
+				indents.y,
+				indents.x+controlSpacing
+			),
+			new Vector2f(
+				getWidth()-controlSize-indents.y-indents.z,
+				getHeight()-controlSize-(controlSpacing*2)-indents.x-indents.w
+			),
 			true
 		);
-		saChatArea.setFontColor(ColorRGBA.LightGray);
-		saChatArea.setTextAlign(BitmapFont.Align.Left);
-		saChatArea.setTextPosition(5,5);
-		saChatArea.setTextWrap(LineWrapMode.Word);
+	//	saChatArea.setFontColor(ColorRGBA.LightGray);
+	//	saChatArea.setTextAlign(BitmapFont.Align.Left);
+	//	saChatArea.setTextPosition(5,5);
+	//	saChatArea.setTextWrap(LineWrapMode.Word);
 		saChatArea.setIsResizable(false);
 		saChatArea.setScaleEW(true);
 		saChatArea.setScaleNS(true);
 		saChatArea.setClippingLayer(saChatArea);
-		saChatArea.setPadding(5);
+	//	saChatArea.setPadding(5);
 		saChatArea.setText("");
 		addChild(saChatArea);
 		
 		tfChatInput = new TextField(
 			screen,
 			UID + ":ChatInput",
-			new Vector2f(10, getHeight()-25-15),
-			new Vector2f(getWidth()-20-95, 25)
+			new Vector2f(indents.y, getHeight()-controlSize-indents.w),
+			new Vector2f(getWidth()-indents.y-indents.z-buttonWidth, controlSize)
 		) {
 			@Override
 			public void controlKeyPressHook(KeyInputEvent evt, String text) {
@@ -123,8 +139,8 @@ public abstract class ChatBox extends Panel {
 		btnChatSendMsg = new ButtonAdapter(
 			screen,
 			UID + ":ChatSendMsg",
-			new Vector2f(getWidth()-10-100, getHeight()-25-15),
-			new Vector2f(100,25)
+			new Vector2f(getWidth()-indents.z-buttonWidth, getHeight()-controlSize-indents.w),
+			new Vector2f(buttonWidth,controlSize)
 		) {
 			@Override
 			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {

@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<element name="ScrollArea">
-		<font></font>
+		<font>
+			<property name="fontSize" type="float" value="18" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Top" />
+			<property name="textWrap" type="String" value="Word" />
+			<property name="textPadding" type="float" value="8" />
+		</font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">
 				<x value="14" />
@@ -13,6 +25,7 @@
 				<x value="320" />
 				<y value="120" />
 			</property>
+			<property name="scrollAreaPadding" type="float" value="0" />
 		</attributes>
 		<images>
 			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Window/panel_x_inner.png" />

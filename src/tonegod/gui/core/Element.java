@@ -207,7 +207,7 @@ public class Element extends Node {
 		
 		if (texturePath != null) {
 			defaultTex = app.getAssetManager().loadTexture(texturePath);
-			defaultTex.setMinFilter(Texture.MinFilter.BilinearNearestMipMap);
+			defaultTex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
 			defaultTex.setMagFilter(Texture.MagFilter.Bilinear);
 			defaultTex.setWrap(Texture.WrapMode.Repeat);
 
@@ -1391,7 +1391,7 @@ public class Element extends Node {
 	 */
 	public void setAlphaMap(String alphaMap) {
 		Texture alpha = app.getAssetManager().loadTexture(alphaMap);
-		alpha.setMinFilter(Texture.MinFilter.BilinearNearestMipMap);
+		alpha.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
 		alpha.setMagFilter(Texture.MagFilter.Bilinear);
 		alpha.setWrap(Texture.WrapMode.Repeat);
 		

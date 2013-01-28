@@ -22,7 +22,7 @@ import tonegod.gui.core.Screen;
 public abstract class ComboBox extends TextField {
 	private ButtonAdapter btnArrowDown;
 	private Menu DDList = null;
-	float btnHeight = 25;
+	float btnHeight;
 	String ddUID;
 	private int selectedIndex;
 	private String selectedValue;
@@ -84,6 +84,8 @@ public abstract class ComboBox extends TextField {
 		
 		ddUID = UID + ":ddMenu";
 		
+		btnHeight = screen.getStyle("Common").getFloat("defaultControlSize");
+		
 		btnArrowDown = new ButtonAdapter(screen, UID + ":ArrowDown",
 			new Vector2f(
 				getWidth(),
@@ -126,6 +128,12 @@ public abstract class ComboBox extends TextField {
 			DDList.setCallerElement(this);
 		}
 		DDList.addMenuItem(caption, value, null);
+		
+		if (DDList.getParent() == null) {
+			screen.addElement(DDList);
+			DDList.hide();
+		}
+	//	pack();
 	}
 	
 	/**
@@ -135,17 +143,21 @@ public abstract class ComboBox extends TextField {
 	 */
 	public void pack() {
 		DDList.pack();
+		
 		DDList.setIsResizable(true);
 		DDList.setResizeN(false);
 		DDList.setResizeW(false);
 		DDList.setResizeE(true);
 		DDList.setResizeS(true);
 		if (DDList.getWidth() < getWidth())
-			DDList.resize(getWidth()+(getTextPadding()*2), DDList.getMenuItemHeight()*4, Borders.SE);
+			DDList.resize(getWidth(), DDList.getMenuItemHeight()*5, Borders.SE);
+		else
+			DDList.resize(DDList.getWidth(), DDList.getMenuItemHeight()*5, Borders.SE);
+		DDList.getVScrollBar().setX(DDList.getWidth());
 		DDList.setResizeE(false);
 		
-		screen.addElement(DDList);
-		DDList.hide();
+	//	screen.addElement(DDList);
+	//	DDList.hide();
 	}
 	
 	protected void setSelected(int index, String caption, String value) {

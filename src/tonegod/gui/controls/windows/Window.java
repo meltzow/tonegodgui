@@ -72,7 +72,7 @@ public class Window extends Element {
 		Vector4f dbIndents = screen.getStyle("Window#Dragbar").getVector4f("indents");
 		
 		dragBar = new Element(screen, UID + ":DragBar",
-			new Vector2f(dbIndents.y, dbIndents.z),
+			new Vector2f(dbIndents.y, dbIndents.x),
 			new Vector2f(getWidth()-dbIndents.y-dbIndents.z, screen.getStyle("Window#Dragbar").getFloat("defaultControlSize")),
 			screen.getStyle("Window#Dragbar").getVector4f("resizeBorders"),
 			screen.getStyle("Window#Dragbar").getString("defaultImg")
@@ -80,6 +80,7 @@ public class Window extends Element {
 		dragBar.setFontSize(screen.getStyle("Window#Dragbar").getFloat("fontSize"));
 		dragBar.setFontColor(screen.getStyle("Window#Dragbar").getColorRGBA("fontColor"));
 		dragBar.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Window#Dragbar").getString("textAlign")));
+		dragBar.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("Window#Dragbar").getString("textVAlign")));
 		dragBar.setTextPosition(0,0);
 		dragBar.setTextPadding(screen.getStyle("Window#Dragbar").getFloat("textPadding"));
 		dragBar.setTextWrap(LineWrapMode.valueOf(screen.getStyle("Window#Dragbar").getString("textWrap")));

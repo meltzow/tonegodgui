@@ -4,6 +4,8 @@
  */
 package tonegod.gui.controls.scrolling;
 
+import com.jme3.font.BitmapFont;
+import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.Vector2f;
@@ -74,12 +76,20 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		
 		this.isTextOnly = isTextOnly;
 		
+		// Load default font info
+		setFontColor(screen.getStyle("ScrollArea").getColorRGBA("fontColor"));
+		setFontSize(screen.getStyle("ScrollArea").getFloat("fontSize"));
+		setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("ScrollArea").getString("textAlign")));
+		setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("ScrollArea").getString("textVAlign")));
+		setTextWrap(LineWrapMode.valueOf(screen.getStyle("ScrollArea").getString("textWrap")));
+		setTextClipPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
+		
 		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 		
 		if (!isTextOnly) {
 			createScrollableArea();
 		} else {
-			setTextPadding(0);
+			setTextPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
 		}
 		
 		vScrollBar = new VScrollBar(screen, UID + ":vScroll",
@@ -103,8 +113,17 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		scrollableArea.setDockN(true);
 		scrollableArea.setDockW(true);
 		
+		// Load default font info
+		scrollableArea.setFontColor(screen.getStyle("ScrollArea").getColorRGBA("fontColor"));
+		scrollableArea.setFontSize(screen.getStyle("ScrollArea").getFloat("fontSize"));
+		scrollableArea.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("ScrollArea").getString("textAlign")));
+		scrollableArea.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("ScrollArea").getString("textVAlign")));
+		scrollableArea.setTextWrap(LineWrapMode.valueOf(screen.getStyle("ScrollArea").getString("textWrap")));
+		scrollableArea.setTextPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
+		scrollableArea.setTextClipPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
+		
 		scrollableArea.setClippingLayer(this);
-		scrollableArea.setTextClipPadding(4);
+		scrollableArea.setTextClipPadding(screen.getStyle("ScrollArea").getFloat("scrollAreaPadding"));
 		
 		this.addChild(scrollableArea);
 	}
@@ -150,9 +169,9 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	
 	public float getScrollableHeight() {
 		if (isTextOnly) {
-			return textElement.getHeight()+(getTextPadding()*2);
+			return textElement.getHeight()+(getTextPadding()*2)+(getClipPadding()*2);
 		} else {
-			return scrollableArea.getHeight()+(scrollableArea.getTextPadding()*2);
+			return scrollableArea.getHeight()+(scrollableArea.getTextPadding()*2)+(scrollableArea.getClipPadding()*2);
 		}
 	}
 	

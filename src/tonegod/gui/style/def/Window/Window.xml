@@ -48,6 +48,7 @@
 				<a value="1.0" />
 			</property>
 			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Center" />
 			<property name="textWrap" type="String" value="Clip" />
 			<property name="textPadding" type="float" value="3" />
 		</font>

@@ -5,6 +5,7 @@
 package tonegod.gui.controls.extras;
 
 import com.jme3.font.BitmapFont;
+import com.jme3.font.LineWrapMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
@@ -39,9 +40,9 @@ public class Indicator extends Element {
 	 */
 	public Indicator(Screen screen, String UID, Vector2f position, Orientation orientation) {
 		this(screen, UID, position,
-			screen.getStyle("Window").getVector2f("defaultSize"),
-			screen.getStyle("Window").getVector4f("resizeBorders"),
-			screen.getStyle("Window").getString("defaultImg"),
+			screen.getStyle("Indicator").getVector2f("defaultSize"),
+			screen.getStyle("Indicator").getVector4f("resizeBorders"),
+			screen.getStyle("Indicator").getString("defaultImg"),
 			orientation
 		);
 	}
@@ -56,8 +57,8 @@ public class Indicator extends Element {
 	 */
 	public Indicator(Screen screen, String UID, Vector2f position, Vector2f dimensions, Orientation orientation) {
 		this(screen, UID, position, dimensions,
-			screen.getStyle("Window").getVector4f("resizeBorders"),
-			screen.getStyle("Window").getString("defaultImg"),
+			screen.getStyle("Indicator").getVector4f("resizeBorders"),
+			screen.getStyle("Indicator").getString("defaultImg"),
 			orientation
 		);
 	}
@@ -132,8 +133,17 @@ public class Indicator extends Element {
 			overlayImg
 		);
 		elOverlay.setIgnoreMouse(true);
-		elOverlay.setTextAlign(BitmapFont.Align.Center);
-		elOverlay.setTextVAlign(BitmapFont.VAlign.Center);
+	//	elOverlay.setTextAlign(BitmapFont.Align.Center);
+	//	elOverlay.setTextVAlign(BitmapFont.VAlign.Center);
+		
+		// Load default font info
+		elOverlay.setFontColor(screen.getStyle("Indicator").getColorRGBA("fontColor"));
+		elOverlay.setFontSize(screen.getStyle("Indicator").getFloat("fontSize"));
+		elOverlay.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Indicator").getString("textAlign")));
+		elOverlay.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("Indicator").getString("textVAlign")));
+		elOverlay.setTextWrap(LineWrapMode.valueOf(screen.getStyle("Indicator").getString("textWrap")));
+		elOverlay.setTextClipPadding(screen.getStyle("Indicator").getFloat("textPadding"));
+		elOverlay.setTextPadding(screen.getStyle("Indicator").getFloat("textPadding"));
 		
 		addChild(elOverlay);
 		
@@ -229,7 +239,7 @@ public class Indicator extends Element {
 	
 	public void setBaseImage(String imgPath) {
 		Texture tex = screen.getApplication().getAssetManager().loadTexture(imgPath);
-		tex.setMinFilter(Texture.MinFilter.BilinearNearestMipMap);
+		tex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
 		tex.setMagFilter(Texture.MagFilter.Bilinear);
 		tex.setWrap(Texture.WrapMode.Repeat);
 		

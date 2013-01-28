@@ -58,15 +58,15 @@ public abstract class AlertBox extends Window {
 			),
 			true
 		);
-		dlg.setFontColor(ColorRGBA.LightGray);
-		dlg.setTextAlign(BitmapFont.Align.Left);
-		dlg.setTextPosition(5,5);
-		dlg.setTextWrap(LineWrapMode.Word);
+	//	dlg.setFontColor(ColorRGBA.LightGray);
+	//	dlg.setTextAlign(BitmapFont.Align.Left);
+	//	dlg.setTextPosition(5,5);
+	//	dlg.setTextWrap(LineWrapMode.Word);
 		dlg.setIsResizable(false);
 		dlg.setScaleEW(true);
 		dlg.setScaleNS(true);
 		dlg.setClippingLayer(dlg);
-		dlg.setPadding(5);
+	//	dlg.setPadding(5);
 		addChild(dlg);
 		
 		btnOk = new ButtonAdapter(screen,  UID + ":btnOk",

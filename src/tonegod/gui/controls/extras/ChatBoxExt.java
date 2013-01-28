@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import tonegod.gui.controls.buttons.ButtonAdapter;
+import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.lists.SelectBox;
 import tonegod.gui.controls.lists.Spinner;
 import tonegod.gui.controls.scrolling.ScrollArea;
@@ -35,6 +36,8 @@ public abstract class ChatBoxExt extends Panel {
 	ButtonAdapter btnChatSendMsg;
 	Spinner spnChannels;
 	SelectBox sbDefaultChannel;
+	
+	Form chatForm;
 	
 	int sendKey;
 	int chatHistorySize = 30;
@@ -94,10 +97,17 @@ public abstract class ChatBoxExt extends Panel {
 		this.setScaleNS(false);
 		this.setScaleEW(false);
 		
+		chatForm = new Form(screen);
+		
+		Vector4f indents = screen.getStyle("Window").getVector4f("contentIndents");
+		float controlSpacing = screen.getStyle("Common").getFloat("defaultControlSpacing");
+		float controlSize = screen.getStyle("Common").getFloat("defaultControlSize");
+		float buttonWidth = screen.getStyle("Button").getVector2f("defaultSize").x;
+		
 		spnChannels = new Spinner(
 			screen,
 			UID + ":Channels",
-			new Vector2f(getWidth()-120-30,10),
+			new Vector2f(getWidth()-140-indents.z,indents.x),
 			new Vector2f(120, 20),
 			Spinner.Orientation.HORIZONTAL,
 			true
@@ -116,7 +126,17 @@ public abstract class ChatBoxExt extends Panel {
 		
 		addChild(spnChannels);
 		
-		saChatArea = new ScrollArea(screen, UID + ":ChatArea", new Vector2f(10, 35), new Vector2f(getWidth()-45, getHeight()-85), false) {
+		saChatArea = new ScrollArea(screen, UID + ":ChatArea",
+			new Vector2f(
+				indents.y,
+				indents.x+controlSpacing+spnChannels.getHeight()
+			),
+			new Vector2f(
+				getWidth()-controlSize-indents.y-indents.z,
+				getHeight()-controlSize-spnChannels.getHeight()-(controlSpacing*2)-indents.x-indents.w
+			),
+			false
+		) {
 			@Override
 			public void controlResizeHook() {
 				float totalHeight = 0;
@@ -136,23 +156,23 @@ public abstract class ChatBoxExt extends Panel {
 				}
 			}
 		};
-		saChatArea.setFontColor(ColorRGBA.LightGray);
-		saChatArea.setTextAlign(BitmapFont.Align.Left);
-		saChatArea.setTextPosition(5,5);
-		saChatArea.setTextWrap(LineWrapMode.Word);
+	//	saChatArea.setFontColor(ColorRGBA.LightGray);
+	//	saChatArea.setTextAlign(BitmapFont.Align.Left);
+	//	saChatArea.setTextPosition(5,5);
+	//	saChatArea.setTextWrap(LineWrapMode.Word);
 		saChatArea.setIsResizable(false);
 		saChatArea.setScaleEW(true);
 		saChatArea.setScaleNS(true);
 		saChatArea.setClippingLayer(saChatArea);
-		saChatArea.setPadding(5);
+	//	saChatArea.setPadding(5);
 		saChatArea.setText("");
 		addChild(saChatArea);
 		
 		sbDefaultChannel = new SelectBox(
 			screen,
 			UID + ":DefaultChannel",
-			new Vector2f(10, getHeight()-25-15),
-			new Vector2f(75, 25)
+			new Vector2f(indents.y, getHeight()-controlSize-indents.w),
+			new Vector2f(100-controlSize, controlSize)
 		) {
 			@Override
 			public void onChange(int selectedIndex, String value) {
@@ -169,8 +189,8 @@ public abstract class ChatBoxExt extends Panel {
 		tfChatInput = new TextField(
 			screen,
 			UID + ":ChatInput",
-			new Vector2f(110, getHeight()-25-15),
-			new Vector2f(getWidth()-20-195, 25)
+			new Vector2f(indents.y+sbDefaultChannel.getWidth()+controlSize, getHeight()-controlSize-indents.w),
+			new Vector2f(getWidth()-sbDefaultChannel.getWidth()-controlSize-indents.y-indents.z-buttonWidth, controlSize)
 		) {
 			@Override
 			public void controlKeyPressHook(KeyInputEvent evt, String text) {
@@ -190,8 +210,8 @@ public abstract class ChatBoxExt extends Panel {
 		btnChatSendMsg = new ButtonAdapter(
 			screen,
 			UID + ":ChatSendMsg",
-			new Vector2f(getWidth()-10-100, getHeight()-25-15),
-			new Vector2f(100,25)
+			new Vector2f(getWidth()-indents.z-buttonWidth, getHeight()-controlSize-indents.w),
+			new Vector2f(buttonWidth,controlSize)
 		) {
 			@Override
 			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
@@ -258,9 +278,9 @@ public abstract class ChatBoxExt extends Panel {
 				index++;
 			}
 		}
-		if (totalHeight > saChatArea.getHeight()) {
+	//	if (totalHeight > saChatArea.getHeight()) {
 			saChatArea.getScrollableArea().setHeight(totalHeight+(saChatArea.getPadding()*2));
-		}
+	//	}
 		totalHeight = 0;
 		for (Label l : displayMessages) {
 			totalHeight += l.getHeight();

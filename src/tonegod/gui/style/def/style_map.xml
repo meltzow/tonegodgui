@@ -8,4 +8,5 @@
 	<style control="Menu" path="tonegod/gui/style/def/Menu/Menu.xml" />
 	<style control="Label" path="tonegod/gui/style/def/Label/Label.xml" />
 	<style control="TextField" path="tonegod/gui/style/def/TextField/TextField.xml" />
+	<style control="Indicator" path="tonegod/gui/style/def/Common/Extras/Indicator.xml" />
 </root>
