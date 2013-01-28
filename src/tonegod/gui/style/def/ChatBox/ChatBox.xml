@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="ChatBox">
+		<font></font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="14" />
+				<y value="14" />
+				<z value="14" />
+				<w value="14" />
+			</property>
+			<property name="minSize" type="Vector2f">
+				<x value="150" />
+				<y value="50" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="350" />
+				<y value="200" />
+			</property>
+			<property name="contentIndents" type="Vector4f">
+				<x value="12" />
+				<y value="12" />
+				<z value="12" />
+				<w value="12" />
+			</property>
+			<property name="clipPadding" type="float" value="6" />
+			<property name="controlAreaHeight" type="float" value="25" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Window/panel_x.png" />
+		</images>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Show" />
+				<effect value="FadeIn" />
+				<speed value="1.5" />
+			</property>
+		</effects>
+	</element>
+</root>
