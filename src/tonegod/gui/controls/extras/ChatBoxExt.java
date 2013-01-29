@@ -36,6 +36,7 @@ public abstract class ChatBoxExt extends Panel {
 	ButtonAdapter btnChatSendMsg;
 	Spinner spnChannels;
 	SelectBox sbDefaultChannel;
+	float saContentPadding;
 	
 	Form chatForm;
 	
@@ -98,11 +99,13 @@ public abstract class ChatBoxExt extends Panel {
 		this.setScaleEW(false);
 		
 		chatForm = new Form(screen);
+		saContentPadding = screen.getStyle("ChatBox").getFloat("contentPadding");
 		
 		Vector4f indents = screen.getStyle("Window").getVector4f("contentIndents");
 		float controlSpacing = screen.getStyle("Common").getFloat("defaultControlSpacing");
 		float controlSize = screen.getStyle("Common").getFloat("defaultControlSize");
 		float buttonWidth = screen.getStyle("Button").getVector2f("defaultSize").x;
+		float scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 		
 		spnChannels = new Spinner(
 			screen,
@@ -132,7 +135,7 @@ public abstract class ChatBoxExt extends Panel {
 				indents.x+controlSpacing+spnChannels.getHeight()
 			),
 			new Vector2f(
-				getWidth()-controlSize-indents.y-indents.z,
+				getWidth()-scrollSize-indents.y-indents.z,
 				getHeight()-controlSize-spnChannels.getHeight()-(controlSpacing*2)-indents.x-indents.w
 			),
 			false
@@ -152,19 +155,18 @@ public abstract class ChatBoxExt extends Panel {
 				totalHeight = 0;
 				for (Label l : displayMessages) {
 					totalHeight += l.getHeight();
+					l.setX(saContentPadding);
+					l.setWidth(saChatArea.getWidth()-(saContentPadding*2));
 					l.setY(saChatArea.getScrollableArea().getHeight()-totalHeight);
 				}
 			}
 		};
-	//	saChatArea.setFontColor(ColorRGBA.LightGray);
-	//	saChatArea.setTextAlign(BitmapFont.Align.Left);
-	//	saChatArea.setTextPosition(5,5);
-	//	saChatArea.setTextWrap(LineWrapMode.Word);
 		saChatArea.setIsResizable(false);
 		saChatArea.setScaleEW(true);
 		saChatArea.setScaleNS(true);
 		saChatArea.setClippingLayer(saChatArea);
-	//	saChatArea.setPadding(5);
+		saChatArea.getScrollableArea().setIgnoreMouse(true);
+		saChatArea.getScrollableArea().setDockS(true);
 		saChatArea.setText("");
 		addChild(saChatArea);
 		
@@ -260,10 +262,10 @@ public abstract class ChatBoxExt extends Panel {
 		String displayText = "";
 		int index = 0;
 		saChatArea.getScrollableArea().removeAllChildren();
-		saChatArea.getScrollableArea().setIgnoreMouse(true);
+	//	saChatArea.getScrollableArea().setIgnoreMouse(true);
 		saChatArea.getScrollableArea().setY(0);
 		saChatArea.getScrollableArea().setHeight(saChatArea.getHeight());
-		saChatArea.getScrollableArea().setDockS(true);
+	//	saChatArea.getScrollableArea().setDockS(true);
 		displayMessages.clear();
 		
 		float totalHeight = 0;
@@ -284,8 +286,11 @@ public abstract class ChatBoxExt extends Panel {
 		totalHeight = 0;
 		for (Label l : displayMessages) {
 			totalHeight += l.getHeight();
+			l.setX(saContentPadding);
+			l.setWidth(saChatArea.getWidth()-(saContentPadding*2));
 			l.setY(saChatArea.getScrollableArea().getHeight()-totalHeight);
 		}
+	//	if (totalHeight > saChatArea.getHeight())
 		saChatArea.scrollToBottom();
 	}
 	
@@ -306,10 +311,11 @@ public abstract class ChatBoxExt extends Panel {
 		l.setIsMovable(false);
 		l.setIgnoreMouse(true);
 		l.setClippingLayer(saChatArea);
+		l.setClipPadding(saContentPadding);
 		l.setFontColor(cm.getChannel().getColor());
 		l.setFontSize(saChatArea.getFontSize());
 		l.setText("[" + cm.getChannel().getName() + "] " + s);
-		l.setHeight(l.getTextElement().getLineHeight()*l.getTextElement().getLineCount());
+		l.setHeight(l.getTextElement().getHeight());
 		l.setIgnoreMouse(true);
 		
 		return l;

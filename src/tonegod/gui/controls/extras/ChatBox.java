@@ -91,6 +91,7 @@ public abstract class ChatBox extends Panel {
 		float controlSpacing = screen.getStyle("Common").getFloat("defaultControlSpacing");
 		float controlSize = screen.getStyle("Common").getFloat("defaultControlSize");
 		float buttonWidth = screen.getStyle("Button").getVector2f("defaultSize").x;
+		float scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 		
 		saChatArea = new ScrollArea(screen, UID + ":ChatArea",
 			new Vector2f(
@@ -98,20 +99,15 @@ public abstract class ChatBox extends Panel {
 				indents.x+controlSpacing
 			),
 			new Vector2f(
-				getWidth()-controlSize-indents.y-indents.z,
+				getWidth()-scrollSize-indents.y-indents.z,
 				getHeight()-controlSize-(controlSpacing*2)-indents.x-indents.w
 			),
 			true
 		);
-	//	saChatArea.setFontColor(ColorRGBA.LightGray);
-	//	saChatArea.setTextAlign(BitmapFont.Align.Left);
-	//	saChatArea.setTextPosition(5,5);
-	//	saChatArea.setTextWrap(LineWrapMode.Word);
 		saChatArea.setIsResizable(false);
 		saChatArea.setScaleEW(true);
 		saChatArea.setScaleNS(true);
 		saChatArea.setClippingLayer(saChatArea);
-	//	saChatArea.setPadding(5);
 		saChatArea.setText("");
 		addChild(saChatArea);
 		

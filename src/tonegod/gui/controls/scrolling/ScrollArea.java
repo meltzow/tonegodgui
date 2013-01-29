@@ -218,17 +218,6 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	
 	public void scrollToBottom() {
 		vScrollBar.scrollToBottom();
-		/*
-		if (scrollableArea == null) {
-			if (textElement.getHeight() > getHeight()) {
-				textElement.setLocalTranslation(textElement.getLocalTranslation().setY(0));
-			}
-		} else {
-			if (scrollableArea.getHeight() > getHeight()) {
-				scrollableArea.setY(0+scrollableArea.getTextPadding());
-			}
-		}
-		*/
 	}
 	
 	public void scrollToTop() {

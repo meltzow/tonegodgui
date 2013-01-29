@@ -6,11 +6,14 @@ package tonegod.gui.controls.windows;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
+import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import com.jme3.renderer.queue.RenderQueue;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.listeners.MouseFocusListener;
+import tonegod.gui.listeners.MouseMovementListener;
 
 /**
  *
@@ -118,19 +121,4 @@ public class Window extends Element {
 	public void setWindowTitle(String title) {
 		dragBar.setText(title);
 	}
-	
-	/*
-	@Override
-	public void addChild(Element child) {
-		child.setElementParent(this);
-		float dBDiff = 0;
-		if (child != dragBar)
-			dBDiff = dragBar.getHeight()+5;
-		child.setY((this.getHeight())-child.getHeight()-child.getY());
-		child.setQueueBucket(RenderQueue.Bucket.Gui);
-		
-		elementChildren.put(child.getUID(), child);
-		this.attachChild(child);
-	}
-	*/
 }

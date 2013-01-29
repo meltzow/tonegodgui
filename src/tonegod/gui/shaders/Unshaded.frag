@@ -19,7 +19,7 @@ uniform bool m_EffectFade;
 uniform bool m_EffectPulse;
 uniform bool m_EffectPulseColor;
 uniform float m_EffectStep;
-
+uniform float m_GlobalAlpha;
 
 #ifdef IS_TEXTFIELD
 uniform bool m_IsTextField;
@@ -126,6 +126,8 @@ void main(){
 	#if defined(HAS_ALPHAMAP)
 		color.a *= texture2D(m_AlphaMap, texCoord1).r;
 	#endif
+	
+	color.a *= m_GlobalAlpha;
 	
     gl_FragColor = color;
 }

@@ -8,6 +8,7 @@ MaterialDef Unshaded {
 		Boolean EffectPulseColor : false
 		Boolean EffectFade : false
 		Float EffectStep
+		Float GlobalAlpha : 1.0
 		
         Texture2D ColorMap
         Texture2D LightMap

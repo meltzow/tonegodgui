@@ -9,6 +9,7 @@ import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
 import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
+import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
@@ -19,6 +20,7 @@ import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.KeyboardListener;
+import tonegod.gui.listeners.MouseFocusListener;
 import tonegod.gui.listeners.TabFocusListener;
 
 
@@ -26,7 +28,7 @@ import tonegod.gui.listeners.TabFocusListener;
  *
  * @author t0neg0d
  */
-public class TextField extends Element implements KeyboardListener, TabFocusListener {
+public class TextField extends Element implements KeyboardListener, TabFocusListener, MouseFocusListener {
 	
 	Element caret;
 	Material caretMat;
@@ -440,5 +442,16 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	
 	public void controlTextFieldSetTabFocusHook() {  }
 	public void controlTextFieldResetTabFocusHook() {  }
+
+	@Override
+	public void onGetFocus(MouseMotionEvent evt) {
+		if (getIsEnabled()) screen.setCursor(Screen.CursorType.TEXT);
+		 
+	}
+
+	@Override
+	public void onLoseFocus(MouseMotionEvent evt) {
+		if (getIsEnabled()) screen.setCursor(Screen.CursorType.POINTER);
+	}
 	
 }

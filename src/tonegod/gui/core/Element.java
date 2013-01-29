@@ -94,7 +94,7 @@ public class Element extends Node {
 	private Vector2f position;
 	private Vector2f dimensions;
 	private Vector4f borders = new Vector4f(1,1,1,1);
-	private Vector4f borderHandles = new Vector4f(12,12,12,12);
+	public Vector4f borderHandles = new Vector4f(12,12,12,12);
 	private Vector2f minDimensions = null; //new Vector2f(100, 50);
 	
 	private boolean ignoreMouse = false;
@@ -223,6 +223,8 @@ public class Element extends Node {
 		} else {
 			mat.setColor("Color", defaultColor);
 		}
+		mat.setFloat("GlobalAlpha", screen.getGlobalAlpha());
+		
 		mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
 		mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
 		
@@ -1685,6 +1687,14 @@ public class Element extends Node {
 			effect.setElement(this);
 			this.addEffect(effect.getEffectEvent(), effect);
 			index++;
+		}
+	}
+	
+	public void setGlobalAlpha(float globalAlpha) {
+		getElementMaterial().setFloat("GlobalAlpha", globalAlpha);
+		Set<String> keys = elementChildren.keySet();
+		for (String key : keys) {
+			elementChildren.get(key).setGlobalAlpha(globalAlpha);
 		}
 	}
 	

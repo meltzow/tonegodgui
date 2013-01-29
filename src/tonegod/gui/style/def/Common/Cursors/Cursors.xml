@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <cursor type="POINTER" path="tonegod/gui/style/def/Common/Cursors/Pointer.cur" />
+    <cursor type="HAND" path="tonegod/gui/style/def/Common/Cursors/Hand.cur" />
+    <cursor type="TEXT" path="tonegod/gui/style/def/Common/Cursors/Text.cur" />
+    <cursor type="MOVE" path="tonegod/gui/style/def/Common/Cursors/Move.cur" />
+</root>

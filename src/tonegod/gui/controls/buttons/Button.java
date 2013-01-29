@@ -4,6 +4,7 @@
  */
 package tonegod.gui.controls.buttons;
 
+import com.jme3.cursors.plugins.JmeCursor;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
 import com.jme3.input.KeyInput;
@@ -329,6 +330,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 					setFontColor(hoverFontColor);
 				}
 			}
+			screen.setCursor(Screen.CursorType.HAND);
 			onButtonFocus(evt);
 		}
 		hasFocus = true;
@@ -345,6 +347,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 				}
 				setFontColor(getFontColor());
 			}
+			screen.setCursor(Screen.CursorType.POINTER);
 			onButtonLostFocus(evt);
 		}
 		hasFocus = false;

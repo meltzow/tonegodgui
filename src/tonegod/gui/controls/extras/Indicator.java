@@ -203,7 +203,7 @@ public class Indicator extends Element {
 		if (this.displayValues) {
 			elOverlay.setText(String.valueOf((int)this.currentValue) + "/" + String.valueOf((int)this.maxValue));
 		} else if (this.displayPercentages) {
-			elOverlay.setText(String.valueOf((int)this.percentage) + "%");
+			elOverlay.setText(String.valueOf((int)((this.currentValue/this.maxValue)*100)) + "%");
 		} else {
 			elOverlay.setText("");
 		}

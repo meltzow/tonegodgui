@@ -3,6 +3,7 @@ package tonegod.gui.core;
 import com.jme3.app.Application;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.cursors.plugins.JmeCursor;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.font.plugins.BitmapFontLoader;
@@ -50,6 +51,26 @@ import tonegod.gui.listeners.*;
  * @author t0neg0d
  */
 public class Screen implements Control, RawInputListener {
+	public static enum CursorType {
+		POINTER,
+		HAND,
+		MOVE,
+		TEXT,
+		RESIZE_CNW,
+		RESIZE_CNE,
+		RESIZE_NS,
+		RESIZE_EW,
+		CUSTOM_0,
+		CUSTOM_1,
+		CUSTOM_2,
+		CUSTOM_3,
+		CUSTOM_4,
+		CUSTOM_5,
+		CUSTOM_6,
+		CUSTOM_7,
+		CUSTOM_8,
+		CUSTOM_9
+	}
 	private Application app;
 	private Spatial spatial;
 	private Map<String, Element> elements = new HashMap();
@@ -86,6 +107,11 @@ public class Screen implements Control, RawInputListener {
 	
 	private Vector2f mouseXY = new Vector2f(0,0);
 	private boolean SHIFT = false;
+	
+	private boolean useCustomCursors = false;
+	private Map<CursorType, JmeCursor> cursors = new HashMap();
+	
+	private float globalAlpha = 1.0f;
 	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
@@ -146,6 +172,9 @@ public class Screen implements Control, RawInputListener {
 	 */
 	public void initialize() {
 		app.getInputManager().addRawInputListener(this);
+		
+		if (getUseCustomCursors())
+			setCursor(CursorType.POINTER);
 	}
 	
 	@Override
@@ -601,6 +630,7 @@ public class Screen implements Control, RawInputListener {
 	private void parseStyles(String path) {
 		List<String> docPaths = new ArrayList();
 		try {
+			// Get Cursors
 			InputStream file = Screen.class.getClassLoader().getResourceAsStream(
 				path
 			);
@@ -608,7 +638,68 @@ public class Screen implements Control, RawInputListener {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(file);
 			doc.getDocumentElement().normalize();
-			NodeList nodeLst = doc.getElementsByTagName("style");
+			NodeList nodeLst = doc.getElementsByTagName("cursors");
+			
+			for (int s = 0; s < nodeLst.getLength(); s++) {
+				org.w3c.dom.Node fstNode = nodeLst.item(0);
+				if (fstNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+					org.w3c.dom.Element fstElmnt = (org.w3c.dom.Element) fstNode;
+				//	String styleName = XMLHelper.getNodeAttributeValue(fstNode, "control");
+					String cursorDocPath = XMLHelper.getNodeAttributeValue(fstNode, "path");
+					docPaths.add(cursorDocPath);
+				}
+			}
+			
+			if (file != null)
+				file.close();
+			
+			for (String docPath : docPaths) {
+				try {
+					file = Screen.class.getClassLoader().getResourceAsStream(
+						docPath
+					);
+					
+					dbf = DocumentBuilderFactory.newInstance();
+					db = dbf.newDocumentBuilder();
+					doc = db.parse(file);
+					doc.getDocumentElement().normalize();
+					NodeList nLst = doc.getElementsByTagName("cursor");
+					
+					for (int s = 0; s < nLst.getLength(); s++) {
+						org.w3c.dom.Node fstNode = nLst.item(s);
+						if (fstNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+							org.w3c.dom.Element fstElmnt = (org.w3c.dom.Element) fstNode;
+							String key = XMLHelper.getNodeAttributeValue(fstNode, "type");
+							String curPath = XMLHelper.getNodeAttributeValue(fstNode, "path");
+							
+							JmeCursor jmeCursor = new JmeCursor();
+							
+							cursors.put(
+								CursorType.valueOf(key), 
+								(JmeCursor)app.getAssetManager().loadAsset(curPath)
+							);
+						}
+					}
+					if (file != null)
+						file.close();
+				} catch (Exception ex) {
+					System.err.println("Problem loading control definition: " + ex);
+				}
+			}
+			
+			
+			
+			// Get Styles
+			docPaths.clear();
+			
+			file = Screen.class.getClassLoader().getResourceAsStream(
+				path
+			);
+			dbf = DocumentBuilderFactory.newInstance();
+			db = dbf.newDocumentBuilder();
+			doc = db.parse(file);
+			doc.getDocumentElement().normalize();
+			nodeLst = doc.getElementsByTagName("style");
 			
 			for (int s = 0; s < nodeLst.getLength(); s++) {
 				org.w3c.dom.Node fstNode = nodeLst.item(s);
@@ -804,6 +895,34 @@ public class Screen implements Control, RawInputListener {
 	 */
 	public Style getStyle(String key) {
 		return styles.get(key);
+	}
+	
+	public void setUseCustomCursors(boolean useCustomCursors) {
+		this.useCustomCursors = useCustomCursors;
+	}
+	
+	public boolean getUseCustomCursors() {
+		return this.useCustomCursors;
+	}
+	
+	public void setCursor(CursorType cur) {
+		if (getUseCustomCursors()) {
+			JmeCursor jmeCur = cursors.get(cur);
+			if (jmeCur != null)
+				getApplication().getInputManager().setMouseCursor(jmeCur);
+		}
+	}
+	
+	public void setGlobalAlpha(float globalAlpha) {
+		this.globalAlpha = globalAlpha;
+		Set<String> keys = elements.keySet();
+		for (String key : keys) {
+			elements.get(key).setGlobalAlpha(globalAlpha);
+		}
+	}
+	
+	public float getGlobalAlpha() {
+		return this.globalAlpha;
 	}
 	
 	// Menu handling
