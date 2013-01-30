@@ -17,6 +17,7 @@ import java.util.List;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.MouseButtonListener;
 import tonegod.gui.listeners.MouseMovementListener;
 import tonegod.gui.listeners.MouseWheelListener;
@@ -324,14 +325,22 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 				y = screen.getHeight()-getHeight();
 		}
 		this.moveTo(x, y);
-		this.show();
+		Effect effect = getEffect(Effect.EffectEvent.Show);
+		if (effect != null)
+			screen.getEffectManager().applyEffect(effect);
+		else
+			this.show();
 	}
 	
 	/**
 	 * Hides the menu
 	 */
 	public void hideMenu() {
-		hide();
+		Effect effect = getEffect(Effect.EffectEvent.Hide);
+		if (effect != null)
+			screen.getEffectManager().applyEffect(effect);
+		else
+			this.hide();
 	}
 	
 	protected void hideAllSubmenus(boolean upChain) {

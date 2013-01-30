@@ -12,6 +12,7 @@ import com.jme3.math.Vector4f;
 import com.jme3.renderer.queue.RenderQueue;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.MouseFocusListener;
 import tonegod.gui.listeners.MouseMovementListener;
 
@@ -120,5 +121,21 @@ public class Window extends Element {
 	 */
 	public void setWindowTitle(String title) {
 		dragBar.setText(title);
+	}
+	
+	public void showWindow() {
+		Effect effect = getEffect(Effect.EffectEvent.Show);
+		if (effect != null)
+			screen.getEffectManager().applyEffect(effect);
+		else
+			this.show();
+	}
+	
+	public void hideWindow() {
+		Effect effect = getEffect(Effect.EffectEvent.Hide);
+		if (effect != null)
+			screen.getEffectManager().applyEffect(effect);
+		else
+			this.hide();
 	}
 }

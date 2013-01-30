@@ -18,10 +18,10 @@ public class Effect implements Cloneable {
 	public enum EffectType {
 		FadeIn,
 		FadeOut,
-		BlendTo,
-		BlendFrom,
 		ZoomIn,
 		ZoomOut,
+		SlideIn,
+		SlideOut,
 		SpinIn,
 		SpinOut,
 		Pulse,
@@ -42,6 +42,13 @@ public class Effect implements Cloneable {
 		LoseTabFocus
 	}
 	
+	public enum EffectDirection {
+		Top,
+		Bottom,
+		Left,
+		Right
+	}
+	
 	private Element element;
 	private EffectType type;
 	private EffectEvent event;
@@ -52,6 +59,8 @@ public class Effect implements Cloneable {
 	private Texture blendImage;
 	private ColorRGBA blendColor;
 	private boolean init = false;
+	private boolean destroyOnHide = false;
+	private EffectDirection effectDir = EffectDirection.Top;
 	private Vector2f def = new Vector2f();
 	private Vector2f diff = new Vector2f();
 	private Vector2f fract = new Vector2f();
@@ -86,6 +95,18 @@ public class Effect implements Cloneable {
 		return this.event;
 	}
 	
+	public void setEffectDirection(EffectDirection effectDir) {
+		this.effectDir = effectDir;
+	}
+	
+	public EffectDirection getEffectDirection() {
+		return this.effectDir;
+	}
+	
+	public void setDestroyOnHide(boolean destroyOnHide) {
+		this.destroyOnHide = destroyOnHide;
+	}
+	
 	public void update(float tpf) {
 		if (type == EffectType.ZoomIn) {
 			if (!init) {
@@ -94,6 +115,7 @@ public class Effect implements Cloneable {
 				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
 				element.setPosition(def.add(diff.subtract(inc)));
 				element.setLocalScale(pass);
+				element.show();
 				init = true;
 			} else if (isActive) {
 				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
@@ -109,18 +131,91 @@ public class Effect implements Cloneable {
 				def.set(element.getPosition().clone());
 				diff.set(element.getWidth()/2,element.getHeight()/2);
 				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-				element.setPosition(def.subtract(inc));
+				element.setPosition(def.add(inc));
 				element.setLocalScale(1-pass);
 				init = true;
 			} else if (isActive) {
 				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-				element.setPosition(def.subtract(inc));
+				element.setPosition(def.add(inc));
 				element.setLocalScale(1-pass);
 			}
 			if (pass >= 1.0) {
-				element.hide();
+				if (!destroyOnHide) {
+					element.hide();
+					element.setPosition(def);
+					element.setLocalScale(0);
+				} else
+					destoryElement();
+			}
+		} else if (type == EffectType.SlideIn) {
+			if (!init) {
+				def.set(element.getPosition().clone());
+				if (effectDir == EffectDirection.Bottom) {
+					diff.set(0,element.getAbsoluteHeight());
+				} else if (effectDir == EffectDirection.Top) {
+					diff.set(0,element.getScreen().getHeight()-element.getAbsoluteY());
+				} else if (effectDir == EffectDirection.Left) {
+					diff.set(element.getAbsoluteWidth(),0);
+				} else if (effectDir == EffectDirection.Right) {
+					diff.set(element.getScreen().getWidth()-element.getAbsoluteX(),0);
+				}
+				if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
+					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+					element.setPosition(def.subtract(diff.subtract(inc)));
+				} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
+					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+					element.setPosition(def.add(diff.subtract(inc)));
+				}
+				element.show();
+				init = true;
+			} else if (isActive) {
+				if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
+					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+					element.setPosition(def.subtract(diff.subtract(inc)));
+				} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
+					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+					element.setPosition(def.add(diff.subtract(inc)));
+				}
+			}
+			if (pass >= 1.0) {
 				element.setPosition(def);
-				element.setLocalScale(1);
+				element.setLocalScale(pass);
+			}
+		} else if (type == EffectType.SlideOut) {
+			if (!init) {
+				def.set(element.getPosition().clone());
+				if (effectDir == EffectDirection.Bottom) {
+					diff.set(0,element.getAbsoluteHeight());
+				} else if (effectDir == EffectDirection.Top) {
+					diff.set(0,element.getScreen().getHeight()-element.getAbsoluteY());
+				} else if (effectDir == EffectDirection.Left) {
+					diff.set(element.getAbsoluteWidth(),0);
+				} else if (effectDir == EffectDirection.Right) {
+					diff.set(element.getScreen().getWidth()-element.getAbsoluteX(),0);
+				}
+				if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
+					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+					element.setPosition(def.subtract(diff.subtract(inc)));
+				} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
+					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+					element.setPosition(def.add(diff.subtract(inc)));
+				}
+				init = true;
+			} else if (isActive) {
+				if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
+					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+					element.setPosition(def.subtract(diff.subtract(inc)));
+				} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
+					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+					element.setPosition(def.add(diff.subtract(inc)));
+				}
+			}
+			if (pass >= 1.0) {
+				if (!destroyOnHide) {
+					element.hide();
+					element.setPosition(def);
+				} else
+					destoryElement();
 			}
 		} else if (type == EffectType.SpinIn) {
 			if (!init) {
@@ -129,6 +224,7 @@ public class Effect implements Cloneable {
 				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
 				element.setPosition(def.add(diff.subtract(inc)));
 				element.setLocalScale(pass);
+				element.show();
 				init = true;
 			} else if (isActive) {
 				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
@@ -154,23 +250,21 @@ public class Effect implements Cloneable {
 				element.setLocalScale(1-pass);
 			}
 			if (pass >= 1.0) {
-				element.hide();
-				element.setPosition(def);
-				element.setLocalScale(1);
+				if (!destroyOnHide) {
+					element.hide();
+					element.setPosition(def);
+					element.setLocalScale(1);
+				} else
+					destoryElement();
 			}
 			element.setLocalRotation(element.getLocalRotation().fromAngles(0, 0, 360*FastMath.DEG_TO_RAD*(1.0f-pass)));
-		} else if (type == EffectType.BlendFrom) {
-		//	if (pass == 0.0) element.getElementMaterial().setTexture("BlendImg", element.getHoverImg);
-		//	element.getElementMaterial().setFloat("EffectPass", 1.0f-pass);
-		} else if (type == EffectType.BlendTo) {
-		//	if (pass == 0.0) element.getElementMaterial().setTexture("BlendImg", element.getHoverImg());
-		//	element.getElementMaterial().setFloat("EffectPass", pass);
 		} else if (type == EffectType.FadeIn) {
 			if (!init) {
 				element.getElementMaterial().setBoolean("UseEffect", true);
 				element.getElementMaterial().setBoolean("EffectFade", true);
 				element.getElementMaterial().setBoolean("EffectPulse", false);
 			//	element.getElementMaterial().setTexture("EffectMap", blendImage);
+				element.show();
 				init = true;
 			}
 			element.getElementMaterial().setFloat("EffectStep", pass);
@@ -182,7 +276,16 @@ public class Effect implements Cloneable {
 			//	element.getElementMaterial().setTexture("EffectMap", blendImage);
 				init = true;
 			}
-			element.getElementMaterial().setFloat("EffectStep", 1.0f-pass);
+			if (pass >= 1.0) {
+				if (!destroyOnHide) {
+					element.hide();
+					element.getElementMaterial().setBoolean("UseEffect", false);
+					element.getElementMaterial().setBoolean("EffectFade", false);
+					element.getElementMaterial().setBoolean("EffectPulse", false);
+				} else
+					destoryElement();
+			} else
+				element.getElementMaterial().setFloat("EffectStep", 1.0f-pass);
 		} else if (type == EffectType.ImageSwap) {
 			if (!init) {
 				element.getElementMaterial().setBoolean("UseEffect", true);
@@ -251,8 +354,20 @@ public class Effect implements Cloneable {
 					element.getElementMaterial().setFloat("EffectStep", pass);
 				} else {
 					pass += tpf*speed;
+					if (pass >= 1.0) {
+						pass = 1.0f;
+						isActive = false;
+					}
 				}
 			}
+		}
+	}
+	
+	private void destoryElement() {
+		if (element.getElementParent() == null) {
+			element.getScreen().removeElement(element);
+		} else {
+			element.getElementParent().removeChild(element);
 		}
 	}
 	

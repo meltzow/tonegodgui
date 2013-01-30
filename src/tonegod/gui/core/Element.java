@@ -279,6 +279,10 @@ public class Element extends Node {
 		elementChildren.clear();
 	}
 	
+	public Screen getScreen() {
+		return this.screen;
+	}
+	
 	// Z-ORDER 
 	/**
 	 * Recursive call made by the screen control to properly initialize z-order (depth) placement
@@ -1207,6 +1211,12 @@ public class Element extends Node {
 	 */
 	public void setFont(String fontPath) {
 		font = app.getAssetManager().loadFont(fontPath);
+		if (textElement != null) {
+			String text = this.getText();
+			textElement.removeFromParent();
+			textElement = null;
+			setText(text);
+		}
 	}
 	
 	/**
@@ -1223,6 +1233,9 @@ public class Element extends Node {
 	 */
 	public void setFontSize(float fontSize) {
 		this.fontSize = fontSize;
+		if (textElement != null) {
+			textElement.setSize(fontSize);
+		}
 	}
 	
 	/**
@@ -1259,6 +1272,9 @@ public class Element extends Node {
 	 */
 	public void setTextAlign(BitmapFont.Align textAlign) {
 		this.textAlign = textAlign;
+		if (textElement != null) {
+			textElement.setAlignment(textAlign);
+		}
 	}
 	
 	/**
@@ -1276,6 +1292,9 @@ public class Element extends Node {
 	 */
 	public void setTextVAlign(BitmapFont.VAlign textVAlign) {
 		this.textVAlign = textVAlign;
+		if (textElement != null) {
+			textElement.setVerticalAlignment(textVAlign);
+		}
 	}
 	
 	/**
@@ -1292,6 +1311,9 @@ public class Element extends Node {
 	 */
 	public void setTextWrap(LineWrapMode textWrap) {
 		this.textWrap = textWrap;
+		if (textElement != null) {
+			textElement.setLineWrapMode(textWrap);
+		}
 	}
 	
 	/**
@@ -1427,10 +1449,10 @@ public class Element extends Node {
 			for (String key : keys) {
 				elementChildren.get(key).childShow();
 			}
-			Effect effect = getEffect(Effect.EffectEvent.Show);
-			if (effect != null) {
-				screen.getEffectManager().applyEffect(effect);
-			}
+		//	Effect effect = getEffect(Effect.EffectEvent.Show);
+		//	if (effect != null) {
+		//		screen.getEffectManager().applyEffect(effect);
+		//	}
 		}
 	}
 	
