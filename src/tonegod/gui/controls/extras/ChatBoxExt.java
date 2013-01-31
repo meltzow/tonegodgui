@@ -4,7 +4,6 @@
  */
 package tonegod.gui.controls.extras;
 
-import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
@@ -31,21 +30,21 @@ import tonegod.gui.core.Screen;
  * @author t0neg0d
  */
 public abstract class ChatBoxExt extends Panel {
-	ScrollArea saChatArea;
-	TextField tfChatInput;
-	ButtonAdapter btnChatSendMsg;
-	Spinner spnChannels;
-	SelectBox sbDefaultChannel;
-	float saContentPadding;
+	private ScrollArea saChatArea;
+	private TextField tfChatInput;
+	private ButtonAdapter btnChatSendMsg;
+	private Spinner spnChannels;
+	private SelectBox sbDefaultChannel;
+	private float saContentPadding;
 	
-	Form chatForm;
+	private Form chatForm;
 	
-	int sendKey;
-	int chatHistorySize = 30;
-	List<ChatMessage> chatMessages = new ArrayList();
+	private int sendKey;
+	private int chatHistorySize = 30;
+	protected List<ChatMessage> chatMessages = new ArrayList();
 	
-	Map<String, ChatChannel> channels = new HashMap();
-	String defaultCommand;
+	protected Map<String, ChatChannel> channels = new HashMap();
+	private String defaultCommand;
 	
 	List<Label> displayMessages = new ArrayList();
 	List<ChatChannel> filteredChannels = new ArrayList();

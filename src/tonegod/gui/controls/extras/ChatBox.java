@@ -26,16 +26,16 @@ import tonegod.gui.core.Screen;
  * @author t0neg0d
  */
 public abstract class ChatBox extends Panel {
-	ScrollArea saChatArea;
-	TextField tfChatInput;
-	ButtonAdapter btnChatSendMsg;
-	Spinner spnChannels;
+	private ScrollArea saChatArea;
+	private TextField tfChatInput;
+	private ButtonAdapter btnChatSendMsg;
+	private Spinner spnChannels;
 	
-	Form chatForm;
+	private Form chatForm;
 	
-	int sendKey;
-	int chatHistorySize = 30;
-	List<String> chatMessages = new ArrayList();
+	private int sendKey;
+	private int chatHistorySize = 30;
+	protected List<String> chatMessages = new ArrayList();
 	
 	/**
 	 * Creates a new instance of the ChatBox control
