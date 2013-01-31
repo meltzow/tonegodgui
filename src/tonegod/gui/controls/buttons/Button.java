@@ -259,6 +259,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		initClickPause = true;
 		currentInitClickTrack = 0;
 		onButtonMouseLeftDown(evt, isToggled);
+		evt.setConsumed();
 	}
 
 	@Override
@@ -301,18 +302,21 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		initClickPause = false;
 		currentInitClickTrack = 0;
 		onButtonMouseLeftUp(evt, isToggled);
+		evt.setConsumed();
 	}
 
 	@Override
 	public void onMouseRightPressed(MouseButtonEvent evt) {
 	//	throw new UnsupportedOperationException("Not supported yet.");
 		onButtonMouseRightDown(evt, isToggled);
+		evt.setConsumed();
 	}
 
 	@Override
 	public void onMouseRightReleased(MouseButtonEvent evt) {
 	//	throw new UnsupportedOperationException("Not supported yet.");
 		onButtonMouseRightUp(evt, isToggled);
+		evt.setConsumed();
 	}
 
 	@Override

@@ -197,6 +197,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		}
 		this.setText(getVisibleText());
 		controlKeyPressHook(evt, finalText);
+		evt.setConsumed();
 	}
 	
 	public void controlKeyPressHook(KeyInputEvent evt, String text) {  }
@@ -210,6 +211,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		} else if (evt.getKeyCode() == KeyInput.KEY_LMENU || evt.getKeyCode() == KeyInput.KEY_RMENU) {
 			alt = false;
 		}
+		evt.setConsumed();
 	}
 	
 	protected void getTextFieldText() {

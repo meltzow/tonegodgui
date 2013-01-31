@@ -408,19 +408,23 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	@Override
 	public void onMouseLeftPressed(MouseButtonEvent evt) {
 		
+		evt.setConsumed();
 	}
 	@Override
 	public void onMouseLeftReleased(MouseButtonEvent evt) {
 		if (currentMenuItemIndex > -1 && currentMenuItemIndex < menuItems.size())
 			this.handleMenuItemClick(menuItems.get(currentMenuItemIndex), currentMenuItemIndex, menuItems.get(currentMenuItemIndex).getValue());
+		evt.setConsumed();
 	}
 	@Override
 	public void onMouseRightPressed(MouseButtonEvent evt) {
 		
+		evt.setConsumed();
 	}
 	@Override
 	public void onMouseRightReleased(MouseButtonEvent evt) {
 		
+		evt.setConsumed();
 	}
 	@Override
 	public void controlHideHook() {

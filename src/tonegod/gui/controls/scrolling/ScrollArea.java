@@ -233,9 +233,11 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	}
 
 	@Override
-	public void onMouseWheelPressed(MouseButtonEvent evt) {  }
+	public void onMouseWheelPressed(MouseButtonEvent evt) {
+		evt.setConsumed();}
 	@Override
-	public void onMouseWheelReleased(MouseButtonEvent evt) {  }
+	public void onMouseWheelReleased(MouseButtonEvent evt) {
+		evt.setConsumed();}
 	@Override
 	public void onMouseWheelUp(MouseMotionEvent evt) {
 		if (vScrollBar != null) {
