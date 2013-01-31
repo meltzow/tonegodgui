@@ -4,6 +4,7 @@
  */
 package tonegod.gui.core;
 
+import com.jme3.input.ChaseCamera;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -23,22 +24,25 @@ import com.jme3.texture.Texture2D;
  */
 public class OSRBridge extends AbstractControl {
 	private RenderManager rm;
+	private ChaseCamera chaseCam;
 	private Camera cam;
 	private ViewPort vp;
 	private Node root;
 	private Texture2D tex;
+	private float tpf = 0.01f;
 	
 	public OSRBridge(RenderManager rm, int width, int height, Node root) {
 		this.rm = rm;
 		this.root = root;
 
 		cam = new Camera(width, height);
-
+		
 		vp = rm.createPreView("Offscreen View", cam);
 		vp.setClearFlags(true, true, true);
 		
 		FrameBuffer offBuffer = new FrameBuffer(width, height, 1);
-
+		
+		
 		cam.setFrustumPerspective(45f, 1f, 1f, 1000f);
 		cam.setLocation(new Vector3f(0f, 0f, -3.75f));
 		cam.lookAt(root.getLocalTranslation(), Vector3f.UNIT_Y);
@@ -54,6 +58,24 @@ public class OSRBridge extends AbstractControl {
 		
 		setSpatial(root);
 		vp.attachScene(root);
+		
+		chaseCam = new ChaseCamera(cam, root) {
+			@Override
+			 public void setDragToRotate(boolean dragToRotate) {
+				this.dragToRotate = dragToRotate;
+				this.canRotate = !dragToRotate;
+			}
+		};
+		chaseCam.setDefaultDistance(5f);
+		chaseCam.setMaxDistance(340f);
+		chaseCam.setDefaultHorizontalRotation(0f);
+		chaseCam.setDefaultVerticalRotation(0f);
+		chaseCam.setZoomSensitivity(0.05f);
+		cam.setFrustumFar(36000f);
+		float aspect = (float)cam.getWidth() / (float)cam.getHeight();
+		cam.setFrustumPerspective( 45f, aspect, 0.1f, cam.getFrustumFar() );
+		chaseCam.setUpVector(Vector3f.UNIT_Y);
+		chaseCam.setMinDistance(.05f);
 	}
 	
 	public Texture2D getTexture() {
@@ -68,6 +90,14 @@ public class OSRBridge extends AbstractControl {
 		return this.cam;
 	}
 	
+	public ChaseCamera getChaseCamera() {
+		return this.chaseCam;
+	}
+	
+	public RenderManager getRenderManager() {
+		return this.rm;
+	}
+	
 	public Node getRootNode() {
 		return this.root;
 	}
@@ -76,6 +106,14 @@ public class OSRBridge extends AbstractControl {
 		vp.setBackgroundColor(color);
 	}
 	
+	public float getCurrentTPF() {
+		return tpf;
+	}
+	
+//	@Override
+//	public void update(float tpf) {
+//		this.tpf = tpf;
+//	}
 	
 	@Override
 	public final void setSpatial(Spatial spatial) {
