@@ -6,6 +6,7 @@ package tonegod.gui.controls.extras;
 
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import com.jme3.scene.Node;
@@ -23,6 +24,8 @@ import tonegod.gui.listeners.MouseWheelListener;
  */
 public class OSRViewPort extends Element implements MouseButtonListener, MouseMovementListener, MouseWheelListener, MouseFocusListener {
 	OSRBridge bridge;
+	boolean rotateEnabled = true;
+	boolean zoomEnabled = true;
 	boolean enabled = false;
 	boolean mouseLook = false;
 	int lastX = 0, lastY = 0;
@@ -71,23 +74,25 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 	public OSRViewPort(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, null);
 		
-		elOverlay = new Element(
-			screen,
-			UID + ":Overlay",
-			new Vector2f(0,0),
-			dimensions.clone(),
-			new Vector4f(0,0,0,0),
-			defaultImg
-		);
-		elOverlay.setScaleNS(true);
-		elOverlay.setScaleEW(true);
-		elOverlay.setDockN(true);
-		elOverlay.setDockW(true);
-		elOverlay.setIsResizable(true);
-		elOverlay.setIsMovable(false);
-		elOverlay.setIgnoreMouse(true);
-		
-		addChild(elOverlay);
+		if (defaultImg != null) {
+			elOverlay = new Element(
+				screen,
+				UID + ":Overlay",
+				new Vector2f(0,0),
+				dimensions.clone(),
+				new Vector4f(0,0,0,0),
+				defaultImg
+			);
+			elOverlay.setScaleNS(true);
+			elOverlay.setScaleEW(true);
+			elOverlay.setDockN(true);
+			elOverlay.setDockW(true);
+			elOverlay.setIsResizable(true);
+			elOverlay.setIsMovable(false);
+			elOverlay.setIgnoreMouse(true);
+
+			addChild(elOverlay);
+		}
 	}
 	
 	public void setOSRBridge(Node root, int width, int height) {
@@ -97,22 +102,66 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 		bridge.getChaseCamera().setHideCursorOnRotate(false);
 	}
 
+	public void setBackgroundColor(ColorRGBA color) {
+		bridge.getViewPort().setBackgroundColor(color);
+	}
+	
+	public void setCameraDistance(float distance) {
+		bridge.getChaseCamera().setDefaultDistance(distance);
+	}
+
+	public void setCameraHorizonalRotation(float angleInRads) {
+		bridge.getChaseCamera().setDefaultHorizontalRotation(angleInRads);
+	}
+
+	public void setCameraVerticalRotation(float angleInRads) {
+		bridge.getChaseCamera().setDefaultVerticalRotation(angleInRads);
+	}
+
+	public void setCameraMinDistance(float distance) {
+		bridge.getChaseCamera().setMinDistance(distance);
+	}
+
+	public void setCameraMaxDistance(float distance) {
+		bridge.getChaseCamera().setMaxDistance(distance);
+	}
+
+	public void setCameraMinVerticalRotation(float angleInRads) {
+		bridge.getChaseCamera().setMinVerticalRotation(angleInRads);
+	}
+
+	public void setCameraMaxVerticalRotation(float angleInRads) {
+		bridge.getChaseCamera().setMaxVerticalRotation(angleInRads);
+	}
+	
+	public void setUseCameraControlRotate(boolean rotateEnabled) {
+		this.rotateEnabled = rotateEnabled;
+	}
+	
+	public void setUseCameraControlZoom(boolean zoomEnabled) {
+		this.zoomEnabled = zoomEnabled;
+	}
+	
 	@Override
 	public void onMouseLeftPressed(MouseButtonEvent evt) {  }
 	@Override
 	public void onMouseLeftReleased(MouseButtonEvent evt) {  }
 	@Override
 	public void onMouseRightPressed(MouseButtonEvent evt) {
-		mouseLook = true;
-		screen.getApplication().getInputManager().setCursorVisible(false);
-		bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
+		if (rotateEnabled) {
+			mouseLook = true;
+			screen.getApplication().getInputManager().setCursorVisible(false);
+			bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
+		}
 		evt.setConsumed();
 	}
 	@Override
 	public void onMouseRightReleased(MouseButtonEvent evt) {
-		mouseLook = false;
-		screen.getApplication().getInputManager().setCursorVisible(true);
-		bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
+		if (rotateEnabled) {
+			mouseLook = false;
+			screen.getApplication().getInputManager().setCursorVisible(true);
+			bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
+		}
 		evt.setConsumed();
 	}
 	@Override
@@ -139,15 +188,19 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 	public void onMouseWheelReleased(MouseButtonEvent evt) {  }
 	@Override
 	public void onMouseWheelUp(MouseMotionEvent evt) {
-		if (enabled) {
-			bridge.getChaseCamera().onAnalog("ChaseCamZoomIn", evt.getDeltaWheel()*(bridge.getCurrentTPF()/4), bridge.getCurrentTPF());
+		if (zoomEnabled) {
+			if (enabled) {
+				bridge.getChaseCamera().onAnalog("ChaseCamZoomIn", evt.getDeltaWheel()*(bridge.getCurrentTPF()/4), bridge.getCurrentTPF());
+			}
 		}
 		evt.setConsumed();
 	}
 	@Override
 	public void onMouseWheelDown(MouseMotionEvent evt) {
-		if (enabled) {
-			bridge.getChaseCamera().onAnalog("ChaseCamZoomIn", evt.getDeltaWheel()*(bridge.getCurrentTPF()/4), bridge.getCurrentTPF());
+		if (zoomEnabled) {
+			if (enabled) {
+				bridge.getChaseCamera().onAnalog("ChaseCamZoomIn", evt.getDeltaWheel()*(bridge.getCurrentTPF()/4), bridge.getCurrentTPF());
+			}
 		}
 		evt.setConsumed();
 	}

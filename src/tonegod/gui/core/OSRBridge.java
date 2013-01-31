@@ -6,6 +6,7 @@ package tonegod.gui.core;
 
 import com.jme3.input.ChaseCamera;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -43,9 +44,9 @@ public class OSRBridge extends AbstractControl {
 		FrameBuffer offBuffer = new FrameBuffer(width, height, 1);
 		
 		
-		cam.setFrustumPerspective(45f, 1f, 1f, 1000f);
-		cam.setLocation(new Vector3f(0f, 0f, -3.75f));
-		cam.lookAt(root.getLocalTranslation(), Vector3f.UNIT_Y);
+	//	cam.setFrustumPerspective(45f, 1f, 1f, 1000f);
+	//	cam.setLocation(new Vector3f(0f, 0f, 0f));
+	//	cam.lookAt(root.getLocalTranslation(), Vector3f.UNIT_Y);
 
 		tex = new Texture2D(512, 512, Image.Format.RGBA8);
 		tex.setMinFilter(Texture.MinFilter.Trilinear);
@@ -68,14 +69,14 @@ public class OSRBridge extends AbstractControl {
 		};
 		chaseCam.setDefaultDistance(5f);
 		chaseCam.setMaxDistance(340f);
-		chaseCam.setDefaultHorizontalRotation(0f);
+		chaseCam.setDefaultHorizontalRotation(90*FastMath.DEG_TO_RAD);
 		chaseCam.setDefaultVerticalRotation(0f);
-		chaseCam.setZoomSensitivity(0.05f);
+	//	chaseCam.setZoomSensitivity(0.05f);
 		cam.setFrustumFar(36000f);
 		float aspect = (float)cam.getWidth() / (float)cam.getHeight();
 		cam.setFrustumPerspective( 45f, aspect, 0.1f, cam.getFrustumFar() );
 		chaseCam.setUpVector(Vector3f.UNIT_Y);
-		chaseCam.setMinDistance(.05f);
+	//	chaseCam.setMinDistance(.05f);
 	}
 	
 	public Texture2D getTexture() {
