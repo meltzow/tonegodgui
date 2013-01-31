@@ -25,6 +25,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	private boolean isScrollable = true;
 	private VScrollBar vScrollBar;
 	private float scrollSize;
+	private boolean scrollHidden = false;
 	
 	/**
 	 * Creates a new instance of the ScrollArea control
@@ -103,7 +104,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	}
 	
 	private void createScrollableArea() {
-		scrollableArea = new Element(screen, getUID() + ":scrollable", new Vector2f(0, 0), new Vector2f(getWidth(), getHeight()), new Vector4f(14,14,14,14), null);
+		scrollableArea = new Element(screen, getUID() + ":scrollable", new Vector2f(0, 0), new Vector2f(getWidth(), 25), new Vector4f(14,14,14,14), null);
 	//	scrollableArea.setTextPadding(0);
 		
 		scrollableArea.setIsResizable(false);
@@ -180,6 +181,10 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		if (vScrollBar != null) {
 			vScrollBar.setThumbScale();
 		}
+		adjustWidthForScroll();
+		if (scrollableArea != null)
+			if (scrollableArea.getY() > 0 && getScrollableHeight() > getHeight())
+				scrollToBottom();
 	}
 	
 	@Override
@@ -191,11 +196,23 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		}
 	}
 	
+	public final void adjustWidthForScroll() {
+		if (vScrollBar.getParent() == null && !scrollHidden) {
+			setWidth(getWidth()+vScrollBar.getWidth());
+			scrollHidden = true;
+		} else if (vScrollBar.getParent() != null && scrollHidden) {
+			setWidth(getWidth()-vScrollBar.getWidth());
+			scrollHidden = false;
+		}
+	}
+	
 	public void scrollThumbYTo(float y) {
+		adjustWidthForScroll();
 		vScrollBar.scrollYTo(y);
 	}
 	
 	public void scrollYTo(float y) {
+		adjustWidthForScroll();
 		if (scrollableArea == null) {
 			textElement.setLocalTranslation(textElement.getLocalTranslation().setY(y));
 		} else {
@@ -208,6 +225,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	public void controlScrollHook() {  }
 	
 	public void scrollYBy(float yInc) {
+		adjustWidthForScroll();
 		if (scrollableArea == null) {
 			float nextY = textElement.getLocalTranslation().getY() + yInc;
 			textElement.setLocalTranslation(textElement.getLocalTranslation().setY(yInc));
@@ -217,6 +235,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	}
 	
 	public void scrollToBottom() {
+		adjustWidthForScroll();
 		vScrollBar.scrollToBottom();
 	}
 	

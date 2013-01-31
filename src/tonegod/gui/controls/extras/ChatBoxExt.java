@@ -158,6 +158,10 @@ public abstract class ChatBoxExt extends Panel {
 					l.setWidth(saChatArea.getWidth()-(saContentPadding*2));
 					l.setY(saChatArea.getScrollableArea().getHeight()-totalHeight);
 				}
+				if (getVScrollBar() != null) {
+					getVScrollBar().setThumbScale();
+				}
+				adjustWidthForScroll();
 			}
 		};
 		saChatArea.setIsResizable(false);
@@ -304,7 +308,7 @@ public abstract class ChatBoxExt extends Panel {
 		l.setTextWrap(LineWrapMode.Word);
 		l.setScaleEW(true);
 		l.setScaleNS(false);
-		l.setDockS(true);
+		l.setDockN(true);
 		l.setDockW(true);
 		l.setIsResizable(false);
 		l.setIsMovable(false);

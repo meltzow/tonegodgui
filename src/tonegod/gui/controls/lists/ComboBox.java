@@ -150,7 +150,7 @@ public abstract class ComboBox extends TextField {
 		DDList.setResizeE(true);
 		DDList.setResizeS(true);
 		if (DDList.getWidth() < getWidth())
-			DDList.resize(getWidth(), DDList.getMenuItemHeight()*5, Borders.SE);
+			DDList.resize(getWidth()+btnHeight, DDList.getMenuItemHeight()*5, Borders.SE);
 		else
 			DDList.resize(DDList.getWidth(), DDList.getMenuItemHeight()*5, Borders.SE);
 		DDList.getVScrollBar().setX(DDList.getWidth());
