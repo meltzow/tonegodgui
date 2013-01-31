@@ -241,11 +241,13 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		if (vScrollBar != null) {
 			vScrollBar.scrollByYInc(-vScrollBar.getTrackInc());
 		}
+		evt.setConsumed();
 	}
 	@Override
 	public void onMouseWheelDown(MouseMotionEvent evt) {
 		if (vScrollBar != null) {
 			vScrollBar.scrollByYInc(vScrollBar.getTrackInc());
 		}
+		evt.setConsumed();
 	}
 }

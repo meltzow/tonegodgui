@@ -166,6 +166,8 @@ public class Element extends Node {
 	private float zOrder;
 	private Map<Effect.EffectEvent, Effect> effects = new HashMap();
 	
+	private OSRBridge bridge;
+	
 	/**
 	 * The Element class is the single primitive for all controls in the gui library.
 	 * Each element consists of an ElementQuadMesh for rendering resizable textures,
@@ -1503,6 +1505,16 @@ public class Element extends Node {
 	 */
 	public void controlHideHook() {  }
 	
+	public void propagateEffect(Effect effect) {
+		Effect nEffect = effect.clone();
+		nEffect.setElement(this);
+		screen.getEffectManager().applyEffect(nEffect);
+		Set<String> keys = elementChildren.keySet();
+		for (String key : keys) {
+			elementChildren.get(key).propagateEffect(effect);
+		}
+	}
+	
 	/**
 	 * Return if the Element is visible
 	 * 
@@ -1751,5 +1763,13 @@ public class Element extends Node {
 	 */
 	public int getTabIndex() {
 		return tabIndex;
+	}
+	
+	// Off Screen Rendering Bridge
+	public void addOSRBridge(OSRBridge bridge) {
+		this.bridge = bridge;
+		addControl(bridge);
+		getElementMaterial().setTexture("ColorMap", bridge.getTexture());
+		getElementMaterial().setColor("Color", ColorRGBA.White);
 	}
 }

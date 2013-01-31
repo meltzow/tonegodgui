@@ -125,17 +125,23 @@ public class Window extends Element {
 	
 	public void showWindow() {
 		Effect effect = getEffect(Effect.EffectEvent.Show);
-		if (effect != null)
-			screen.getEffectManager().applyEffect(effect);
-		else
+		if (effect != null) {
+			if (effect.getEffectType() == Effect.EffectType.FadeIn)
+				this.propagateEffect(effect);
+			else
+				screen.getEffectManager().applyEffect(effect);
+		} else
 			this.show();
 	}
 	
 	public void hideWindow() {
 		Effect effect = getEffect(Effect.EffectEvent.Hide);
-		if (effect != null)
-			screen.getEffectManager().applyEffect(effect);
-		else
+		if (effect != null) {
+			if (effect.getEffectType() == Effect.EffectType.FadeOut)
+				this.propagateEffect(effect);
+			else
+				screen.getEffectManager().applyEffect(effect);
+		} else
 			this.hide();
 	}
 }

@@ -95,6 +95,10 @@ public class Effect implements Cloneable {
 		return this.event;
 	}
 	
+	public EffectType getEffectType() {
+		return this.type;
+	}
+	
 	public void setEffectDirection(EffectDirection effectDir) {
 		this.effectDir = effectDir;
 	}
@@ -149,33 +153,12 @@ public class Effect implements Cloneable {
 			}
 		} else if (type == EffectType.SlideIn) {
 			if (!init) {
-				def.set(element.getPosition().clone());
-				if (effectDir == EffectDirection.Bottom) {
-					diff.set(0,element.getAbsoluteHeight());
-				} else if (effectDir == EffectDirection.Top) {
-					diff.set(0,element.getScreen().getHeight()-element.getAbsoluteY());
-				} else if (effectDir == EffectDirection.Left) {
-					diff.set(element.getAbsoluteWidth(),0);
-				} else if (effectDir == EffectDirection.Right) {
-					diff.set(element.getScreen().getWidth()-element.getAbsoluteX(),0);
-				}
-				if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
-					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-					element.setPosition(def.subtract(diff.subtract(inc)));
-				} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
-					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-					element.setPosition(def.add(diff.subtract(inc)));
-				}
+				initSlides();
+				updateSlideIn();
 				element.show();
 				init = true;
 			} else if (isActive) {
-				if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
-					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-					element.setPosition(def.subtract(diff.subtract(inc)));
-				} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
-					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-					element.setPosition(def.add(diff.subtract(inc)));
-				}
+				updateSlideIn();
 			}
 			if (pass >= 1.0) {
 				element.setPosition(def);
@@ -183,32 +166,11 @@ public class Effect implements Cloneable {
 			}
 		} else if (type == EffectType.SlideOut) {
 			if (!init) {
-				def.set(element.getPosition().clone());
-				if (effectDir == EffectDirection.Bottom) {
-					diff.set(0,element.getAbsoluteHeight());
-				} else if (effectDir == EffectDirection.Top) {
-					diff.set(0,element.getScreen().getHeight()-element.getAbsoluteY());
-				} else if (effectDir == EffectDirection.Left) {
-					diff.set(element.getAbsoluteWidth(),0);
-				} else if (effectDir == EffectDirection.Right) {
-					diff.set(element.getScreen().getWidth()-element.getAbsoluteX(),0);
-				}
-				if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
-					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-					element.setPosition(def.subtract(diff.subtract(inc)));
-				} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
-					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-					element.setPosition(def.add(diff.subtract(inc)));
-				}
+				initSlides();
+				updateSlideOut();
 				init = true;
 			} else if (isActive) {
-				if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
-					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-					element.setPosition(def.subtract(diff.subtract(inc)));
-				} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
-					Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-					element.setPosition(def.add(diff.subtract(inc)));
-				}
+				updateSlideOut();
 			}
 			if (pass >= 1.0) {
 				if (!destroyOnHide) {
@@ -387,6 +349,42 @@ public class Effect implements Cloneable {
 			this.speed
 		);
 		effect.setElement(this.element);
+		effect.setEffectDirection(this.effectDir);
+		effect.setDestroyOnHide(this.destroyOnHide);
 		return effect;
+	}
+	
+	// Effect methods
+	private void initSlides() {
+		def.set(element.getPosition().clone());
+		if (effectDir == EffectDirection.Bottom) {
+			diff.set(0,element.getAbsoluteHeight());
+		} else if (effectDir == EffectDirection.Top) {
+			diff.set(0,element.getScreen().getHeight()-element.getAbsoluteY());
+		} else if (effectDir == EffectDirection.Left) {
+			diff.set(element.getAbsoluteWidth(),0);
+		} else if (effectDir == EffectDirection.Right) {
+			diff.set(element.getScreen().getWidth()-element.getAbsoluteX(),0);
+		}
+	}
+	
+	private void updateSlideIn() {
+		if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
+			Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+			element.setPosition(def.subtract(diff.subtract(inc)));
+		} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
+			Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+			element.setPosition(def.add(diff.subtract(inc)));
+		}
+	}
+	
+	private void updateSlideOut() {
+		if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
+			Vector2f inc = new Vector2f(diff.x*(1-pass),diff.y*(1-pass));
+			element.setPosition(def.subtract(diff.subtract(inc)));
+		} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
+			Vector2f inc = new Vector2f(diff.x*(1-pass),diff.y*(1-pass));
+			element.setPosition(def.add(diff.subtract(inc)));
+		}
 	}
 }

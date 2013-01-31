@@ -327,7 +327,10 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		this.moveTo(x, y);
 		Effect effect = getEffect(Effect.EffectEvent.Show);
 		if (effect != null)
-			screen.getEffectManager().applyEffect(effect);
+			if (effect.getEffectType() == Effect.EffectType.FadeIn)
+				this.propagateEffect(effect);
+			else
+				screen.getEffectManager().applyEffect(effect);
 		else
 			this.show();
 	}
@@ -338,7 +341,10 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	public void hideMenu() {
 		Effect effect = getEffect(Effect.EffectEvent.Hide);
 		if (effect != null)
-			screen.getEffectManager().applyEffect(effect);
+			if (effect.getEffectType() == Effect.EffectType.FadeOut)
+				this.propagateEffect(effect);
+			else
+				screen.getEffectManager().applyEffect(effect);
 		else
 			this.hide();
 	}
