@@ -369,21 +369,19 @@ public class Effect implements Cloneable {
 	}
 	
 	private void updateSlideIn() {
+		Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
 		if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
-			Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
 			element.setPosition(def.subtract(diff.subtract(inc)));
 		} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
-			Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
 			element.setPosition(def.add(diff.subtract(inc)));
 		}
 	}
 	
 	private void updateSlideOut() {
+		Vector2f inc = new Vector2f(diff.x*(1-pass),diff.y*(1-pass));
 		if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
-			Vector2f inc = new Vector2f(diff.x*(1-pass),diff.y*(1-pass));
 			element.setPosition(def.subtract(diff.subtract(inc)));
 		} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
-			Vector2f inc = new Vector2f(diff.x*(1-pass),diff.y*(1-pass));
 			element.setPosition(def.add(diff.subtract(inc)));
 		}
 	}
