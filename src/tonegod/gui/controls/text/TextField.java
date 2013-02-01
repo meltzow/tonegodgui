@@ -345,7 +345,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	
 	private void setTextRangeStart(int head) {
 		if (!visibleText.equals("")) {
-			System.out.println("Setting text range start to: " + head);
+		//	System.out.println("Setting text range start to: " + head);
 			rangeHead = head;
 			if (head-this.head <= 0)
 				widthTest.setText("");
@@ -359,7 +359,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	
 	private void setTextRangeEnd(int tail) {
 		if (!visibleText.equals("") && rangeHead != -1) {
-			System.out.println("Setting text range end to: " + tail);
+		//	System.out.println("Setting text range end to: " + tail);
 			rangeTail = tail;
 			if (tail-this.head <= 0)
 				widthTest.setText("");

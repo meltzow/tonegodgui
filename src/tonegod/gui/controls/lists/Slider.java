@@ -302,7 +302,7 @@ public abstract class Slider extends ButtonAdapter {
 				stepSize = getHeight()/(stepValues.size()-1);
 			}
 		}
-		System.out.println("Slider: " + (getHeight()-controlSize));
+	//	System.out.println("Slider: " + (getHeight()-controlSize));
 	}
 	
 	/**

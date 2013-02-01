@@ -137,7 +137,7 @@ public abstract class Dial extends ButtonAdapter {
 	
 	private void setStepSize() {
 		stepSize = (360-(gap*2))/(stepValues.size()-1);
-		System.out.println(stepSize);
+	//	System.out.println(stepSize);
 	}
 	
 	private float getStepAngle(float angle) {
@@ -146,7 +146,7 @@ public abstract class Dial extends ButtonAdapter {
 		int nIndex = (int)Math.floor(angle/stepSize);
 		
 		if (nIndex >= 0 && nIndex < stepValues.size() && nIndex != this.selectedIndex) {
-			System.out.println(nIndex);
+		//	System.out.println(nIndex);
 			setSelectedIndex(nIndex);
 		}
 		

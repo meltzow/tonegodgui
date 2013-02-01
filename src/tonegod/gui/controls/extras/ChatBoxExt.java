@@ -248,7 +248,7 @@ public abstract class ChatBoxExt extends Panel {
 	}
 	
 	public void receiveMsg(String command, String msg) {
-		System.out.println(command);
+	//	System.out.println(command);
 		ChatChannel channel = getChannelByCommand(command);
 		chatMessages.add(new ChatMessage(channel, msg));
 		updateChatHistory();

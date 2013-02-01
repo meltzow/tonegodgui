@@ -57,6 +57,7 @@ public class Screen implements Control, RawInputListener {
 		HAND,
 		MOVE,
 		TEXT,
+		WAIT,
 		RESIZE_CNW,
 		RESIZE_CNE,
 		RESIZE_NS,
@@ -110,6 +111,7 @@ public class Screen implements Control, RawInputListener {
 	private boolean SHIFT = false;
 	
 	private boolean useCustomCursors = false;
+	private boolean forceCursor = false;
 	private Map<CursorType, JmeCursor> cursors = new HashMap();
 	
 	private float globalAlpha = 1.0f;
@@ -818,7 +820,7 @@ public class Screen implements Control, RawInputListener {
 	private void addStyleTag(Style style, org.w3c.dom.Node nNode, org.w3c.dom.Element nElmnt) {
 		String name = XMLHelper.getNodeAttributeValue(nNode, "name");
 		String type = XMLHelper.getNodeAttributeValue(nNode, "type");
-		System.out.println(name + " : " + type);
+	//	System.out.println(name + " : " + type);
 		if (type.equals("Vector2f")) {
 			style.putTag(
 				name,
@@ -908,9 +910,31 @@ public class Screen implements Control, RawInputListener {
 	
 	public void setCursor(CursorType cur) {
 		if (getUseCustomCursors()) {
+			if (!forceCursor) {
+				JmeCursor jmeCur = cursors.get(cur);
+				if (jmeCur != null)
+					getApplication().getInputManager().setMouseCursor(jmeCur);
+			}
+		}
+	}
+	
+	public void setForcedCursor(CursorType cur) {
+		if (getUseCustomCursors()) {
 			JmeCursor jmeCur = cursors.get(cur);
-			if (jmeCur != null)
+			if (jmeCur != null) {
 				getApplication().getInputManager().setMouseCursor(jmeCur);
+				forceCursor = true;
+			}
+		}
+	}
+	
+	public void releaseForcedCursor() {
+		if (getUseCustomCursors()) {
+			JmeCursor jmeCur = cursors.get(CursorType.POINTER);
+			if (jmeCur != null) {
+				getApplication().getInputManager().setMouseCursor(jmeCur);
+			}
+			forceCursor = false;
 		}
 	}
 	
