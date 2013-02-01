@@ -31,7 +31,7 @@ public abstract class Spinner extends TextField {
 	
 	protected List<String> stepValues = new ArrayList();
 	private boolean cycle = false;
-	private int selectedIndex = 0;
+	private int selectedIndex = -1;
 	private Orientation orientation;
 	
 	ButtonAdapter btnInc, btnDec;
@@ -124,6 +124,8 @@ public abstract class Spinner extends TextField {
 	
 	public void addStepValue(String value) {
 		stepValues.add(value);
+		if (selectedIndex == -1)
+			selectedIndex = 0;
 		displaySelectedStep();
 	}
 	
@@ -133,16 +135,35 @@ public abstract class Spinner extends TextField {
 	
 	public void setStepIntegerRange(int min, int max, int inc) {
 		stepValues.clear();
+		selectedIndex = -1;
 		for (int i = min; i <= max; i += inc) {
 			stepValues.add(String.valueOf(i));
 		}
+		if (selectedIndex == -1)
+			selectedIndex = 0;
+		displaySelectedStep();
 	}
 	
 	public void setStepFloatRange(float min, float max, float inc) {
 		stepValues.clear();
+		selectedIndex = -1;
 		for (float i = min; i <= max; i += inc) {
 			stepValues.add(String.valueOf(i));
 		}
+		if (selectedIndex == -1)
+			setSelectedIndex(0);
+		displaySelectedStep();
+	}
+	
+	public void setSelectedIndex(int selectedIndex) {
+		if (selectedIndex < 0)
+			selectedIndex = 0;
+		else if (selectedIndex > stepValues.size()-1)
+			selectedIndex = stepValues.size()-1;
+		
+		this.selectedIndex = selectedIndex;
+		displaySelectedStep();
+		onChange(selectedIndex, stepValues.get(selectedIndex));
 	}
 	
 	private void incStep() {

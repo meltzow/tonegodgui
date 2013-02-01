@@ -24,7 +24,7 @@ public abstract class ComboBox extends TextField {
 	private Menu DDList = null;
 	float btnHeight;
 	String ddUID;
-	private int selectedIndex;
+	private int selectedIndex = -1;
 	private String selectedValue;
 	private String selectedCaption;
 	
@@ -156,8 +156,23 @@ public abstract class ComboBox extends TextField {
 		DDList.getVScrollBar().setX(DDList.getWidth());
 		DDList.setResizeE(false);
 		
+		if (selectedIndex == -1) {
+			setSelectedIndex(0);
+		}
 	//	screen.addElement(DDList);
 	//	DDList.hide();
+	}
+	
+	public void setSelectedIndex(int selectedIndex) {
+		if (selectedIndex < 0)
+			selectedIndex = 0;
+		else if (selectedIndex > DDList.getMenuItems().size()-1)
+			selectedIndex = DDList.getMenuItems().size()-1;
+		
+		MenuItem mi = DDList.getMenuItem(selectedIndex);
+		String caption = mi.getCaption();
+		String value = mi.getValue();
+		setSelected(selectedIndex, caption, value);
 	}
 	
 	protected void setSelected(int index, String caption, String value) {

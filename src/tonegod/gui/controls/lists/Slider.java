@@ -139,7 +139,7 @@ public abstract class Slider extends ButtonAdapter {
 						if (slider.trackSurroundsThumb) y += controlSize/2;
 					}
 					if (slider.getSelectedIndex() != index && index > -1 && index < slider.stepValues.size()) {
-						slider.setSelectedIndex(index);
+						slider.setInternalSelectedIndex(index);
 					}
 				} else {
 					int percent = 0;
@@ -149,7 +149,7 @@ public abstract class Slider extends ButtonAdapter {
 						percent = (int)((y/slider.getHeight())*100);
 					}
 					if (slider.getSelectedIndex() != percent && percent >= 0 && percent <= 100) {
-						slider.setSelectedIndex(percent);
+						slider.setInternalSelectedIndex(percent);
 					}
 				}
 				if (getLockToParentBounds()) {
@@ -320,8 +320,35 @@ public abstract class Slider extends ButtonAdapter {
 	 * 
 	 * @param selectedIndex The index to set the Slider's selectedIndex to.
 	 */
-	private void setSelectedIndex(int selectedIndex) {
+	private void setInternalSelectedIndex(int selectedIndex) {
 		this.selectedIndex = selectedIndex;
+		if( isStepped)	onChange(selectedIndex, stepValues.get(selectedIndex));
+		else			onChange(selectedIndex, String.valueOf(selectedIndex));
+	}
+	
+	public void setSelectedIndex(int selectedIndex) {
+		if (isStepped) {
+			if (selectedIndex < 0)
+				selectedIndex = 0;
+			else if (selectedIndex > stepValues.size()-1)
+				selectedIndex = stepValues.size()-1;
+		} else {
+			if (selectedIndex < 0)
+				selectedIndex = 0;
+			else if (selectedIndex > 100)
+				selectedIndex = 100;
+		}
+		
+		this.selectedIndex = selectedIndex;
+		
+		float step = (isStepped) ? stepSize : getWidth()/100;
+		step *= selectedIndex;
+		if (orientation == Orientation.HORIZONTAL) {
+			elThumbLock.setX(step);
+		} else {
+			elThumbLock.setY(step);
+		}
+		
 		if( isStepped)	onChange(selectedIndex, stepValues.get(selectedIndex));
 		else			onChange(selectedIndex, String.valueOf(selectedIndex));
 	}
@@ -354,16 +381,16 @@ public abstract class Slider extends ButtonAdapter {
 				}
 				int index = (int)Math.round(elThumbLock.getX()/step);
 				int percent = (int)((elThumbLock.getX()/getWidth())*100);
-				if (isStepped)	setSelectedIndex(index);
-				else			setSelectedIndex(percent);
+				if (isStepped)	setInternalSelectedIndex(index);
+				else			setInternalSelectedIndex(percent);
 			} else if (trackEvt.getX()-getAbsoluteX() > elThumbLock.getX()) {
 				if (elThumbLock.getX()+step < trackEvt.getX()-getAbsoluteX()) {
 					elThumbLock.setX(elThumbLock.getX()+step);
 				}
 				int index = (int)Math.round(elThumbLock.getX()/step);
 				int percent = (int)((elThumbLock.getX()/getWidth())*100);
-				if (isStepped)	setSelectedIndex(index);
-				else			setSelectedIndex(percent);
+				if (isStepped)	setInternalSelectedIndex(index);
+				else			setInternalSelectedIndex(percent);
 			}
 		} else {
 			if (trackEvt.getY()-getAbsoluteY() < elThumbLock.getY()) {
@@ -374,8 +401,8 @@ public abstract class Slider extends ButtonAdapter {
 				int percent = (int)((elThumbLock.getY()/getHeight())*100);
 				if (isStepped) {
 					if (index >= 0 && index < stepValues.size())
-						setSelectedIndex(index);
-				} else			setSelectedIndex(percent);
+						setInternalSelectedIndex(index);
+				} else			setInternalSelectedIndex(percent);
 			} else if (trackEvt.getY()-getAbsoluteY() > elThumbLock.getY()) {
 				if (elThumbLock.getY()+step < trackEvt.getY()-getAbsoluteY()) {
 					elThumbLock.setY(elThumbLock.getY()+step);
@@ -384,8 +411,8 @@ public abstract class Slider extends ButtonAdapter {
 				int percent = (int)((elThumbLock.getY()/getHeight())*100);
 				if (isStepped) {
 					if (index >= 0 && index < stepValues.size())
-						setSelectedIndex(index);
-				} else			setSelectedIndex(percent);
+						setInternalSelectedIndex(index);
+				} else			setInternalSelectedIndex(percent);
 			}
 		}
 	}

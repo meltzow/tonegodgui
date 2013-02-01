@@ -266,6 +266,9 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		
 		if (getVScrollBar() != null)
 			getVScrollBar().setX(width+(menuPadding*2));
+		
+		if (getIsVisible())
+			hide();
 	}
 	
 	private void addSubmenuArrow(int index) {

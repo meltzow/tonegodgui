@@ -76,6 +76,9 @@ public class Indicator extends Element {
 	public Indicator(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
 		super(screen, UID, position, dimensions, resizeBorders, null);
 		
+		setScaleEW(true);
+		setScaleNS(false);
+		
 		this.overlayImg = defaultImg;
 		this.orientation = orientation;
 		
@@ -122,6 +125,10 @@ public class Indicator extends Element {
 		};
 		elIndicator.setClippingLayer(elIndicator);
 		elIndicator.setIgnoreMouse(true);
+		elIndicator.setDockS(true);
+		elIndicator.setDockW(true);
+		elIndicator.setScaleEW(true);
+		elIndicator.setScaleNS(false);
 		addChild(elIndicator);
 		
 		elOverlay = new Element(
@@ -133,6 +140,11 @@ public class Indicator extends Element {
 			overlayImg
 		);
 		elOverlay.setIgnoreMouse(true);
+		elOverlay.setDockS(true);
+		elOverlay.setDockW(true);
+		elOverlay.setScaleEW(false);
+		elOverlay.setScaleNS(false);
+		
 	//	elOverlay.setTextAlign(BitmapFont.Align.Center);
 	//	elOverlay.setTextVAlign(BitmapFont.VAlign.Center);
 		
@@ -147,6 +159,20 @@ public class Indicator extends Element {
 		
 		addChild(elOverlay);
 		
+	}
+	
+	public void setScaling(boolean scaleNS, boolean scaleEW) {
+		setScaleNS(scaleNS);
+		elIndicator.setScaleNS(scaleNS);
+		elOverlay.setScaleNS(scaleNS);
+		setScaleEW(scaleEW);
+		elIndicator.setScaleEW(scaleEW);
+		elOverlay.setScaleEW(scaleEW);
+	}
+	
+	@Override
+	public void controlResizeHook() {
+		refactorIndicator();
 	}
 	
 	public Orientation getOrientation() {
