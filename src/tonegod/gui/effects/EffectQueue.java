@@ -28,8 +28,10 @@ public class EffectQueue {
 	}
 	
 	public void addEffect(Effect effect, float delayTime) {
-		EffectQueueItem item = new EffectQueueItem(effect, delayTime);
-		queue.add(item);
+		if (effect.getEffectType() != Effect.EffectType.Pulse && effect.getEffectType() != Effect.EffectType.PulseColor) {
+			EffectQueueItem item = new EffectQueueItem(effect, delayTime);
+			queue.add(item);
+		}
 	}
 	
 	public void update(float tpf) {
