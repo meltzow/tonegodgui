@@ -48,7 +48,7 @@ public class OSRBridge extends AbstractControl {
 	//	cam.setLocation(new Vector3f(0f, 0f, 0f));
 	//	cam.lookAt(root.getLocalTranslation(), Vector3f.UNIT_Y);
 
-		tex = new Texture2D(512, 512, Image.Format.RGBA8);
+		tex = new Texture2D(width, height, Image.Format.RGBA8);
 		tex.setMinFilter(Texture.MinFilter.Trilinear);
 		tex.setMagFilter(Texture.MagFilter.Bilinear);
 
