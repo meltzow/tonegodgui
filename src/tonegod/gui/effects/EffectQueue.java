@@ -47,6 +47,7 @@ public class EffectQueue {
 					if (updateTime < targetTime) {
 						updateTime += tpf/targetTime;
 					} else {
+						currentEffectItem.getEffect().getElement().getScreen().updateZOrder(currentEffectItem.getEffect().getElement());
 						effectManager.applyEffect(currentEffectItem.getEffect());
 						effectStarted = true;
 					}
