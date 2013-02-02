@@ -11,7 +11,9 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import tonegod.gui.core.Element;
@@ -23,6 +25,7 @@ import tonegod.gui.core.Element;
 public class EffectManager implements Control {
 	Spatial spatial;
 	private Map<String, Effect> currentEffects = new HashMap();
+	private List<EffectQueue> currentEffectQueues = new ArrayList();
 	
 	public EffectManager() {  }
 	
@@ -37,12 +40,26 @@ public class EffectManager implements Control {
 		currentEffects.remove(element.getUID());
 	}
 
+	public void applyEffectQueue(EffectQueue queue) {
+		queue.setEffectManager(this);
+		currentEffectQueues.add(queue);
+	}
+	
+	public void removeEffectQueue(EffectQueue queue) {
+		currentEffectQueues.remove(queue);
+	}
+	
 	@Override
 	public void update(float tpf) {
 		Set<String> keys = currentEffects.keySet();
 		for (String key : keys) {
 			currentEffects.get(key).update(tpf);
 		}
+		try {
+			for (EffectQueue queue : currentEffectQueues) {
+				queue.update(tpf);
+			}
+		} catch (Exception ex) {  }
 	}
 	
 	@Override

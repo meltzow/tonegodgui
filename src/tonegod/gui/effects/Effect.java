@@ -87,6 +87,10 @@ public class Effect implements Cloneable {
 		return this.element;
 	}
 	
+	public float getDuration() {
+		return this.speed;
+	}
+	
 	public boolean getIsActive() {
 		return this.isActive;
 	}
