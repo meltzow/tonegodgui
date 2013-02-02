@@ -23,13 +23,14 @@ import tonegod.gui.listeners.MouseWheelListener;
  * @author t0neg0d
  */
 public class OSRViewPort extends Element implements MouseButtonListener, MouseMovementListener, MouseWheelListener, MouseFocusListener {
-	OSRBridge bridge;
-	boolean rotateEnabled = true;
-	boolean zoomEnabled = true;
-	boolean enabled = false;
-	boolean mouseLook = false;
-	int lastX = 0, lastY = 0;
-	Element elOverlay;
+	private OSRBridge bridge;
+	private boolean rotateEnabled = true;
+	private boolean useLeftMouseRotate = false;
+	private boolean zoomEnabled = true;
+	private boolean enabled = false;
+	private boolean mouseLook = false;
+	private int lastX = 0, lastY = 0;
+	private Element elOverlay;
 	
 	/**
 	 * Creates a new instance of the Window control
@@ -102,6 +103,10 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 		bridge.getChaseCamera().setHideCursorOnRotate(false);
 	}
 
+	public void setLeftMouseButtonRotation(boolean useLeftMouseRotate) {
+		this.useLeftMouseRotate = true;
+	}
+	
 	public void setBackgroundColor(ColorRGBA color) {
 		bridge.getViewPort().setBackgroundColor(color);
 	}
@@ -143,12 +148,26 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 	}
 	
 	@Override
-	public void onMouseLeftPressed(MouseButtonEvent evt) {  }
+	public void onMouseLeftPressed(MouseButtonEvent evt) {
+		if (rotateEnabled && useLeftMouseRotate) {
+			mouseLook = true;
+			screen.getApplication().getInputManager().setCursorVisible(false);
+			bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
+		}
+		evt.setConsumed();
+	}
 	@Override
-	public void onMouseLeftReleased(MouseButtonEvent evt) {  }
+	public void onMouseLeftReleased(MouseButtonEvent evt) {
+		if (rotateEnabled && useLeftMouseRotate) {
+			mouseLook = false;
+			screen.getApplication().getInputManager().setCursorVisible(true);
+			bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
+		}
+		evt.setConsumed();
+	}
 	@Override
 	public void onMouseRightPressed(MouseButtonEvent evt) {
-		if (rotateEnabled) {
+		if (rotateEnabled && !useLeftMouseRotate) {
 			mouseLook = true;
 			screen.getApplication().getInputManager().setCursorVisible(false);
 			bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
@@ -157,7 +176,7 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 	}
 	@Override
 	public void onMouseRightReleased(MouseButtonEvent evt) {
-		if (rotateEnabled) {
+		if (rotateEnabled && !useLeftMouseRotate) {
 			mouseLook = false;
 			screen.getApplication().getInputManager().setCursorVisible(true);
 			bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
