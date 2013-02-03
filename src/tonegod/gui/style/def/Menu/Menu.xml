@@ -61,7 +61,7 @@
 			</property>
 			<property name="textAlign" type="String" value="Left" />
 			<property name="textVAlign" type="String" value="Center" />
-			<property name="textWrap" type="String" value="Clip" />
+			<property name="textWrap" type="String" value="NoWrap" />
 			<property name="textPadding" type="float" value="0" />
 		</font>
 		<attributes>

@@ -29,4 +29,41 @@
 		<images></images>
 		<effects></effects>
 	</element>
+	<element name="ToolTip">
+		<font>
+			<property name="fontSize" type="float" value="16" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="Word" />
+			<property name="textPadding" type="float" value="5" />
+		</font>
+		<attributes>
+			<property name="bgColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="14" />
+				<y value="14" />
+				<z value="14" />
+				<w value="14" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="250" />
+				<y value="50" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Window/panel_x.png" />
+		</images>
+		<effects></effects>
+	</element>
 </root>
