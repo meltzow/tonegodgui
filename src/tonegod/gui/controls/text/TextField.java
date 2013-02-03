@@ -448,12 +448,27 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	@Override
 	public void onGetFocus(MouseMotionEvent evt) {
 		if (getIsEnabled()) screen.setCursor(Screen.CursorType.TEXT);
-		 
+		if (!getHasFocus()) {
+			if (screen.getUseToolTips()) {
+				if (getToolTipText() !=  null) {
+					screen.setToolTip(getToolTipText());
+				}
+			}
+		}
+		setHasFocus(true);
 	}
 
 	@Override
 	public void onLoseFocus(MouseMotionEvent evt) {
 		if (getIsEnabled()) screen.setCursor(Screen.CursorType.POINTER);
+		if (getHasFocus()) {
+			if (screen.getUseToolTips()) {
+				if (getToolTipText() !=  null) {
+					screen.setToolTip(null);
+				}
+			}
+		}
+		setHasFocus(false);
 	}
 	
 }

@@ -406,4 +406,11 @@ public abstract class ChatBoxExt extends Panel {
 		filteredChannels.add(this.getChannelByName(name));
 		rebuildChat();
 	}
+	
+	public void setToolTipTextInput(String tip) {
+		this.tfChatInput.setToolTipText(tip);
+	}
+	public void setToolTipSendButton(String tip) {
+		this.btnChatSendMsg.setToolTipText(tip);
+	}
 }

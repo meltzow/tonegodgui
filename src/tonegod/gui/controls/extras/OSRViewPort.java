@@ -226,11 +226,27 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 	@Override
 	public void onGetFocus(MouseMotionEvent evt) {
 		this.enabled = true;
+		if (!getHasFocus()) {
+			if (screen.getUseToolTips()) {
+				if (getToolTipText() !=  null) {
+					screen.setToolTip(getToolTipText());
+				}
+			}
+		}
+		setHasFocus(true);
 	}
 	@Override
 	public void onLoseFocus(MouseMotionEvent evt) {
 		if (!mouseLook)
 			this.enabled = false;
+		if (getHasFocus()) {
+			if (screen.getUseToolTips()) {
+				if (getToolTipText() !=  null) {
+					screen.setToolTip(null);
+				}
+			}
+		}
+		setHasFocus(false);
 	}
 	
 }

@@ -96,4 +96,8 @@ public abstract class AlertBox extends Window {
 	}
 	
 	public abstract void onButtonOkPressed(MouseButtonEvent evt, boolean toggled);
+	
+	public void setToolTipOkButton(String tip) {
+		this.btnOk.setToolTipText(tip);
+	}
 }

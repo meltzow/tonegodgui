@@ -157,4 +157,17 @@ public abstract class LoginBox extends Window {
 	}
 	
 	public abstract void onButtonCancelPressed(MouseButtonEvent evt, boolean toggled);
+	
+	public void setToolTipLoginInput(String tip) {
+		userName.setToolTipText(tip);
+	}
+	public void setToolTipPasswordInput(String tip) {
+		password.setToolTipText(tip);
+	}
+	public void setToolTipLoginButton(String tip) {
+		this.btnLogin.setToolTipText(tip);
+	}
+	public void setToolTipCancelButton(String tip) {
+		this.btnCancel.setToolTipText(tip);
+	}
 }

@@ -40,6 +40,7 @@ import org.w3c.dom.NodeList;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.text.TextField;
+import tonegod.gui.controls.util.ToolTip;
 import tonegod.gui.core.Element.Borders;
 import tonegod.gui.core.utils.XMLHelper;
 import tonegod.gui.effects.Effect;
@@ -95,9 +96,9 @@ public class Screen implements Control, RawInputListener {
 	private boolean mouseRightPressed = false;
 	private boolean mouseWheelPressed = false;
 	
-	private float zOrderCurrent = 50f;
-	private float zOrderStepMajor = 10f;
-	private float zOrderStepMinor = 0.1f;
+	private float zOrderCurrent = .5f;
+	private float zOrderStepMajor = .01f;
+	private float zOrderStepMinor = 0.0001f;
 	
 	private String clipboardText = "";
 	
@@ -113,6 +114,9 @@ public class Screen implements Control, RawInputListener {
 	private boolean useCustomCursors = false;
 	private boolean forceCursor = false;
 	private Map<CursorType, JmeCursor> cursors = new HashMap();
+	
+	private boolean useToolTips = false;
+	ToolTip toolTip = null;
 	
 	private float globalAlpha = 1.0f;
 	
@@ -218,8 +222,10 @@ public class Screen implements Control, RawInputListener {
 		float shiftZ = element.getLocalTranslation().getZ();
 		Set<String> keys = elements.keySet();
 		for (String key : keys) {
-			if (elements.get(key).getLocalTranslation().getZ() > shiftZ) {
-				elements.get(key).move(0,0,-zOrderStepMajor);
+			if (!(elements.get(key) instanceof ToolTip)) {
+				if (elements.get(key).getLocalTranslation().getZ() > shiftZ) {
+					elements.get(key).move(0,0,-zOrderStepMajor);
+				}
 			}
 		}
 		zOrderCurrent -= zOrderStepMajor;
@@ -338,6 +344,7 @@ public class Screen implements Control, RawInputListener {
 	@Override
 	public void onMouseMotionEvent(MouseMotionEvent evt) {
 		setMouseXY(evt.getX(),evt.getY());
+		if (useToolTips) updateToolTipLocation();
 		if (!mousePressed) {
 			mouseFocusElement = getEventElement(evt.getX(), evt.getY());
 			if (mouseFocusElement != previousMouseFocusElement) {
@@ -968,6 +975,57 @@ public class Screen implements Control, RawInputListener {
 						elements.get(key).hide();
 					}
 				}
+			}
+		}
+	}
+	
+	// ToolTips
+	public void setUseToolTips(boolean useToolTips) {
+		toolTip = new ToolTip(
+			this,
+			"GlobalToolTip",
+			new Vector2f(0,0),
+			new Vector2f(200,50)
+		);
+		toolTip.setIgnoreGlobalAlpha(true);
+		toolTip.hide();
+		addElement(toolTip);
+		toolTip.move(0,0,20);
+		this.useToolTips = useToolTips;
+	}
+	
+	public boolean getUseToolTips() {
+		return useToolTips;
+	}
+	
+	private void updateToolTipLocation() {
+		float nextX = mouseXY.x-(toolTip.getWidth()/2);
+		if (nextX < 0) nextX = 0;
+		else if (nextX+toolTip.getWidth() > getWidth()) nextX = getWidth()-toolTip.getWidth();
+		float nextY = mouseXY.y-toolTip.getHeight()-40;
+		if (nextY < 0) nextY = mouseXY.y+5;
+		toolTip.moveTo(nextX, nextY);
+	}
+	
+	public void setToolTip(String tip) {
+		if (useToolTips) {
+			if (tip != null) {
+				toolTip.setText(tip);
+				toolTip.resize(
+					toolTip.getX()+getStyle("ToolTip").getVector2f("defaultSize").x,
+					toolTip.getY()+toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*2),
+					Borders.SE
+				);
+				toolTip.resize(
+					toolTip.getX()+getStyle("ToolTip").getVector2f("defaultSize").x,
+					toolTip.getY()+toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*2),
+					Borders.SE
+				);
+			//	toolTip.setHeight(toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*2));
+				toolTip.show();
+			} else {
+				toolTip.setText("");
+				toolTip.hide();
 			}
 		}
 	}

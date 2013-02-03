@@ -6,6 +6,7 @@ package tonegod.gui.controls.extras;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
+import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
@@ -13,12 +14,14 @@ import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.effects.Effect;
+import tonegod.gui.listeners.MouseFocusListener;
 
 /**
  *
  * @author t0neg0d
  */
-public class Indicator extends Element {
+public class Indicator extends Element implements MouseFocusListener {
 	public static enum Orientation {
 		HORIZONTAL,
 		VERTICAL
@@ -271,5 +274,29 @@ public class Indicator extends Element {
 		
 		this.getElementMaterial().setTexture("ColorMap", tex);
 		this.getElementMaterial().setColor("Color", ColorRGBA.White);
+	}
+
+	@Override
+	public void onGetFocus(MouseMotionEvent evt) {
+		if (!getHasFocus()) {
+			if (screen.getUseToolTips()) {
+				if (getToolTipText() !=  null) {
+					screen.setToolTip(getToolTipText());
+				}
+			}
+		}
+		setHasFocus(true);
+	}
+
+	@Override
+	public void onLoseFocus(MouseMotionEvent evt) {
+		if (getHasFocus()) {
+			if (screen.getUseToolTips()) {
+				if (getToolTipText() !=  null) {
+					screen.setToolTip(null);
+				}
+			}
+		}
+		setHasFocus(false);
 	}
 }

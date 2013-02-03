@@ -13,6 +13,7 @@ import com.jme3.math.Vector4f;
 import java.util.Set;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.listeners.MouseFocusListener;
 import tonegod.gui.listeners.MouseWheelListener;
 
 /**

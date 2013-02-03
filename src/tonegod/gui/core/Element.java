@@ -130,6 +130,8 @@ public class Element extends Node {
 	private BitmapFont.Align textAlign = BitmapFont.Align.Left;
 	private BitmapFont.VAlign textVAlign = BitmapFont.VAlign.Top;
 	private String text = "";
+	private String toolTipText = null;
+	
 	/**
 	 *
 	 */
@@ -151,14 +153,15 @@ public class Element extends Node {
 	 */
 	protected Map<String, Element> elementChildren = new HashMap();
 	
-	private boolean isClipped = false;
-	private boolean wasClipped = false;
+	protected boolean isClipped = false;
+	protected boolean wasClipped = false;
 	private Element clippingLayer;
 	private Vector4f clippingBounds = new Vector4f();
 	private float clipPadding = 0;
 	private float textClipPadding = 0;
-	private boolean isVisible = true;
-	private boolean wasVisible = true;
+	protected boolean isVisible = true;
+	protected boolean wasVisible = true;
+	private boolean hasFocus = false;
 	
 	private Form form;
 	private int tabIndex = 0;
@@ -167,6 +170,8 @@ public class Element extends Node {
 	private Map<Effect.EffectEvent, Effect> effects = new HashMap();
 	
 	private OSRBridge bridge;
+	
+	private boolean ignoreGlobalAlpha = false;
 	
 	/**
 	 * The Element class is the single primitive for all controls in the gui library.
@@ -1757,11 +1762,19 @@ public class Element extends Node {
 	}
 	
 	public void setGlobalAlpha(float globalAlpha) {
-		getElementMaterial().setFloat("GlobalAlpha", globalAlpha);
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			elementChildren.get(key).setGlobalAlpha(globalAlpha);
+		if (!ignoreGlobalAlpha) {
+			getElementMaterial().setFloat("GlobalAlpha", globalAlpha);
+			Set<String> keys = elementChildren.keySet();
+			for (String key : keys) {
+				elementChildren.get(key).setGlobalAlpha(globalAlpha);
+			}
+		} else {
+			getElementMaterial().setFloat("GlobalAlpha", 1);
 		}
+	}
+	
+	public void setIgnoreGlobalAlpha(boolean ignoreGlobalAlpha) {
+		this.ignoreGlobalAlpha = ignoreGlobalAlpha;
 	}
 	
 	// Tab focus
@@ -1803,5 +1816,22 @@ public class Element extends Node {
 		addControl(bridge);
 		getElementMaterial().setTexture("ColorMap", bridge.getTexture());
 		getElementMaterial().setColor("Color", ColorRGBA.White);
+	}
+	
+	// Tool Tip
+	public void setToolTipText(String toolTip) {
+		this.toolTipText = toolTip;
+	}
+	
+	public String getToolTipText() {
+		return toolTipText;
+	}
+	
+	public void setHasFocus(boolean hasFocus) {
+		this.hasFocus = hasFocus;
+	}
+	
+	public boolean getHasFocus() {
+		return this.hasFocus;
 	}
 }

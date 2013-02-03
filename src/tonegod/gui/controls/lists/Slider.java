@@ -454,4 +454,9 @@ public abstract class Slider extends ButtonAdapter {
 	public void onKeyRelease(KeyInputEvent evt) {
 		
 	}
+	
+	@Override
+	public void setToolTipText(String tip) {
+		this.elThumb.setToolTipText(tip);
+	}
 }

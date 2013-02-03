@@ -37,7 +37,6 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	private ColorRGBA hoverFontColor = null, pressedFontColor = null;
 	private boolean isToggleButton = false;
 	private boolean isToggled = false;
-	private boolean hasFocus = false;
 	private Spatial spatial;
 	private boolean isStillPressed = false;
 	private boolean useInterval = false;
@@ -265,7 +264,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	@Override
 	public void onMouseLeftReleased(MouseButtonEvent evt) {
 		if (!isToggleButton) {
-			if (hasFocus) {
+			if (getHasFocus()) {
 				if (hoverImg != null) {
 				//	screen.getEffectManager().removeEffect(this);
 					Effect effect = getEffect(Effect.EffectEvent.Hover);
@@ -321,7 +320,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 
 	@Override
 	public void onGetFocus(MouseMotionEvent evt) {
-		if (!hasFocus) {
+		if (!getHasFocus()) {
 			if (!isToggled) {
 				if (hoverImg != null) {
 					Effect effect = getEffect(Effect.EffectEvent.Hover);
@@ -336,13 +335,18 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			}
 			screen.setCursor(Screen.CursorType.HAND);
 			onButtonFocus(evt);
+			if (screen.getUseToolTips()) {
+				if (getToolTipText() !=  null) {
+					screen.setToolTip(getToolTipText());
+				}
+			}
 		}
-		hasFocus = true;
+		setHasFocus(true);
 	}
 
 	@Override
 	public void onLoseFocus(MouseMotionEvent evt) {
-		if (hasFocus) {
+		if (getHasFocus()) {
 			if (!isToggled) {
 				Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
 				if (effect != null) {
@@ -353,8 +357,13 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			}
 			screen.setCursor(Screen.CursorType.POINTER);
 			onButtonLostFocus(evt);
+			if (screen.getUseToolTips()) {
+				if (getToolTipText() !=  null) {
+					screen.setToolTip(null);
+				}
+			}
 		}
-		hasFocus = false;
+		setHasFocus(false);
 	}
 	
 	public abstract void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled);

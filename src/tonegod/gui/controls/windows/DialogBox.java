@@ -60,4 +60,8 @@ public abstract class DialogBox extends AlertBox {
 	}
 	
 	public abstract void onButtonCancelPressed(MouseButtonEvent evt, boolean toggled);
+	
+	public void setToolTipCancelButton(String tip) {
+		this.btnCancel.setToolTipText(tip);
+	}
 }

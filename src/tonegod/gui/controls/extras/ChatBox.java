@@ -195,4 +195,11 @@ public abstract class ChatBox extends Panel {
 	}
 	
 	public abstract void onSendMsg(String msg);
+	
+	public void setToolTipTextInput(String tip) {
+		this.tfChatInput.setToolTipText(tip);
+	}
+	public void setToolTipSendButton(String tip) {
+		this.btnChatSendMsg.setToolTipText(tip);
+	}
 }
