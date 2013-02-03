@@ -245,12 +245,24 @@ public class Element extends Node {
 		this.setLocalTranslation(position.x, position.y, 0);
 	}
 	
+	public final Vector2f getV2fPercentToPixels(Vector2f in) {
+		if (getElementParent() == null) {
+			if (in.x < 1) in.setX(screen.getWidth()*in.x);
+			if (in.y < 1) in.setY(screen.getHeight()*in.y);
+		} else {
+			if (in.x < 1) in.setX(getElementParent().getWidth()*in.x);
+			if (in.y < 1) in.setY(getElementParent().getHeight()*in.y);
+		}
+		return in;
+	}
+	
 	/**
 	 * Adds the specified Element as a child to this Element.
 	 * @param child The Element to add as a child
 	 */
 	public void addChild(Element child) {
 		child.elementParent = this;
+		
 		child.setY(this.getHeight()-child.getHeight()-child.getY());
 		child.setQueueBucket(RenderQueue.Bucket.Gui);
 		
@@ -893,6 +905,26 @@ public class Element extends Node {
 	 */
 	public float getAbsoluteHeight() {
 		return getAbsoluteY() + getHeight();
+	}
+	
+	public void validateLayout() {
+		if (getDimensions().x < 1 || getDimensions().y < 1) {
+			Vector2f dim = getV2fPercentToPixels(getDimensions());
+			resize(getAbsoluteX()+dim.x, getAbsoluteY()+dim.y, Element.Borders.SE);
+		}
+		if (getPosition().x < 1 || getPosition().y < 1) {
+			Vector2f pos = getV2fPercentToPixels(getPosition());
+			setPosition(pos.x,pos.y);
+		}
+		if (getElementParent() != null)
+			setY(getElementParent().getHeight()-getHeight()-getY());
+		else
+			setY(screen.getHeight()-getHeight()-getY());
+		
+		Set<String> keys = elementChildren.keySet();
+		for (String key : keys) {
+			elementChildren.get(key).validateLayout();
+		}
 	}
 	
 	/**

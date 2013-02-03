@@ -197,6 +197,8 @@ public class Screen implements Control, RawInputListener {
 	public void addElement(Element element) {
 		elements.put(element.getUID(), element);
 		
+	//	element.validateLayout();
+		
 		element.setY(getHeight()-element.getHeight()-element.getY());
 		
 		t0neg0dGUI.attachChild(element);
@@ -807,14 +809,6 @@ public class Screen implements Control, RawInputListener {
 		} catch (Exception e) {
 			System.err.println("Problem loading style map: " + e);
 		}
-		/*
-		Set<String> keys = styles.keySet();
-		for (String key : keys) {
-			System.out.println("Reading style: " + key);
-			Style s = styles.get(key);
-			System.out.println(s.getVector4f("resizeBorders"));
-		}
-		*/
 	}
 	
 	private void addStyleTag(Style style, org.w3c.dom.Node nNode, org.w3c.dom.Element nElmnt) {
@@ -829,7 +823,7 @@ public class Screen implements Control, RawInputListener {
 					Float.parseFloat(XMLHelper.getNodeAttributeValue(nElmnt.getElementsByTagName("y").item(0), "value"))
 				)
 			);
-			System.out.println(style.getVector2f(name));
+		//	System.out.println(style.getVector2f(name));
 		} else if (type.equals("Vector3f")) {
 			style.putTag(
 				name,
