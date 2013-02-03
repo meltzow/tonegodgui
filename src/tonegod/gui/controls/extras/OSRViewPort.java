@@ -151,13 +151,13 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 	public void onMouseLeftPressed(MouseButtonEvent evt) {
 		if (rotateEnabled && useLeftMouseRotate) {
 			mouseLook = true;
-			if (screen.getUseToolTips()) {
-				if (getToolTipText() !=  null) {
-					screen.setToolTip(null);
-				}
-			}
 			screen.getApplication().getInputManager().setCursorVisible(false);
 			bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
+		}
+		if (screen.getUseToolTips()) {
+			if (getToolTipText() !=  null) {
+				screen.setToolTip(null);
+			}
 		}
 		evt.setConsumed();
 	}
@@ -174,13 +174,13 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 	public void onMouseRightPressed(MouseButtonEvent evt) {
 		if (rotateEnabled && !useLeftMouseRotate) {
 			mouseLook = true;
-			if (screen.getUseToolTips()) {
-				if (getToolTipText() !=  null) {
-					screen.setToolTip(null);
-				}
-			}
 			screen.getApplication().getInputManager().setCursorVisible(false);
 			bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
+		}
+		if (screen.getUseToolTips()) {
+			if (getToolTipText() !=  null) {
+				screen.setToolTip(null);
+			}
 		}
 		evt.setConsumed();
 	}

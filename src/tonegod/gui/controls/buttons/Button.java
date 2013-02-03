@@ -258,6 +258,11 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		initClickPause = true;
 		currentInitClickTrack = 0;
 		onButtonMouseLeftDown(evt, isToggled);
+		if (screen.getUseToolTips()) {
+			if (getToolTipText() !=  null) {
+				screen.setToolTip(null);
+			}
+		}
 		evt.setConsumed();
 	}
 
@@ -308,6 +313,11 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	public void onMouseRightPressed(MouseButtonEvent evt) {
 	//	throw new UnsupportedOperationException("Not supported yet.");
 		onButtonMouseRightDown(evt, isToggled);
+		if (screen.getUseToolTips()) {
+			if (getToolTipText() !=  null) {
+				screen.setToolTip(null);
+			}
+		}
 		evt.setConsumed();
 	}
 
