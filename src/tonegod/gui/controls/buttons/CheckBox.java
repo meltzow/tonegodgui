@@ -6,6 +6,7 @@ package tonegod.gui.controls.buttons;
 
 import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
+import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.controls.text.Label;
@@ -118,6 +119,10 @@ public class CheckBox extends ButtonAdapter {
 		label.setText(text);
 		
 		addChild(label);
+	}
+	
+	public void setIsChecked(boolean isChecked) {
+		setIsToggled(isChecked);
 	}
 	
 	public boolean getIsChecked() {

@@ -4,6 +4,7 @@
  */
 package tonegod.gui.controls.buttons;
 
+import com.jme3.audio.AudioNode;
 import com.jme3.cursors.plugins.JmeCursor;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
@@ -32,6 +33,9 @@ import tonegod.gui.listeners.TabFocusListener;
  * @author t0neg0d
  */
 public abstract class Button extends Element implements Control, MouseButtonListener, MouseFocusListener, KeyboardListener, TabFocusListener {
+	String hoverSound, pressedSound;
+	boolean useHoverSound, usePressedSound;
+	float hoverSoundVolume, pressedSoundVolume;
 	Element icon;
 	Texture hoverImg = null, pressedImg = null;
 	private ColorRGBA hoverFontColor = null, pressedFontColor = null;
@@ -108,6 +112,13 @@ public abstract class Button extends Element implements Control, MouseButtonList
 				screen.getStyle("Button").getColorRGBA("pressedColor")
 			);
 		}
+	
+		hoverSound = screen.getStyle("Button").getString("hoverSound");
+		useHoverSound = screen.getStyle("Button").getBoolean("useHoverSound");
+		hoverSoundVolume = screen.getStyle("Button").getFloat("hoverSoundVolume");
+		pressedSound = screen.getStyle("Button").getString("pressedSound");
+		usePressedSound = screen.getStyle("Button").getBoolean("usePressedSound");
+		pressedSoundVolume = screen.getStyle("Button").getFloat("pressedSoundVolume");
 		
 		populateEffects("Button");
 	}
@@ -137,6 +148,27 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 */
 	public boolean getIsToggleButton() {
 		return this.isToggleButton;
+	}
+	
+	public void setIsToggled(boolean isToggled) {
+		this.isToggled = isToggled;
+		
+		if (pressedImg != null) {
+			Effect effect = getEffect(Effect.EffectEvent.Press);
+			if (effect != null) {
+				effect.setBlendImage(pressedImg);
+				screen.getEffectManager().applyEffect(effect);
+			}
+		}
+		if (pressedFontColor != null) {
+			setFontColor(pressedFontColor);
+		}
+		MouseButtonEvent evtd = new MouseButtonEvent(0,true,0,0);
+		MouseButtonEvent evtu = new MouseButtonEvent(0,false,0,0);
+		onButtonMouseLeftDown(evtd, isToggled);
+		onButtonMouseLeftUp(evtu, isToggled);
+		evtu.setConsumed();
+		evtd.setConsumed();
 	}
 	
 	/**
@@ -247,6 +279,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		if (pressedImg != null) {
 			Effect effect = getEffect(Effect.EffectEvent.Press);
 			if (effect != null) {
+				if (usePressedSound && screen.getUseUIAudio()) {
+					effect.setAudioFile(pressedSound);
+					effect.setAudioVolume(pressedSoundVolume);
+				}
 				effect.setBlendImage(pressedImg);
 				screen.getEffectManager().applyEffect(effect);
 			}
@@ -335,6 +371,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 				if (hoverImg != null) {
 					Effect effect = getEffect(Effect.EffectEvent.Hover);
 					if (effect != null) {
+						if (useHoverSound && screen.getUseUIAudio()) {
+							effect.setAudioFile(hoverSound);
+							effect.setAudioVolume(hoverSoundVolume);
+						}
 						effect.setBlendImage(hoverImg);
 						screen.getEffectManager().applyEffect(effect);
 					}
@@ -374,6 +414,14 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			}
 		}
 		setHasFocus(false);
+	}
+	
+	public void setUseButtonHoverSound(boolean useHoverSound) {
+		this.useHoverSound = useHoverSound;
+	}
+	
+	public void setUseButtonPressedSound(boolean usePressedSound) {
+		this.usePressedSound = usePressedSound;
 	}
 	
 	public abstract void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled);

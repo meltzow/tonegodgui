@@ -95,9 +95,7 @@ public abstract class Slider extends ButtonAdapter {
 	 * @param trackSurroundsThumb  Boolean used to determine thumb placement when control is configured
 	 */
 	public Slider(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation, boolean trackSurroundsThumb) {
-		super(screen, UID, position, dimensions, resizeBorders, 
-			screen.getStyle("ScrollArea#VScrollBar").getString("trackImg")
-		);
+		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 		this.orientation = orientation;
 		this.trackSurroundsThumb = trackSurroundsThumb;;
