@@ -26,6 +26,7 @@ public class EffectManager implements Control {
 	Spatial spatial;
 	private Map<String, Effect> currentEffects = new HashMap();
 	private List<EffectQueue> currentEffectQueues = new ArrayList();
+	private List<BatchEffect> currentBatchEffects = new ArrayList();
 	
 	public EffectManager() {  }
 	
@@ -35,18 +36,16 @@ public class EffectManager implements Control {
 			currentEffects.put(effect.getElement().getUID(), effect);
 		}
 	}
-	
-	public void removeEffect(Element element) {
-		currentEffects.remove(element.getUID());
-	}
 
 	public void applyEffectQueue(EffectQueue queue) {
 		queue.setEffectManager(this);
 		currentEffectQueues.add(queue);
 	}
 	
-	public void removeEffectQueue(EffectQueue queue) {
-		currentEffectQueues.remove(queue);
+	public void applyBatchEffect(BatchEffect batch) {
+		batch.setEffectManager(this);
+		currentBatchEffects.add(batch);
+		batch.startBatch();
 	}
 	
 	@Override
@@ -55,11 +54,22 @@ public class EffectManager implements Control {
 		for (String key : keys) {
 			currentEffects.get(key).update(tpf);
 		}
-		try {
-			for (EffectQueue queue : currentEffectQueues) {
+		for (EffectQueue queue : currentEffectQueues) {
+			if (queue.getIsActive())
 				queue.update(tpf);
+			else {
+				currentEffectQueues.remove(queue);
+				break;
 			}
-		} catch (Exception ex) {  }
+		}
+		for (BatchEffect batch : currentBatchEffects) {
+			if (batch.getIsActive())
+				batch.update(tpf);
+			else {
+				currentBatchEffects.remove(batch);
+				break;
+			}
+		}
 	}
 	
 	@Override

@@ -34,6 +34,15 @@ public class EffectQueue {
 		}
 	}
 	
+	public void addBatchEffect(BatchEffect batchEffect, float delayTime) {
+		EffectQueueItem item = new EffectQueueItem(batchEffect, delayTime);
+		queue.add(item);
+	}
+	
+	public boolean getIsActive() {
+		return this.isActive;
+	}
+	
 	public void update(float tpf) {
 		if (isActive) {
 			if (!effectSet) {
@@ -47,17 +56,33 @@ public class EffectQueue {
 					if (updateTime < targetTime) {
 						updateTime += tpf/targetTime;
 					} else {
-						currentEffectItem.getEffect().getElement().getScreen().updateZOrder(currentEffectItem.getEffect().getElement());
-						effectManager.applyEffect(currentEffectItem.getEffect());
+						if (currentEffectItem.getEffect() != null) {
+						//	currentEffectItem.getEffect().getElement().getScreen().updateZOrder(currentEffectItem.getEffect().getElement());
+							effectManager.applyEffect(currentEffectItem.getEffect());
+						} else {
+						//	currentEffectItem.getBatchEffect().getScreen().updateZOrder(currentEffectItem.getEffect().getElement());
+							effectManager.applyBatchEffect(currentEffectItem.getBatchEffect());
+						}
 						effectStarted = true;
 					}
 				} else {
-					if (!currentEffectItem.getEffect().getIsActive()) {
-						effectSet = false;
-						effectStarted = false;
-						if (queue.isEmpty()) {
-							isActive = false;
-							effectManager.removeEffectQueue(this);
+					if (currentEffectItem.getEffect() != null) {
+						if (!currentEffectItem.getEffect().getIsActive()) {
+							effectSet = false;
+							effectStarted = false;
+							if (queue.isEmpty()) {
+								isActive = false;
+							//	effectManager.removeEffectQueue(this);
+							}
+						}
+					} else {
+						if (!currentEffectItem.getBatchEffect().getIsActive()) {
+							effectSet = false;
+							effectStarted = false;
+							if (queue.isEmpty()) {
+								isActive = false;
+							//	effectManager.removeEffectQueue(this);
+							}
 						}
 					}
 				}
@@ -66,7 +91,8 @@ public class EffectQueue {
 	}
 	
 	public class EffectQueueItem {
-		private Effect effect;
+		private Effect effect = null;
+		private BatchEffect batchEffect = null;
 		private float delay;
 		
 		public EffectQueueItem(Effect effect, float delay) {
@@ -74,8 +100,17 @@ public class EffectQueue {
 			this.delay = delay;
 		}
 		
+		public EffectQueueItem(BatchEffect batchEffect, float delay) {
+			this.batchEffect = batchEffect;
+			this.delay = delay;
+		}
+		
 		public Effect getEffect() {
 			return this.effect;
+		}
+		
+		public BatchEffect getBatchEffect() {
+			return this.batchEffect;
 		}
 		
 		public float getDelay() {
