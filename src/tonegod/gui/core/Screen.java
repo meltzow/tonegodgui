@@ -462,9 +462,10 @@ public class Screen implements Control, RawInputListener {
 							}
 							keyboardElement = null;
 						}
-					}
-					if (eventElement instanceof MouseButtonListener) {
-						((MouseButtonListener)eventElement).onMouseLeftPressed(evt);
+						if (eventElement instanceof MouseButtonListener) {
+							((MouseButtonListener)eventElement).onMouseLeftPressed(evt);
+						}
+						evt.setConsumed();
 					}
 					break;
 				case 1:
@@ -475,13 +476,17 @@ public class Screen implements Control, RawInputListener {
 						if (eventElement instanceof MouseButtonListener) {
 							((MouseButtonListener)eventElement).onMouseRightPressed(evt);
 						}
+						evt.setConsumed();
 					}
 					break;
 				case 2:
 					mouseWheelPressed = true;
-					
-					if (eventElement instanceof MouseWheelListener) {
-						((MouseWheelListener)eventElement).onMouseWheelPressed(evt);
+					eventElement = getEventElement(evt.getX(), evt.getY());
+					if (eventElement != null) {
+						if (eventElement instanceof MouseWheelListener) {
+							((MouseWheelListener)eventElement).onMouseWheelPressed(evt);
+						}
+						evt.setConsumed();
 					}
 					break;
 			}
