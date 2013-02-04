@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<cursors path="tonegod/gui/style/def/Common/Cursors/Cursors.xml" />
+	<audio path="tonegod/gui/style/def/Common/Audio/Audio.xml" />
 	<style control="Font" path="tonegod/gui/style/def/Fonts/Fonts.xml" />
 	<style control="Common" path="tonegod/gui/style/def/Common/Common.xml" />
 	<style control="Scrolling" path="tonegod/gui/style/def/Scrolling/Scrolling.xml" />
@@ -8,6 +9,7 @@
 	<style control="Button" path="tonegod/gui/style/def/Button/Button.xml" />
 	<style control="Menu" path="tonegod/gui/style/def/Menu/Menu.xml" />
 	<style control="Label" path="tonegod/gui/style/def/Label/Label.xml" />
+	<style control="Slider" path="tonegod/gui/style/def/Slider/Slider.xml" />
 	<style control="TextField" path="tonegod/gui/style/def/TextField/TextField.xml" />
 	<style control="ChatBox" path="tonegod/gui/style/def/ChatBox/ChatBox.xml" />
 	<style control="Indicator" path="tonegod/gui/style/def/Common/Extras/Indicator.xml" />

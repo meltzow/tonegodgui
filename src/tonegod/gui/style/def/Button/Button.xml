@@ -36,6 +36,12 @@
 				<x value="100" />
 				<y value="30" />
 			</property>
+			<property name="pressedSound" type="String" value="button_pressed" />
+			<property name="usePressedSound" type="boolean" value="true" />
+			<property name="pressedSoundVolume" type="float" value="1" />
+			<property name="hoverSound" type="String" value="button_focus" />
+			<property name="useHoverSound" type="boolean" value="true" />
+			<property name="hoverSoundVolume" type="float" value=".5" />
 		</attributes>
 		<images>
 			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Button/button_x_u.png" />
@@ -46,7 +52,7 @@
 			<property name="event0" type="Effect">
 				<event value="Hover" />
 				<effect value="Pulse" />
-				<speed value="3" />
+				<speed value=".15" />
 			</property>
 			<property name="event1" type="Effect">
 				<event value="Press" />
@@ -61,7 +67,7 @@
 			<property name="event3" type="Effect">
 				<event value="TabFocus" />
 				<effect value="PulseColor" />
-				<speed value="3" />
+				<speed value=".15" />
 			</property>
 			<property name="event4" type="Effect">
 				<event value="LoseTabFocus" />
@@ -116,7 +122,7 @@
 			<property name="event0" type="Effect">
 				<event value="Hover" />
 				<effect value="Pulse" />
-				<speed value="3" />
+				<speed value=".15" />
 			</property>
 			<property name="event1" type="Effect">
 				<event value="Press" />
@@ -131,7 +137,7 @@
 			<property name="event3" type="Effect">
 				<event value="TabFocus" />
 				<effect value="PulseColor" />
-				<speed value="3" />
+				<speed value=".15" />
 			</property>
 			<property name="event4" type="Effect">
 				<event value="LoseTabFocus" />
