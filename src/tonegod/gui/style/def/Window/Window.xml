@@ -25,6 +25,12 @@
 			</property>
 			<property name="clipPadding" type="float" value="6" />
 			<property name="buttonAreaHeight" type="float" value="40" />
+			<property name="showSound" type="String" value="fade" />
+			<property name="useShowSound" type="boolean" value="true" />
+			<property name="showSoundVolume" type="float" value="1" />
+			<property name="hideSound" type="String" value="fade" />
+			<property name="useHideSound" type="boolean" value="true" />
+			<property name="hideSoundVolume" type="float" value="1" />
 		</attributes>
 		<images>
 			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Window/panel_x.png" />
@@ -33,12 +39,12 @@
 			<property name="event0" type="Effect">
 				<event value="Show" />
 				<effect value="FadeIn" />
-				<speed value="3" />
+				<speed value=".25" />
 			</property>
 			<property name="event1" type="Effect">
 				<event value="Hide" />
 				<effect value="FadeOut" />
-				<speed value="3" />
+				<speed value=".25" />
 			</property>
 		</effects>
 	</element>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-	<element name="Window">
+	<element name="Dial">
 		<font></font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">
@@ -36,40 +36,5 @@
 				<speed value="1.5" />
 			</property>
 		</effects>
-	</element>
-
-	<element name="Window#Dragbar">
-		<font>
-			<property name="fontSize" type="float" value="18" />
-			<property name="fontColor" type="ColorRGBA">
-				<r value="1.0" />
-				<g value="1.0" />
-				<b value="1.0" />
-				<a value="1.0" />
-			</property>
-			<property name="textAlign" type="String" value="Left" />
-			<property name="textVAlign" type="String" value="Center" />
-			<property name="textWrap" type="String" value="Clip" />
-			<property name="textPadding" type="float" value="3" />
-		</font>
-		<attributes>
-			<property name="resizeBorders" type="Vector4f">
-				<x value="6" />
-				<y value="6" />
-				<z value="6" />
-				<w value="6" />
-			</property>
-			<property name="indents" type="Vector4f">
-				<x value="7" />
-				<y value="7" />
-				<z value="7" />
-				<w value="7" />
-			</property>
-			<property name="defaultControlSize" type="float" value="25" />
-		</attributes>
-		<images>
-			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Window/dragbar_x.png" />
-		</images>
-		<effects></effects>
 	</element>
 </root>

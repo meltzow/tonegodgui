@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="Slider">
+		<font></font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="5" />
+				<y value="5" />
+				<z value="5" />
+				<w value="5" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="150" />
+				<y value="25" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Scrolling/scroll_track_x.png" />
+		</images>
+		<effects></effects>
+	</element>
+</root>

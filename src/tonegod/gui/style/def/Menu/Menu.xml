@@ -45,7 +45,7 @@
 			<property name="event0" type="Effect">
 				<event value="Show" />
 				<effect value="FadeIn" />
-				<speed value="3" />
+				<speed value=".1" />
 			</property>
 		</effects>
 	</element>
