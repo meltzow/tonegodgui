@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<root>
+    <audiofile key="button_pressed" path="tonegod/gui/style/def/Common/Audio/button_click.wav" />
+	<audiofile key="button_focus" path="tonegod/gui/style/def/Common/Audio/button_over.wav" />
+	<audiofile key="fade" path="tonegod/gui/style/def/Common/Audio/fade.wav" />
+</root>
