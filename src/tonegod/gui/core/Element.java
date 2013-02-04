@@ -1717,10 +1717,10 @@ public class Element extends Node {
 	 * @param effectEvent The Effect.EffectEvent the Effect is to be registered with
 	 * @param effect The Effect to store
 	 */
-	public void addEffect(Effect.EffectEvent effectEvent, Effect effect) {
-		if (!effects.containsKey(effectEvent)) {
+	public void addEffect(Effect effect) {
+		if (!effects.containsKey(effect.getEffectEvent())) {
 			effect.setElement(this);
-			effects.put(effectEvent, effect);
+			effects.put(effect.getEffectEvent(), effect);
 		}
 	}
 	
@@ -1756,7 +1756,7 @@ public class Element extends Node {
 		while ((effect = screen.getStyle(styleName).getEffect("event" + index)) != null) {
 			effect = effect.clone();
 			effect.setElement(this);
-			this.addEffect(effect.getEffectEvent(), effect);
+			this.addEffect(effect);
 			index++;
 		}
 	}
