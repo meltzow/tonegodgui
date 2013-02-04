@@ -6,15 +6,11 @@ package tonegod.gui.controls.windows;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
-import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import com.jme3.renderer.queue.RenderQueue;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.effects.Effect;
-import tonegod.gui.listeners.MouseFocusListener;
-import tonegod.gui.listeners.MouseMovementListener;
 
 /**
  *
@@ -22,6 +18,9 @@ import tonegod.gui.listeners.MouseMovementListener;
  */
 public class Window extends Element {
 	Element dragBar;
+	boolean useShowSound, useHideSound;
+	String showSound, hideSound;
+	float showSoundVolume, hideSoundVolume;
 	
 	/**
 	 * Creates a new instance of the Window control
@@ -100,6 +99,13 @@ public class Window extends Element {
 	//	this.setTextAlign(BitmapFont.Align.Center);
 	//	this.setTextWrap(LineWrapMode.Clip);
 		
+		showSound = screen.getStyle("Window").getString("showSound");
+		useShowSound = screen.getStyle("Window").getBoolean("useShowSound");
+		showSoundVolume = screen.getStyle("Window").getFloat("showSoundVolume");
+		hideSound = screen.getStyle("Window").getString("hideSound");
+		useHideSound = screen.getStyle("Window").getBoolean("useHideSound");
+		hideSoundVolume = screen.getStyle("Window").getFloat("hideSoundVolume");
+		
 		populateEffects("Window");
 	}
 	
@@ -126,9 +132,15 @@ public class Window extends Element {
 	public void showWindow() {
 		Effect effect = getEffect(Effect.EffectEvent.Show);
 		if (effect != null) {
-			if (effect.getEffectType() == Effect.EffectType.FadeIn)
-				this.propagateEffect(effect);
-			else
+			if (useShowSound && screen.getUseUIAudio()) {
+				effect.setAudioFile(showSound);
+				effect.setAudioVolume(showSoundVolume);
+			}
+			if (effect.getEffectType() == Effect.EffectType.FadeIn) {
+				Effect clone = effect.clone();
+				clone.setAudioFile(null);
+				this.propagateEffect(clone);
+			} else
 				screen.getEffectManager().applyEffect(effect);
 		} else
 			this.show();
@@ -137,9 +149,15 @@ public class Window extends Element {
 	public void hideWindow() {
 		Effect effect = getEffect(Effect.EffectEvent.Hide);
 		if (effect != null) {
-			if (effect.getEffectType() == Effect.EffectType.FadeOut)
-				this.propagateEffect(effect);
-			else
+			if (useHideSound && screen.getUseUIAudio()) {
+				effect.setAudioFile(hideSound);
+				effect.setAudioVolume(hideSoundVolume);
+			}
+			if (effect.getEffectType() == Effect.EffectType.FadeOut) {
+				Effect clone = effect.clone();
+				clone.setAudioFile(null);
+				this.propagateEffect(clone);
+			} else
 				screen.getEffectManager().applyEffect(effect);
 		} else
 			this.hide();

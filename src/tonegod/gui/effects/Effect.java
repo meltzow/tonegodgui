@@ -54,8 +54,9 @@ public class Effect implements Cloneable {
 	private EffectEvent event;
 	private float pass = 0.0f;
 	private boolean direction = true;
-	private float speed;
+	private float duration;
 	private boolean isActive = true;
+	private boolean localActive = true;
 	private Texture blendImage;
 	private ColorRGBA blendColor;
 	private boolean init = false;
@@ -64,11 +65,22 @@ public class Effect implements Cloneable {
 	private Vector2f def = new Vector2f();
 	private Vector2f diff = new Vector2f();
 	private Vector2f fract = new Vector2f();
+	private String audioFile = null;
+	private float audioVolume = 1;
 	
-	public Effect(EffectType type, EffectEvent event, float speed) {
+	public Effect(EffectType type, EffectEvent event, float duration) {
+		this(type, event, duration, null, 1);
+	//	this.type = type;
+	//	this.event = event;
+	//	this.duration = duration;
+	}
+	
+	public Effect (EffectType type, EffectEvent event, float duration, String audioFile, float audioVolume) {
 		this.type = type;
 		this.event = event;
-		this.speed = speed;
+		this.duration = duration;
+		this.audioFile = audioFile;
+		this.audioVolume = audioVolume;
 	}
 	
 	public void setElement(Element element) {
@@ -88,11 +100,15 @@ public class Effect implements Cloneable {
 	}
 	
 	public float getDuration() {
-		return this.speed;
+		return this.duration;
 	}
 	
 	public boolean getIsActive() {
 		return this.isActive;
+	}
+	
+	public void setIsActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 	
 	public EffectEvent getEffectEvent() {
@@ -115,6 +131,22 @@ public class Effect implements Cloneable {
 		this.destroyOnHide = destroyOnHide;
 	}
 	
+	public void setAudioFile(String audioFile) {
+		this.audioFile = audioFile;
+	}
+	
+	public String getAudioFile() {
+		return this.audioFile;
+	}
+	
+	public void setAudioVolume(float audioVolume) {
+		this.audioVolume = audioVolume;
+	}
+	
+	public float getAudioVolume() {
+		return this.audioVolume;
+	}
+	
 	public void update(float tpf) {
 		if (type == EffectType.ZoomIn) {
 			if (!init) {
@@ -125,7 +157,7 @@ public class Effect implements Cloneable {
 				element.setLocalScale(pass);
 				element.show();
 				init = true;
-			} else if (isActive) {
+			} else if (localActive) {
 				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
 				element.setPosition(def.add(diff.subtract(inc)));
 				element.setLocalScale(pass);
@@ -133,6 +165,7 @@ public class Effect implements Cloneable {
 			if (pass >= 1.0) {
 				element.setPosition(def);
 				element.setLocalScale(pass);
+				isActive = false;
 			}
 		} else if (type == EffectType.ZoomOut) {
 			if (!init) {
@@ -142,7 +175,7 @@ public class Effect implements Cloneable {
 				element.setPosition(def.add(inc));
 				element.setLocalScale(1-pass);
 				init = true;
-			} else if (isActive) {
+			} else if (localActive) {
 				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
 				element.setPosition(def.add(inc));
 				element.setLocalScale(1-pass);
@@ -152,8 +185,11 @@ public class Effect implements Cloneable {
 					element.hide();
 					element.setPosition(def);
 					element.setLocalScale(0);
-				} else
+					isActive = false;
+				} else {
 					destoryElement();
+					isActive = false;
+				}
 			}
 		} else if (type == EffectType.SlideIn) {
 			if (!init) {
@@ -161,27 +197,31 @@ public class Effect implements Cloneable {
 				updateSlideIn();
 				element.show();
 				init = true;
-			} else if (isActive) {
+			} else if (localActive) {
 				updateSlideIn();
 			}
 			if (pass >= 1.0) {
 				element.setPosition(def);
 				element.setLocalScale(pass);
+				isActive = false;
 			}
 		} else if (type == EffectType.SlideOut) {
 			if (!init) {
 				initSlides();
 				updateSlideOut();
 				init = true;
-			} else if (isActive) {
+			} else if (localActive) {
 				updateSlideOut();
 			}
 			if (pass >= 1.0) {
 				if (!destroyOnHide) {
 					element.hide();
 					element.setPosition(def);
-				} else
+					isActive = false;
+				} else {
 					destoryElement();
+					isActive = false;
+				}
 			}
 		} else if (type == EffectType.SpinIn) {
 			if (!init) {
@@ -192,7 +232,7 @@ public class Effect implements Cloneable {
 				element.setLocalScale(pass);
 				element.show();
 				init = true;
-			} else if (isActive) {
+			} else if (localActive) {
 				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
 				element.setPosition(def.add(diff.subtract(inc)));
 				element.setLocalScale(pass);
@@ -200,6 +240,7 @@ public class Effect implements Cloneable {
 			if (pass >= 1.0) {
 				element.setPosition(def);
 				element.setLocalScale(pass);
+				isActive = false;
 			}
 			element.setLocalRotation(element.getLocalRotation().fromAngles(0, 0, 360*FastMath.DEG_TO_RAD*pass));
 		} else if (type == EffectType.SpinOut) {
@@ -210,7 +251,7 @@ public class Effect implements Cloneable {
 				element.setPosition(def.subtract(inc));
 				element.setLocalScale(1-pass);
 				init = true;
-			} else if (isActive) {
+			} else if (localActive) {
 				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
 				element.setPosition(def.subtract(inc));
 				element.setLocalScale(1-pass);
@@ -220,8 +261,11 @@ public class Effect implements Cloneable {
 					element.hide();
 					element.setPosition(def);
 					element.setLocalScale(1);
-				} else
+					isActive = false;
+				} else {
 					destoryElement();
+					isActive = false;
+				}
 			}
 			element.setLocalRotation(element.getLocalRotation().fromAngles(0, 0, 360*FastMath.DEG_TO_RAD*(1.0f-pass)));
 		} else if (type == EffectType.FadeIn) {
@@ -233,7 +277,10 @@ public class Effect implements Cloneable {
 				element.show();
 				init = true;
 			}
-			element.getElementMaterial().setFloat("EffectStep", pass);
+			if (localActive)
+				element.getElementMaterial().setFloat("EffectStep", pass);
+			if (pass >= 1.0f)
+				isActive = false;
 		} else if (type == EffectType.FadeOut) {
 			if (!init) {
 				element.getElementMaterial().setBoolean("UseEffect", true);
@@ -248,8 +295,11 @@ public class Effect implements Cloneable {
 					element.getElementMaterial().setBoolean("UseEffect", false);
 					element.getElementMaterial().setBoolean("EffectFade", false);
 					element.getElementMaterial().setBoolean("EffectPulse", false);
-				} else
+					isActive = false;
+				} else {
 					destoryElement();
+					isActive = false;
+				}
 			} else
 				element.getElementMaterial().setFloat("EffectStep", 1.0f-pass);
 		} else if (type == EffectType.ImageSwap) {
@@ -277,11 +327,10 @@ public class Effect implements Cloneable {
 
 		if (isActive) {
 			if (type != EffectType.Pulse && type != EffectType.PulseColor) {
-				pass += tpf*speed;
+				pass += tpf/duration;
 				if (pass >= 1.0) {
-
 					pass = 1.0f;
-					isActive = false;
+					localActive = false;
 				}
 			} else {
 				if (type == EffectType.Pulse) {
@@ -290,8 +339,8 @@ public class Effect implements Cloneable {
 					} else if (pass <= -1.0f) {
 						direction = true;
 					}
-					if (direction) pass += tpf*speed;
-					else pass -= tpf*speed;
+					if (direction) pass += tpf/duration;
+					else pass -= tpf/duration;
 					if (!init) {
 						element.getElementMaterial().setBoolean("UseEffect", true);
 						element.getElementMaterial().setBoolean("EffectFade", false);
@@ -307,8 +356,8 @@ public class Effect implements Cloneable {
 					} else if (pass <= -1.0f) {
 						direction = true;
 					}
-					if (direction) pass += tpf*speed;
-					else pass -= tpf*speed;
+					if (direction) pass += tpf/duration;
+					else pass -= tpf/duration;
 					if (!init) {
 						element.getElementMaterial().setBoolean("UseEffect", true);
 						element.getElementMaterial().setBoolean("EffectFade", false);
@@ -318,13 +367,13 @@ public class Effect implements Cloneable {
 						init = true;
 					}
 					element.getElementMaterial().setFloat("EffectStep", pass);
-				} else {
-					pass += tpf*speed;
+				} /* else {
+					pass += tpf/duration;
 					if (pass >= 1.0) {
 						pass = 1.0f;
 						isActive = false;
 					}
-				}
+				}*/
 			}
 		}
 	}
@@ -350,7 +399,7 @@ public class Effect implements Cloneable {
 		Effect effect = new Effect(
 			this.type,
 			this.event,
-			this.speed
+			this.duration
 		);
 		effect.setElement(this.element);
 		effect.setEffectDirection(this.effectDir);

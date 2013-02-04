@@ -1,6 +1,7 @@
 package tonegod.gui.core;
 
 import com.jme3.app.Application;
+import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.cursors.plugins.JmeCursor;
@@ -120,6 +121,10 @@ public class Screen implements Control, RawInputListener {
 	
 	private float globalAlpha = 1.0f;
 	
+	private Map<String, AudioNode> audioNodes = new HashMap();
+	private boolean useUIAudio = false;
+	private float uiAudioVolume;
+	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
 	 * provided with the library.
@@ -145,7 +150,7 @@ public class Screen implements Control, RawInputListener {
 		this.styleMap = styleMap;
 		parseStyles(styleMap);
 		
-		effectManager = new EffectManager();
+		effectManager = new EffectManager(this);
 	}
 	
 	/**
@@ -199,6 +204,9 @@ public class Screen implements Control, RawInputListener {
 	 * @param element The Element to add
 	 */
 	public void addElement(Element element) {
+		if (element instanceof Menu)
+			element.hide();
+		
 		elements.put(element.getUID(), element);
 		
 	//	element.validateLayout();
@@ -699,7 +707,63 @@ public class Screen implements Control, RawInputListener {
 				}
 			}
 			
+			// Get Audio
+			docPaths.clear();
 			
+			file = Screen.class.getClassLoader().getResourceAsStream(
+				path
+			);
+			dbf = DocumentBuilderFactory.newInstance();
+			db = dbf.newDocumentBuilder();
+			doc = db.parse(file);
+			doc.getDocumentElement().normalize();
+			nodeLst = doc.getElementsByTagName("audio");
+			
+			for (int s = 0; s < nodeLst.getLength(); s++) {
+				org.w3c.dom.Node fstNode = nodeLst.item(0);
+				if (fstNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+					org.w3c.dom.Element fstElmnt = (org.w3c.dom.Element) fstNode;
+				//	String styleName = XMLHelper.getNodeAttributeValue(fstNode, "control");
+					String cursorDocPath = XMLHelper.getNodeAttributeValue(fstNode, "path");
+					docPaths.add(cursorDocPath);
+				}
+			}
+			
+			if (file != null)
+				file.close();
+			
+			for (String docPath : docPaths) {
+				try {
+					file = Screen.class.getClassLoader().getResourceAsStream(
+						docPath
+					);
+					
+					dbf = DocumentBuilderFactory.newInstance();
+					db = dbf.newDocumentBuilder();
+					doc = db.parse(file);
+					doc.getDocumentElement().normalize();
+					NodeList nLst = doc.getElementsByTagName("audiofile");
+					
+					for (int s = 0; s < nLst.getLength(); s++) {
+						org.w3c.dom.Node fstNode = nLst.item(s);
+						if (fstNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+							org.w3c.dom.Element fstElmnt = (org.w3c.dom.Element) fstNode;
+							String key = XMLHelper.getNodeAttributeValue(fstNode, "key");
+							String audioPath = XMLHelper.getNodeAttributeValue(fstNode, "path");
+							
+							AudioNode audioNode = new AudioNode(app.getAssetManager(), audioPath, false);
+							audioNode.setPositional(false);
+							audioNode.setReverbEnabled(false);
+							audioNodes.put(key, audioNode);
+							t0neg0dGUI.attachChild(audioNode);
+						}
+					}
+					if (file != null)
+						file.close();
+				} catch (Exception ex) {
+					System.err.println("Problem loading audio file: " + ex);
+				}
+			}
 			
 			// Get Styles
 			docPaths.clear();
@@ -1027,6 +1091,31 @@ public class Screen implements Control, RawInputListener {
 				toolTip.setText("");
 				toolTip.hide();
 			}
+		}
+	}
+	
+	// Audio support
+	public void setUseUIAudio(boolean useUIAudio) {
+		this.useUIAudio = useUIAudio;
+	}
+	
+	public boolean getUseUIAudio() {
+		return this.useUIAudio;
+	}
+	
+	public void setUIAudioVolume(float uiAudioVolume) {
+		this.uiAudioVolume = uiAudioVolume;
+	}
+	
+	public float getUIAudioVolume() {
+		return this.uiAudioVolume;
+	}
+	
+	public void playAudioNode(String key, float volume) {
+		AudioNode audioNode = audioNodes.get(key);
+		if (audioNode != null) {
+			audioNode.setVolume(volume*getUIAudioVolume());
+			audioNode.playInstance();
 		}
 	}
 	

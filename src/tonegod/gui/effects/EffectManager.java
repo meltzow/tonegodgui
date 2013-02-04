@@ -17,23 +17,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.Screen;
 
 /**
  *
  * @author t0neg0d
  */
 public class EffectManager implements Control {
+	Screen screen;
 	Spatial spatial;
-	private Map<String, Effect> currentEffects = new HashMap();
+//	private Map<String, Effect> currentEffects = new HashMap();
+	private List<Effect> currentEffects = new ArrayList();
 	private List<EffectQueue> currentEffectQueues = new ArrayList();
 	private List<BatchEffect> currentBatchEffects = new ArrayList();
 	
-	public EffectManager() {  }
+	public EffectManager(Screen screen) {
+		this.screen = screen;
+	}
 	
 	public void applyEffect(Effect effect) {
 		if (effect != null) {
-			currentEffects.remove(effect.getElement().getUID());
-			currentEffects.put(effect.getElement().getUID(), effect);
+			for (Effect ef : currentEffects) {
+				if (effect.getElement().getUID().equals(ef.getElement().getUID())) {
+					if (ef.getEffectType() == Effect.EffectType.Pulse || ef.getEffectType() == Effect.EffectType.PulseColor)
+						ef.setIsActive(false);
+				}
+			}
+			currentEffects.add(effect);
+			if (effect.getAudioFile() != null) {
+				screen.playAudioNode(effect.getAudioFile(), effect.getAudioVolume());
+			}
 		}
 	}
 
@@ -50,9 +63,13 @@ public class EffectManager implements Control {
 	
 	@Override
 	public void update(float tpf) {
-		Set<String> keys = currentEffects.keySet();
-		for (String key : keys) {
-			currentEffects.get(key).update(tpf);
+		for (Effect effect : currentEffects) {
+			if (effect.getIsActive())
+				effect.update(tpf);
+			else {
+				currentEffects.remove(effect);
+				break;
+			}
 		}
 		for (EffectQueue queue : currentEffectQueues) {
 			if (queue.getIsActive())
