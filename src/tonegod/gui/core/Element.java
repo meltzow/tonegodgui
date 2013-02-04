@@ -1717,6 +1717,17 @@ public class Element extends Node {
 	 * @param effectEvent The Effect.EffectEvent the Effect is to be registered with
 	 * @param effect The Effect to store
 	 */
+	public void addEffect(Effect.EffectEvent effectEvent, Effect effect) {
+		addEffect(effect);
+	}
+	
+	/**
+	 * Associates an Effect with this Element.  Effects are not automatically associated
+	 * with the specified event, but instead, the event type is used to retrieve the Effect
+	 * at a later point
+	 * 
+	 * @param effect The Effect to store
+	 */
 	public void addEffect(Effect effect) {
 		if (!effects.containsKey(effect.getEffectEvent())) {
 			effect.setElement(this);
