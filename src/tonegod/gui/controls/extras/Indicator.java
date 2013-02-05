@@ -12,6 +12,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
+import java.util.Set;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.effects.Effect;
@@ -94,25 +95,41 @@ public class Indicator extends Element implements MouseFocusListener {
 			null
 		) {
 			@Override
+			public void setControlClippingLayer(Element clippingLayer) {
+			//	setClippingLayer(clippingLayer);
+				Set<String> keys = elementChildren.keySet();
+				for (String key : keys) {
+					elementChildren.get(key).setControlClippingLayer(clippingLayer);
+				}
+			}
+			@Override
 			public void updateLocalClipping() {
 				Indicator ind = ((Indicator)this.getElementParent());
 				if (getIsVisible()) {
 					if (getClippingLayer() != null) {
-						if (ind.getOrientation() == Indicator.Orientation.HORIZONTAL) {
-							getClippingBounds().set(
-								getClippingLayer().getAbsoluteX(),
-								getClippingLayer().getAbsoluteY(),
-								getClippingLayer().getAbsoluteWidth()-(getClippingLayer().getWidth()-ind.getCurrentPercentage()),
-								getClippingLayer().getAbsoluteHeight()
-							);
+						float clipX = 0, clipY = 0, clipW = 0, clipH = 0;
+						if (getElementParent().getClippingLayer() != null) {
+							clipX = (getElementParent().getClippingBounds().x > getClippingLayer().getAbsoluteX()) ? getElementParent().getClippingBounds().x : getClippingLayer().getAbsoluteX();
+							clipY = (getElementParent().getClippingBounds().y > getClippingLayer().getAbsoluteY()) ? getElementParent().getClippingBounds().y : getClippingLayer().getAbsoluteY();
+							if (ind.getOrientation() == Indicator.Orientation.HORIZONTAL) {
+								clipW = (getElementParent().getClippingBounds().z < getClippingLayer().getAbsoluteWidth()-(getClippingLayer().getWidth()-ind.getCurrentPercentage())) ? getElementParent().getClippingBounds().z : getClippingLayer().getAbsoluteWidth()-(getClippingLayer().getWidth()-ind.getCurrentPercentage());
+								clipH = (getElementParent().getClippingBounds().w < getClippingLayer().getAbsoluteHeight()) ? getElementParent().getClippingBounds().w : getClippingLayer().getAbsoluteHeight();
+							} else {
+								clipW = (getElementParent().getClippingBounds().z < getClippingLayer().getAbsoluteWidth()) ? getElementParent().getClippingBounds().z : getClippingLayer().getAbsoluteWidth();
+								clipH = (getElementParent().getClippingBounds().w < getClippingLayer().getAbsoluteHeight()-(getClippingLayer().getHeight()-ind.getCurrentPercentage())) ? getElementParent().getClippingBounds().w : getClippingLayer().getAbsoluteHeight()-(getClippingLayer().getHeight()-ind.getCurrentPercentage());
+							}
 						} else {
-							getClippingBounds().set(
-								getClippingLayer().getAbsoluteX(),
-								getClippingLayer().getAbsoluteY(),
-								getClippingLayer().getAbsoluteWidth(),
-								getClippingLayer().getAbsoluteHeight()-(getClippingLayer().getHeight()-ind.getCurrentPercentage())
-							);
+							clipX = getClippingLayer().getAbsoluteX();
+							clipY = getClippingLayer().getAbsoluteY();
+							if (ind.getOrientation() == Indicator.Orientation.HORIZONTAL) {
+								clipW = getClippingLayer().getAbsoluteWidth()-(getClippingLayer().getWidth()-ind.getCurrentPercentage());
+								clipH = getClippingLayer().getAbsoluteHeight();
+							} else {
+								clipW = getClippingLayer().getAbsoluteWidth();
+								clipH = getClippingLayer().getAbsoluteHeight()-(getClippingLayer().getHeight()-ind.getCurrentPercentage());
+							}
 						}
+						getClippingBounds().set(clipX, clipY, clipW, clipH);
 						getElementMaterial().setVector4("Clipping", getClippingBounds());
 						getElementMaterial().setBoolean("UseClipping", true);
 					} else {
