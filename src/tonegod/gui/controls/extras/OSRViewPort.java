@@ -147,6 +147,10 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 		this.zoomEnabled = zoomEnabled;
 	}
 	
+	public OSRBridge getOSRBridge() {
+		return this.bridge;
+	}
+	
 	@Override
 	public void onMouseLeftPressed(MouseButtonEvent evt) {
 		if (rotateEnabled && useLeftMouseRotate) {

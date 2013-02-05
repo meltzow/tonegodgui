@@ -5,6 +5,10 @@ import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.cursors.plugins.JmeCursor;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
+import com.jme3.effect.shapes.EmitterShape;
+import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.font.plugins.BitmapFontLoader;
@@ -16,7 +20,10 @@ import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.light.AmbientLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -24,9 +31,12 @@ import com.jme3.math.Vector4f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import com.jme3.scene.shape.Quad;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -38,6 +48,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import tonegod.gui.controls.extras.OSRViewPort;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.text.TextField;
@@ -124,6 +135,12 @@ public class Screen implements Control, RawInputListener {
 	private Map<String, AudioNode> audioNodes = new HashMap();
 	private boolean useUIAudio = false;
 	private float uiAudioVolume;
+	
+	private ParticleEmitter cursorEmitter;
+	private OSRViewPort cursorEmitterVP = null;
+	private Node cursorEmitterNode = new Node("cursorEmitterNode");
+	private Node cursorEmitterPlaneNode = new Node("cursorEmitterPlaneNode");
+	private boolean useCursorEffects = false;
 	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
@@ -288,8 +305,11 @@ public class Screen implements Control, RawInputListener {
 		
 		Set<String> keys = elements.keySet();
 		for (String key : keys) {
-			if (elements.get(key).getLocalTranslation().getZ() > shiftZ) {
-				elements.get(key).move(0,0,-zOrderStepMajor);
+			Element el = elements.get(key);
+			if (el != cursorEmitterVP && el != toolTip) {
+				if (el.getLocalTranslation().getZ() > shiftZ) {
+					el.move(0,0,-zOrderStepMajor);
+				}
 			}
 		}
 		topMost.setLocalTranslation(topMost.getLocalTranslation().setZ(Float.valueOf(zOrderCurrent)));
@@ -352,6 +372,7 @@ public class Screen implements Control, RawInputListener {
 	@Override
 	public void onMouseMotionEvent(MouseMotionEvent evt) {
 		setMouseXY(evt.getX(),evt.getY());
+		if (this.useCursorEffects) updateCursorEmitter();
 		if (useToolTips) updateToolTipLocation();
 		if (!mousePressed) {
 			mouseFocusElement = getEventElement(evt.getX(), evt.getY());
@@ -400,6 +421,9 @@ public class Screen implements Control, RawInputListener {
 		if (evt.isPressed()) {
 			mousePressed = true;
 			resetTabFocusElement();
+			if (this.useCursorEffects) {
+				this.configEmiterClick(evt.getButtonIndex());
+			}
 			switch (evt.getButtonIndex()) {
 				case 0:
 					mouseLeftPressed = true;
@@ -1122,6 +1146,105 @@ public class Screen implements Control, RawInputListener {
 			audioNode.setVolume(volume*getUIAudioVolume());
 			audioNode.playInstance();
 		}
+	}
+	
+	// Cursor Effects
+	public void setUseCursorEffects(boolean useCursorEffects) {
+		if (useCursorEffects) {
+			if (cursorEmitterVP == null) {
+				initializeCursorEmitter();
+			}
+			t0neg0dGUI.attachChild(cursorEmitterVP);
+			cursorEmitterVP.move(0,0,19);
+		} else {
+			cursorEmitterVP.removeFromParent();
+		}
+		this.useCursorEffects = useCursorEffects;
+	}
+	private void initializeCursorEmitter() {
+		cursorEmitter = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 25);
+		Material mat_red = new Material(app.getAssetManager(), "tonegod/gui/shaders/Particle.j3md");
+		mat_red.setTexture("Texture", app.getAssetManager().loadTexture("tonegod/gui/style/def/Common/Particles/spark.png"));
+		cursorEmitter.setMaterial(mat_red);
+		cursorEmitter.setQueueBucket(RenderQueue.Bucket.Transparent);
+		cursorEmitter.setShape(new EmitterSphereShape(Vector3f.ZERO,.08f));
+		cursorEmitter.setImagesX(2); 
+		cursorEmitter.setImagesY(2);
+		configEmitterDefault();
+		cursorEmitter.setEnabled(true);
+		cursorEmitterNode.attachChild(cursorEmitter);
+		
+		Material mat = new Material(app.getAssetManager(), "tonegod/gui/shaders/Unshaded.j3md");
+		mat.setColor("Color",new ColorRGBA(0,0,0,0));
+		
+		Quad q = new Quad(8000,8000);
+		Geometry quadGeom = new Geometry();
+		quadGeom.setMesh(q);
+		cursorEmitterPlaneNode = new Node("PlaneNode");
+		cursorEmitterPlaneNode.attachChild(quadGeom);
+		cursorEmitterPlaneNode.setMaterial(mat);
+		cursorEmitterPlaneNode.setLocalTranslation(new Vector3f(-4000,-4000,0));
+		cursorEmitterNode.attachChild(cursorEmitterPlaneNode);
+		
+		cursorEmitterVP = new OSRViewPort(this, "subView", new Vector2f(0,0), new Vector2f(getWidth(),getHeight()), new Vector4f(0,0,0,0), null);
+		cursorEmitterVP.setOSRBridge(cursorEmitterNode, (int)getWidth(), (int)getHeight());
+		cursorEmitterVP.setBackgroundColor(new ColorRGBA(0,0,0,0));
+		cursorEmitterVP.setUseCameraControlZoom(false);
+		cursorEmitterVP.setUseCameraControlRotate(false);
+		cursorEmitterVP.setCameraDistance(5f);
+		cursorEmitterVP.setCameraMinDistance(0.15f);
+		cursorEmitterVP.setCameraMaxDistance(5f);
+		cursorEmitterVP.setCameraHorizonalRotation(-90*FastMath.DEG_TO_RAD);
+		cursorEmitterVP.setCameraVerticalRotation(0);
+		cursorEmitterVP.setIgnoreMouse(true);
+		cursorEmitterVP.setIgnoreGlobalAlpha(true);
+	}
+	
+	public void updateCursorEmitter() {
+		Camera cam = cursorEmitterVP.getOSRBridge().getCamera();
+		CollisionResults results = new CollisionResults();
+		Vector3f click3d = cam.getWorldCoordinates(
+			new Vector2f(mouseXY.x, mouseXY.y), 0f).clone();
+		Vector3f dir = cam.getWorldCoordinates(
+			new Vector2f(mouseXY.x, mouseXY.y), 1f).subtractLocal(click3d).normalizeLocal();
+		Ray ray = new Ray(click3d, dir);
+		cursorEmitterPlaneNode.collideWith(ray, results);
+		
+		if(results.size() > 0) {
+			CollisionResult result = results.getClosestCollision();
+			cursorEmitter.setLocalTranslation(result.getContactPoint().getX(), result.getContactPoint().getY(), 0);
+		}
+	}
+	
+	private void configEmitterDefault() {
+		cursorEmitter.setEndColor(  new ColorRGBA(0f, 0f, 1f, 1f));
+		cursorEmitter.setStartColor(new ColorRGBA(.8f, .8f, 1f, 0.5f));
+		cursorEmitter.getParticleInfluencer().setInitialVelocity(new Vector3f(0, .25f, 0));
+		cursorEmitter.setStartSize(.065f);
+		cursorEmitter.setEndSize(.02f);
+		cursorEmitter.setGravity(0, 1.5f, 0);
+		cursorEmitter.setLowLife(.8f);
+		cursorEmitter.setHighLife(1.5f);
+		cursorEmitter.setParticlesPerSec(12);
+	}
+	
+	private void configEmiterClick(int button) {
+		cursorEmitter.setEndColor(  new ColorRGBA(.5f, .5f, 1f, 1f));
+		cursorEmitter.setStartColor(new ColorRGBA(.8f, .8f, 1f, 0.5f));
+		if (button == 0) {
+			cursorEmitter.getParticleInfluencer().setInitialVelocity(new Vector3f(.75f, 1f, 0));
+		} else if (button == 1) {
+			cursorEmitter.getParticleInfluencer().setInitialVelocity(new Vector3f(-.75f, 1f, 0));
+		} else if (button == 2) {
+			cursorEmitter.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 1f, 0));
+		}
+		cursorEmitter.setStartSize(.065f);
+		cursorEmitter.setEndSize(.02f);
+		cursorEmitter.setGravity(0, .75f, 0);
+		cursorEmitter.setLowLife(.8f);
+		cursorEmitter.setHighLife(1.5f);
+		cursorEmitter.emitAllParticles();
+		configEmitterDefault();
 	}
 	
 	// Forms and tab focus

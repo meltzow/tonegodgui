@@ -367,13 +367,7 @@ public class Effect implements Cloneable {
 						init = true;
 					}
 					element.getElementMaterial().setFloat("EffectStep", pass);
-				} /* else {
-					pass += tpf/duration;
-					if (pass >= 1.0) {
-						pass = 1.0f;
-						isActive = false;
-					}
-				}*/
+				}
 			}
 		}
 	}
