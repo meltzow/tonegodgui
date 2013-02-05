@@ -1729,6 +1729,7 @@ public class Element extends Node {
 	 * @param effect The Effect to store
 	 */
 	public void addEffect(Effect effect) {
+		effects.remove(effect.getEffectEvent());
 		if (!effects.containsKey(effect.getEffectEvent())) {
 			effect.setElement(this);
 			effects.put(effect.getEffectEvent(), effect);
