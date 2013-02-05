@@ -37,6 +37,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.shape.Quad;
+import java.awt.Cursor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.lwjgl.input.Mouse;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import tonegod.gui.controls.extras.OSRViewPort;
@@ -372,7 +374,16 @@ public class Screen implements Control, RawInputListener {
 	@Override
 	public void onMouseMotionEvent(MouseMotionEvent evt) {
 		setMouseXY(evt.getX(),evt.getY());
-		if (this.useCursorEffects) updateCursorEmitter();
+		if (this.useCursorEffects) {
+			if (!app.getInputManager().isCursorVisible()) {
+			//	cursorEmitter.emitAllParticles();
+				cursorEmitter.setParticlesPerSec(0);
+			} else {
+				if (cursorEmitter.getParticlesPerSec() == 0)
+					this.configEmitterDefault();
+				updateCursorEmitter();
+			}
+		}
 		if (useToolTips) updateToolTipLocation();
 		if (!mousePressed) {
 			mouseFocusElement = getEventElement(evt.getX(), evt.getY());
@@ -996,6 +1007,8 @@ public class Screen implements Control, RawInputListener {
 	
 	public void setUseCustomCursors(boolean useCustomCursors) {
 		this.useCustomCursors = useCustomCursors;
+	//	if (!useCustomCursors)
+	//		try { Mouse.setNativeCursor(); } catch (Exception ex) {  }
 	}
 	
 	public boolean getUseCustomCursors() {
@@ -1074,17 +1087,26 @@ public class Screen implements Control, RawInputListener {
 	
 	// ToolTips
 	public void setUseToolTips(boolean useToolTips) {
-		toolTip = new ToolTip(
-			this,
-			"GlobalToolTip",
-			new Vector2f(0,0),
-			new Vector2f(200,50)
-		);
-		toolTip.setIgnoreGlobalAlpha(true);
-		toolTip.hide();
-		addElement(toolTip);
-		toolTip.move(0,0,20);
 		this.useToolTips = useToolTips;
+		if (useToolTips) {
+			if (toolTip == null) {
+				toolTip = new ToolTip(
+					this,
+					"GlobalToolTip",
+					new Vector2f(0,0),
+					new Vector2f(200,50)
+				);
+				toolTip.setIgnoreGlobalAlpha(true);
+				toolTip.hide();
+				addElement(toolTip);
+				toolTip.move(0,0,20);
+			} else {
+				t0neg0dGUI.attachChild(toolTip);
+			}
+		} else {
+			if (toolTip != null)
+				toolTip.removeFromParent();
+		}
 	}
 	
 	public boolean getUseToolTips() {
@@ -1157,10 +1179,12 @@ public class Screen implements Control, RawInputListener {
 			t0neg0dGUI.attachChild(cursorEmitterVP);
 			cursorEmitterVP.move(0,0,19);
 		} else {
-			cursorEmitterVP.removeFromParent();
+			if (cursorEmitterVP != null)
+				cursorEmitterVP.removeFromParent();
 		}
 		this.useCursorEffects = useCursorEffects;
 	}
+	
 	private void initializeCursorEmitter() {
 		cursorEmitter = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 25);
 		Material mat_red = new Material(app.getAssetManager(), "tonegod/gui/shaders/Particle.j3md");
