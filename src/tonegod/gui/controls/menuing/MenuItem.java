@@ -10,9 +10,10 @@ package tonegod.gui.controls.menuing;
  */
 public class MenuItem {
 	Menu menu, subMenu;
-	String caption, value;
+	String caption;
+	Object value;
 	
-	public MenuItem(Menu menu, String caption, String value, Menu subMenu) {
+	public MenuItem(Menu menu, String caption, Object value, Menu subMenu) {
 		this.menu = menu;
 		this.subMenu = subMenu;
 		this.caption = caption;
@@ -31,7 +32,7 @@ public class MenuItem {
 		return this.caption;
 	}
 	
-	public String getValue() {
+	public Object getValue() {
 		return this.value;
 	}
 }

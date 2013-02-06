@@ -180,7 +180,7 @@ public abstract class ChatBoxExt extends Panel {
 			new Vector2f(100-controlSize, controlSize)
 		) {
 			@Override
-			public void onChange(int selectedIndex, String value) {
+			public void onChange(int selectedIndex, Object value) {
 			//	throw new UnsupportedOperationException("Not supported yet.");
 			}
 		};
@@ -240,7 +240,7 @@ public abstract class ChatBoxExt extends Panel {
 	private void sendMsg() {
 		if (tfChatInput.getText().length() > 0) {
 			if (!tfChatInput.getText().equals("")) {
-				String command = sbDefaultChannel.getSelectedListItem().getValue();
+				String command = (String)sbDefaultChannel.getSelectedListItem().getValue();
 				onSendMsg(command, tfChatInput.getText());
 				tfChatInput.setTextFieldText("");
 			}

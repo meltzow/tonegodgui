@@ -29,7 +29,6 @@ import tonegod.gui.listeners.MouseWheelListener;
 public abstract class Menu extends ScrollArea implements MouseMovementListener, MouseWheelListener, MouseButtonListener {
 	private List<MenuItem> menuItems = new ArrayList();
 	private Element highlight;
-	private int miIndex = 0;
 	private float initWidth;
 	private float menuItemHeight;
 	private float menuPadding = 4;
@@ -41,6 +40,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	ColorRGBA highlightColor;
 	private int currentMenuItemIndex = -1;
 	private int currentHighlightIndex = 0;
+	private Vector2f preferredSize = Vector2f.ZERO;
 	
 	/**
 	 * Creates a new instance of the Menu control
@@ -147,7 +147,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		populateEffects("Menu");
 	}
 	
-	public void addMenuItem(String caption, String value, Menu subMenu) {
+	public void addMenuItem(String caption, Object value, Menu subMenu) {
 		this.getVScrollBar().hide();
 		MenuItem menuItem = new MenuItem(
 			this,
@@ -155,34 +155,79 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 			value,
 			subMenu
 		);
-	//	menuItem.setMenuItemIndex(miIndex);
 		this.menuItems.add(menuItem);
-	//	this.addScrollableChild(menuItem);
-		miIndex++;
+	//	miIndex++;
 		
 		pack();
 	}
 	
-	public void insertMenuItem(int index, String caption, String value, Menu subMenu) {
-		this.getVScrollBar().hide();
-		MenuItem menuItem = new MenuItem(
-			this,
-			caption,
-			value,
-			subMenu
-		);
-	//	menuItem.setMenuItemIndex(miIndex);
-		this.menuItems.add(index, menuItem);
-	//	this.addScrollableChild(menuItem);
-		miIndex++;
-		
-		pack();
+	public void insertMenuItem(int index, String caption, Object value, Menu subMenu) {
+		if (!menuItems.isEmpty()) {
+			if (index >= 0 && index < menuItems.size()) {
+				this.getVScrollBar().hide();
+				MenuItem menuItem = new MenuItem(
+					this,
+					caption,
+					value,
+					subMenu
+				);
+				this.menuItems.add(index, menuItem);
+		//		miIndex++;
+
+				pack();
+			}
+		}
 	}
 	
 	public void removeMenuItem(int index) {
-		menuItems.remove(index);
-		miIndex--;
-		pack();
+		this.getVScrollBar().hide();
+		if (!menuItems.isEmpty()) {
+			if (index >= 0 && index < menuItems.size()) {
+				menuItems.remove(index);
+		//		miIndex--;
+				pack();
+			}
+		}
+	}
+	
+	public void removeMenuItem(Object value) {
+		if (!menuItems.isEmpty()) {
+			int index = -1;
+			int count = 0;
+			for (MenuItem mi : menuItems) {
+				if (mi.getValue() == value) {
+					index = count;
+					break;
+				}
+				count++;
+			}
+			removeMenuItem(index);
+		}
+	}
+	
+	public void removeMenuItem(String caption) {
+		if (!menuItems.isEmpty()) {
+			int index = -1;
+			int count = 0;
+			for (MenuItem mi : menuItems) {
+				if (mi.getCaption().equals(caption)) {
+					index = count;
+					break;
+				}
+				count++;
+			}
+			removeMenuItem(index);
+		}
+	}
+	
+	public void removeFirstMenuItem() {
+		removeMenuItem(0);
+	}
+	
+	public void removeLastMenuItem() {
+		if (!menuItems.isEmpty()) {
+			removeMenuItem(menuItems.size()-1);
+		}
 	}
 	
 	public void setMenuOverhang(float menuOverhang) {
@@ -205,13 +250,15 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		return this.menuPadding;
 	}
 	
+	public void setPreferredSize(Vector2f preferredSize) {
+		this.preferredSize = preferredSize;
+	}
+	
 	public void pack() {
 		String finalString = "";
 		
 		scrollableArea.removeAllChildren();
 		scrollableArea.setHeight(menuItemHeight);
-		
-	//	setPadding(0);
 		
 		int index = 0;
 		float currentHeight = 0;
@@ -238,34 +285,41 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		}
 		scrollableArea.setText(finalString);
 		
-		if (!isScrollable) {
+		if (preferredSize == Vector2f.ZERO) {
 			this.resize(getX()+width+(menuPadding*2), getY()+currentHeight+(menuPadding*2), Borders.SE);
-			setHeight(currentHeight+(menuPadding*2));
 		} else {
-			this.resize(getX()+width+(menuPadding*2), getY()+(menuItemHeight*5)+(menuPadding*2), Borders.SE);
-			setHeight((menuItemHeight*5)+(menuPadding*2));
+			float nextWidth = (preferredSize.x > width+(menuPadding*2)) ? preferredSize.x : width+(menuPadding*2);
+			this.resize(getX()+nextWidth, getY()+preferredSize.y, Borders.SE);
 		}
 		
 		scrollableArea.setX(menuPadding);
-		scrollableArea.setWidth(width);
+		scrollableArea.setWidth( ((getWidth() > width) ? getWidth() : width)-(menuPadding*2) );
 		scrollableArea.setY(menuPadding);
-		scrollableArea.setHeight(currentHeight);//+(menuPadding*2));
+		scrollableArea.setHeight(currentHeight);
 		
-	//	this.updateClipping();
-	//	scrollableArea.updateClipping();
 		
 		if (highlight.getParent() == null) {
 			highlight.setX(menuPadding);
-			highlight.setWidth(width);
+			highlight.setWidth( ((getWidth() > width) ? getWidth() : width)-(menuPadding*2) );
 			highlight.setHeight(menuItemHeight);
 			highlight.getElementMaterial().setColor("Color", highlightColor);
 			highlight.setClippingLayer(this);
 			highlight.setClipPadding(menuPadding);
 			scrollableArea.addChild(highlight);
+		} else {
+			highlight.setWidth( ((getWidth() > width) ? getWidth() : width)-(menuPadding*2) );
 		}
 		
-		if (getVScrollBar() != null)
-			getVScrollBar().setX(width+(menuPadding*2));
+		if(getScrollableHeight() > getHeight()-(menuPadding*2)) {
+			scrollToBottom();
+		//	if (getVScrollBar() != null)
+		//		getVScrollBar().setX(getWidth());
+			setIsResizable(true);
+			setResizeN(false);
+			setResizeW(false);
+			setResizeE(true);
+			setResizeS(true);
+		}
 	}
 	
 	private void addSubmenuArrow(int index) {
@@ -359,7 +413,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		}
 	}
 	
-	private void handleMenuItemClick(MenuItem menuItem, int menuItemIndex, String value) {
+	private void handleMenuItemClick(MenuItem menuItem, int menuItemIndex, Object value) {
 		onMenuItemClicked(menuItemIndex, value);
 		hide();
 	}
@@ -370,7 +424,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	 * @param index Index of MenuItem clicked
 	 * @param value String value of MenuItem clicked
 	 */
-	public abstract void onMenuItemClicked(int index, String value);
+	public abstract void onMenuItemClicked(int index, Object value);
 	
 	@Override
 	public void onMouseMove(MouseMotionEvent evt) {
@@ -403,6 +457,10 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		if (highlight.getParent() == null)
 			this.attachChild(highlight);
 		highlight.setY(scrollableArea.getHeight()+scrollableArea.getY()-(index*menuItemHeight)-menuItemHeight);
+	}
+	
+	public Element getHighlight() {
+		return highlight;
 	}
 	
 	@Override

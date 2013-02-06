@@ -25,15 +25,15 @@ public abstract class ComboBox extends TextField {
 	float btnHeight;
 	String ddUID;
 	private int selectedIndex = -1;
-	private String selectedValue;
+	private Object selectedValue;
 	private String selectedCaption;
 	
 	private int hlIndex;
-	private String hlValue;
+	private Object hlValue;
 	private String hlCaption;
 	
 	private int ssIndex;
-	private String ssValue;
+	private Object ssValue;
 	private String ssCaption;
 	
 	/**
@@ -98,8 +98,10 @@ public abstract class ComboBox extends TextField {
 		) {
 			@Override
 			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-				Menu m = ((Menu)screen.getElementById(ddUID));
-				m.showMenu(null, getElementParent().getAbsoluteX(), getElementParent().getAbsoluteY()-m.getHeight());
+				if (validateListSize()) {
+					Menu m = ((Menu)screen.getElementById(ddUID));
+					m.showMenu(null, getElementParent().getAbsoluteX(), getElementParent().getAbsoluteY()-m.getHeight());
+				}
 				screen.setTabFocusElement((ComboBox)getElementParent());
 			}
 		};
@@ -115,25 +117,50 @@ public abstract class ComboBox extends TextField {
 	 * @param caption The String to display as the list item
 	 * @param value A String value to associate with this list item
 	 */
-	public void addListItem(String caption, String value) {
+	public void addListItem(String caption, Object value) {
 		if (DDList == null) {
 			DDList = new Menu(screen, ddUID, new Vector2f(0,0), true) {
 				@Override
-				public void onMenuItemClicked(int index, String value) {
+				public void onMenuItemClicked(int index, Object value) {
 					((ComboBox)getCallerElement()).setSelected(index, DDList.getMenuItem(index).getCaption(), value);
 					screen.setTabFocusElement(((ComboBox)getCallerElement()));
 					hide();
 				}
 			};
 			DDList.setCallerElement(this);
+			DDList.setPreferredSize(new Vector2f(getWidth(),DDList.getMenuItemHeight()*5));
 		}
 		DDList.addMenuItem(caption, value, null);
 		
 		if (DDList.getParent() == null) {
 			screen.addElement(DDList);
-			DDList.hide();
+		//	DDList.hide();
 		}
-	//	pack();
+		pack();
+	}
+	
+	public void insertListItem(int index, String caption, Object value) {
+		if (DDList != null) {
+			DDList.insertMenuItem(index, caption, value, null);
+		}
+	}
+	
+	public void removeListItem(int index) {
+		if (DDList != null) {
+			DDList.removeMenuItem(index);
+		}
+	}
+	
+	public void removeListItem(String caption) {
+		if (DDList != null) {
+			DDList.removeMenuItem(caption);
+		}
+	}
+	
+	public void removeListItem(Object value) {
+		if (DDList != null) {
+			DDList.removeMenuItem(value);
+		}
 	}
 	
 	/**
@@ -142,40 +169,35 @@ public abstract class ComboBox extends TextField {
 	 * the list or an item is removed from the list.
 	 */
 	public void pack() {
-		DDList.pack();
-		
-		DDList.setIsResizable(true);
-		DDList.setResizeN(false);
-		DDList.setResizeW(false);
-		DDList.setResizeE(true);
-		DDList.setResizeS(true);
-		if (DDList.getWidth() < getWidth())
-			DDList.resize(getWidth()+btnHeight, DDList.getMenuItemHeight()*5, Borders.SE);
-		else
-			DDList.resize(DDList.getWidth(), DDList.getMenuItemHeight()*5, Borders.SE);
-		DDList.getVScrollBar().setX(DDList.getWidth());
-		DDList.setResizeE(false);
-		
 		if (selectedIndex == -1) {
 			setSelectedIndex(0);
 		}
-	//	screen.addElement(DDList);
-	//	DDList.hide();
+	}
+	
+	public boolean validateListSize() {
+		if (DDList == null)
+			return false;
+		else if (DDList.getMenuItems().isEmpty())
+			return false;
+		else
+			return true;
 	}
 	
 	public void setSelectedIndex(int selectedIndex) {
-		if (selectedIndex < 0)
-			selectedIndex = 0;
-		else if (selectedIndex > DDList.getMenuItems().size()-1)
-			selectedIndex = DDList.getMenuItems().size()-1;
+		if (validateListSize()) {
+			if (selectedIndex < 0)
+				selectedIndex = 0;
+			else if (selectedIndex > DDList.getMenuItems().size()-1)
+				selectedIndex = DDList.getMenuItems().size()-1;
 		
-		MenuItem mi = DDList.getMenuItem(selectedIndex);
-		String caption = mi.getCaption();
-		String value = mi.getValue();
-		setSelected(selectedIndex, caption, value);
+			MenuItem mi = DDList.getMenuItem(selectedIndex);
+			String caption = mi.getCaption();
+			Object value = mi.getValue();
+			setSelected(selectedIndex, caption, value);
+		}
 	}
 	
-	protected void setSelected(int index, String caption, String value) {
+	protected void setSelected(int index, String caption, Object value) {
 		this.selectedIndex = index;
 		this.selectedCaption = caption;
 		this.selectedValue = value;
@@ -189,62 +211,64 @@ public abstract class ComboBox extends TextField {
 	
 	@Override
 	public void controlKeyPressHook(KeyInputEvent evt, String text) {
-		if (evt.getKeyCode() != KeyInput.KEY_UP && evt.getKeyCode() != KeyInput.KEY_DOWN && evt.getKeyCode() != KeyInput.KEY_RETURN) {
-			int miIndexOf = 0;
-			int strIndex = -1;
-			for (MenuItem mi : DDList.getMenuItems()) {
-				strIndex = mi.getCaption().toLowerCase().indexOf(text.toLowerCase());
-				if (strIndex == 0) {
-					ssIndex = miIndexOf;
-					hlIndex = ssIndex;
-					hlCaption = ssCaption = DDList.getMenuItem(miIndexOf).getCaption();
-					hlValue = ssValue = DDList.getMenuItem(miIndexOf).getValue();
-					
-					int rIndex = DDList.getMenuItems().size()-miIndexOf;
-					float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);
-					
-					DDList.scrollThumbYTo(
-						( DDList.getHeight()-diff )
-					);
-					break;
+		if (validateListSize()) {
+			if (evt.getKeyCode() != KeyInput.KEY_UP && evt.getKeyCode() != KeyInput.KEY_DOWN && evt.getKeyCode() != KeyInput.KEY_RETURN) {
+				int miIndexOf = 0;
+				int strIndex = -1;
+				for (MenuItem mi : DDList.getMenuItems()) {
+					strIndex = mi.getCaption().toLowerCase().indexOf(text.toLowerCase());
+					if (strIndex == 0) {
+						ssIndex = miIndexOf;
+						hlIndex = ssIndex;
+						hlCaption = ssCaption = DDList.getMenuItem(miIndexOf).getCaption();
+						hlValue = ssValue = DDList.getMenuItem(miIndexOf).getValue();
+
+						int rIndex = DDList.getMenuItems().size()-miIndexOf;
+						float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);
+
+						DDList.scrollThumbYTo(
+							( DDList.getHeight()-diff )
+						);
+						break;
+					}
+					miIndexOf++;
 				}
-				miIndexOf++;
-			}
-			if (miIndexOf > -1 && miIndexOf < DDList.getMenuItems().size()-1)
-				handleHightlight(miIndexOf);
-			if (!DDList.getIsVisible() && evt.getKeyCode() != KeyInput.KEY_LSHIFT && evt.getKeyCode() != KeyInput.KEY_RSHIFT) DDList.showMenu(null, getAbsoluteX(), getAbsoluteY()-DDList.getHeight());
-		} else {
-			if (evt.getKeyCode() == KeyInput.KEY_UP) {
-				if (hlIndex > 0) {
-					hlIndex--;
-					hlCaption = DDList.getMenuItem(hlIndex).getCaption();
-					hlValue = DDList.getMenuItem(hlIndex).getValue();
-					int rIndex = DDList.getMenuItems().size()-hlIndex;
-					float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);
-					
-					DDList.scrollThumbYTo(
-						( DDList.getHeight()-diff )
-					);
-					handleHightlight(hlIndex);
-					setSelected(hlIndex, hlCaption, hlValue);
+				if (miIndexOf > -1 && miIndexOf < DDList.getMenuItems().size()-1)
+					handleHightlight(miIndexOf);
+				if (!DDList.getIsVisible() && evt.getKeyCode() != KeyInput.KEY_LSHIFT && evt.getKeyCode() != KeyInput.KEY_RSHIFT) DDList.showMenu(null, getAbsoluteX(), getAbsoluteY()-DDList.getHeight());
+			} else {
+				if (evt.getKeyCode() == KeyInput.KEY_UP) {
+					if (hlIndex > 0) {
+						hlIndex--;
+						hlCaption = DDList.getMenuItem(hlIndex).getCaption();
+						hlValue = DDList.getMenuItem(hlIndex).getValue();
+						int rIndex = DDList.getMenuItems().size()-hlIndex;
+						float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);
+
+						DDList.scrollThumbYTo(
+							( DDList.getHeight()-diff )
+						);
+						handleHightlight(hlIndex);
+						setSelected(hlIndex, hlCaption, hlValue);
+					}
+				} else if (evt.getKeyCode() == KeyInput.KEY_DOWN) {
+					if (hlIndex < DDList.getMenuItems().size()-1) {
+						hlIndex++;
+						hlCaption = DDList.getMenuItem(hlIndex).getCaption();
+						hlValue = DDList.getMenuItem(hlIndex).getValue();
+						int rIndex = DDList.getMenuItems().size()-hlIndex;
+						float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);
+
+						DDList.scrollThumbYTo(
+							( DDList.getHeight()-diff )
+						);
+						handleHightlight(hlIndex);
+						setSelected(hlIndex, hlCaption, hlValue);
+					}
 				}
-			} else if (evt.getKeyCode() == KeyInput.KEY_DOWN) {
-				if (hlIndex < DDList.getMenuItems().size()-1) {
-					hlIndex++;
-					hlCaption = DDList.getMenuItem(hlIndex).getCaption();
-					hlValue = DDList.getMenuItem(hlIndex).getValue();
-					int rIndex = DDList.getMenuItems().size()-hlIndex;
-					float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);
-					
-					DDList.scrollThumbYTo(
-						( DDList.getHeight()-diff )
-					);
-					handleHightlight(hlIndex);
-					setSelected(hlIndex, hlCaption, hlValue);
+				if (evt.getKeyCode() == KeyInput.KEY_RETURN) {
+					updateSelected();
 				}
-			}
-			if (evt.getKeyCode() == KeyInput.KEY_RETURN) {
-				updateSelected();
 			}
 		}
 	}
@@ -258,7 +282,7 @@ public abstract class ComboBox extends TextField {
 		if (DDList.getIsVisible()) DDList.setHighlight(index);
 	}
 	
-	public abstract void onChange(int selectedIndex, String value);
+	public abstract void onChange(int selectedIndex, Object value);
 	
 	public int getSelectIndex() {
 		return this.selectedIndex;

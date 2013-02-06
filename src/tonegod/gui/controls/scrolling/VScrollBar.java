@@ -306,7 +306,7 @@ public class VScrollBar extends Element {
 			btnScrollThumb.setHeight(btnScrollTrack.getHeight());
 		}
 		
-		if (diff > 10) {
+		if (diff > 0) {
 			if (getParent() == null) {
 				getElementParent().attachChild(this);
 			}

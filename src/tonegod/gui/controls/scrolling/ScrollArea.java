@@ -203,6 +203,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 			scrollHidden = true;
 		} else if (vScrollBar.getParent() != null && scrollHidden) {
 			setWidth(getWidth()-vScrollBar.getWidth());
+			getVScrollBar().setX(getWidth());
 			scrollHidden = false;
 		}
 	}
