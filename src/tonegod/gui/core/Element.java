@@ -93,7 +93,7 @@ public class Element extends Node {
 	private String UID;
 	private Vector2f position;
 	private Vector2f dimensions;
-	private Vector4f borders = new Vector4f(1,1,1,1);
+	public Vector4f borders = new Vector4f(1,1,1,1);
 	public Vector4f borderHandles = new Vector4f(12,12,12,12);
 	private Vector2f minDimensions = null; //new Vector2f(100, 50);
 	

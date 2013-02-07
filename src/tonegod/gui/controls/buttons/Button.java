@@ -153,16 +153,26 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	public void setIsToggled(boolean isToggled) {
 		this.isToggled = isToggled;
 		
-		if (pressedImg != null) {
+		if (pressedImg != null && isToggled) {
 			Effect effect = getEffect(Effect.EffectEvent.Press);
 			if (effect != null) {
 				effect.setBlendImage(pressedImg);
 				screen.getEffectManager().applyEffect(effect);
 			}
+			if (pressedFontColor != null) {
+				setFontColor(pressedFontColor);
+			}
+		} else {
+			Effect effect = getEffect(Effect.EffectEvent.Press);
+			if (effect != null) {
+				effect.setBlendImage(getElementTexture());
+				screen.getEffectManager().applyEffect(effect);
+			}
+			if (pressedFontColor != null) {
+				setFontColor(pressedFontColor);
+			}
 		}
-		if (pressedFontColor != null) {
-			setFontColor(pressedFontColor);
-		}
+		
 		MouseButtonEvent evtd = new MouseButtonEvent(0,true,0,0);
 		MouseButtonEvent evtu = new MouseButtonEvent(0,false,0,0);
 		onButtonMouseLeftDown(evtd, isToggled);

@@ -84,7 +84,7 @@ public abstract class ComboBox extends TextField {
 		
 		ddUID = UID + ":ddMenu";
 		
-		btnHeight = screen.getStyle("Common").getFloat("defaultControlSize");
+		btnHeight = getHeight();//(screen.getStyle("Common").getFloat("defaultControlSize");
 		
 		btnArrowDown = new ButtonAdapter(screen, UID + ":ArrowDown",
 			new Vector2f(

@@ -4,6 +4,7 @@
  */
 package tonegod.gui.controls.buttons;
 
+import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.MouseButtonEvent;
@@ -20,6 +21,7 @@ import tonegod.gui.effects.Effect;
 public class CheckBox extends ButtonAdapter {
 	
 	Label label;
+	float labelFontSize;
 	
 	/**
 	 * Creates a new instance of the CheckBox control
@@ -69,6 +71,8 @@ public class CheckBox extends ButtonAdapter {
 		this.removeEffect(Effect.EffectEvent.Press);
 		this.removeEffect(Effect.EffectEvent.LoseFocus);
 		
+		labelFontSize = screen.getStyle("CheckBox").getFloat("fontSize");
+		
 		label = new Label(
 			screen,
 			UID + ":Label",
@@ -80,7 +84,12 @@ public class CheckBox extends ButtonAdapter {
 		label.setScaleEW(true);
 		label.setScaleEW(false);
 		label.setIgnoreMouse(true);
-		label.setTextWrap(LineWrapMode.NoWrap);
+		
+		label.setFontColor(screen.getStyle("CheckBox").getColorRGBA("fontColor"));
+		label.setFontSize(labelFontSize);
+		label.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("CheckBox").getString("textAlign")));
+		label.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("CheckBox").getString("textVAlign")));
+		label.setTextWrap(LineWrapMode.valueOf(screen.getStyle("CheckBox").getString("textWrap")));
 		
 		this.setIsToggleButton(true);
 		
@@ -107,15 +116,31 @@ public class CheckBox extends ButtonAdapter {
 		}
 		
 		BitmapText temp = new BitmapText(font);
-		temp.setSize(fontSize);
+		temp.setSize(labelFontSize);
 		temp.setLineWrapMode(LineWrapMode.NoWrap);
 		
 		temp.setBox(null);
 		temp.setText(text);
 		float width = temp.getLineWidth();
+		float height = temp.getHeight();
+		float nextY = height-getHeight();
+		nextY /= 2;
+		nextY = (float) Math.ceil(nextY+1);
 		
-		label.setWidth(width+getWidth());
-		label.setFontSize(fontSize);
+		label.setWidth(width+getWidth()+4);
+		label.setX(getWidth()+4);
+		label.setY(-nextY);
+		label.setDockS(true);
+		label.setDockW(true);
+		label.setScaleEW(true);
+		label.setScaleEW(false);
+		label.setIgnoreMouse(true);
+		label.setFontColor(screen.getStyle("CheckBox").getColorRGBA("fontColor"));
+		label.setFontSize(labelFontSize);
+		label.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("CheckBox").getString("textAlign")));
+		label.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("CheckBox").getString("textVAlign")));
+		label.setTextWrap(LineWrapMode.valueOf(screen.getStyle("CheckBox").getString("textWrap")));
+		
 		label.setText(text);
 		
 		addChild(label);

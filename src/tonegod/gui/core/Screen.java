@@ -1007,8 +1007,11 @@ public class Screen implements Control, RawInputListener {
 	
 	public void setUseCustomCursors(boolean useCustomCursors) {
 		this.useCustomCursors = useCustomCursors;
-	//	if (!useCustomCursors)
-	//		try { Mouse.setNativeCursor(); } catch (Exception ex) {  }
+		if (!useCustomCursors) {
+			try {
+				getApplication().getInputManager().setMouseCursor(null);
+			} catch (Exception ex) {  }
+		}
 	}
 	
 	public boolean getUseCustomCursors() {

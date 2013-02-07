@@ -30,6 +30,24 @@ public class Form {
 		elements.add(element);
 	}
 	
+	public Element getFormElement(Element element) {
+		if (elements.contains(element))
+			return elements.get(elements.indexOf(element));
+		else
+			return null;
+	}
+	
+	public Element getFormElementByID(String UID) {
+		Element ret = null;
+		for (Element el : elements) {
+			if (el.getUID().equals(UID)) {
+				ret = el;
+				break;
+			}
+		}
+		return ret;
+	}
+	
 	public void removeFormElement(Element element) {
 		elements.remove(element);
 	}

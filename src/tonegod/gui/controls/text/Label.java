@@ -45,7 +45,7 @@ public class Label extends Element {
 	public Label(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
-		this.setIsResizable(true);
+		this.setIsResizable(false);
 		this.setScaleNS(false);
 		this.setScaleEW(false);
 		this.setDockN(true);

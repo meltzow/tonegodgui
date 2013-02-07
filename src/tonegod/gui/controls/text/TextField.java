@@ -7,6 +7,7 @@ package tonegod.gui.controls.text;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
+import com.jme3.font.Rectangle;
 import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseMotionEvent;
@@ -30,6 +31,7 @@ import tonegod.gui.listeners.TabFocusListener;
  */
 public class TextField extends Element implements KeyboardListener, TabFocusListener, MouseFocusListener {
 	
+	String testString = "Gg";
 	Element caret;
 	Material caretMat;
 	int caretIndex = 0, head = 0, tail = 0, rangeHead = -1, rangeTail = -1;
@@ -233,6 +235,28 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		}
 		this.setText(getVisibleText());
 		setCaretPositionToEnd();
+	}
+	
+	@Override
+	public void setFontSize(float fontSize) {
+		this.fontSize = fontSize;
+		
+		widthTest = new BitmapText(font, false);
+		widthTest.setBox(null);
+		widthTest.setSize(getFontSize());
+		widthTest.setText(testString);
+		
+		float height = widthTest.getHeight()+this.borders.x;
+		float nextY = height-getHeight();
+		nextY /= 2;
+		nextY = (float) Math.ceil(nextY+1);
+		
+		if (height > getHeight())
+			setTextPosition(getTextPosition().x, -nextY);
+		
+		if (textElement != null) {
+			textElement.setSize(fontSize);
+		}
 	}
 	
 	@Override

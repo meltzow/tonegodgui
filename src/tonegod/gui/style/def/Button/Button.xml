@@ -146,4 +146,74 @@
 			</property>
 		</effects>
 	</element>
+	<element name="RadioButton">
+		<font>
+			<property name="fontSize" type="float" value="18" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="15" />
+				<y value="15" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Button/radio_button_x_u.png" />
+			<property name="hoverImg" type="String" value="tonegod/gui/style/def/Button/radio_button_x_h.png" />
+			<property name="pressedImg" type="String" value="tonegod/gui/style/def/Button/radio_button_x_d.png" />
+		</images>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Hover" />
+				<effect value="Pulse" />
+				<speed value=".15" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Press" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event2" type="Effect">
+				<event value="LoseFocus" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value=".15" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
+	</element>
 </root>
