@@ -9,6 +9,12 @@ import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.menuing.MenuItem;
@@ -294,6 +300,34 @@ public abstract class ComboBox extends TextField {
 	
 	public MenuItem getListItemByIndex(int index) {
 		return this.DDList.getMenuItem(index);
+	}
+	
+	public void sortList() {
+		Object[] orgList = DDList.getMenuItems().toArray();
+		List<MenuItem> currentList = new ArrayList();
+		List<MenuItem> finalList = new ArrayList();
+		List<String> map = new ArrayList();
+		for (int i = 0; i < orgList.length; i++) {
+			currentList.add((MenuItem)orgList[i]);
+			map.add(((MenuItem)orgList[i]).getCaption());
+		}
+		Collections.sort(map);
+		for (String caption : map) {
+			System.out.println(caption);
+			int index;
+			for (MenuItem mi : currentList) {
+				if (mi.getCaption().equals(caption)) {
+					index = currentList.indexOf(mi);
+					finalList.add(mi);
+					DDList.removeMenuItem(index);
+					currentList.remove(mi);
+					break;
+				}
+			}
+		}
+		for (MenuItem mi : finalList) {
+			addListItem(mi.getCaption(), mi.getValue());
+		}
 	}
 	
 	@Override
