@@ -30,21 +30,35 @@ import tonegod.gui.listeners.TabFocusListener;
  * @author t0neg0d
  */
 public class TextField extends Element implements KeyboardListener, TabFocusListener, MouseFocusListener {
-	
-	String testString = "Gg";
-	Element caret;
-	Material caretMat;
-	int caretIndex = 0, head = 0, tail = 0, rangeHead = -1, rangeTail = -1;
-	List<String> textFieldText = new ArrayList();
-	String finalText = "", visibleText = "", textRangeText = "";
-	BitmapText widthTest;
+	public static enum Type {
+		DEFAULT,
+		ALPHA,
+		ALPHA_NOSPACE,
+		NUMERIC,
+		ALPHANUMERIC,
+		ALPHANUMERIC_NOSPACE,
+		EXCLUDE_SPECIAL,
+		EXCLUDE_CUSTOM,
+		INCLUDE_CUSTOM
+	};
+	private String validateAlpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ";
+	private String validateAlphaNoSpace = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private String validateNumeric = "0123456789.";
+	private String validateSpecChar = "`~!@#$%^&*()-_=+[]{}\\|;:'\",<.>/?";
+	private String validateCustom = "";
+	private String testString = "Gg";
+	private Element caret;
+	private Material caretMat;
+	private int caretIndex = 0, head = 0, tail = 0, rangeHead = -1, rangeTail = -1;
+	private List<String> textFieldText = new ArrayList();
+	private String finalText = "", visibleText = "", textRangeText = "";
+	private BitmapText widthTest;
 	private boolean hasTabFocus = false;
 	private float caretX = 0;
-	char searchStr = ' ';
-	
-	boolean ctrl = false, shift = false, alt = false;
-	
-	boolean isEnabled = true;
+	private char searchStr = ' ';
+	private Type type = Type.DEFAULT;
+	private boolean ctrl = false, shift = false, alt = false;
+	private boolean isEnabled = true;
 	
 	/**
 	 * Creates a new instance of the TextField control
@@ -100,6 +114,8 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		this.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("TextField").getString("textAlign")));
 		this.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("TextField").getString("textVAlign")));
 		
+		this.setMinDimensions(dimensions.clone());
+		
 		caret = new Element(screen, UID + ":Caret", new Vector2f(0,0), new Vector2f(dimensions.x, dimensions.y), new Vector4f(0,0,0,0), null);
 		
 		caretMat = caret.getMaterial().clone();
@@ -123,6 +139,18 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		populateEffects("TextField");
 	}
 
+	public void setType(Type type) {
+		this.type = type;
+	}
+	
+	public Type getType() {
+		return this.type;
+	}
+	
+	public void setCustomValidation(String grabBag) {
+		validateCustom = grabBag;
+	}
+	
 	@Override
 	public void onKeyPress(KeyInputEvent evt) {
 		if (evt.getKeyCode() == KeyInput.KEY_LMETA || evt.getKeyCode() == KeyInput.KEY_RMETA ||
@@ -192,8 +220,50 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 				}
 			} else {
 				if (isEnabled) {
-					textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
-					caretIndex++;
+					if (type == Type.DEFAULT) {
+						textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
+						caretIndex++;
+					} else if (type == Type.ALPHA) {
+						if (validateAlpha.indexOf(String.valueOf(evt.getKeyChar())) != -1) {
+							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
+							caretIndex++;
+						}
+					} else if (type == Type.ALPHA_NOSPACE) {
+						if (validateAlpha.indexOf(String.valueOf(evt.getKeyChar())) != -1) {
+							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
+							caretIndex++;
+						}
+					} else if (type == Type.NUMERIC) {
+						if (validateNumeric.indexOf(String.valueOf(evt.getKeyChar())) != -1) {
+							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
+							caretIndex++;
+						}
+					} else if (type == Type.ALPHANUMERIC) {
+						if (validateAlpha.indexOf(String.valueOf(evt.getKeyChar())) != -1 || validateNumeric.indexOf(String.valueOf(evt.getKeyChar())) != -1) {
+							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
+							caretIndex++;
+						}
+					} else if (type == Type.ALPHANUMERIC_NOSPACE) {
+						if (validateAlphaNoSpace.indexOf(String.valueOf(evt.getKeyChar())) != -1 || validateNumeric.indexOf(String.valueOf(evt.getKeyChar())) != -1) {
+							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
+							caretIndex++;
+						}
+					} else if (type == Type.EXCLUDE_SPECIAL) {
+						if (validateSpecChar.indexOf(String.valueOf(evt.getKeyChar())) == -1) {
+							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
+							caretIndex++;
+						}
+					} else if (type == Type.EXCLUDE_CUSTOM) {
+						if (validateCustom.indexOf(String.valueOf(evt.getKeyChar())) == -1) {
+							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
+							caretIndex++;
+						}
+					} else if (type == Type.INCLUDE_CUSTOM) {
+						if (validateCustom.indexOf(String.valueOf(evt.getKeyChar())) != -1) {
+							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
+							caretIndex++;
+						}
+					}
 				}
 			}
 		}
@@ -238,7 +308,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	}
 	
 	@Override
-	public void setFontSize(float fontSize) {
+	public final void setFontSize(float fontSize) {
 		this.fontSize = fontSize;
 		
 		widthTest = new BitmapText(font, false);
