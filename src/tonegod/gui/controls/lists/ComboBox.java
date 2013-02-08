@@ -145,12 +145,22 @@ public abstract class ComboBox extends TextField {
 		pack();
 	}
 	
+	/**
+	 * Inserts a new List Item at the specified index
+	 * @param index - List index to insert new List Item
+	 * @param caption - Caption for new List Item
+	 * @param value - Object to store as value
+	 */
 	public void insertListItem(int index, String caption, Object value) {
 		if (DDList != null) {
 			DDList.insertMenuItem(index, caption, value, null);
 		}
 	}
 	
+	/**
+	 * Removes the List Item at the specified index
+	 * @param index 
+	 */
 	public void removeListItem(int index) {
 		if (DDList != null) {
 			DDList.removeMenuItem(index);
@@ -165,12 +175,20 @@ public abstract class ComboBox extends TextField {
 		}
 	}
 	
+	/**
+	 * Removes the first instance of a list item with the specified caption
+	 * @param caption 
+	 */
 	public void removeListItem(String caption) {
 		if (DDList != null) {
 			DDList.removeMenuItem(caption);
 		}
 	}
 	
+	/**
+	 * Removes the first instance of a list item with the specified value
+	 * @param value 
+	 */
 	public void removeListItem(Object value) {
 		if (DDList != null) {
 			DDList.removeMenuItem(value);
@@ -188,6 +206,10 @@ public abstract class ComboBox extends TextField {
 		}
 	}
 	
+	/**
+	 * Returns false if list is empty, true if list contains List Items
+	 * @return 
+	 */
 	public boolean validateListSize() {
 		if (DDList == null)
 			return false;
@@ -197,6 +219,10 @@ public abstract class ComboBox extends TextField {
 			return true;
 	}
 	
+	/**
+	 * Selects the List Item at the specified index
+	 * @param selectedIndex 
+	 */
 	public void setSelectedIndex(int selectedIndex) {
 		if (validateListSize()) {
 			if (selectedIndex < 0)
@@ -219,6 +245,9 @@ public abstract class ComboBox extends TextField {
 		onChange(selectedIndex, selectedValue);
 	}
 	
+	/**
+	 * Hides the ComboBox drop-down list
+	 */
 	public void hideDropDownList() {
 		this.DDList.hideMenu();
 	}
@@ -298,14 +327,27 @@ public abstract class ComboBox extends TextField {
 	
 	public abstract void onChange(int selectedIndex, Object value);
 	
+	/**
+	 * Returns the current selected index
+	 * @return 
+	 */
 	public int getSelectIndex() {
 		return this.selectedIndex;
 	}
 	
+	/**
+	 * Returns the object representing the current selected List Item
+	 * @return 
+	 */
 	public MenuItem getSelectedListItem() {
 		return this.DDList.getMenuItem(selectedIndex);
 	}
 	
+	/**
+	 * Returns the object representing the list item at the specified index
+	 * @param index
+	 * @return 
+	 */
 	public MenuItem getListItemByIndex(int index) {
 		return this.DDList.getMenuItem(index);
 	}
