@@ -154,6 +154,14 @@ public abstract class ComboBox extends TextField {
 	public void removeListItem(int index) {
 		if (DDList != null) {
 			DDList.removeMenuItem(index);
+			if (selectedIndex > DDList.getMenuItems().size()-1)
+				selectedIndex = DDList.getMenuItems().size()-1;
+			if (!DDList.getMenuItems().isEmpty())
+				this.setSelectedIndex(selectedIndex);
+			else
+				setTextFieldText("");
+		} else {
+			setTextFieldText("");
 		}
 	}
 	
@@ -302,6 +310,9 @@ public abstract class ComboBox extends TextField {
 		return this.DDList.getMenuItem(index);
 	}
 	
+	/**
+	 * Sorts the associated drop-down list alphanumerically
+	 */
 	public void sortList() {
 		Object[] orgList = DDList.getMenuItems().toArray();
 		List<MenuItem> currentList = new ArrayList();
