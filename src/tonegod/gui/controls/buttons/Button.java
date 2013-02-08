@@ -100,6 +100,8 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		this.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Button").getString("textAlign")));
 		this.setTextWrap(LineWrapMode.valueOf(screen.getStyle("Button").getString("textWrap")));
 		
+		this.setMinDimensions(dimensions.clone());
+		
 		if (screen.getStyle("Button").getString("hoverImg") != null) {
 			setButtonHoverInfo(
 				screen.getStyle("Button").getString("hoverImg"),
