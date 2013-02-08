@@ -48,6 +48,22 @@ public abstract class RadioButtonGroup {
 		}
 	}
 	
+	public void setSelected(int index) {
+		if (index >= 0 && index < radioButtons.size()) {
+			RadioButton rb = radioButtons.get(index);
+			this.selected = rb;
+			this.selectedIndex = index;
+			for (RadioButton rb2 : radioButtons) {
+				if (rb2 != this.selected)
+					rb2.getRadioButton().setIsChecked(false);
+				else {
+					
+				}
+			}
+			onSelect(selectedIndex, rb.getValue());
+		}
+	}
+	
 	protected void setSelected(RadioButton radio) {
 		this.selected = radio;
 		this.selectedIndex = radioButtons.indexOf(radio);
