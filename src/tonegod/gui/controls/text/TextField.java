@@ -139,6 +139,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		populateEffects("TextField");
 	}
 
+	// Validation
 	public void setType(Type type) {
 		this.type = type;
 	}
@@ -151,6 +152,27 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		validateCustom = grabBag;
 	}
 	
+	public int parseInt() throws NumberFormatException {
+		return Integer.parseInt(getText());
+	}
+	
+	public float parseFloat() throws NumberFormatException {
+		return Float.parseFloat(getText());
+	}
+	
+	public short parseShort() throws NumberFormatException {
+		return Short.parseShort(getText());
+	}
+	
+	public double parseDouble() throws NumberFormatException {
+		return Double.parseDouble(getText());
+	}
+	
+	public long parseLong() throws NumberFormatException {
+		return Long.parseLong(getText());
+	}
+	
+	// Interaction
 	@Override
 	public void onKeyPress(KeyInputEvent evt) {
 		if (evt.getKeyCode() == KeyInput.KEY_LMETA || evt.getKeyCode() == KeyInput.KEY_RMETA ||
