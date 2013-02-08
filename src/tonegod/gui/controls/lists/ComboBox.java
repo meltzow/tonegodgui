@@ -383,6 +383,59 @@ public abstract class ComboBox extends TextField {
 		}
 	}
 	
+	/**
+	 * Sorts drop-down list by true numeric values.  This should only be used
+	 * with lists that start with numeric values
+	 */
+	public void sortListNumeric() {
+		Object[] orgList = DDList.getMenuItems().toArray();
+		List<MenuItem> currentList = new ArrayList();
+		List<MenuItem> finalList = new ArrayList();
+		List<Integer> map = new ArrayList();
+		for (int i = 0; i < orgList.length; i++) {
+			currentList.add((MenuItem)orgList[i]);
+			
+			boolean NaN = true;
+			String tempCaption = ((MenuItem)orgList[i]).getCaption();
+			while(NaN && tempCaption.length() != 0) {
+				try {
+					Integer.parseInt(tempCaption);
+					NaN = false;
+				} catch (Exception ex) {
+					tempCaption = tempCaption.substring(0,tempCaption.length()-2);
+				}
+			}
+			map.add(Integer.parseInt(tempCaption));
+		}
+		Collections.sort(map);
+		for (Integer caption : map) {
+			System.out.println(caption);
+			int index;
+			for (MenuItem mi : currentList) {
+				boolean NaN = true;
+				String tempCaption = mi.getCaption();
+				while(NaN && tempCaption.length() != 0) {
+					try {
+						Integer.parseInt(tempCaption);
+						NaN = false;
+					} catch (Exception ex) {
+						tempCaption = tempCaption.substring(0,tempCaption.length()-2);
+					}
+				}
+				if (Integer.parseInt(tempCaption) == caption) {
+					index = currentList.indexOf(mi);
+					finalList.add(mi);
+					DDList.removeMenuItem(index);
+					currentList.remove(mi);
+					break;
+				}
+			}
+		}
+		for (MenuItem mi : finalList) {
+			addListItem(mi.getCaption(), mi.getValue());
+		}
+	}
+	
 	@Override
 	public void controlTextFieldResetTabFocusHook() {
 	//	DDList.hideMenu();
