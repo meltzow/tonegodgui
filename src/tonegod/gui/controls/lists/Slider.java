@@ -27,7 +27,7 @@ public abstract class Slider extends ButtonAdapter {
 		HORIZONTAL
 	}
 	
-	protected List<String> stepValues = new ArrayList();
+	protected List<Object> stepValues = new ArrayList();
 	Element elThumbLock;
 	ButtonAdapter elThumb;
 	
@@ -272,17 +272,46 @@ public abstract class Slider extends ButtonAdapter {
 		}
 	}
 	
+	public void setStepIntegerRange(int min, int max, int inc) {
+		stepValues.clear();
+		isStepped = false;
+		selectedIndex = -1;
+		for (int i = min; i <= max; i += inc) {
+			addStepValue(String.valueOf(i));
+		}
+		if (selectedIndex == -1)
+			setSelectedIndex(0);
+	}
+	
+	public void setStepFloatRange(float min, float max, float inc) {
+		stepValues.clear();
+		isStepped = false;
+		selectedIndex = -1;
+		selectedIndex = -1;
+		for (float i = min; i <= max; i += inc) {
+			addStepValue(String.valueOf(i));
+		}
+		if (selectedIndex == -1)
+			setSelectedIndex(0);
+	}
+	
 	/**
 	 * Removes a step value by the value originally added.
 	 * 
 	 * @param value The string value of the step to be removed.
 	 */
-	public void removeStepValue(String value) {
-		stepValues.remove(value);
-		if (stepValues.size() < 2) {
-			isStepped = false;
+	public void removeStepValue(Object value) {
+		if (!stepValues.isEmpty()) {
+			stepValues.remove(value);
 			setStepSize();
-			this.setInterval(100);
+			if (stepValues.size() < 2) {
+				isStepped = false;
+				this.setInterval(100);
+			}
+			if (selectedIndex > stepValues.size()-1) {
+				selectedIndex = stepValues.size()-1;
+			}
+			this.setSelectedIndex(selectedIndex);
 		}
 	}
 	
@@ -301,6 +330,10 @@ public abstract class Slider extends ButtonAdapter {
 			}
 		}
 	//	System.out.println("Slider: " + (getHeight()-controlSize));
+	}
+	
+	public Object getSelectedValue() {
+		return stepValues.get(selectedIndex);
 	}
 	
 	/**
@@ -357,7 +390,7 @@ public abstract class Slider extends ButtonAdapter {
 	 * @param selectedIndex The Slider's current selectedIndex
 	 * @param value The string value associated with this index
 	 */
-	public abstract void onChange(int selectedIndex, String value);
+	public abstract void onChange(int selectedIndex, Object value);
 	
 	@Override
 	public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
