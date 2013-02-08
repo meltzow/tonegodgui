@@ -6,6 +6,7 @@ package tonegod.gui.controls.form;
 
 import java.util.ArrayList;
 import java.util.List;
+import tonegod.gui.controls.text.TextField;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 
@@ -19,10 +20,18 @@ public class Form {
 	private int nextIndex = 0;
 	private int currentTabIndex = 0;
 	
+	List<Character> gbSpecialCharacters;
+	List<Character> gbNumeric;
+	List<Character> gbAlpha;
+	
 	public Form(Screen screen) {
 		this.screen = screen;
 	}
 	
+	/**
+	 * Adds the specified element and assigns it a Tab Order
+	 * @param element Element to add to form
+	 */
 	public void addFormElement(Element element) {
 		element.setForm(this);
 		element.setTabIndex(nextIndex);
@@ -30,6 +39,11 @@ public class Form {
 		elements.add(element);
 	}
 	
+	/**
+	 * A useless, but very funny method
+	 * @param element
+	 * @return 
+	 */
 	public Element getFormElement(Element element) {
 		if (elements.contains(element))
 			return elements.get(elements.indexOf(element));
@@ -37,6 +51,11 @@ public class Form {
 			return null;
 	}
 	
+	/**
+	 * Returns the element containing the specified UID, or null if it does not exist
+	 * @param UID
+	 * @return 
+	 */
 	public Element getFormElementByID(String UID) {
 		Element ret = null;
 		for (Element el : elements) {
@@ -48,14 +67,25 @@ public class Form {
 		return ret;
 	}
 	
+	/**
+	 * Removes the specified element if it exists
+	 * @param element 
+	 */
 	public void removeFormElement(Element element) {
 		elements.remove(element);
 	}
 	
+	/**
+	 * Used by screen class.  Do not call directly
+	 * @param element 
+	 */
 	public void setSelectedTabIndex(Element element) {
 		currentTabIndex = element.getTabIndex();
 	}
 	
+	/**
+	 * Used by screen class.  Do not call directly
+	 */
 	public void tabNext() {
 		currentTabIndex++;
 		if (currentTabIndex == elements.size())
@@ -73,6 +103,9 @@ public class Form {
 		}
 	}
 	
+	/**
+	 * Used by screen class.  Do not call directly
+	 */
 	public void tabPrev() {
 		currentTabIndex--;
 		if (currentTabIndex == -1)
@@ -90,6 +123,9 @@ public class Form {
 		}
 	}
 	
+	/**
+	 * Placeholder, may be removed
+	 */
 	public void submitForm() {
 		
 	}
