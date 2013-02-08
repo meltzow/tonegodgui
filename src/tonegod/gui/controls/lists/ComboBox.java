@@ -366,7 +366,6 @@ public abstract class ComboBox extends TextField {
 		}
 		Collections.sort(map);
 		for (String caption : map) {
-			System.out.println(caption);
 			int index;
 			for (MenuItem mi : currentList) {
 				if (mi.getCaption().equals(caption)) {
@@ -409,7 +408,6 @@ public abstract class ComboBox extends TextField {
 		}
 		Collections.sort(map);
 		for (Integer caption : map) {
-			System.out.println(caption);
 			int index;
 			for (MenuItem mi : currentList) {
 				boolean NaN = true;
