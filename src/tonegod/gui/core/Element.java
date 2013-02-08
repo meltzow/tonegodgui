@@ -92,6 +92,7 @@ public class Element extends Node {
 	protected Screen screen;
 	private String UID;
 	private Vector2f position;
+	private Vector2f orgPosition;
 	private Vector2f dimensions;
 	public Vector4f borders = new Vector4f(1,1,1,1);
 	public Vector4f borderHandles = new Vector4f(12,12,12,12);
@@ -269,6 +270,8 @@ public class Element extends Node {
 		child.elementParent = this;
 		
 		child.setY(this.getHeight()-child.getHeight()-child.getY());
+		child.orgPosition = position.clone();
+		child.orgPosition.setY(child.getY());
 		child.setQueueBucket(RenderQueue.Bucket.Gui);
 		
 		elementChildren.put(child.getUID(), child);
@@ -1061,21 +1064,63 @@ public class Element extends Node {
 			elementChildren.get(key).controlResizeHook();
 		}
 	}
+	/*
+	private void childResize(float diffX, float diffY, Borders dir) {
+		if (dir == Borders.N) {
+		//	if (dockS && scaleNS) {
+		//		if (minDimensions == null) {
+		//			setHeight(getHeight()-diffY);
+		//		} else if (getHeight()-diffY > minDimensions.y) {
+		//			setHeight(getHeight()-diffY);
+		//		} else {
+		//			setHeight(minDimensions.y);
+		//		}
+		//	}
+		} else if (dir == Borders.S) {
+			if (dockS && scaleNS) {
+				if (minDimensions == null) {
+					setHeight(getHeight()-diffY);
+				} else {
+					float cY = getElementParent().getHeight()-(getElementParent().getHeight()-orgPosition.y);
+					if (getY() < cY) setHeight(minDimensions.y);
+					else setHeight(getHeight()-diffY);
+					if (getHeight() > minDimensions.y) setY(cY);
+					else setY(getY()-diffY);
+				}
+			} else
+				setY(getY()-diffY);
+		}
+		if (dir == Borders.W) {
+			if (dockE) {
+				
+			}
+		} else if (dir == Borders.E) {
+			if (dockW) {
+				
+			}
+		}
+		
+		Set<String> keys = elementChildren.keySet();
+		for (String key : keys) {
+			elementChildren.get(key).childResize(diffX,diffY,dir);
+		}
+	}
+	*/
 	
 	private void childResize(float diffX, float diffY, Borders dir) {
 		if (dir == Borders.NW || dir == Borders.N || dir == Borders.NE) {
-			if (getScaleNS())	setHeight(getHeight()-diffY);
-			if (getDockN() && !getScaleNS())	setY(getY()-diffY);
+			if (getScaleNS()) setHeight(getHeight()-diffY);
+			if (getDockN() && !getScaleNS()) setY(getY()-diffY);
 		} else if (dir == Borders.SW || dir == Borders.S || dir == Borders.SE) {
-			if (getScaleNS())	setHeight(getHeight()-diffY);
-			if (getDockN() && !getScaleNS())	setY(getY()-diffY);
+			if (getScaleNS()) setHeight(getHeight()-diffY);
+			if (getDockN() && !getScaleNS()) setY(getY()-diffY);
 		}
 		if (dir == Borders.NW || dir == Borders.W || dir == Borders.SW) {
-			if (getScaleEW())	setWidth(getWidth()-diffX);
-			if (getDockE() && !getScaleEW())	setX(getX()-diffX);
+			if (getScaleEW()) setWidth(getWidth()-diffX);
+			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
 		} else if (dir == Borders.NE || dir == Borders.E || dir == Borders.SE) {
-			if (getScaleEW())	setWidth(getWidth()-diffX);
-			if (getDockE() && !getScaleEW())	setX(getX()-diffX);
+			if (getScaleEW()) setWidth(getWidth()-diffX);
+			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
 		}
 		Set<String> keys = elementChildren.keySet();
 		for (String key : keys) {
