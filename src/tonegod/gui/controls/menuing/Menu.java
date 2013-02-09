@@ -457,10 +457,8 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	}
 	
 	private void handleMenuItemClick(MenuItem menuItem, int menuItemIndex, Object value) {
-		if (menuItem.getIsToggleItem()) {
+		if (menuItem.getIsToggleItem())
 			menuItem.setIsToggled(!menuItem.getIsToggled());
-			System.out.println("Menu item is toggle-able and isChecked is: " + menuItem.getIsToggled());
-		}
 		onMenuItemClicked(menuItemIndex, value, menuItem.getIsToggled());
 		hide();
 	}
