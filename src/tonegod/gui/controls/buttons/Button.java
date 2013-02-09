@@ -306,11 +306,13 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		initClickPause = true;
 		currentInitClickTrack = 0;
 		onButtonMouseLeftDown(evt, isToggled);
+		/*
 		if (screen.getUseToolTips()) {
 			if (getToolTipText() !=  null) {
 				screen.setToolTip(null);
 			}
 		}
+		*/
 		evt.setConsumed();
 	}
 
@@ -373,7 +375,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		onButtonMouseRightDown(evt, isToggled);
 		if (screen.getUseToolTips()) {
 			if (getToolTipText() !=  null) {
-				screen.setToolTip(null);
+			//	screen.setToolTip(null);
 			}
 		}
 		evt.setConsumed();
@@ -409,7 +411,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			onButtonFocus(evt);
 			if (screen.getUseToolTips()) {
 				if (getToolTipText() !=  null) {
-					screen.setToolTip(getToolTipText());
+				//	screen.setToolTip(getToolTipText());
 				}
 			}
 		}
@@ -429,11 +431,13 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			}
 			screen.setCursor(Screen.CursorType.POINTER);
 			onButtonLostFocus(evt);
+			/*
 			if (screen.getUseToolTips()) {
 				if (getToolTipText() !=  null) {
 					screen.setToolTip(null);
 				}
 			}
+			*/
 		}
 		setHasFocus(false);
 	}

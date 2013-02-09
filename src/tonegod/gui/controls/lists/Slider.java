@@ -492,4 +492,9 @@ public abstract class Slider extends ButtonAdapter {
 	public void setToolTipText(String tip) {
 		this.elThumb.setToolTipText(tip);
 	}
+	
+	@Override
+	public String getToolTipText() {
+		return this.elThumb.getToolTipText();
+	}
 }

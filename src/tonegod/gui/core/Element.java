@@ -173,6 +173,8 @@ public class Element extends Node {
 	private OSRBridge bridge;
 	
 	private boolean ignoreGlobalAlpha = false;
+	private boolean isModal = false;
+	private boolean isGlobalModal = false;
 	
 	/**
 	 * The Element class is the single primitive for all controls in the gui library.
@@ -1891,5 +1893,22 @@ public class Element extends Node {
 	
 	public boolean getHasFocus() {
 		return this.hasFocus;
+	}
+	
+	// Modal
+	public void setIsModal(boolean isModal) {
+		this.isModal = isModal;
+	}
+	
+	public boolean getIsModal() {
+		return this.isModal;
+	}
+	
+	public void setIsGlobalModal(boolean isGlobalModal) {
+		this.isGlobalModal = isGlobalModal;
+	}
+	
+	public boolean getIsGlobalModal() {
+		return this.isGlobalModal;
 	}
 }

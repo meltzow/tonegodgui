@@ -11,6 +11,9 @@ import com.jme3.effect.shapes.EmitterShape;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
+import com.jme3.font.BitmapText;
+import com.jme3.font.LineWrapMode;
+import com.jme3.font.Rectangle;
 import com.jme3.font.plugins.BitmapFontLoader;
 import com.jme3.input.KeyInput;
 import com.jme3.input.RawInputListener;
@@ -129,8 +132,10 @@ public class Screen implements Control, RawInputListener {
 	private boolean forceCursor = false;
 	private Map<CursorType, JmeCursor> cursors = new HashMap();
 	
+	private BitmapText textSizeTest = null;
 	private boolean useToolTips = false;
-	ToolTip toolTip = null;
+	private ToolTip toolTip = null;
+	private float toolTipMaxWidth = 250;
 	
 	private float globalAlpha = 1.0f;
 	
@@ -306,9 +311,15 @@ public class Screen implements Control, RawInputListener {
 		Set<String> keys = elements.keySet();
 		for (String key : keys) {
 			Element el = elements.get(key);
-			if (el != cursorEmitterVP && el != toolTip) {
-				if (el.getLocalTranslation().getZ() > shiftZ) {
-					el.move(0,0,-zOrderStepMajor);
+			if (topMost.getIsGlobalModal()) {
+				
+			} else if (topMost.getIsModal()) {
+			
+			} else {
+				if (!el.getIsGlobalModal() && !el.getIsModal()) {
+					if (el.getLocalTranslation().getZ() > shiftZ) {
+						el.move(0,0,-zOrderStepMajor);
+					}
 				}
 			}
 		}
@@ -1098,6 +1109,9 @@ public class Screen implements Control, RawInputListener {
 					new Vector2f(200,50)
 				);
 				toolTip.setIgnoreGlobalAlpha(true);
+				toolTip.setIsGlobalModal(true);
+				toolTip.setTextPadding(10);
+				toolTip.setTextPosition(0, 0);
 				toolTip.hide();
 				addElement(toolTip);
 				toolTip.move(0,0,20);
@@ -1115,30 +1129,45 @@ public class Screen implements Control, RawInputListener {
 	}
 	
 	private void updateToolTipLocation() {
-		float nextX = mouseXY.x-(toolTip.getWidth()/2);
-		if (nextX < 0) nextX = 0;
-		else if (nextX+toolTip.getWidth() > getWidth()) nextX = getWidth()-toolTip.getWidth();
-		float nextY = mouseXY.y-toolTip.getHeight()-40;
-		if (nextY < 0) nextY = mouseXY.y+5;
-		toolTip.moveTo(nextX, nextY);
-	}
-	
-	public void setToolTip(String tip) {
 		if (useToolTips) {
-			if (tip != null) {
-				toolTip.setText(tip);
-				toolTip.resize(
-					toolTip.getX()+getStyle("ToolTip").getVector2f("defaultSize").x,
-					toolTip.getY()+toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*2),
-					Borders.SE
-				);
-				toolTip.resize(
-					toolTip.getX()+getStyle("ToolTip").getVector2f("defaultSize").x,
-					toolTip.getY()+toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*2),
-					Borders.SE
-				);
-			//	toolTip.setHeight(toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*2));
-				toolTip.show();
+			if (this.mouseFocusElement != null && getApplication().getInputManager().isCursorVisible()) {
+				String toolTipText = this.mouseFocusElement.getToolTipText();
+				if (toolTipText != null) {
+					if (!toolTip.getText().equals(this.mouseFocusElement.getToolTipText())) {
+						if (textSizeTest == null) {
+							textSizeTest = new BitmapText(mouseFocusElement.getFont());
+							textSizeTest.setLineWrapMode(LineWrapMode.NoWrap);
+						}
+						textSizeTest.setSize(toolTip.getFontSize());
+						textSizeTest.setBox(null);
+						textSizeTest.setText(toolTipText);
+						System.out.println(textSizeTest.getLineWidth());
+						if (textSizeTest.getLineWidth() > this.toolTipMaxWidth) {
+							toolTip.setWidth(toolTipMaxWidth);
+						} else {
+							toolTip.setWidth(textSizeTest.getLineWidth());
+						}
+						toolTip.setText(toolTipText);
+						toolTip.resize(
+							toolTip.getX()+toolTip.getWidth()+(toolTip.getTextPadding()*2),
+							toolTip.getY()+toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*2),
+							Borders.SE
+						);
+						toolTip.setHeight(toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*2));
+						toolTip.getTextElement().setBox(new Rectangle(0,0,toolTip.getWidth()-(toolTip.getTextPadding()*2),toolTip.getHeight()-(toolTip.getTextPadding()*2)));
+					}
+					float nextX = mouseXY.x-(toolTip.getWidth()/2);
+					if (nextX < 0) nextX = 0;
+					else if (nextX+toolTip.getWidth() > getWidth()) nextX = getWidth()-toolTip.getWidth();
+					float nextY = mouseXY.y-toolTip.getHeight()-40;
+					if (nextY < 0) nextY = mouseXY.y+5;
+					toolTip.moveTo(nextX, nextY);
+					if (!toolTip.getIsVisible())
+						toolTip.show();
+				} else {
+					toolTip.setText("");
+					toolTip.hide();
+				}
 			} else {
 				toolTip.setText("");
 				toolTip.hide();
@@ -1223,6 +1252,7 @@ public class Screen implements Control, RawInputListener {
 		cursorEmitterVP.setCameraVerticalRotation(0);
 		cursorEmitterVP.setIgnoreMouse(true);
 		cursorEmitterVP.setIgnoreGlobalAlpha(true);
+		cursorEmitterVP.setIsGlobalModal(true);
 	}
 	
 	public void updateCursorEmitter() {

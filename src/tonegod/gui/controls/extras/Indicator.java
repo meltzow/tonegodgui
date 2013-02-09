@@ -22,7 +22,7 @@ import tonegod.gui.listeners.MouseFocusListener;
  *
  * @author t0neg0d
  */
-public class Indicator extends Element implements MouseFocusListener {
+public class Indicator extends Element {
 	public static enum Orientation {
 		HORIZONTAL,
 		VERTICAL
@@ -291,29 +291,5 @@ public class Indicator extends Element implements MouseFocusListener {
 		
 		this.getElementMaterial().setTexture("ColorMap", tex);
 		this.getElementMaterial().setColor("Color", ColorRGBA.White);
-	}
-
-	@Override
-	public void onGetFocus(MouseMotionEvent evt) {
-		if (!getHasFocus()) {
-			if (screen.getUseToolTips()) {
-				if (getToolTipText() !=  null) {
-					screen.setToolTip(getToolTipText());
-				}
-			}
-		}
-		setHasFocus(true);
-	}
-
-	@Override
-	public void onLoseFocus(MouseMotionEvent evt) {
-		if (getHasFocus()) {
-			if (screen.getUseToolTips()) {
-				if (getToolTipText() !=  null) {
-					screen.setToolTip(null);
-				}
-			}
-		}
-		setHasFocus(false);
 	}
 }
