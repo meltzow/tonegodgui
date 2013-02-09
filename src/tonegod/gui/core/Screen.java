@@ -1141,7 +1141,6 @@ public class Screen implements Control, RawInputListener {
 						textSizeTest.setSize(toolTip.getFontSize());
 						textSizeTest.setBox(null);
 						textSizeTest.setText(toolTipText);
-						System.out.println(textSizeTest.getLineWidth());
 						if (textSizeTest.getLineWidth() > this.toolTipMaxWidth) {
 							toolTip.setWidth(toolTipMaxWidth);
 						} else {
