@@ -125,6 +125,8 @@ public abstract class Slider extends ButtonAdapter {
 			@Override
 			public void moveTo(float x, float y) {
 				Slider slider = ((Slider)getElementParent());
+				float nextX = x-(x-getX());
+				float nextY = y-(y-getY());
 				if (isStepped) {
 					int index = 0;
 					if (slider.orientation == Slider.Orientation.HORIZONTAL) {
@@ -142,9 +144,9 @@ public abstract class Slider extends ButtonAdapter {
 				} else {
 					int percent = 0;
 					if (slider.orientation == Slider.Orientation.HORIZONTAL) {
-						percent = (int)((x/slider.getWidth())*100);
+						percent = (int)((nextX/(slider.getWidth()-1))*100);
 					} else {
-						percent = (int)((y/slider.getHeight())*100);
+						percent = (int)((nextY/(slider.getHeight()-1))*100);
 					}
 					if (slider.getSelectedIndex() != percent && percent >= 0 && percent <= 100) {
 						slider.setInternalSelectedIndex(percent);
@@ -263,7 +265,7 @@ public abstract class Slider extends ButtonAdapter {
 	 * 
 	 * @param value The string value to add for the next step.
 	 */
-	public void addStepValue(String value) {
+	public void addStepValue(Object value) {
 		stepValues.add(value);
 		if (stepValues.size() >= 2) {
 			isStepped = true;
@@ -277,7 +279,7 @@ public abstract class Slider extends ButtonAdapter {
 		isStepped = false;
 		selectedIndex = -1;
 		for (int i = min; i <= max; i += inc) {
-			addStepValue(String.valueOf(i));
+			addStepValue(i);
 		}
 		if (selectedIndex == -1)
 			setSelectedIndex(0);
@@ -289,7 +291,7 @@ public abstract class Slider extends ButtonAdapter {
 		selectedIndex = -1;
 		selectedIndex = -1;
 		for (float i = min; i <= max; i += inc) {
-			addStepValue(String.valueOf(i));
+			addStepValue(i);
 		}
 		if (selectedIndex == -1)
 			setSelectedIndex(0);
@@ -354,7 +356,7 @@ public abstract class Slider extends ButtonAdapter {
 	private void setInternalSelectedIndex(int selectedIndex) {
 		this.selectedIndex = selectedIndex;
 		if( isStepped)	onChange(selectedIndex, stepValues.get(selectedIndex));
-		else			onChange(selectedIndex, String.valueOf(selectedIndex));
+		else			onChange(selectedIndex, selectedIndex);
 	}
 	
 	public void setSelectedIndex(int selectedIndex) {
@@ -381,7 +383,7 @@ public abstract class Slider extends ButtonAdapter {
 		}
 		
 		if( isStepped)	onChange(selectedIndex, stepValues.get(selectedIndex));
-		else			onChange(selectedIndex, String.valueOf(selectedIndex));
+		else			onChange(selectedIndex, selectedIndex);
 	}
 	
 	/**
