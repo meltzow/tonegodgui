@@ -289,7 +289,8 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 			this.resize(getX()+width+(menuPadding*2), getY()+currentHeight+(menuPadding*2), Borders.SE);
 		} else {
 			float nextWidth = (preferredSize.x > width+(menuPadding*2)) ? preferredSize.x : width+(menuPadding*2);
-			this.resize(getX()+nextWidth, getY()+preferredSize.y, Borders.SE);
+			float nextHeight = (currentHeight > preferredSize.y+(menuPadding*2)) ? preferredSize.y : currentHeight+(menuPadding*2);
+			this.resize(getX()+nextWidth, getY()+nextHeight, Borders.SE);
 		}
 		
 		scrollableArea.setX(menuPadding);
@@ -368,14 +369,14 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 			else if (x+getWidth() > screen.getWidth())
 				x = caller.getAbsoluteX()-getWidth()+menuOverhang;
 			if (y < 0) y = 0;
-			else if (getAbsoluteHeight() > screen.getHeight())
+			else if (y+getHeight() > screen.getHeight())
 				y -= getAbsoluteHeight()-screen.getHeight();
 		} else {
 			if (x < 0) x = 0;
 			else if (x+getWidth() > screen.getWidth())
 				x = screen.getWidth()-getWidth();
 			if (y < 0) y = 0;
-			else if (getAbsoluteHeight() > screen.getHeight())
+			else if (y+getHeight() > screen.getHeight())
 				y = screen.getHeight()-getHeight();
 		}
 		this.moveTo(x, y);

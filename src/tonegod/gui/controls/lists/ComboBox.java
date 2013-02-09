@@ -105,8 +105,11 @@ public abstract class ComboBox extends TextField {
 			@Override
 			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
 				if (validateListSize()) {
-					Menu m = ((Menu)screen.getElementById(ddUID));
-					m.showMenu(null, getElementParent().getAbsoluteX(), getElementParent().getAbsoluteY()-m.getHeight());
+					DDList.showMenu(
+						null,
+						getElementParent().getAbsoluteX(),
+						getElementParent().getAbsoluteY()-DDList.getHeight()
+					);
 				}
 				screen.setTabFocusElement((ComboBox)getElementParent());
 			}
