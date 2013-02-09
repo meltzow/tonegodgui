@@ -14,6 +14,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
+import tonegod.gui.controls.buttons.CheckBox;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
@@ -148,13 +149,22 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	}
 	
 	public void addMenuItem(String caption, Object value, Menu subMenu) {
+		addMenuItem(caption, value, subMenu, false);
+	}
+	
+	public void addMenuItem(String caption, Object value, Menu subMenu, boolean isToggleItem) {
 		this.getVScrollBar().hide();
 		MenuItem menuItem = new MenuItem(
 			this,
 			caption,
 			value,
-			subMenu
+			subMenu,
+			isToggleItem
 		);
+		
+	//	if (isToggleItem)
+	//		menuItem.setIsToggleItem(true);
+		
 		this.menuItems.add(menuItem);
 	//	miIndex++;
 		
@@ -162,6 +172,10 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	}
 	
 	public void insertMenuItem(int index, String caption, Object value, Menu subMenu) {
+		insertMenuItem(index, caption, value, subMenu, false);
+	}
+	
+	public void insertMenuItem(int index, String caption, Object value, Menu subMenu, boolean isToggleItem) {
 		if (!menuItems.isEmpty()) {
 			if (index >= 0 && index < menuItems.size()) {
 				this.getVScrollBar().hide();
@@ -169,7 +183,8 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 					this,
 					caption,
 					value,
-					subMenu
+					subMenu,
+					isToggleItem
 				);
 				this.menuItems.add(index, menuItem);
 		//		miIndex++;
@@ -281,6 +296,11 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 			if (mi.getSubMenu() != null) {
 				this.addSubmenuArrow(index);
 			}
+			if (mi.getIsToggleItem()) {
+				this.addCheckBox(index, mi);
+			} else {
+				mi.setCheckBox(null);
+			}
 			index++;
 		}
 		scrollableArea.setText(finalString);
@@ -344,6 +364,28 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 			
 			if (!getIsVisible())
 				elArrow.hide();
+	}
+	
+	private void addCheckBox(int index, MenuItem mi) {
+		CheckBox checkbox = new CheckBox(screen, getUID() + ":CheckBox:" + index,
+			new Vector2f(menuPadding, -(menuItems.size()*menuItemHeight)+(menuItemHeight+(index*menuItemHeight)))
+		);
+		checkbox.setScaleEW(false);
+		checkbox.setScaleNS(false);
+		checkbox.setDockS(true);
+		checkbox.setDockW(true);
+		checkbox.setIsResizable(false);
+		checkbox.setIsMovable(false);
+		checkbox.setIgnoreMouse(true);
+		checkbox.setClippingLayer(this);
+		checkbox.setTextClipPadding(this.getMenuPadding());
+
+		mi.setCheckBox(checkbox);
+		
+		addScrollableChild(checkbox);
+
+		if (!getIsVisible())
+			checkbox.hide();
 	}
 	
 	public final void setCallerElement(Element el) {
@@ -415,7 +457,11 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	}
 	
 	private void handleMenuItemClick(MenuItem menuItem, int menuItemIndex, Object value) {
-		onMenuItemClicked(menuItemIndex, value);
+		if (menuItem.getIsToggleItem()) {
+			menuItem.setIsToggled(!menuItem.getIsToggled());
+			System.out.println("Menu item is toggle-able and isChecked is: " + menuItem.getIsToggled());
+		}
+		onMenuItemClicked(menuItemIndex, value, menuItem.getIsToggled());
 		hide();
 	}
 	
@@ -425,7 +471,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	 * @param index Index of MenuItem clicked
 	 * @param value String value of MenuItem clicked
 	 */
-	public abstract void onMenuItemClicked(int index, Object value);
+	public abstract void onMenuItemClicked(int index, Object value, boolean isToggled);
 	
 	@Override
 	public void onMouseMove(MouseMotionEvent evt) {

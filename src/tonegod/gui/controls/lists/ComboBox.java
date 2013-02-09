@@ -130,7 +130,7 @@ public abstract class ComboBox extends TextField {
 		if (DDList == null) {
 			DDList = new Menu(screen, ddUID, new Vector2f(0,0), true) {
 				@Override
-				public void onMenuItemClicked(int index, Object value) {
+				public void onMenuItemClicked(int index, Object value, boolean isToggled) {
 					((ComboBox)getCallerElement()).setSelected(index, DDList.getMenuItem(index).getCaption(), value);
 					screen.setTabFocusElement(((ComboBox)getCallerElement()));
 					hide();

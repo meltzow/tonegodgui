@@ -318,12 +318,17 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	public void onMouseLeftReleased(MouseButtonEvent evt) {
 		if (!isToggleButton) {
 			if (getHasFocus()) {
+				Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
+				if (effect != null) {
+					effect.setBlendImage(getElementTexture());
+					screen.getEffectManager().applyEffect(effect);
+				}
 				if (hoverImg != null) {
 				//	screen.getEffectManager().removeEffect(this);
-					Effect effect = getEffect(Effect.EffectEvent.Hover);
-					if (effect != null) {
-						effect.setBlendImage(hoverImg);
-						screen.getEffectManager().applyEffect(effect);
+					Effect effect2 = getEffect(Effect.EffectEvent.Hover);
+					if (effect2 != null) {
+						effect2.setBlendImage(hoverImg);
+						screen.getEffectManager().applyEffect(effect2);
 					}
 				}
 				if (hoverFontColor != null) {
@@ -339,10 +344,15 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		} else {
 			if (!isToggled) {
 				if (hoverImg != null) {
-					Effect effect = getEffect(Effect.EffectEvent.Hover);
+					Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
 					if (effect != null) {
-						effect.setBlendImage(hoverImg);
+						effect.setBlendImage(getElementTexture());
 						screen.getEffectManager().applyEffect(effect);
+					}
+					Effect effect2 = getEffect(Effect.EffectEvent.Hover);
+					if (effect2 != null) {
+						effect2.setBlendImage(hoverImg);
+						screen.getEffectManager().applyEffect(effect2);
 					}
 				}
 				if (hoverFontColor != null) {

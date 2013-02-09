@@ -304,21 +304,21 @@ public class Effect implements Cloneable {
 				element.getElementMaterial().setFloat("EffectStep", 1.0f-pass);
 		} else if (type == EffectType.ImageSwap) {
 			if (!init) {
-				element.getElementMaterial().setBoolean("UseEffect", true);
+				element.getElementMaterial().setBoolean("UseEffect", false);
 				element.getElementMaterial().setBoolean("EffectFade", false);
 				element.getElementMaterial().setBoolean("EffectPulse", false);
-				element.getElementMaterial().setTexture("EffectMap", blendImage);
+				element.getElementMaterial().setTexture("ColorMap", blendImage);
 				element.getElementMaterial().setFloat("EffectStep", 1.0f);
 				init = true;
 				isActive = false;
 			}
 		} else if (type == EffectType.ColorSwap) {
 			if (!init) {
-				element.getElementMaterial().setBoolean("UseEffect", true);
+				element.getElementMaterial().setBoolean("UseEffect", false);
 				element.getElementMaterial().setBoolean("EffectFade", false);
 				element.getElementMaterial().setBoolean("EffectPulse", false);
 				element.getElementMaterial().setBoolean("EffectPulseColor", false);
-				element.getElementMaterial().setColor("EffectColor", blendColor);
+				element.getElementMaterial().setColor("Color", blendColor);
 				element.getElementMaterial().setFloat("EffectStep", 1.0f);
 				init = true;
 				isActive = false;

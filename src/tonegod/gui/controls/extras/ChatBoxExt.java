@@ -234,6 +234,8 @@ public abstract class ChatBoxExt extends Panel {
 		
 		populateEffects("Window");
 		
+		this.setControlClippingLayer(this);
+		
 		this.addChatChannel("Default", "/say", ColorRGBA.White, true);
 	}
 	
