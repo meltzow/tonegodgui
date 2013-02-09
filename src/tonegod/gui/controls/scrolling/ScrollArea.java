@@ -88,10 +88,13 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		
 		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 		
+		setWidth(getWidth()-scrollSize);
+		
 		if (!isTextOnly) {
 			createScrollableArea();
 		} else {
 			setTextPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
+			setText("");
 		}
 		
 		vScrollBar = new VScrollBar(screen, UID + ":vScroll",

@@ -1125,6 +1125,7 @@ public class Element extends Node {
 		Set<String> keys = elementChildren.keySet();
 		for (String key : keys) {
 			elementChildren.get(key).childResize(diffX,diffY,dir);
+			elementChildren.get(key).controlResizeHook();
 		}
 	}
 	

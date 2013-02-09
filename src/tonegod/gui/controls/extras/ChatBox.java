@@ -100,7 +100,7 @@ public abstract class ChatBox extends Panel {
 			),
 			new Vector2f(
 				getWidth()-scrollSize-indents.y-indents.z,
-				getHeight()-controlSize-(controlSpacing*2)-indents.x-indents.w
+				getHeight()-(controlSpacing*2)-indents.x-indents.w
 			),
 			true
 		);

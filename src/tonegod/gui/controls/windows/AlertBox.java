@@ -53,7 +53,7 @@ public abstract class AlertBox extends Window {
 				indents.x+getDragBarHeight()+controlSpacing
 			),
 			new Vector2f(
-				getWidth()-indents.y-indents.z-screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize"),
+				getWidth()-indents.y-indents.z,
 				getHeight()-indents.x-indents.w-getDragBarHeight()-screen.getStyle("Window").getFloat("buttonAreaHeight")-(controlSpacing*2)
 			),
 			true

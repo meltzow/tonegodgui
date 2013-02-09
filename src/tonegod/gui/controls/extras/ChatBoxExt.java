@@ -134,7 +134,7 @@ public abstract class ChatBoxExt extends Panel {
 				indents.x+controlSpacing+spnChannels.getHeight()
 			),
 			new Vector2f(
-				getWidth()-scrollSize-indents.y-indents.z,
+				getWidth()-indents.y-indents.z,
 				getHeight()-controlSize-spnChannels.getHeight()-(controlSpacing*2)-indents.x-indents.w
 			),
 			false
