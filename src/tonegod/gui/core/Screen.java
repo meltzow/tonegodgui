@@ -209,9 +209,7 @@ public class Screen implements Control, RawInputListener {
 	}
 	
 	@Override
-	public void update(float tpf) {
-	//	throw new UnsupportedOperationException("Not supported yet.");
-	}
+	public void update(float tpf) {  }
 
 	@Override
 	public void render(RenderManager rm, ViewPort vp) {
@@ -398,7 +396,7 @@ public class Screen implements Control, RawInputListener {
 			}
 			if (mouseFocusElement != null) {
 				focusElementIsMovable = mouseFocusElement.getIsMovable();
-				
+
 				if (mouseFocusElement instanceof MouseWheelListener) {
 					if (evt.getDeltaWheel() > 0) {
 						((MouseWheelListener)mouseFocusElement).onMouseWheelDown(evt);
@@ -419,7 +417,7 @@ public class Screen implements Control, RawInputListener {
 						eventElement.moveTo(evt.getX()-eventElementOffsetX, evt.getY()-eventElementOffsetY);
 					}
 				}
-				
+
 				if (eventElement instanceof MouseMovementListener) {
 					((MouseMovementListener)eventElement).onMouseMove(evt);
 				}
