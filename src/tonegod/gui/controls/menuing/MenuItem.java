@@ -18,12 +18,13 @@ public class MenuItem {
 	CheckBox toggle = null;
 	boolean isToggled = false;
 	
-	public MenuItem(Menu menu, String caption, Object value, Menu subMenu, boolean isToggleItem) {
+	public MenuItem(Menu menu, String caption, Object value, Menu subMenu, boolean isToggleItem, boolean isToggled) {
 		this.menu = menu;
 		this.subMenu = subMenu;
 		this.caption = caption;
 		this.value = value;
 		this.isToggleItem = isToggleItem;
+		this.isToggled = isToggled;
 	}
 	
 	public Menu getMenu() {

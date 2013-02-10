@@ -145,33 +145,37 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	}
 	
 	public void addMenuItem(String caption, Object value, Menu subMenu) {
-		addMenuItem(caption, value, subMenu, false);
+		addMenuItem(caption, value, subMenu, false, false);
 	}
 	
 	public void addMenuItem(String caption, Object value, Menu subMenu, boolean isToggleItem) {
+		addMenuItem(caption, value, subMenu, isToggleItem, false);
+	}
+	
+	public void addMenuItem(String caption, Object value, Menu subMenu, boolean isToggleItem, boolean isToggled) {
 		this.getVScrollBar().hide();
 		MenuItem menuItem = new MenuItem(
 			this,
 			caption,
 			value,
 			subMenu,
-			isToggleItem
+			isToggleItem,
+			isToggled
 		);
 		
-	//	if (isToggleItem)
-	//		menuItem.setIsToggleItem(true);
-		
 		this.menuItems.add(menuItem);
-	//	miIndex++;
-		
 		pack();
 	}
 	
 	public void insertMenuItem(int index, String caption, Object value, Menu subMenu) {
-		insertMenuItem(index, caption, value, subMenu, false);
+		insertMenuItem(index, caption, value, subMenu, false, false);
 	}
 	
 	public void insertMenuItem(int index, String caption, Object value, Menu subMenu, boolean isToggleItem) {
+		insertMenuItem(index, caption, value, subMenu, isToggleItem, false);
+	}
+	
+	public void insertMenuItem(int index, String caption, Object value, Menu subMenu, boolean isToggleItem, boolean isToggled) {
 		if (!menuItems.isEmpty()) {
 			if (index >= 0 && index < menuItems.size()) {
 				this.getVScrollBar().hide();
@@ -180,11 +184,10 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 					caption,
 					value,
 					subMenu,
-					isToggleItem
+					isToggleItem,
+					isToggled
 				);
 				this.menuItems.add(index, menuItem);
-		//		miIndex++;
-
 				pack();
 			}
 		}
@@ -381,6 +384,9 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		
 		addScrollableChild(checkbox);
 
+		if (mi.getIsToggled())
+			checkbox.setIsChecked(mi.getIsToggled());
+		
 		if (!getIsVisible())
 			checkbox.hide();
 	}
