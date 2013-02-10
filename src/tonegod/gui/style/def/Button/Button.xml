@@ -2,7 +2,7 @@
 <root>
 	<element name="Button">
 		<font>
-			<property name="fontSize" type="float" value="18" />
+			<property name="fontSize" type="float" value="20" />
 			<property name="fontColor" type="ColorRGBA">
 				<r value="0.8" />
 				<g value="0.8" />
@@ -78,7 +78,7 @@
 	</element>
 	<element name="CheckBox">
 		<font>
-			<property name="fontSize" type="float" value="18" />
+			<property name="fontSize" type="float" value="20" />
 			<property name="fontColor" type="ColorRGBA">
 				<r value="0.8" />
 				<g value="0.8" />
@@ -148,7 +148,7 @@
 	</element>
 	<element name="RadioButton">
 		<font>
-			<property name="fontSize" type="float" value="18" />
+			<property name="fontSize" type="float" value="20" />
 			<property name="fontColor" type="ColorRGBA">
 				<r value="0.8" />
 				<g value="0.8" />

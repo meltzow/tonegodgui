@@ -2,7 +2,7 @@
 <root>
 	<element name="Font">
 		<font>
-			<property name="defaultFont" type="String" value="tonegod/gui/style/def/Fonts/base-font-white.fnt" />
+			<property name="defaultFont" type="String" value="tonegod/gui/style/def/Fonts/tonegodGUI.fnt" />
 		</font>
 		<attributes></attributes>
 		<images></images>

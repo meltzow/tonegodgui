@@ -286,10 +286,10 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 			float tWidth = (menuItemHeight*2)+sizeEval.getLineWidth();
 			width = (tWidth > width) ? tWidth : width;
 			if (init) {
-				finalString = "      " + mi.getCaption() + "  ";
+				finalString = "        " + mi.getCaption() + "  ";
 				init = false;
 			} else {
-				finalString += "\n      " + mi.getCaption() + "  ";
+				finalString += "\n        " + mi.getCaption() + "  ";
 			}
 			currentHeight += menuItemHeight;
 			

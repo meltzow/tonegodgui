@@ -2,7 +2,7 @@
 <root>
 	<element name="TextField">
 		<font>
-			<property name="fontSize" type="float" value="18" />
+			<property name="fontSize" type="float" value="20" />
 			<property name="fontColor" type="ColorRGBA">
 				<r value="0" />
 				<g value="0" />
