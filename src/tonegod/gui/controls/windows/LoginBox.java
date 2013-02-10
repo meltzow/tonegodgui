@@ -146,6 +146,14 @@ public abstract class LoginBox extends Window {
 		responseMsg.setText(text);
 	}
 	
+	public String getTextUserName() {
+		return this.userName.getText();
+	}
+	
+	public String getTextPassword() {
+		return this.password.getText();
+	}
+	
 	public void setButtonLoginText(String text) {
 		btnLogin.setText(text);
 	}
