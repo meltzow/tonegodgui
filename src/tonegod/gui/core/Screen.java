@@ -576,10 +576,12 @@ public class Screen implements Control, RawInputListener {
 			}
 		} else {
 			if (keyboardElement != null) {
-				if (evt.isPressed()) {
-					((KeyboardListener)keyboardElement).onKeyPress(evt);
-				} else if (evt.isReleased()) {
-					((KeyboardListener)keyboardElement).onKeyRelease(evt);
+				if (keyboardElement.getParent() != null && keyboardElement.getIsVisible()) {
+					if (evt.isPressed()) {
+						((KeyboardListener)keyboardElement).onKeyPress(evt);
+					} else if (evt.isReleased()) {
+						((KeyboardListener)keyboardElement).onKeyRelease(evt);
+					}
 				}
 			}
 		}
