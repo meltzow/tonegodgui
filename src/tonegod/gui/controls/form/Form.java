@@ -72,7 +72,15 @@ public class Form {
 	 * @param element 
 	 */
 	public void removeFormElement(Element element) {
+		int newIndex = 0;
 		elements.remove(element);
+		Object[] elArray = elements.toArray();
+		elements.clear();
+		for (int i = 0; i < elArray.length; i++) {
+			((Element)elArray[i]).setTabIndex(newIndex);
+			elements.add((Element)elArray[i]);
+			newIndex++;
+		}
 	}
 	
 	/**
