@@ -82,13 +82,7 @@ public class Element extends Node {
 		HORIZONTAL
 	}
 	
-	/**
-	 *
-	 */
 	protected Application app;
-	/**
-	 *
-	 */
 	protected Screen screen;
 	private String UID;
 	private Vector2f position;
@@ -122,9 +116,6 @@ public class Element extends Node {
 	private Material mat;
 	private Texture defaultTex;
 	
-	/**
-	 *
-	 */
 	protected BitmapText textElement;
 	private Vector2f textPosition = new Vector2f(0,0);
 	private LineWrapMode textWrap = LineWrapMode.Word;
@@ -133,25 +124,13 @@ public class Element extends Node {
 	private String text = "";
 	private String toolTipText = null;
 	
-	/**
-	 *
-	 */
 	protected BitmapFont font;
-	/**
-	 *
-	 */
 	protected float fontSize = 20;
 	private float textPadding = 0;
-	/**
-	 *
-	 */
 	protected ColorRGBA fontColor = ColorRGBA.White;
 	private ColorRGBA defaultColor = new ColorRGBA(1,1,1,0);
 	
 	private Element elementParent = null;
-	/**
-	 *
-	 */
 	protected Map<String, Element> elementChildren = new HashMap();
 	
 	protected boolean isClipped = false;
@@ -175,6 +154,8 @@ public class Element extends Node {
 	private boolean ignoreGlobalAlpha = false;
 	private boolean isModal = false;
 	private boolean isGlobalModal = false;
+	
+	private Object elementUserData;
 	
 	/**
 	 * The Element class is the single primitive for all controls in the gui library.
@@ -1910,5 +1891,14 @@ public class Element extends Node {
 	
 	public boolean getIsGlobalModal() {
 		return this.isGlobalModal;
+	}
+	
+	// User data
+	public void setUserData(Object elementUserData) {
+		this.elementUserData = elementUserData;
+	}
+	
+	public Object getUserData() {
+		return this.elementUserData;
 	}
 }
