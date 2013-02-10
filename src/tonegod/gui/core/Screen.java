@@ -685,8 +685,10 @@ public class Screen implements Control, RawInputListener {
 	@Override
 	public void setSpatial(Spatial spatial) {
 		this.spatial = spatial;
-		((Node)spatial).attachChild(t0neg0dGUI);
-		t0neg0dGUI.addControl(effectManager);
+		if (spatial != null) {
+			((Node)spatial).attachChild(t0neg0dGUI);
+			t0neg0dGUI.addControl(effectManager);
+		}
 	}
 	
 	@Override
