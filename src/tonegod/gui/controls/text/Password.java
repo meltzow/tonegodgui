@@ -6,6 +6,7 @@ package tonegod.gui.controls.text;
 
 import com.jme3.app.Application;
 import com.jme3.font.BitmapText;
+import com.jme3.input.event.KeyInputEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.core.Screen;
@@ -16,6 +17,7 @@ import tonegod.gui.core.Screen;
  */
 public class Password extends TextField {
 	char mask = '*';
+	String maskedText = "";
 	
 	public Password(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,
@@ -44,4 +46,66 @@ public class Password extends TextField {
 	public String getMask() {
 		return String.valueOf(this.mask);
 	}
+	
+//	@Override
+//	public void controlKeyPressHook(KeyInputEvent evt, String text) {
+//		maskedText = "";
+//		for (int i = 0; i < text.length(); i++) {
+//			maskedText += String.valueOf(mask);
+//		}
+//	}
+	
+	@Override
+	protected String getVisibleText() {
+		getTextFieldText();
+		
+		maskedText = "";
+		for (int i = 0; i < finalText.length(); i++) {
+			maskedText += String.valueOf(mask);
+		}
+		
+		widthTest = new BitmapText(font, false);
+		widthTest.setBox(null);
+		widthTest.setSize(getFontSize());
+		
+		int index1 = 0, index2;
+		widthTest.setText(maskedText.substring(index1));
+		while(widthTest.getLineWidth() > getWidth()) {
+			if (index1 == caretIndex)
+				break;
+			index1++;
+			widthTest.setText(maskedText.substring(index1));
+		}
+		
+		index2 = maskedText.length()-1;
+		if (index2 == caretIndex && caretIndex != textFieldText.size()) {
+			index2 = caretIndex+1;
+			widthTest.setText(maskedText.substring(index1, index2));
+			while(widthTest.getLineWidth() < getWidth()) {
+				if (index2 == textFieldText.size())
+					break;
+				index2++;
+				widthTest.setText(maskedText.substring(index1, index2));
+			}
+		}
+		if (index2 != textFieldText.size())
+			index2++;
+		
+		if (head != index1 || tail != index2) {
+			head = index1;
+			tail = index2;
+		}
+		if (head != tail && head != -1 && tail != -1) {
+			visibleText = maskedText.substring(head, tail);
+		} else {
+			visibleText = "";
+		}
+		
+		widthTest.setText(maskedText.substring(head, caretIndex));
+		caretX = widthTest.getLineWidth();
+		setCaretPosition(getAbsoluteX()+caretX);
+		
+		return visibleText;
+	}
+	
 }
