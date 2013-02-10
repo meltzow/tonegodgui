@@ -18,6 +18,7 @@ import tonegod.gui.controls.buttons.CheckBox;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.MouseButtonListener;
 import tonegod.gui.listeners.MouseMovementListener;
@@ -37,7 +38,6 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	private Element callerElement;
 	float menuOverhang;
 	boolean isScrollable;
-	BitmapText sizeEval;
 	ColorRGBA highlightColor;
 	private int currentMenuItemIndex = -1;
 	private int currentHighlightIndex = 0;
@@ -113,11 +113,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		scrollableArea.setTextPadding(screen.getStyle("Menu").getFloat("textPadding"));
 		scrollableArea.setTextClipPadding(menuPadding+screen.getStyle("Menu").getFloat("textPadding"));
 		
-		sizeEval = new BitmapText(font);
-		sizeEval.setSize(fontSize);
-		sizeEval.setLineWrapMode(LineWrapMode.NoWrap);
-		sizeEval.setText("Xg");
-		menuItemHeight = sizeEval.getLineHeight();
+		menuItemHeight = BitmapTextUtil.getTextLineHeight(this, "Xg");
 		
 		scrollableArea.setText(" ");
 		scrollableArea.setIgnoreMouse(true);
@@ -281,9 +277,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		boolean init = true;
 		
 		for (MenuItem mi : menuItems) {
-			sizeEval.setBox(null);
-			sizeEval.setText("      " + mi.getCaption() + "  ");
-			float tWidth = (menuItemHeight*2)+sizeEval.getLineWidth();
+			float tWidth = (menuItemHeight*2)+BitmapTextUtil.getTextWidth(this, "        " + mi.getCaption() + "  ");
 			width = (tWidth > width) ? tWidth : width;
 			if (init) {
 				finalString = "        " + mi.getCaption() + "  ";

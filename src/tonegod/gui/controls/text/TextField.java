@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.KeyboardListener;
 import tonegod.gui.listeners.MouseFocusListener;
@@ -49,12 +50,12 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	private String testString = "Gg";
 	private Element caret;
 	private Material caretMat;
-	private int caretIndex = 0, head = 0, tail = 0, rangeHead = -1, rangeTail = -1;
-	private List<String> textFieldText = new ArrayList();
-	private String finalText = "", visibleText = "", textRangeText = "";
-	private BitmapText widthTest;
+	protected int caretIndex = 0, head = 0, tail = 0, rangeHead = -1, rangeTail = -1;
+	protected List<String> textFieldText = new ArrayList();
+	protected String finalText = "", visibleText = "", textRangeText = "";
+	protected BitmapText widthTest;
 	private boolean hasTabFocus = false;
-	private float caretX = 0;
+	protected float caretX = 0;
 	private char searchStr = ' ';
 	private Type type = Type.DEFAULT;
 	private boolean ctrl = false, shift = false, alt = false;
@@ -290,7 +291,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 			}
 		}
 		this.setText(getVisibleText());
-		controlKeyPressHook(evt, finalText);
+		controlKeyPressHook(evt, getText());
 		evt.setConsumed();
 	}
 	
@@ -333,12 +334,12 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	public final void setFontSize(float fontSize) {
 		this.fontSize = fontSize;
 		
-		widthTest = new BitmapText(font, false);
-		widthTest.setBox(null);
-		widthTest.setSize(getFontSize());
-		widthTest.setText(testString);
+	//	widthTest = new BitmapText(font, false);
+	//	widthTest.setBox(null);
+	//	widthTest.setSize(getFontSize());
+	//	widthTest.setText(testString);
 		
-		float height = widthTest.getHeight()+this.borders.x;
+		float height = BitmapTextUtil.getTextWidth(this, testString);//widthTest.getHeight()+this.borders.x;
 		float nextY = height-getHeight();
 		nextY /= 2;
 		nextY = (float) Math.ceil(nextY+1);
@@ -419,7 +420,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	}
 	
 	
-	private void setCaretPosition(float caretX) {
+	protected void setCaretPosition(float caretX) {
 		if (textElement != null) {
 			if (hasTabFocus) {
 				caret.getMaterial().setFloat("CaretX", caretX+getTextPadding());

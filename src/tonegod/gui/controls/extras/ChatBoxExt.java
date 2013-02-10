@@ -4,6 +4,7 @@
  */
 package tonegod.gui.controls.extras;
 
+import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
@@ -16,14 +17,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import tonegod.gui.controls.buttons.ButtonAdapter;
+import tonegod.gui.controls.buttons.CheckBox;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.lists.SelectBox;
 import tonegod.gui.controls.lists.Spinner;
+import tonegod.gui.controls.menuing.MenuItem;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.controls.text.Label;
 import tonegod.gui.controls.text.TextField;
+import tonegod.gui.controls.windows.AlertBox;
 import tonegod.gui.controls.windows.Panel;
+import tonegod.gui.controls.windows.Window;
+import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.BitmapTextUtil;
 
 /**
  *
@@ -33,21 +40,29 @@ public abstract class ChatBoxExt extends Panel {
 	private ScrollArea saChatArea;
 	private TextField tfChatInput;
 	private ButtonAdapter btnChatSendMsg;
-	private Spinner spnChannels;
+	private ButtonAdapter btnChatFilter;
+	private float btnChatFilterHeight = 20;
 	private SelectBox sbDefaultChannel;
 	private float saContentPadding;
-	
+	private boolean showSendButton = true;
+	private boolean showFilterButton = true;
 	private Form chatForm;
+	
+	private Window filters = null;
+	private ScrollArea filtersScrollArea = null;
+	float filterLineHeight;
+	
+	float controlSpacing, controlSize, buttonWidth, scrollSize;
+	Vector4f indents;
 	
 	private int sendKey;
 	private int chatHistorySize = 30;
 	protected List<ChatMessage> chatMessages = new ArrayList();
 	
-	protected Map<String, ChatChannel> channels = new HashMap();
+	protected List<ChatChannel> channels = new ArrayList();
 	private String defaultCommand;
 	
 	List<Label> displayMessages = new ArrayList();
-	List<ChatChannel> filteredChannels = new ArrayList();
 	
 	/**
 	 * Creates a new instance of the ChatBox control
@@ -100,42 +115,20 @@ public abstract class ChatBoxExt extends Panel {
 		chatForm = new Form(screen);
 		saContentPadding = screen.getStyle("ChatBox").getFloat("contentPadding");
 		
-		Vector4f indents = screen.getStyle("Window").getVector4f("contentIndents");
-		float controlSpacing = screen.getStyle("Common").getFloat("defaultControlSpacing");
-		float controlSize = screen.getStyle("Common").getFloat("defaultControlSize");
-		float buttonWidth = screen.getStyle("Button").getVector2f("defaultSize").x;
-		float scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
-		
-		spnChannels = new Spinner(
-			screen,
-			UID + ":Channels",
-			new Vector2f(getWidth()-140-indents.z,indents.x),
-			new Vector2f(120, 20),
-			Spinner.Orientation.HORIZONTAL,
-			true
-		) {
-			@Override
-			public void onChange(int selectedIndex, String value) {
-				addFilteredChannel(value);
-			}
-		};
-		spnChannels.setFontSize(16);
-		spnChannels.setDockN(true);
-		spnChannels.setDockE(true);
-		spnChannels.setScaleEW(false);
-		spnChannels.setScaleNS(false);
-		spnChannels.addStepValue("All");
-		
-		addChild(spnChannels);
+		indents = screen.getStyle("Window").getVector4f("contentIndents");
+		controlSpacing = screen.getStyle("Common").getFloat("defaultControlSpacing");
+		controlSize = screen.getStyle("Common").getFloat("defaultControlSize");
+		buttonWidth = screen.getStyle("Button").getVector2f("defaultSize").x;
+		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 		
 		saChatArea = new ScrollArea(screen, UID + ":ChatArea",
 			new Vector2f(
 				indents.y,
-				indents.x+controlSpacing+spnChannels.getHeight()
+				indents.x
 			),
 			new Vector2f(
 				getWidth()-indents.y-indents.z,
-				getHeight()-controlSize-spnChannels.getHeight()-(controlSpacing*2)-indents.x-indents.w
+				getHeight()-controlSize-(controlSpacing*2)-indents.x-indents.w
 			),
 			false
 		) {
@@ -173,10 +166,75 @@ public abstract class ChatBoxExt extends Panel {
 		saChatArea.setText("");
 		addChild(saChatArea);
 		
+		
+		btnChatFilter = new ButtonAdapter(
+			screen,
+			UID + ":ChatFilter",
+			new Vector2f(indents.y,getHeight()-controlSize-indents.w),
+			new Vector2f(controlSize, controlSize)
+		) {
+			@Override
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean isToggled) {
+				if (filters == null) {
+					filters = new Window(
+						screen,
+						getElementParent().getUID()+":FilterWindow",
+						new Vector2f(screen.getWidth()/2-225,screen.getHeight()/2-175),
+						new Vector2f(450,350)
+					);
+					filters.setWindowTitle("Chat Filters");
+					filters.setIsResizable(false);
+					
+					filtersScrollArea = new ScrollArea(
+						screen,
+						filters.getUID() + ":ScrollArea",
+						new Vector2f(
+							indents.y,
+							indents.x+filters.getDragBarHeight()+controlSpacing
+						),
+						new Vector2f(
+							filters.getWidth()-indents.y-indents.z,
+							filters.getHeight()-indents.x-indents.w-filters.getDragBarHeight()-screen.getStyle("Window").getFloat("buttonAreaHeight")-(controlSpacing*2)
+						),
+						false
+					);
+					filtersScrollArea.getScrollableArea().setIgnoreMouse(true);
+					filters.addChild(filtersScrollArea);
+					
+					ButtonAdapter btnFiltersClose = new ButtonAdapter(
+						screen,
+						filters.getUID() + ":btnClose",
+						new Vector2f(filters.getWidth()-buttonWidth-indents.z,filters.getHeight()-controlSize-controlSpacing-indents.w)
+					) {
+						@Override
+						public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean isToggled) {
+							filters.hideWindow();
+						}
+					};
+					btnFiltersClose.setText("Close");
+					btnFiltersClose.setDockS(true);
+					btnFiltersClose.setDockE(true);
+					filters.addChild(btnFiltersClose);
+
+					screen.addElement(filters);
+				}
+				showFiltersWindow();
+			}
+		};
+	//	btnChatFilter.setFontSize(16);
+		btnChatFilter.setDockS(true);
+		btnChatFilter.setDockW(true);
+		btnChatFilter.setScaleEW(false);
+		btnChatFilter.setScaleNS(false);
+		btnChatFilter.setText("F");
+		
+		chatForm.addFormElement(btnChatFilter);
+		addChild(btnChatFilter);
+		
 		sbDefaultChannel = new SelectBox(
 			screen,
 			UID + ":DefaultChannel",
-			new Vector2f(indents.y, getHeight()-controlSize-indents.w),
+			new Vector2f(indents.y+controlSize, getHeight()-controlSize-indents.w),
 			new Vector2f(100-controlSize, controlSize)
 		) {
 			@Override
@@ -188,14 +246,15 @@ public abstract class ChatBoxExt extends Panel {
 		sbDefaultChannel.setDockW(true);
 		sbDefaultChannel.setScaleEW(false);
 		sbDefaultChannel.setScaleNS(false);
+		
+		chatForm.addFormElement(sbDefaultChannel);
 		addChild(sbDefaultChannel);
-	//	sbDefaultChannel.pack();
 		
 		tfChatInput = new TextField(
 			screen,
 			UID + ":ChatInput",
-			new Vector2f(indents.y+sbDefaultChannel.getWidth()+controlSize, getHeight()-controlSize-indents.w),
-			new Vector2f(getWidth()-sbDefaultChannel.getWidth()-controlSize-indents.y-indents.z-buttonWidth, controlSize)
+			new Vector2f(indents.y+sbDefaultChannel.getWidth()+(controlSize*2), getHeight()-controlSize-indents.w),
+			new Vector2f(getWidth()-sbDefaultChannel.getWidth()-(controlSize*2)-indents.y-indents.z-buttonWidth, controlSize)
 		) {
 			@Override
 			public void controlKeyPressHook(KeyInputEvent evt, String text) {
@@ -229,14 +288,13 @@ public abstract class ChatBoxExt extends Panel {
 		btnChatSendMsg.setDockE(true);
 		btnChatSendMsg.setText("Send");
 		
+		
+		chatForm.addFormElement(btnChatSendMsg);
 		addChild(btnChatSendMsg);
+		chatForm.addFormElement(tfChatInput);
 		addChild(tfChatInput);
 		
 		populateEffects("Window");
-		
-		this.setControlClippingLayer(this);
-		
-		this.addChatChannel("Default", "/say", ColorRGBA.White, true);
 	}
 	
 	private void sendMsg() {
@@ -267,27 +325,22 @@ public abstract class ChatBoxExt extends Panel {
 		String displayText = "";
 		int index = 0;
 		saChatArea.getScrollableArea().removeAllChildren();
-	//	saChatArea.getScrollableArea().setIgnoreMouse(true);
 		saChatArea.getScrollableArea().setY(0);
 		saChatArea.getScrollableArea().setHeight(saChatArea.getHeight());
-	//	saChatArea.getScrollableArea().setDockS(true);
 		displayMessages.clear();
 		
 		float totalHeight = 0;
 		for (ChatMessage cm : chatMessages) {
-			if (!filteredChannels.contains(cm.getChannel())) {
+			if (!cm.getChannel().getIsFiltered()) {
 				Label l = createMessageLabel(index, cm);
 				displayMessages.add(l);
 				saChatArea.addScrollableChild(l);
 				l.setHeight(l.getTextElement().getHeight());
 				totalHeight += l.getHeight();
-			//	l.setY(saChatArea.getScrollableArea().getHeight()-totalHeight);
 				index++;
 			}
 		}
-	//	if (totalHeight > saChatArea.getHeight()) {
-			saChatArea.getScrollableArea().setHeight(totalHeight+(saChatArea.getPadding()*2));
-	//	}
+		saChatArea.getScrollableArea().setHeight(totalHeight+(saChatArea.getPadding()*2));
 		totalHeight = 0;
 		for (Label l : displayMessages) {
 			totalHeight += l.getHeight();
@@ -295,7 +348,6 @@ public abstract class ChatBoxExt extends Panel {
 			l.setWidth(saChatArea.getWidth()-(saContentPadding*2));
 			l.setY(saChatArea.getScrollableArea().getHeight()-totalHeight);
 		}
-	//	if (totalHeight > saChatArea.getHeight())
 		saChatArea.scrollToBottom();
 	}
 	
@@ -332,21 +384,19 @@ public abstract class ChatBoxExt extends Panel {
 	
 	public abstract void onSendMsg(String command, String msg);
 	
-	public final void addChatChannel(String name, String command, ColorRGBA color, boolean visibleToUser) {
-		channels.put(command, new ChatChannel(name, command, color, visibleToUser));
-		this.spnChannels.addStepValue(name);
+	public final void addChatChannel(String UID, String name, Object command, String filterDisplayText, ColorRGBA color, boolean visibleToUser) {
+		channels.add(new ChatChannel(UID, name, command, filterDisplayText, color, visibleToUser));
 		if (visibleToUser) {
 			this.sbDefaultChannel.addListItem(name, command);
 			this.sbDefaultChannel.pack();
 		}
 	}
 	
-	private ChatChannel getChannelByCommand(String command) {
+	private ChatChannel getChannelByCommand(Object command) {
 		ChatChannel c = null;
-		Set<String> keys = channels.keySet();
-		for (String key : keys) {
-			if (channels.get(key).getCommand().equals(command)) {
-				c = channels.get(key);
+		for (ChatChannel channel : channels) {
+			if (channel.getCommand() == command) {
+				c = channel;
 				break;
 			}
 		}
@@ -355,14 +405,57 @@ public abstract class ChatBoxExt extends Panel {
 	
 	private ChatChannel getChannelByName(String name) {
 		ChatChannel c = null;
-		Set<String> keys = channels.keySet();
-		for (String key : keys) {
-			if (channels.get(key).getName().equals(name)) {
-				c = channels.get(key);
+		for (ChatChannel channel : channels) {
+			if (channel.getName().equals(name)) {
+				c = channel;
 				break;
 			}
 		}
 		return c;
+	}
+	
+	public void showFilterButton(boolean showFilterButton) {
+		if (showFilterButton) {
+			if (btnChatFilter.getParent() == null) {
+				this.attachChild(btnChatFilter);
+				chatForm.addFormElement(btnChatFilter);
+				sbDefaultChannel.setX(indents.y+controlSize);
+				tfChatInput.setX(indents.y+sbDefaultChannel.getWidth()+(controlSize*2));
+				if (showSendButton)
+					tfChatInput.setWidth(getWidth()-sbDefaultChannel.getWidth()-(controlSize*2)-indents.y-indents.z-buttonWidth);
+				else
+					tfChatInput.setWidth(getWidth()-sbDefaultChannel.getWidth()-(controlSize*2)-indents.y-indents.z);
+			}
+		} else {
+			if (btnChatFilter.getParent() != null) {
+				btnChatFilter.removeFromParent();
+				chatForm.removeFormElement(btnChatFilter);
+				sbDefaultChannel.setX(indents.y);
+				tfChatInput.setX(indents.y+sbDefaultChannel.getWidth()+controlSize);
+				if (showSendButton)
+					tfChatInput.setWidth(getWidth()-sbDefaultChannel.getWidth()-controlSize-indents.y-indents.z-buttonWidth);
+				else
+					tfChatInput.setWidth(getWidth()-sbDefaultChannel.getWidth()-controlSize-indents.y-indents.z);
+			}
+		}
+		this.showFilterButton = showFilterButton;
+	}
+	
+	public void showSendButton(boolean showSendButton) {
+		if (showSendButton) {
+			if (btnChatSendMsg.getParent() == null) {
+				this.attachChild(btnChatSendMsg);
+				chatForm.addFormElement(btnChatSendMsg);
+				tfChatInput.setWidth(tfChatInput.getWidth()-btnChatSendMsg.getWidth());
+			}
+		} else {
+			if (btnChatSendMsg.getParent() != null) {
+				btnChatSendMsg.removeFromParent();
+				chatForm.removeFormElement(btnChatSendMsg);
+				tfChatInput.setWidth(tfChatInput.getWidth()+btnChatSendMsg.getWidth());
+			}
+		}
+		this.showSendButton = showSendButton;
 	}
 	
 	public class ChatMessage {
@@ -382,31 +475,107 @@ public abstract class ChatBoxExt extends Panel {
 	}
 	
 	public class ChatChannel {
-		private String name, command;
+		private String UID;
+		private String name;
+		private String filterDisplayText;
+		private Object command;
 		private ColorRGBA color;
 		private boolean visibleToUser;
-		public ChatChannel(String name, String command, ColorRGBA color, boolean visibleToUser) {
+		private boolean isFiltered = false;
+		
+		public ChatChannel(String UID, String name, Object command, String filterDisplayText, ColorRGBA color, boolean visibleToUser) {
+			this.UID = UID;
 			this.name = name;
 			this.command = command;
+			this.filterDisplayText = filterDisplayText;
 			this.color = color;
 			this.visibleToUser = visibleToUser;
 		}
 		
+		public String getUID() { return this.UID; }
 		public String getName() {
 			return this.name;
 		}
-		public String getCommand() {
+		public Object getCommand() {
 			return this.command;
 		}
 		public ColorRGBA getColor() {
 			return this.color;
 		}
+		public boolean getVisibleToUser() { return visibleToUser; }
+		public void setIsFiltered(boolean isFiltered) { this.isFiltered = isFiltered; }
+		public boolean getIsFiltered() { return this.isFiltered; }
+		public String getFilterDisplayText() { return filterDisplayText; }
 	}
 	
-	public void addFilteredChannel(String name) {
-		filteredChannels.clear();
-		filteredChannels.add(this.getChannelByName(name));
+	public void setChannelFiltered(ChatChannel channel, boolean filter) {
+		channel.setIsFiltered(filter);
 		rebuildChat();
+	}
+	
+	protected void showFiltersWindow() {
+		Element scrollableArea = filtersScrollArea.getScrollableArea();
+		filtersScrollArea.setClipPadding(10);
+		
+		scrollableArea.removeAllChildren();
+		scrollableArea.setY(0);
+		scrollableArea.setHeight(filtersScrollArea.getHeight());
+		
+		boolean init = true;
+		String finalString = "";
+		float currentHeight = 0;
+		int index = 0;
+		
+		for (ChatChannel channel : channels) {
+			filterLineHeight = BitmapTextUtil.getTextLineHeight(scrollableArea, "      " + channel.getFilterDisplayText() + "  ");
+			if (init) {
+				finalString = "        " + channel.getFilterDisplayText() + "  ";
+				init = false;
+			} else {
+				finalString += "\n        " + channel.getFilterDisplayText() + "  ";
+			}
+			currentHeight += filterLineHeight;
+		}
+		currentHeight -= filterLineHeight;
+		scrollableArea.setHeight(currentHeight);
+		scrollableArea.setWidth(getWidth());
+		scrollableArea.setText(finalString);
+		
+		index = 0;
+		for (ChatChannel channel : channels) {
+			this.addCheckBox(index, channel);
+			index++;
+		}
+		
+		filtersScrollArea.scrollToBottom();
+		filters.showWindow();
+	}
+	
+	private void addCheckBox(int index, ChatChannel channel) {
+		CheckBox checkbox = new CheckBox(screen, filtersScrollArea.getUID() + ":CheckBox:" + index,
+			new Vector2f(12,10+(index*filterLineHeight))
+		) {
+			@Override
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean isToggled) {
+				((ChatChannel)getUserData()).setIsFiltered(!isToggled);
+				rebuildChat();
+			}
+		};
+		checkbox.setUserData(channel);
+		checkbox.setScaleEW(false);
+		checkbox.setScaleNS(false);
+		checkbox.setDockS(true);
+		checkbox.setDockW(true);
+		checkbox.setIsResizable(false);
+		checkbox.setIsMovable(false);
+		checkbox.setIgnoreMouse(false);
+		checkbox.setClippingLayer(filtersScrollArea);
+		if (!channel.getIsFiltered())
+			checkbox.setIsChecked(true);
+		filtersScrollArea.addScrollableChild(checkbox);
+
+	//	if (!getIsVisible())
+	//		checkbox.hide();
 	}
 	
 	public void setToolTipTextInput(String tip) {

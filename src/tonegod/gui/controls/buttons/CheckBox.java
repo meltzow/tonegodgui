@@ -12,6 +12,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.controls.text.Label;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.effects.Effect;
 
 /**
@@ -115,14 +116,8 @@ public class CheckBox extends ButtonAdapter {
 			label.removeFromParent();
 		}
 		
-		BitmapText temp = new BitmapText(font);
-		temp.setSize(labelFontSize);
-		temp.setLineWrapMode(LineWrapMode.NoWrap);
-		
-		temp.setBox(null);
-		temp.setText(text);
-		float width = temp.getLineWidth();
-		float height = temp.getHeight();
+		float width = BitmapTextUtil.getTextWidth(this, text);
+		float height = BitmapTextUtil.getTextLineHeight(this, text);
 		float nextY = height-getHeight();
 		nextY /= 2;
 		nextY = (float) Math.ceil(nextY+1);

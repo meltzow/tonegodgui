@@ -59,6 +59,7 @@ import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.controls.util.ToolTip;
 import tonegod.gui.core.Element.Borders;
+import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.XMLHelper;
 import tonegod.gui.effects.Effect;
 import tonegod.gui.effects.EffectManager;
@@ -132,7 +133,6 @@ public class Screen implements Control, RawInputListener {
 	private boolean forceCursor = false;
 	private Map<CursorType, JmeCursor> cursors = new HashMap();
 	
-	private BitmapText textSizeTest = null;
 	private boolean useToolTips = false;
 	private ToolTip toolTip = null;
 	private float toolTipMaxWidth = 250;
@@ -1138,23 +1138,13 @@ public class Screen implements Control, RawInputListener {
 				String toolTipText = this.mouseFocusElement.getToolTipText();
 				if (toolTipText != null) {
 					if (!toolTip.getText().equals(this.mouseFocusElement.getToolTipText())) {
-						if (textSizeTest == null) {
-							textSizeTest = new BitmapText(mouseFocusElement.getFont());
-							textSizeTest.setLineWrapMode(LineWrapMode.NoWrap);
-						}
 						toolTip.setText("");
 						toolTip.setHeight(25);
-						textSizeTest.setText("");
-						textSizeTest.setSize(toolTip.getFontSize());
-						textSizeTest.setBox(null);
-						textSizeTest.setText(toolTipText);
-						float finalWidth = (textSizeTest.getLineWidth() > toolTipMaxWidth) ? toolTipMaxWidth : textSizeTest.getLineWidth();
-						textSizeTest.setBox(new Rectangle(0,0,finalWidth, textSizeTest.getLineHeight()));
-						
+						float finalWidth = BitmapTextUtil.getTextWidth(toolTip, toolTipText, toolTipMaxWidth);
+					//	finalWidth = (finalWidth > toolTipMaxWidth) ? toolTipMaxWidth : finalWidth;
 						toolTip.setText(toolTipText);
 						toolTip.setWidth(finalWidth+(toolTip.getTextPadding()*12));
 						toolTip.setHeight(toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*12));
-						
 						toolTip.getTextElement().setBox(new Rectangle(0,0,toolTip.getWidth()-(toolTip.getTextPadding()*2),toolTip.getHeight()-(toolTip.getTextPadding()*2)));
 					}
 					float nextX = mouseXY.x-(toolTip.getWidth()/2);
