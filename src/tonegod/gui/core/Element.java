@@ -93,7 +93,7 @@ public class Element extends Node {
 	private Vector2f minDimensions = null; //new Vector2f(100, 50);
 	
 	private boolean ignoreMouse = false;
-	private boolean isMovable = false;
+	protected boolean isMovable = false;
 	private boolean lockToParentBounds = false;
 	private boolean isResizable = false;
 	private boolean resizeN = true;

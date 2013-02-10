@@ -301,6 +301,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		
 		if (preferredSize == Vector2f.ZERO) {
 			this.resize(getX()+width+(menuPadding*2), getY()+currentHeight+(menuPadding*2), Borders.SE);
+			this.setHeight(currentHeight+(menuPadding*2));
 		} else {
 			float nextWidth = (preferredSize.x > width+(menuPadding*2)) ? preferredSize.x : width+(menuPadding*2);
 			float nextHeight = (currentHeight > preferredSize.y+(menuPadding*2)) ? preferredSize.y : currentHeight+(menuPadding*2);
@@ -321,6 +322,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 			highlight.getElementMaterial().setColor("Color", highlightColor);
 			highlight.setClippingLayer(this);
 			highlight.setClipPadding(menuPadding);
+			highlight.hide();
 			scrollableArea.addChild(highlight);
 		} else {
 			highlight.setWidth( ((getWidth() > width) ? getWidth() : width)-(menuPadding*2) );

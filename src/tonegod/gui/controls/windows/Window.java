@@ -163,13 +163,11 @@ public class Window extends Element {
 			this.hide();
 	}
 	
-	@Override
-	public void setIsMovable(boolean isMovable) {
+	public void setWindowIsMovable(boolean isMovable) {
 		this.dragBar.setIsMovable(isMovable);
 	}
 	
-	@Override
-	public boolean getIsMovable() {
+	public boolean getWindowIsMovable() {
 		return this.dragBar.getIsMovable();
 	}
 }
