@@ -45,7 +45,8 @@ public class EffectManager implements Control {
 			}
 			currentEffects.add(effect);
 			if (effect.getAudioFile() != null) {
-				screen.playAudioNode(effect.getAudioFile(), effect.getAudioVolume());
+				if (screen.getUseUIAudio())
+					screen.playAudioNode(effect.getAudioFile(), effect.getAudioVolume());
 			}
 		}
 	}
