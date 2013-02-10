@@ -1112,7 +1112,7 @@ public class Screen implements Control, RawInputListener {
 				);
 				toolTip.setIgnoreGlobalAlpha(true);
 				toolTip.setIsGlobalModal(true);
-				toolTip.setTextPadding(10);
+				toolTip.setTextPadding(2);
 				toolTip.setTextPosition(0, 0);
 				toolTip.hide();
 				addElement(toolTip);
@@ -1140,21 +1140,19 @@ public class Screen implements Control, RawInputListener {
 							textSizeTest = new BitmapText(mouseFocusElement.getFont());
 							textSizeTest.setLineWrapMode(LineWrapMode.NoWrap);
 						}
+						toolTip.setText("");
+						toolTip.setHeight(25);
+						textSizeTest.setText("");
 						textSizeTest.setSize(toolTip.getFontSize());
 						textSizeTest.setBox(null);
 						textSizeTest.setText(toolTipText);
-						if (textSizeTest.getLineWidth() > this.toolTipMaxWidth) {
-							toolTip.setWidth(toolTipMaxWidth);
-						} else {
-							toolTip.setWidth(textSizeTest.getLineWidth());
-						}
+						float finalWidth = (textSizeTest.getLineWidth() > toolTipMaxWidth) ? toolTipMaxWidth : textSizeTest.getLineWidth();
+						textSizeTest.setBox(new Rectangle(0,0,finalWidth, textSizeTest.getLineHeight()));
+						
 						toolTip.setText(toolTipText);
-						toolTip.resize(
-							toolTip.getX()+toolTip.getWidth()+(toolTip.getTextPadding()*2),
-							toolTip.getY()+toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*2),
-							Borders.SE
-						);
-						toolTip.setHeight(toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*2));
+						toolTip.setWidth(finalWidth+(toolTip.getTextPadding()*12));
+						toolTip.setHeight(toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*12));
+						
 						toolTip.getTextElement().setBox(new Rectangle(0,0,toolTip.getWidth()-(toolTip.getTextPadding()*2),toolTip.getHeight()-(toolTip.getTextPadding()*2)));
 					}
 					float nextX = mouseXY.x-(toolTip.getWidth()/2);
