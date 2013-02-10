@@ -116,7 +116,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		sizeEval = new BitmapText(font);
 		sizeEval.setSize(fontSize);
 		sizeEval.setLineWrapMode(LineWrapMode.NoWrap);
-		sizeEval.setText(" ");
+		sizeEval.setText("Xg");
 		menuItemHeight = sizeEval.getLineHeight();
 		
 		scrollableArea.setText(" ");
@@ -311,6 +311,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 			float nextWidth = (preferredSize.x > width+(menuPadding*2)) ? preferredSize.x : width+(menuPadding*2);
 			float nextHeight = (currentHeight > preferredSize.y+(menuPadding*2)) ? preferredSize.y : currentHeight+(menuPadding*2);
 			this.resize(getX()+nextWidth, getY()+nextHeight, Borders.SE);
+			this.setHeight(nextHeight);
 		}
 		
 		scrollableArea.setX(menuPadding);
