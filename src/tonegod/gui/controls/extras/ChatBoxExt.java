@@ -557,11 +557,11 @@ public abstract class ChatBoxExt extends Panel {
 		) {
 			@Override
 			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean isToggled) {
-				((ChatChannel)getUserData()).setIsFiltered(!isToggled);
+				((ChatChannel)getElementUserData()).setIsFiltered(!isToggled);
 				rebuildChat();
 			}
 		};
-		checkbox.setUserData(channel);
+		checkbox.setElementUserData(channel);
 		checkbox.setScaleEW(false);
 		checkbox.setScaleNS(false);
 		checkbox.setDockS(true);

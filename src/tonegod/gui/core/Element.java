@@ -1894,11 +1894,11 @@ public class Element extends Node {
 	}
 	
 	// User data
-	public void setUserData(Object elementUserData) {
+	public void setElementUserData(Object elementUserData) {
 		this.elementUserData = elementUserData;
 	}
 	
-	public Object getUserData() {
+	public Object getElementUserData() {
 		return this.elementUserData;
 	}
 }

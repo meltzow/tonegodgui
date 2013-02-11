@@ -68,8 +68,10 @@ public abstract class RadioButtonGroup {
 		this.selected = radio;
 		this.selectedIndex = radioButtons.indexOf(radio);
 		for (RadioButton rb : radioButtons) {
-			if (rb != this.selected)
-				rb.getRadioButton().setIsChecked(false);
+			if (rb != this.selected) {
+				if (rb.getRadioButton().getIsChecked())
+					rb.getRadioButton().setIsChecked(false);
+			}
 		}
 		onSelect(selectedIndex, radio.getValue());
 	}
