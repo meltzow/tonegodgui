@@ -13,6 +13,7 @@ import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	private String validateNumeric = "0123456789.";
 	private String validateSpecChar = "`~!@#$%^&*()-_=+[]{}\\|;:'\",<.>/?";
 	private String validateCustom = "";
-	private String testString = "Gg";
+	private String testString = "Gg|/X";
 	private Element caret;
 	private Material caretMat;
 	protected int caretIndex = 0, head = 0, tail = 0, rangeHead = -1, rangeTail = -1;
@@ -109,15 +110,17 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		this.setDockN(true);
 		this.setDockW(true);
 		
+		float padding = screen.getStyle("TextField").getFloat("textPadding");
+		
 		this.setFontSize(screen.getStyle("TextField").getFloat("fontSize"));
-		this.setTextPadding(screen.getStyle("TextField").getFloat("textPadding"));
+		this.setTextPadding(padding);
 		this.setTextWrap(LineWrapMode.valueOf(screen.getStyle("TextField").getString("textWrap")));
 		this.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("TextField").getString("textAlign")));
 		this.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("TextField").getString("textVAlign")));
 		
 		this.setMinDimensions(dimensions.clone());
 		
-		caret = new Element(screen, UID + ":Caret", new Vector2f(0,0), new Vector2f(dimensions.x, dimensions.y), new Vector4f(0,0,0,0), null);
+		caret = new Element(screen, UID + ":Caret", new Vector2f(padding,padding), new Vector2f(dimensions.x-(padding*2), dimensions.y-(padding*2)), new Vector4f(0,0,0,0), null);
 		
 		caretMat = caret.getMaterial().clone();
 		caretMat.setBoolean("IsTextField", true);
@@ -291,6 +294,9 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 			}
 		}
 		this.setText(getVisibleText());
+		
+		centerTextVertically();
+		
 		controlKeyPressHook(evt, getText());
 		evt.setConsumed();
 	}
@@ -327,7 +333,10 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 			caretIndex++;
 		}
 		this.setText(getVisibleText());
+		
 		setCaretPositionToEnd();
+		
+		centerTextVertically();
 	}
 	
 	@Override
@@ -339,13 +348,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	//	widthTest.setSize(getFontSize());
 	//	widthTest.setText(testString);
 		
-		float height = BitmapTextUtil.getTextWidth(this, testString);//widthTest.getHeight()+this.borders.x;
-		float nextY = height-getHeight();
-		nextY /= 2;
-		nextY = (float) Math.ceil(nextY+1);
-		
-		if (height > getHeight())
-			setTextPosition(getTextPosition().x, -nextY);
+	
 		
 		if (textElement != null) {
 			textElement.setSize(fontSize);
@@ -574,4 +577,16 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		setHasFocus(false);
 	}
 	
+	private void centerTextVertically() {
+		
+		float height = BitmapTextUtil.getTextLineHeight(this, testString);//widthTest.getHeight()+this.borders.x;
+		System.out.println(height);
+		float nextY = height-FastMath.floor(getHeight());
+		nextY /= 2;
+		nextY = (float)FastMath.ceil(nextY)+1;
+		
+	//	if (height > getHeight())
+			setTextPosition(getTextPosition().x, -nextY);
+		
+	}
 }
