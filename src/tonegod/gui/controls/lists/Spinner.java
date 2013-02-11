@@ -7,16 +7,12 @@ package tonegod.gui.controls.lists;
 import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
-import tonegod.gui.controls.buttons.Button;
 import tonegod.gui.controls.buttons.ButtonAdapter;
-import tonegod.gui.controls.menuing.MenuItem;
 import tonegod.gui.controls.text.TextField;
-import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 
 /**
@@ -207,5 +203,5 @@ public abstract class Spinner extends TextField {
 		}
 	}
 	
-	public abstract void onChange(int selectedIndex, String value);
+	public abstract void onChange(int selectedIndex, String value);	
 }
