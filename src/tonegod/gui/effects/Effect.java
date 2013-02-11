@@ -15,7 +15,7 @@ import tonegod.gui.core.Element;
  * @author t0neg0d
  */
 public class Effect implements Cloneable {
-	public enum EffectType {
+	public static enum EffectType {
 		FadeIn,
 		FadeOut,
 		ZoomIn,
@@ -148,181 +148,37 @@ public class Effect implements Cloneable {
 	}
 	
 	public void update(float tpf) {
-		if (type == EffectType.ZoomIn) {
-			if (!init) {
-				def.set(element.getPosition().clone());
-				diff.set(element.getWidth()/2,element.getHeight()/2);
-				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-				element.setPosition(def.add(diff.subtract(inc)));
-				element.setLocalScale(pass);
-				element.show();
-				init = true;
-			} else if (localActive) {
-				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-				element.setPosition(def.add(diff.subtract(inc)));
-				element.setLocalScale(pass);
-			}
-			if (pass >= 1.0) {
-				element.setPosition(def);
-				element.setLocalScale(pass);
-				isActive = false;
-			}
-		} else if (type == EffectType.ZoomOut) {
-			if (!init) {
-				def.set(element.getPosition().clone());
-				diff.set(element.getWidth()/2,element.getHeight()/2);
-				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-				element.setPosition(def.add(inc));
-				element.setLocalScale(1-pass);
-				init = true;
-			} else if (localActive) {
-				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-				element.setPosition(def.add(inc));
-				element.setLocalScale(1-pass);
-			}
-			if (pass >= 1.0) {
-				if (!destroyOnHide) {
-					element.hide();
-					element.setPosition(def);
-					element.setLocalScale(0);
-					isActive = false;
-				} else {
-					destoryElement();
-					isActive = false;
-				}
-			}
-		} else if (type == EffectType.SlideIn) {
-			if (!init) {
-				initSlides();
+		switch(type) {
+			case ZoomIn:
+				updateZoomIn();
+				break;
+			case ZoomOut:
+				updateZoomOut();
+				break;
+			case SlideIn:
 				updateSlideIn();
-				element.show();
-				init = true;
-			} else if (localActive) {
-				updateSlideIn();
-			}
-			if (pass >= 1.0) {
-				element.setPosition(def);
-				element.setLocalScale(pass);
-				isActive = false;
-			}
-		} else if (type == EffectType.SlideOut) {
-			if (!init) {
-				initSlides();
+				break;
+			case SlideOut:
 				updateSlideOut();
-				init = true;
-			} else if (localActive) {
-				updateSlideOut();
-			}
-			if (pass >= 1.0) {
-				if (!destroyOnHide) {
-					element.hide();
-					element.setPosition(def);
-					isActive = false;
-				} else {
-					destoryElement();
-					isActive = false;
-				}
-			}
-		} else if (type == EffectType.SpinIn) {
-			if (!init) {
-				def.set(element.getPosition().clone());
-				diff.set(element.getWidth()/2,element.getHeight()/2);
-				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-				element.setPosition(def.add(diff.subtract(inc)));
-				element.setLocalScale(pass);
-				element.show();
-				init = true;
-			} else if (localActive) {
-				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-				element.setPosition(def.add(diff.subtract(inc)));
-				element.setLocalScale(pass);
-			}
-			if (pass >= 1.0) {
-				element.setPosition(def);
-				element.setLocalScale(pass);
-				isActive = false;
-			}
-			element.setLocalRotation(element.getLocalRotation().fromAngles(0, 0, 360*FastMath.DEG_TO_RAD*pass));
-		} else if (type == EffectType.SpinOut) {
-			if (!init) {
-				def.set(element.getPosition().clone());
-				diff.set(element.getWidth()/2,element.getHeight()/2);
-				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-				element.setPosition(def.subtract(inc));
-				element.setLocalScale(1-pass);
-				init = true;
-			} else if (localActive) {
-				Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-				element.setPosition(def.subtract(inc));
-				element.setLocalScale(1-pass);
-			}
-			if (pass >= 1.0) {
-				if (!destroyOnHide) {
-					element.hide();
-					element.setPosition(def);
-					element.setLocalScale(1);
-					isActive = false;
-				} else {
-					destoryElement();
-					isActive = false;
-				}
-			}
-			element.setLocalRotation(element.getLocalRotation().fromAngles(0, 0, 360*FastMath.DEG_TO_RAD*(1.0f-pass)));
-		} else if (type == EffectType.FadeIn) {
-			if (!init) {
-				element.getElementMaterial().setBoolean("UseEffect", true);
-				element.getElementMaterial().setBoolean("EffectFade", true);
-				element.getElementMaterial().setBoolean("EffectPulse", false);
-			//	element.getElementMaterial().setTexture("EffectMap", blendImage);
-				element.show();
-				init = true;
-			}
-			if (localActive)
-				element.getElementMaterial().setFloat("EffectStep", pass);
-			if (pass >= 1.0f)
-				isActive = false;
-		} else if (type == EffectType.FadeOut) {
-			if (!init) {
-				element.getElementMaterial().setBoolean("UseEffect", true);
-				element.getElementMaterial().setBoolean("EffectFade", true);
-				element.getElementMaterial().setBoolean("EffectPulse", false);
-			//	element.getElementMaterial().setTexture("EffectMap", blendImage);
-				init = true;
-			}
-			if (pass >= 1.0) {
-				if (!destroyOnHide) {
-					element.hide();
-					element.getElementMaterial().setBoolean("UseEffect", false);
-					element.getElementMaterial().setBoolean("EffectFade", false);
-					element.getElementMaterial().setBoolean("EffectPulse", false);
-					isActive = false;
-				} else {
-					destoryElement();
-					isActive = false;
-				}
-			} else
-				element.getElementMaterial().setFloat("EffectStep", 1.0f-pass);
-		} else if (type == EffectType.ImageSwap) {
-			if (!init) {
-				element.getElementMaterial().setBoolean("UseEffect", false);
-				element.getElementMaterial().setBoolean("EffectFade", false);
-				element.getElementMaterial().setBoolean("EffectPulse", false);
-				element.getElementMaterial().setTexture("ColorMap", blendImage);
-				element.getElementMaterial().setFloat("EffectStep", 1.0f);
-				init = true;
-				isActive = false;
-			}
-		} else if (type == EffectType.ColorSwap) {
-			if (!init) {
-				element.getElementMaterial().setBoolean("UseEffect", false);
-				element.getElementMaterial().setBoolean("EffectFade", false);
-				element.getElementMaterial().setBoolean("EffectPulse", false);
-				element.getElementMaterial().setBoolean("EffectPulseColor", false);
-				element.getElementMaterial().setColor("Color", blendColor);
-				element.getElementMaterial().setFloat("EffectStep", 1.0f);
-				init = true;
-				isActive = false;
-			}
+				break;
+			case SpinIn:
+				updateSpinIn();
+				break;
+			case SpinOut:
+				updateSpinOut();
+				break;
+			case FadeIn:
+				updateFadeIn();
+				break;
+			case FadeOut:
+				updateFadeOut();
+				break;
+			case ImageSwap:
+				updateImageSwap();
+				break;
+			case ColorSwap:
+				updateColorSwap();
+				break;
 		}
 
 		if (isActive) {
@@ -416,20 +272,204 @@ public class Effect implements Cloneable {
 	}
 	
 	private void updateSlideIn() {
+		if (!init) {
+			initSlides();
+			element.show();
+			init = true;
+		}
 		Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
 		if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
 			element.setPosition(def.subtract(diff.subtract(inc)));
 		} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
 			element.setPosition(def.add(diff.subtract(inc)));
 		}
+		if (pass >= 1.0) {
+			element.setPosition(def);
+			element.setLocalScale(pass);
+			isActive = false;
+		}
 	}
 	
 	private void updateSlideOut() {
+		if (!init) {
+			initSlides();
+			init = true;
+		}
 		Vector2f inc = new Vector2f(diff.x*(1-pass),diff.y*(1-pass));
 		if (effectDir == EffectDirection.Bottom || effectDir == EffectDirection.Left) {
 			element.setPosition(def.subtract(diff.subtract(inc)));
 		} else if (effectDir == EffectDirection.Top || effectDir == EffectDirection.Right) {
 			element.setPosition(def.add(diff.subtract(inc)));
+		}
+		if (pass >= 1.0) {
+			if (!destroyOnHide) {
+				element.hide();
+				element.setPosition(def);
+			} else {
+				destoryElement();
+			}
+			isActive = false;
+		}
+	}
+	
+	private void initPositions() {
+		def.set(element.getPosition().clone());
+		diff.set(element.getWidth()/2,element.getHeight()/2);
+	}
+	
+	private void updateZoomIn() {
+		if (!init) {
+			initPositions();
+			Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+			element.setPosition(def.add(diff.subtract(inc)));
+			element.setLocalScale(pass);
+			element.show();
+			init = true;
+		} else if (localActive) {
+			Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+			element.setPosition(def.add(diff.subtract(inc)));
+			element.setLocalScale(pass);
+		}
+		if (pass >= 1.0) {
+			element.setPosition(def);
+			element.setLocalScale(pass);
+			isActive = false;
+		}
+	}
+	
+	private void updateZoomOut() {
+		if (!init) {
+			initPositions();
+			Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+			element.setPosition(def.add(inc));
+			element.setLocalScale(1-pass);
+			init = true;
+		} else if (localActive) {
+			Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+			element.setPosition(def.add(inc));
+			element.setLocalScale(1-pass);
+		}
+		if (pass >= 1.0) {
+			if (!destroyOnHide) {
+				element.hide();
+				element.setPosition(def);
+				element.setLocalScale(0);
+			} else {
+				destoryElement();
+			}
+			isActive = false;
+		}
+	}
+	
+	private void disableShaderEffect() {
+		element.getElementMaterial().setBoolean("UseEffect", false);
+		element.getElementMaterial().setBoolean("EffectFade", false);
+		element.getElementMaterial().setBoolean("EffectPulse", false);
+		element.getElementMaterial().setBoolean("EffectPulseColor", false);
+	}
+	
+	private void initFades() {
+		element.getElementMaterial().setBoolean("UseEffect", true);
+		element.getElementMaterial().setBoolean("EffectFade", true);
+		element.getElementMaterial().setBoolean("EffectPulse", false);
+	}
+	
+	private void updateFadeIn() {
+		if (!init) {
+			initFades();
+			element.show();
+			init = true;
+		}
+		if (pass >= 1.0) {
+			disableShaderEffect();
+			isActive = false;
+		} else
+			element.getElementMaterial().setFloat("EffectStep", pass);
+	}
+	
+	private void updateFadeOut() {
+		if (!init) {
+			initFades();
+			init = true;
+		}
+		if (pass >= 1.0) {
+			if (!destroyOnHide) {
+				element.hide();
+				disableShaderEffect();
+				isActive = false;
+			} else {
+				destoryElement();
+				isActive = false;
+			}
+		} else
+			element.getElementMaterial().setFloat("EffectStep", 1.0f-pass);
+	}
+	
+	private void updateSpinIn() {
+		if (!init) {
+			initPositions();
+			Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+			element.setPosition(def.add(diff.subtract(inc)));
+			element.setLocalScale(pass);
+			element.show();
+			init = true;
+		} else if (localActive) {
+			Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+			element.setPosition(def.add(diff.subtract(inc)));
+			element.setLocalScale(pass);
+			element.setLocalRotation(element.getLocalRotation().fromAngles(0, 0, 360*FastMath.DEG_TO_RAD*pass));
+		}
+		if (pass >= 1.0) {
+			element.setPosition(def);
+			element.setLocalScale(pass);
+			element.setLocalRotation(element.getLocalRotation().fromAngles(0, 0, 0));
+			isActive = false;
+		}
+	}
+	
+	private void updateSpinOut() {
+		if (!init) {
+			initPositions();
+			Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+			element.setPosition(def.subtract(inc));
+			element.setLocalScale(1-pass);
+			init = true;
+		} else if (localActive) {
+			Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+			element.setPosition(def.subtract(inc));
+			element.setLocalScale(1-pass);
+			element.setLocalRotation(element.getLocalRotation().fromAngles(0, 0, 360*FastMath.DEG_TO_RAD*(1.0f-pass)));
+		}
+		if (pass >= 1.0) {
+			if (!destroyOnHide) {
+				element.hide();
+				element.setPosition(def);
+				element.setLocalScale(1);
+				element.setLocalRotation(element.getLocalRotation().fromAngles(0, 0, 0));
+			} else {
+				destoryElement();
+			}
+			isActive = false;
+		}
+	}
+	
+	private void updateImageSwap() {
+		if (!init) {
+			disableShaderEffect();
+			element.getElementMaterial().setTexture("ColorMap", blendImage);
+			element.getElementMaterial().setFloat("EffectStep", 1.0f);
+			init = true;
+			isActive = false;
+		}
+	}
+	
+	private void updateColorSwap() {
+		if (!init) {
+			disableShaderEffect();
+			element.getElementMaterial().setColor("Color", blendColor);
+			element.getElementMaterial().setFloat("EffectStep", 1.0f);
+			init = true;
+			isActive = false;
 		}
 	}
 }
