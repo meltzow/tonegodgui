@@ -49,21 +49,18 @@ void main(){
 		}
 	}
 	
-	//discard;
 	vec4 color = vec4(1.0);
 	
 	#ifdef HAS_COLORMAP
         color *= texture2D(m_ColorMap, texCoord1);
 		
 		if (m_UseEffect) {
-			if (m_EffectFade || m_EffectPulse || m_EffectPulseColor) {
-				if (m_EffectPulse) {
-					color = mix(color, texture2D(m_EffectMap, texCoord1), m_EffectStep);
-				} else if (m_EffectFade) {
-					color.a *= m_EffectStep;
-				} else if (m_EffectPulseColor) {
-					color =  mix(color, m_EffectColor, m_EffectStep*0.5);
-				}
+			if (m_EffectPulse) {
+				color = mix(color, texture2D(m_EffectMap, texCoord1), m_EffectStep);
+			} else if (m_EffectFade) {
+				color.a *= m_EffectStep;
+			} else if (m_EffectPulseColor) {
+				color =  mix(color, m_EffectColor, m_EffectStep*0.5);
 			} else {
 				color = mix(color, texture2D(m_EffectMap, texCoord1), 1.0);
 			}
@@ -104,17 +101,17 @@ void main(){
 	if (m_HasTabFocus) {
 		if (g_Time-m_LastUpdate > 0.25) {
 			if (pos.x > m_CaretX-1.0 && pos.x < m_CaretX+1.0) {
-				color = m_Color;//vec4(1.0);
+				color = m_Color;
 				color.a = sin((g_Time-m_LastUpdate)*m_CaretSpeed);
 			} else {
-				if (color == m_Color)//vec4(1.0))
+				if (color == m_Color)
 					color = vec4(0.0);
 			}
 		} else {
 			if (pos.x > m_CaretX-1.0 && pos.x < m_CaretX+1.0) {
-				color = m_Color;//vec4(1.0);
+				color = m_Color;
 			} else {
-				if (color == m_Color)//vec4(1.0))
+				if (color == m_Color)
 					color = vec4(0.0);
 			}
 		}

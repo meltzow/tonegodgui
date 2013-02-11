@@ -2,9 +2,6 @@
     #define NEED_TEXCOORD1
 #endif
 
-uniform float g_Time;
-const float pi = 3.14159;
-
 uniform mat4 g_WorldViewProjectionMatrix;
 uniform mat4 g_WorldViewMatrix;
 attribute vec3 inPosition;
