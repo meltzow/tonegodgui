@@ -41,6 +41,7 @@ MaterialDef Unshaded {
         WorldParameters {
             WorldViewProjectionMatrix
             WorldViewMatrix
+			Time
         }
 
         Defines {
