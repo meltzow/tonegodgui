@@ -580,7 +580,6 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	private void centerTextVertically() {
 		
 		float height = BitmapTextUtil.getTextLineHeight(this, testString);//widthTest.getHeight()+this.borders.x;
-		System.out.println(height);
 		float nextY = height-FastMath.floor(getHeight());
 		nextY /= 2;
 		nextY = (float)FastMath.ceil(nextY)+1;
