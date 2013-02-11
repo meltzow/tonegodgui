@@ -6,8 +6,6 @@
 	uniform sampler2D m_AlphaMap;
 #endif
 
-uniform float g_Time;
-
 varying vec4 pos;
 uniform bool m_UseClipping;
 uniform vec4 m_Clipping;
