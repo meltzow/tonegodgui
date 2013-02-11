@@ -117,16 +117,16 @@ public class Element extends Node {
 	private Texture defaultTex;
 	
 	protected BitmapText textElement;
-	private Vector2f textPosition = new Vector2f(0,0);
-	private LineWrapMode textWrap = LineWrapMode.Word;
-	private BitmapFont.Align textAlign = BitmapFont.Align.Left;
-	private BitmapFont.VAlign textVAlign = BitmapFont.VAlign.Top;
+	protected Vector2f textPosition = new Vector2f(0,0);
+	protected LineWrapMode textWrap = LineWrapMode.Word;
+	protected BitmapFont.Align textAlign = BitmapFont.Align.Left;
+	protected BitmapFont.VAlign textVAlign = BitmapFont.VAlign.Top;
 	private String text = "";
 	private String toolTipText = null;
 	
 	protected BitmapFont font;
 	protected float fontSize = 20;
-	private float textPadding = 0;
+	protected float textPadding = 0;
 	protected ColorRGBA fontColor = ColorRGBA.White;
 	private ColorRGBA defaultColor = new ColorRGBA(1,1,1,0);
 	
@@ -1431,7 +1431,7 @@ public class Element extends Node {
 	protected void updateTextElement() {
 		if (textElement != null) {
 			textElement.setLocalTranslation(textPosition.x+textPadding, getHeight()-(textPosition.y+textPadding), textElement.getLocalTranslation().z);
-			textElement.setBox(new Rectangle(0,0,dimensions.x-(textPadding*4),dimensions.y-(textPadding*4)));
+			textElement.setBox(new Rectangle(0,0,dimensions.x-(textPadding*2),dimensions.y-(textPadding*2)));
 		}
 	}
 	
