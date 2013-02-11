@@ -207,6 +207,12 @@ public abstract class ComboBox extends TextField {
 		if (selectedIndex == -1) {
 			setSelectedIndex(0);
 		}
+		int rIndex = DDList.getMenuItems().size()-selectedIndex;
+		float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);
+
+		DDList.scrollThumbYTo(
+			( DDList.getHeight()-diff )
+		);
 	}
 	
 	/**
@@ -246,6 +252,14 @@ public abstract class ComboBox extends TextField {
 		this.selectedCaption = caption;
 		this.selectedValue = value;
 		setTextFieldText(selectedCaption);
+		
+		int rIndex = DDList.getMenuItems().size()-index;
+		float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);
+
+		DDList.scrollThumbYTo(
+			( DDList.getHeight()-diff )
+		);
+		
 		onChange(selectedIndex, selectedValue);
 	}
 	
