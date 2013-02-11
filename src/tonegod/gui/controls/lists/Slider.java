@@ -43,6 +43,7 @@ public abstract class Slider extends ButtonAdapter {
 	private float controlSize, controlLength;
 	private Vector2f evalDimensions = new Vector2f();
 	private MouseButtonEvent trackEvt;
+	private Vector2f startPosition;
 	
 	/**
 	 * Creates a new instance of the Slider control
@@ -374,20 +375,16 @@ public abstract class Slider extends ButtonAdapter {
 	
 	public void setSelectedIndex(int selectedIndex) {
 		if (isStepped) {
-			if (selectedIndex < 0)
-				selectedIndex = 0;
-			else if (selectedIndex > stepValues.size()-1)
-				selectedIndex = stepValues.size()-1;
+			if (selectedIndex < 0)							selectedIndex = 0;
+			else if (selectedIndex > stepValues.size()-1)	selectedIndex = stepValues.size()-1;
 		} else {
-			if (selectedIndex < 0)
-				selectedIndex = 0;
-			else if (selectedIndex > 100)
-				selectedIndex = 100;
+			if (selectedIndex < 0)							selectedIndex = 0;
+			else if (selectedIndex > 100)					selectedIndex = 100;
 		}
 		
 		this.selectedIndex = selectedIndex;
 		
-		float step = (isStepped) ? stepSize : getWidth()/100;
+		float step = (isStepped) ? stepSize : ((trackSurroundsThumb) ? (getWidth()-controlSize)/100 : getWidth()/100);
 		step *= selectedIndex;
 		if (orientation == Orientation.HORIZONTAL) {
 			if (trackSurroundsThumb)elThumbLock.setX(step+(controlSize/2));
@@ -412,76 +409,44 @@ public abstract class Slider extends ButtonAdapter {
 	@Override
 	public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 		trackEvt = evt;
+		startPosition = elThumbLock.getPosition().clone();
 		updateThumbByTrackClick();
 	}
 	
 	@Override
 	public void onButtonStillPressedInterval() {
 		updateThumbByTrackClick();
+		screen.updateToolTipLocation();
 	}
 	
 	private void updateThumbByTrackClick() {
-		float step = (isStepped) ? stepSize : 1;
-		float nextX, nextY, totalWidth, totalHeight;;
 		if (orientation == Orientation.HORIZONTAL) {
-			nextX = elThumbLock.getX();
-			totalWidth = getWidth();
 			if (trackSurroundsThumb) {
-				nextX -= controlSize/2;
-				totalWidth -= controlSize;
-			}
-			if (trackEvt.getX()-getAbsoluteX() < nextX) {
-				if (elThumbLock.getX()-step > trackEvt.getX()-getAbsoluteX()) {
-					elThumbLock.setX(elThumbLock.getX()-step);
+				if (elThumbLock.getX() > trackEvt.getX()-getAbsoluteX() && startPosition.x > trackEvt.getX()-getAbsoluteX()) {
+					setSelectedIndex(selectedIndex-1);
+				} else if (elThumbLock.getX() < trackEvt.getX()-getAbsoluteX() && startPosition.x < trackEvt.getX()-getAbsoluteX()) {
+					setSelectedIndex(selectedIndex+1);
 				}
-				int index = (int)Math.round(nextX/step);
-				if (trackSurroundsThumb) index -= 1;
-				int percent = (int)((nextX/totalWidth)*100);
-				if (isStepped) {
-					if (index >= 0 && index < stepValues.size())
-						setInternalSelectedIndex(index);
-				} else			setInternalSelectedIndex(percent);
-			} else if (trackEvt.getX()-getAbsoluteX() > nextX+controlSize) {
-				if (elThumbLock.getX()+step < trackEvt.getX()-getAbsoluteX()) {
-					elThumbLock.setX(elThumbLock.getX()+step);
+			} else {
+				if (elThumbLock.getX() > trackEvt.getX()-getAbsoluteX() && startPosition.x > trackEvt.getX()-getAbsoluteX()) {
+					setSelectedIndex(selectedIndex-1);
+				} else if (elThumbLock.getX() < trackEvt.getX()-getAbsoluteX() && startPosition.x < trackEvt.getX()-getAbsoluteX()) {
+					setSelectedIndex(selectedIndex+1);
 				}
-				int index = (int)Math.round(nextX/step);
-				if (trackSurroundsThumb) index += 1;
-				int percent = (int)((nextX/totalWidth)*100);
-				if (isStepped) {
-					if (index >= 0 && index < stepValues.size())
-						setInternalSelectedIndex(index);
-				} else			setInternalSelectedIndex(percent);
 			}
 		} else {
-			nextY = elThumbLock.getY();
-			totalHeight = getHeight();
 			if (trackSurroundsThumb) {
-				nextY -= controlSize/2;
-				totalHeight -= controlSize;
-			}
-			if (trackEvt.getY()-getAbsoluteY() < nextY) {
-				if (elThumbLock.getY()-step > trackEvt.getY()-getAbsoluteY()) {
-					elThumbLock.setY(elThumbLock.getY()-step);
+				if (elThumbLock.getY() > trackEvt.getY()-getAbsoluteY() && startPosition.y > trackEvt.getY()-getAbsoluteY()) {
+					setSelectedIndex(selectedIndex-1);
+				} else if (elThumbLock.getY() < trackEvt.getY()-getAbsoluteY() && startPosition.y < trackEvt.getY()-getAbsoluteY()) {
+					setSelectedIndex(selectedIndex+1);
 				}
-				int index = (int)Math.round(nextY/step);
-				if (trackSurroundsThumb) index -= 1;
-				int percent = (int)((nextY/totalHeight)*100);
-				if (isStepped) {
-					if (index >= 0 && index < stepValues.size())
-						setInternalSelectedIndex(index);
-				} else			setInternalSelectedIndex(percent);
-			} else if (trackEvt.getY()-getAbsoluteY() > nextY+controlSize) {
-				if (elThumbLock.getY()+step < trackEvt.getY()-getAbsoluteY()) {
-					elThumbLock.setY(elThumbLock.getY()+step);
+			} else {
+				if (elThumbLock.getY() > trackEvt.getY()-getAbsoluteY() &&  startPosition.y > trackEvt.getY()-getAbsoluteY()) {
+					setSelectedIndex(selectedIndex-1);
+				} else if (elThumbLock.getY() < trackEvt.getY()-getAbsoluteY() && startPosition.y < trackEvt.getY()-getAbsoluteY()) {
+					setSelectedIndex(selectedIndex+1);
 				}
-				int index = (int)Math.round(nextY/step);
-				if (trackSurroundsThumb) index += 1;
-				int percent = (int)((nextY/totalHeight)*100);
-				if (isStepped) {
-					if (index >= 0 && index < stepValues.size())
-						setInternalSelectedIndex(index);
-				} else			setInternalSelectedIndex(percent);
 			}
 		}
 	}
