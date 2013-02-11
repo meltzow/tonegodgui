@@ -1132,7 +1132,7 @@ public class Screen implements Control, RawInputListener {
 		return useToolTips;
 	}
 	
-	private void updateToolTipLocation() {
+	public void updateToolTipLocation() {
 		if (useToolTips) {
 			if (this.mouseFocusElement != null && getApplication().getInputManager().isCursorVisible()) {
 				String toolTipText = this.mouseFocusElement.getToolTipText();
@@ -1141,7 +1141,6 @@ public class Screen implements Control, RawInputListener {
 						toolTip.setText("");
 						toolTip.setHeight(25);
 						float finalWidth = BitmapTextUtil.getTextWidth(toolTip, toolTipText, toolTipMaxWidth);
-					//	finalWidth = (finalWidth > toolTipMaxWidth) ? toolTipMaxWidth : finalWidth;
 						toolTip.setText(toolTipText);
 						toolTip.setWidth(finalWidth+(toolTip.getTextPadding()*12));
 						toolTip.setHeight(toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*12));
