@@ -241,6 +241,7 @@ public abstract class ComboBox extends TextField {
 	}
 	
 	protected void setSelected(int index, String caption, Object value) {
+		this.hlIndex = index;
 		this.selectedIndex = index;
 		this.selectedCaption = caption;
 		this.selectedValue = value;
