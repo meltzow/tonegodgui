@@ -23,7 +23,8 @@ import tonegod.gui.core.Screen;
  */
 public abstract class LoginBox extends Window {
 	ButtonAdapter btnLogin, btnCancel;
-	Element responseMsg, lblUserName, lblPassword;
+	Element responseMsg;
+	Label lblUserName, lblPassword;
 	TextField userName;
 	Password password;
 	Form form;
@@ -111,11 +112,11 @@ public abstract class LoginBox extends Window {
 			UID+":resonse",
 			new Vector2f(
 				indents.y,
-				getDragBarHeight()+password.getHeight()+indents.x+controlSize+(controlSpacing*2)
+				getDragBarHeight()+password.getHeight()+indents.x+controlSize+(controlSpacing*3)
 			),
 			new Vector2f(
 				getWidth()-indents.y-indents.z,
-				50
+				getHeight()-(getDragBarHeight()+password.getHeight()+indents.x+controlSize+(controlSpacing*3))-getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
 			),
 			new Vector4f(0,0,0,0),
 			null
