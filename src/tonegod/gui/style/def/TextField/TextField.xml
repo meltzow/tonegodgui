@@ -10,7 +10,7 @@
 				<a value="1" />
 			</property>
 			<property name="textAlign" type="String" value="Left" />
-			<property name="textVAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Top" />
 			<property name="textWrap" type="String" value="NoWrap" />
 			<property name="textPadding" type="float" value="3" />
 		</font>
