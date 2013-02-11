@@ -6,6 +6,7 @@ package tonegod.gui.controls.windows;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.MouseButtonEvent;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.controls.buttons.ButtonAdapter;
@@ -105,6 +106,29 @@ public abstract class LoginBox extends Window {
 		this.addChild(password);
 		form.addFormElement(password);
 		
+		responseMsg = new Element(
+			screen,
+			UID+":resonse",
+			new Vector2f(
+				indents.y,
+				getDragBarHeight()+password.getHeight()+indents.x+controlSize+(controlSpacing*2)
+			),
+			new Vector2f(
+				getWidth()-indents.y-indents.z,
+				50
+			),
+			new Vector4f(0,0,0,0),
+			null
+		);
+		responseMsg.setDockN(true);
+		responseMsg.setDockW(true);
+		responseMsg.setScaleEW(true);
+		responseMsg.setScaleNS(true);
+		responseMsg.setFontColor(ColorRGBA.Red);
+		responseMsg.setTextAlign(BitmapFont.Align.Center);
+		
+		addChild(responseMsg);
+		
 		btnLogin = new ButtonAdapter(screen,  UID + ":btnOk",
 			new Vector2f(
 				getWidth()-screen.getStyle("Button").getVector2f("defaultSize").x-indents.z,
@@ -150,8 +174,16 @@ public abstract class LoginBox extends Window {
 		return this.userName.getText();
 	}
 	
+	public void setTextUserName(String text) {
+		this.userName.setTextFieldText(text);
+	}
+	
 	public String getTextPassword() {
 		return this.password.getText();
+	}
+	
+	public void setTextPassword(String text) {
+		this.password.setTextFieldText(text);
 	}
 	
 	public void setButtonLoginText(String text) {
