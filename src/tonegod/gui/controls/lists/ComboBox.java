@@ -113,6 +113,8 @@ public abstract class ComboBox extends TextField {
 							getElementParent().getAbsoluteX(),
 							getElementParent().getAbsoluteY()-DDList.getHeight()
 						);
+					} else {
+						DDList.hide();
 					}
 				}
 				screen.setTabFocusElement((ComboBox)getElementParent());
@@ -376,6 +378,10 @@ public abstract class ComboBox extends TextField {
 	
 	public List<MenuItem> getListItems() {
 		return DDList.getMenuItems();
+	}
+	
+	public Menu getMenu() {
+		return this.DDList;
 	}
 	
 	/**

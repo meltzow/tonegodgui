@@ -55,6 +55,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import tonegod.gui.controls.extras.OSRViewPort;
 import tonegod.gui.controls.form.Form;
+import tonegod.gui.controls.lists.ComboBox;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.controls.util.ToolTip;
@@ -1083,17 +1084,24 @@ public class Screen implements Control, RawInputListener {
 				}
 			}
 		} else {
-			if (!(eventElement.getAbsoluteParent() instanceof Menu)) {
+			if (!(eventElement.getAbsoluteParent() instanceof Menu) && !(eventElement.getParent() instanceof ComboBox)) {
 				Set<String> keys = elements.keySet();
 				for (String key :keys) {
 					if (elements.get(key) instanceof Menu) {
 						elements.get(key).hide();
 					}
 				}
-			} else {
+			} else if (eventElement.getAbsoluteParent() instanceof Menu) {
 				Set<String> keys = elements.keySet();
 				for (String key :keys) {
 					if (elements.get(key) instanceof Menu && elements.get(key) != eventElement.getAbsoluteParent()) {
+						elements.get(key).hide();
+					}
+				}
+			} else if (eventElement.getAbsoluteParent() instanceof ComboBox) {
+				Set<String> keys = elements.keySet();
+				for (String key :keys) {
+					if (elements.get(key) instanceof Menu && elements.get(key) != ((ComboBox)eventElement).getMenu()) {
 						elements.get(key).hide();
 					}
 				}
