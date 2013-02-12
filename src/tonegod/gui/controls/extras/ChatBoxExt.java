@@ -235,7 +235,7 @@ public abstract class ChatBoxExt extends Panel {
 			screen,
 			UID + ":DefaultChannel",
 			new Vector2f(indents.y+controlSize, getHeight()-controlSize-indents.w),
-			new Vector2f(100-controlSize, controlSize)
+			new Vector2f(120, controlSize)
 		) {
 			@Override
 			public void onChange(int selectedIndex, Object value) {

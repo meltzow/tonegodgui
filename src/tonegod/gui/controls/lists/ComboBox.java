@@ -92,7 +92,9 @@ public abstract class ComboBox extends TextField {
 		
 		ddUID = UID + ":ddMenu";
 		
-		btnHeight = getHeight();//(screen.getStyle("Common").getFloat("defaultControlSize");
+		btnHeight = getHeight();
+		
+		setWidth(getWidth()-btnHeight);
 		
 		btnArrowDown = new ButtonAdapter(screen, UID + ":ArrowDown",
 			new Vector2f(
@@ -149,9 +151,9 @@ public abstract class ComboBox extends TextField {
 		
 		if (DDList.getParent() == null) {
 			screen.addElement(DDList);
-		//	DDList.hide();
 		}
 		pack();
+		refreshSelectedIndex();
 	}
 	
 	/**
@@ -163,6 +165,8 @@ public abstract class ComboBox extends TextField {
 	public void insertListItem(int index, String caption, Object value) {
 		if (DDList != null) {
 			DDList.insertMenuItem(index, caption, value, null);
+			pack();
+			refreshSelectedIndex();
 		}
 	}
 	
@@ -173,14 +177,8 @@ public abstract class ComboBox extends TextField {
 	public void removeListItem(int index) {
 		if (DDList != null) {
 			DDList.removeMenuItem(index);
-			if (selectedIndex > DDList.getMenuItems().size()-1)
-				this.setSelectedIndex(DDList.getMenuItems().size()-1);
-			if (!DDList.getMenuItems().isEmpty())
-				this.setSelectedIndex(selectedIndex);
-			else
-				setTextFieldText("");
-		} else {
-			setTextFieldText("");
+			pack();
+			refreshSelectedIndex();
 		}
 	}
 	
@@ -204,6 +202,19 @@ public abstract class ComboBox extends TextField {
 		}
 	}
 	
+	private void refreshSelectedIndex() {
+		if (DDList != null) {
+			if (selectedIndex > DDList.getMenuItems().size()-1)
+				this.setSelectedIndex(DDList.getMenuItems().size()-1);
+			if (!DDList.getMenuItems().isEmpty())
+				this.setSelectedIndex(selectedIndex);
+			else
+				setTextFieldText("");
+		} else {
+			setTextFieldText("");
+		}
+	}
+	
 	/**
 	 * Method needs to be called once last list item has been added.  This eventually
 	 * will be updated to automatically be called when a new item is added to, instert into
@@ -219,6 +230,7 @@ public abstract class ComboBox extends TextField {
 		DDList.scrollThumbYTo(
 			( DDList.getHeight()-diff )
 		);
+		refreshSelectedIndex();
 	}
 	
 	/**

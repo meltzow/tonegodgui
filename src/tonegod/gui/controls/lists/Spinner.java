@@ -30,6 +30,11 @@ public abstract class Spinner extends TextField {
 	private int selectedIndex = -1;
 	private Orientation orientation;
 	
+	float btnWidth;
+	float btnIncX, btnIncY, btnIncH, btnIncIconSize;
+	float btnDecX, btnDecY, btnDecH, btnDecIconSize;
+	String btnIncIcon, btnDecIcon;
+	
 	ButtonAdapter btnInc, btnDec;
 	
 	public Spinner(Screen screen, String UID, Vector2f position, Spinner.Orientation orientation, boolean cycle) {
@@ -62,11 +67,38 @@ public abstract class Spinner extends TextField {
 		setDockN(true);
 		setDockW(true);
 		
+		btnWidth = getHeight();
+		
+		if (orientation == Orientation.HORIZONTAL) {
+			setWidth(getWidth()-(btnWidth*2));
+			setX(getX()+btnWidth);
+			btnIncX = getWidth();
+			btnIncY = 0;
+			btnIncH = getHeight();
+			btnIncIcon = screen.getStyle("Common").getString("arrowRight");
+			btnDecX = -getHeight();
+			btnDecY = 0;
+			btnDecH = getHeight();
+			btnDecIcon = screen.getStyle("Common").getString("arrowLeft");
+		} else {
+			setWidth(getWidth()-btnWidth);
+			btnIncX = getWidth();
+			btnIncY = 0;
+			btnIncH = getHeight()/2;
+			btnIncIcon = screen.getStyle("Common").getString("arrowUp");
+			btnDecX = getWidth();
+			btnDecY = getHeight()/2;
+			btnDecH = getHeight()/2;
+			btnDecIcon = screen.getStyle("Common").getString("arrowDown");
+		}
+		btnIncIconSize = getHeight()/2;
+		btnDecIconSize = getHeight()/2;
+		
 		btnInc = new ButtonAdapter(
 			screen,
 			UID + ":btnInc",
-			new Vector2f(getWidth(), 0),
-			new Vector2f(getHeight(), getHeight())
+			new Vector2f(btnIncX, btnIncY),
+			new Vector2f(getHeight(), btnIncH)
 		) {
 			@Override
 			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
@@ -78,7 +110,7 @@ public abstract class Spinner extends TextField {
 				((Spinner)getElementParent()).incStep();
 			}
 		};
-		btnInc.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowRight"));
+		btnInc.setButtonIcon(btnIncIconSize, btnIncIconSize, btnIncIcon);
 		btnInc.setDockS(true);
 		btnInc.setDockW(true);
 		
@@ -87,8 +119,8 @@ public abstract class Spinner extends TextField {
 		btnDec = new ButtonAdapter(
 			screen,
 			UID + ":btnDec",
-			new Vector2f(-getHeight(), 0),
-			new Vector2f(getHeight(), getHeight())
+			new Vector2f(btnDecX, btnDecY),
+			new Vector2f(getHeight(), btnIncH)
 		) {
 			@Override
 			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
@@ -100,7 +132,7 @@ public abstract class Spinner extends TextField {
 				((Spinner)getElementParent()).decStep();
 			}
 		};
-		btnDec.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowLeft"));
+		btnDec.setButtonIcon(btnDecIconSize, btnDecIconSize, btnDecIcon);
 		btnDec.setDockS(true);
 		btnDec.setDockW(true);
 		

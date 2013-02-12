@@ -259,14 +259,14 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			}
 		}
 		
-		Texture tex = app.getAssetManager().loadTexture(texturePath);
-		float imgWidth = tex.getImage().getWidth();
-		tex = null;
+	//	Texture tex = app.getAssetManager().loadTexture(texturePath);
+	//	float imgWidth = tex.getImage().getWidth();
+	//	tex = null;
 		
 		icon = new Element(
 			screen,
 			this.getUID() + ":btnIcon",
-			new Vector2f((getWidth()/2)-(imgWidth/2),(getHeight()/2)-(imgWidth/2)),
+			new Vector2f((getWidth()/2)-(width/2),(getHeight()/2)-(height/2)),
 			new Vector2f(width,height),
 			new Vector4f(0,0,0,0),
 			texturePath
