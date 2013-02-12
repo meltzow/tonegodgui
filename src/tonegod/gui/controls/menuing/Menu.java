@@ -15,6 +15,7 @@ import com.jme3.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.buttons.CheckBox;
+import tonegod.gui.controls.lists.ComboBox;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
@@ -42,6 +43,9 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	private int currentMenuItemIndex = -1;
 	private int currentHighlightIndex = 0;
 	private Vector2f preferredSize = Vector2f.ZERO;
+	private boolean hasSubMenus = false;
+	private boolean hasToggleItems = false;
+	
 	
 	/**
 	 * Creates a new instance of the Menu control
@@ -164,6 +168,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		);
 		
 		this.menuItems.add(menuItem);
+		validateSettings();
 		pack();
 	}
 	
@@ -188,6 +193,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 					isToggled
 				);
 				this.menuItems.add(index, menuItem);
+				validateSettings();
 				pack();
 			}
 		}
@@ -199,6 +205,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 			if (index >= 0 && index < menuItems.size()) {
 				menuItems.remove(index);
 		//		miIndex--;
+				validateSettings();
 				pack();
 			}
 		}
@@ -264,6 +271,17 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		return this.menuPadding;
 	}
 	
+	public void validateSettings() {
+		hasSubMenus = false;
+		hasToggleItems = false;
+		for (MenuItem mi : menuItems) {
+			if (mi.isToggleItem)
+				hasToggleItems = true;
+			if (mi.subMenu != null)
+				hasSubMenus = true;
+		}
+	}
+	
 	public void setPreferredSize(Vector2f preferredSize) {
 		this.preferredSize = preferredSize;
 	}
@@ -279,14 +297,21 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		float width = menuItemHeight*3;
 		boolean init = true;
 		
+		String leftSpacer = "  ";
+		String rightSpacer = "";
+		
+		if (callerElement == null)	leftSpacer = "        ";
+		else if (hasToggleItems)	leftSpacer = "        ";
+		if (hasSubMenus)			rightSpacer = "  ";
+		
 		for (MenuItem mi : menuItems) {
-			float tWidth = (menuItemHeight*2)+BitmapTextUtil.getTextWidth(this, "        " + mi.getCaption() + "  ");
+			float tWidth = (menuItemHeight*2)+BitmapTextUtil.getTextWidth(this, leftSpacer + mi.getCaption() + rightSpacer);
 			width = (tWidth > width) ? tWidth : width;
 			if (init) {
-				finalString = "        " + mi.getCaption() + "  ";
+				finalString = leftSpacer + mi.getCaption() + rightSpacer;
 				init = false;
 			} else {
-				finalString += "\n        " + mi.getCaption() + "  ";
+				finalString += "\n" + leftSpacer + mi.getCaption() + rightSpacer;
 			}
 			currentHeight += menuItemHeight;
 			
@@ -306,7 +331,8 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 			this.resize(getX()+width+(menuPadding*2), getY()+currentHeight+(menuPadding*2), Borders.SE);
 			this.setHeight(currentHeight+(menuPadding*2));
 		} else {
-			float nextWidth = (preferredSize.x > width+(menuPadding*2)) ? preferredSize.x : width+(menuPadding*2);
+			float nextWidth = preferredSize.x;
+		//	float nextWidth = (preferredSize.x > width+(menuPadding*2)) ? preferredSize.x : width+(menuPadding*2);
 			float nextHeight = (currentHeight > preferredSize.y+(menuPadding*2)) ? preferredSize.y : currentHeight+(menuPadding*2);
 			this.resize(getX()+nextWidth, getY()+nextHeight, Borders.SE);
 			this.setHeight(nextHeight);
