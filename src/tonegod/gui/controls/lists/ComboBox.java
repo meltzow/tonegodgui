@@ -42,6 +42,8 @@ public abstract class ComboBox extends TextField {
 	private Object ssValue;
 	private String ssCaption;
 	
+	private boolean DDListIsShowing = false;
+	
 	/**
 	 * Creates a new instance of the ComboBox control
 	 * 
@@ -105,11 +107,13 @@ public abstract class ComboBox extends TextField {
 			@Override
 			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
 				if (validateListSize()) {
-					DDList.showMenu(
-						null,
-						getElementParent().getAbsoluteX(),
-						getElementParent().getAbsoluteY()-DDList.getHeight()
-					);
+					if (!DDList.getIsVisible()) {
+						DDList.showMenu(
+							null,
+							getElementParent().getAbsoluteX(),
+							getElementParent().getAbsoluteY()-DDList.getHeight()
+						);
+					}
 				}
 				screen.setTabFocusElement((ComboBox)getElementParent());
 			}
@@ -168,7 +172,7 @@ public abstract class ComboBox extends TextField {
 		if (DDList != null) {
 			DDList.removeMenuItem(index);
 			if (selectedIndex > DDList.getMenuItems().size()-1)
-				selectedIndex = DDList.getMenuItems().size()-1;
+				this.setSelectedIndex(DDList.getMenuItems().size()-1);
 			if (!DDList.getMenuItems().isEmpty())
 				this.setSelectedIndex(selectedIndex);
 			else
