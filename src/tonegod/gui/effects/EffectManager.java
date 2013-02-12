@@ -64,13 +64,17 @@ public class EffectManager implements Control {
 	
 	@Override
 	public void update(float tpf) {
-		for (Effect effect : currentEffects) {
-			if (effect.getIsActive())
-				effect.update(tpf);
-			else {
-				currentEffects.remove(effect);
-				break;
+		try {
+			for (Effect effect : currentEffects) {
+				if (effect.getIsActive())
+					effect.update(tpf);
+				else {
+					currentEffects.remove(effect);
+					break;
+				}
 			}
+		} catch (Exception ex) {
+			// Temporary error consumption for menu rebuild checkbox issue
 		}
 		for (EffectQueue queue : currentEffectQueues) {
 			if (queue.getIsActive())
