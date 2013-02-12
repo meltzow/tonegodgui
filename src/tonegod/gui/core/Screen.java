@@ -1098,13 +1098,6 @@ public class Screen implements Control, RawInputListener {
 						elements.get(key).hide();
 					}
 				}
-			} else if (eventElement.getAbsoluteParent() instanceof ComboBox) {
-				Set<String> keys = elements.keySet();
-				for (String key :keys) {
-					if (elements.get(key) instanceof Menu && elements.get(key) != ((ComboBox)eventElement).getMenu()) {
-						elements.get(key).hide();
-					}
-				}
 			}
 		}
 	}
