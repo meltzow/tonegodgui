@@ -374,6 +374,10 @@ public abstract class ComboBox extends TextField {
 		return this.DDList.getMenuItem(index);
 	}
 	
+	public List<MenuItem> getListItems() {
+		return DDList.getMenuItems();
+	}
+	
 	/**
 	 * Sorts the associated drop-down list alphanumerically
 	 */
