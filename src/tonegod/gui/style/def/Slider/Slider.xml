@@ -11,7 +11,7 @@
 			</property>
 			<property name="defaultSize" type="Vector2f">
 				<x value="150" />
-				<y value="25" />
+				<y value="24" />
 			</property>
 		</attributes>
 		<images>

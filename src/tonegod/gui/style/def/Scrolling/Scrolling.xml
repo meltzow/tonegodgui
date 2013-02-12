@@ -35,7 +35,7 @@
 	<element name="ScrollArea#VScrollBar">
 		<font></font>
 		<attributes>
-			<property name="defaultControlSize" type="float" value="25" />
+			<property name="defaultControlSize" type="float" value="24" />
 			<property name="trackResizeBorders" type="Vector4f">
 				<x value="5" />
 				<y value="5" />

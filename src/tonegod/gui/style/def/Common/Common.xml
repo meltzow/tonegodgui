@@ -15,7 +15,7 @@
 			<property name="textPadding" type="float" value="3" />
 		</font>
 		<attributes>
-			<property name="defaultControlSize" type="float" value="25" />
+			<property name="defaultControlSize" type="float" value="24" />
 			<property name="defaultControlSpacing" type="float" value="5" />
 		</attributes>
 		<images>
