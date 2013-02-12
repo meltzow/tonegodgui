@@ -116,7 +116,7 @@ void main(){
 			}
 		}
 	} else {
-		color.a = vec4(0.0);
+		color.a = 0.0;
 	}
 	#endif
 	

@@ -55,22 +55,16 @@ MaterialDef Unshaded {
         }
     }
 
-    Technique {
-    }
+	Technique PreNormalPass {
+		VertexShader GLSL100 :   Common/MatDefs/SSAO/normal.vert
+		FragmentShader GLSL100 : Common/MatDefs/SSAO/normal.frag
 
-      Technique PreNormalPass {
-
-            VertexShader GLSL100 :   Common/MatDefs/SSAO/normal.vert
-            FragmentShader GLSL100 : Common/MatDefs/SSAO/normal.frag
-
-            WorldParameters {
-                WorldViewProjectionMatrix
-                NormalMatrix
-            }
-
-            RenderState {
-            }
-        }
+		WorldParameters {
+			WorldViewProjectionMatrix
+			NormalMatrix
+		}
+		RenderState {  }
+	}
 
 
     Technique Glow {
