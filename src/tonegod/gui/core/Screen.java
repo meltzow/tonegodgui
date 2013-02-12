@@ -535,6 +535,7 @@ public class Screen implements Control, RawInputListener {
 					break;
 			}
 		} else if (evt.isReleased()) {
+			handleMenuState();
 			switch (evt.getButtonIndex()) {
 				case 0:
 					mouseLeftPressed = false;
@@ -559,7 +560,6 @@ public class Screen implements Control, RawInputListener {
 			}
 			mousePressed = false;
 			eventElement = null;
-			handleMenuState();
 		}
 	}
 	
