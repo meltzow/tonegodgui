@@ -244,7 +244,9 @@ public class VScrollBar extends Element {
 	}
 	
 	protected void scrollToTop() {
-		
+		setThumbScale();
+		btnScrollThumb.setY(btnScrollTrack.getHeight()-btnScrollThumb.getHeight());
+		setByThumbPosition();
 	}
 	
 	protected void scrollToBottom() {
