@@ -10,6 +10,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import com.jme3.scene.Node;
+import java.util.Set;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.OSRBridge;
 import tonegod.gui.core.Screen;
@@ -149,6 +150,15 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 	
 	public OSRBridge getOSRBridge() {
 		return this.bridge;
+	}
+	
+	@Override
+	public void controlShowHook() {
+		bridge.getViewPort().setEnabled(true);
+	}
+	@Override
+	public void controlHideHook() {
+		bridge.getViewPort().setEnabled(false);
 	}
 	
 	@Override

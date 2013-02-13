@@ -23,7 +23,6 @@ import com.jme3.texture.Texture;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import tonegod.gui.controls.extras.OSRViewPort;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.effects.Effect;
 
@@ -1564,8 +1563,7 @@ public class Element extends Node {
 		}
 		updateClipping();
 		controlHideHook();
-		if (!(this instanceof OSRViewPort))
-			removeFromParent();
+		removeFromParent();
 		Set<String> keys = elementChildren.keySet();
 		for (String key : keys) {
 			elementChildren.get(key).childHide();

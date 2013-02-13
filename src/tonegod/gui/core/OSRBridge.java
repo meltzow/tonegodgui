@@ -43,11 +43,6 @@ public class OSRBridge extends AbstractControl {
 		
 		FrameBuffer offBuffer = new FrameBuffer(width, height, 1);
 		
-		
-	//	cam.setFrustumPerspective(45f, 1f, 1f, 1000f);
-	//	cam.setLocation(new Vector3f(0f, 0f, 0f));
-	//	cam.lookAt(root.getLocalTranslation(), Vector3f.UNIT_Y);
-
 		tex = new Texture2D(width, height, Image.Format.RGBA8);
 		tex.setMinFilter(Texture.MinFilter.Trilinear);
 		tex.setMagFilter(Texture.MagFilter.Bilinear);
@@ -71,12 +66,10 @@ public class OSRBridge extends AbstractControl {
 		chaseCam.setMaxDistance(340f);
 		chaseCam.setDefaultHorizontalRotation(90*FastMath.DEG_TO_RAD);
 		chaseCam.setDefaultVerticalRotation(0f);
-	//	chaseCam.setZoomSensitivity(0.05f);
 		cam.setFrustumFar(36000f);
 		float aspect = (float)cam.getWidth() / (float)cam.getHeight();
 		cam.setFrustumPerspective( 45f, aspect, 0.1f, cam.getFrustumFar() );
 		chaseCam.setUpVector(Vector3f.UNIT_Y);
-	//	chaseCam.setMinDistance(.05f);
 	}
 	
 	public Texture2D getTexture() {
@@ -111,22 +104,21 @@ public class OSRBridge extends AbstractControl {
 		return tpf;
 	}
 	
-//	@Override
-//	public void update(float tpf) {
-//		this.tpf = tpf;
-//	}
-	
 	@Override
 	public final void setSpatial(Spatial spatial) {
 		this.spatial = spatial;
-		this.setEnabled(true);
+		if (spatial != null)
+			this.setEnabled(true);
+		else
+			this.setEnabled(false);
 	}
 	
 	@Override
 	protected void controlUpdate(float tpf) {
-		root.updateLogicalState(tpf);
-		root.updateGeometricState();
-		
+		if (enabled) {
+			root.updateLogicalState(tpf);
+			root.updateGeometricState();
+		}
 	}
 
 	@Override
