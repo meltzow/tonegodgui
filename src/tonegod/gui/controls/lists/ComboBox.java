@@ -206,9 +206,10 @@ public abstract class ComboBox extends TextField {
 		if (DDList != null) {
 			if (selectedIndex > DDList.getMenuItems().size()-1)
 				this.setSelectedIndex(DDList.getMenuItems().size()-1);
-			if (!DDList.getMenuItems().isEmpty())
-				this.setSelectedIndex(selectedIndex);
-			else
+		//	if (!DDList.getMenuItems().isEmpty())
+		//		this.setSelectedIndex(selectedIndex);
+		//	else
+			if (DDList.getMenuItems().isEmpty())
 				setTextFieldText("");
 		} else {
 			setTextFieldText("");
