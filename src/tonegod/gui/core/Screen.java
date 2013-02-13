@@ -284,6 +284,10 @@ public class Screen implements Control, RawInputListener {
 		return ret;
 	}
 	
+	public Node getGUINode() {
+		return t0neg0dGUI;
+	}
+	
 	// Z-ORDER
 	/**
 	 * Returns the next available z-order

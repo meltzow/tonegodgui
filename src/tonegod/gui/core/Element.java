@@ -23,6 +23,7 @@ import com.jme3.texture.Texture;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import tonegod.gui.controls.extras.OSRViewPort;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.effects.Effect;
 
@@ -1513,14 +1514,18 @@ public class Element extends Node {
 			updateClipping();
 			controlShowHook();
 			
+			if (getParent() == null) {
+				if (getElementParent() != null) {
+						getElementParent().attachChild(this);
+				} else {
+					screen.getGUINode().attachChild(this);
+				}
+			}
+			
 			Set<String> keys = elementChildren.keySet();
 			for (String key : keys) {
 				elementChildren.get(key).childShow();
 			}
-		//	Effect effect = getEffect(Effect.EffectEvent.Show);
-		//	if (effect != null) {
-		//		screen.getEffectManager().applyEffect(effect);
-		//	}
 		}
 	}
 	
@@ -1534,7 +1539,6 @@ public class Element extends Node {
 		this.isClipped = wasClipped;
 		updateClipping();
 		controlShowHook();
-		
 		Set<String> keys = elementChildren.keySet();
 		for (String key : keys) {
 			elementChildren.get(key).childShow();
@@ -1560,9 +1564,25 @@ public class Element extends Node {
 		}
 		updateClipping();
 		controlHideHook();
+		if (!(this instanceof OSRViewPort))
+			removeFromParent();
 		Set<String> keys = elementChildren.keySet();
 		for (String key : keys) {
-			elementChildren.get(key).hide();
+			elementChildren.get(key).childHide();
+		}
+	}
+	
+	public void childHide() {
+		if (isVisible) {
+			this.wasVisible = isVisible;
+			this.isVisible = false;
+			this.isClipped = true;
+		}
+		updateClipping();
+		controlHideHook();
+		Set<String> keys = elementChildren.keySet();
+		for (String key : keys) {
+			elementChildren.get(key).childHide();
 		}
 	}
 	
@@ -1571,13 +1591,14 @@ public class Element extends Node {
 	 */
 	public void controlHideHook() {  }
 	
-	public void propagateEffect(Effect effect) {
+	public void propagateEffect(Effect effect, boolean callHide) {
 		Effect nEffect = effect.clone();
+		nEffect.setCallHide(callHide);
 		nEffect.setElement(this);
 		screen.getEffectManager().applyEffect(nEffect);
 		Set<String> keys = elementChildren.keySet();
 		for (String key : keys) {
-			elementChildren.get(key).propagateEffect(effect);
+			elementChildren.get(key).propagateEffect(effect, false);
 		}
 	}
 	

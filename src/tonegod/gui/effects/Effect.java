@@ -67,6 +67,7 @@ public class Effect implements Cloneable {
 	private Vector2f fract = new Vector2f();
 	private String audioFile = null;
 	private float audioVolume = 1;
+	private boolean callHide = true;
 	
 	public Effect(EffectType type, EffectEvent event, float duration) {
 		this(type, event, duration, null, 1);
@@ -109,6 +110,10 @@ public class Effect implements Cloneable {
 	
 	public void setIsActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+	
+	public void setCallHide(boolean callHide) {
+		this.callHide = callHide;
 	}
 	
 	public EffectEvent getEffectEvent() {
@@ -303,7 +308,7 @@ public class Effect implements Cloneable {
 		}
 		if (pass >= 1.0) {
 			if (!destroyOnHide) {
-				element.hide();
+				if (callHide) element.hide();
 				element.setPosition(def);
 			} else {
 				destoryElement();
@@ -351,7 +356,7 @@ public class Effect implements Cloneable {
 		}
 		if (pass >= 1.0) {
 			if (!destroyOnHide) {
-				element.hide();
+				if (callHide) element.hide();
 				element.setPosition(def);
 				element.setLocalScale(0);
 			} else {
@@ -394,7 +399,7 @@ public class Effect implements Cloneable {
 		}
 		if (pass >= 1.0) {
 			if (!destroyOnHide) {
-				element.hide();
+				if (callHide) element.hide();
 				disableShaderEffect();
 				isActive = false;
 			} else {
@@ -442,7 +447,7 @@ public class Effect implements Cloneable {
 		}
 		if (pass >= 1.0) {
 			if (!destroyOnHide) {
-				element.hide();
+				if (callHide) element.hide();
 				element.setPosition(def);
 				element.setLocalScale(1);
 				element.setLocalRotation(element.getLocalRotation().fromAngles(0, 0, 0));

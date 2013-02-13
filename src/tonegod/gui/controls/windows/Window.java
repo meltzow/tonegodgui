@@ -139,7 +139,7 @@ public class Window extends Element {
 			if (effect.getEffectType() == Effect.EffectType.FadeIn) {
 				Effect clone = effect.clone();
 				clone.setAudioFile(null);
-				this.propagateEffect(clone);
+				this.propagateEffect(clone, false);
 			} else
 				screen.getEffectManager().applyEffect(effect);
 		} else
@@ -156,7 +156,7 @@ public class Window extends Element {
 			if (effect.getEffectType() == Effect.EffectType.FadeOut) {
 				Effect clone = effect.clone();
 				clone.setAudioFile(null);
-				this.propagateEffect(clone);
+				this.propagateEffect(clone, true);
 			} else
 				screen.getEffectManager().applyEffect(effect);
 		} else
