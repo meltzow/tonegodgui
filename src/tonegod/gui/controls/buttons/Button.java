@@ -200,8 +200,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		MouseButtonEvent evtu = new MouseButtonEvent(0,false,0,0);
 		onButtonMouseLeftDown(evtd, isToggled);
 		onButtonMouseLeftUp(evtu, isToggled);
-		if (radioButtonGroup != null)
-			radioButtonGroup.setSelected(this);
+		if (radioButtonGroup != null) {
+			if (isToggled)
+				radioButtonGroup.setSelected(this);
+		}
 		evtu.setConsumed();
 		evtd.setConsumed();
 	}
