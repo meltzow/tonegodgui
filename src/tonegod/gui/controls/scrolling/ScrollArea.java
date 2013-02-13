@@ -11,6 +11,7 @@ import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.Set;
+import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.listeners.MouseFocusListener;
@@ -25,8 +26,9 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	private boolean isTextOnly = true;
 	private boolean isScrollable = true;
 	private VScrollBar vScrollBar;
-	private float scrollSize;
+	protected float scrollSize;
 	private boolean scrollHidden = false;
+//	protected float orgWidth;
 	
 	/**
 	 * Creates a new instance of the ScrollArea control
@@ -88,7 +90,9 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		
 		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 		
-		setWidth(getWidth()-scrollSize);
+	//	orgWidth = getWidth();
+		
+		if (!(this instanceof Menu)) setWidth(getWidth()-scrollSize);
 		
 		if (!isTextOnly) {
 			createScrollableArea();
@@ -174,9 +178,9 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	
 	public float getScrollableHeight() {
 		if (isTextOnly) {
-			return textElement.getHeight()+(getTextPadding()*2)+(getClipPadding()*2);
+			return textElement.getHeight()+(getTextPadding()*2);//+(getClipPadding()*2);
 		} else {
-			return scrollableArea.getHeight()+(scrollableArea.getTextPadding()*2)+(scrollableArea.getClipPadding()*2);
+			return scrollableArea.getHeight()+(scrollableArea.getTextPadding()*2);//+(scrollableArea.getClipPadding()*2);
 		}
 	}
 	

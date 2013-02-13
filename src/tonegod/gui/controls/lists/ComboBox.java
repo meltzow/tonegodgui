@@ -145,7 +145,7 @@ public abstract class ComboBox extends TextField {
 				}
 			};
 			DDList.setCallerElement(this);
-			DDList.setPreferredSize(new Vector2f(getWidth(),DDList.getMenuItemHeight()*5));
+			DDList.setPreferredSize(new Vector2f(getWidth()+btnHeight,DDList.getMenuItemHeight()*5));
 		}
 		DDList.addMenuItem(caption, value, null);
 		

@@ -4,7 +4,6 @@
  */
 package tonegod.gui.controls.extras;
 
-import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
@@ -12,20 +11,14 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.buttons.CheckBox;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.lists.SelectBox;
-import tonegod.gui.controls.lists.Spinner;
-import tonegod.gui.controls.menuing.MenuItem;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.controls.text.Label;
 import tonegod.gui.controls.text.TextField;
-import tonegod.gui.controls.windows.AlertBox;
 import tonegod.gui.controls.windows.Panel;
 import tonegod.gui.controls.windows.Window;
 import tonegod.gui.core.Element;
@@ -163,6 +156,7 @@ public abstract class ChatBoxExt extends Panel {
 		saChatArea.setClippingLayer(saChatArea);
 		saChatArea.getScrollableArea().setIgnoreMouse(true);
 		saChatArea.getScrollableArea().setDockS(true);
+		saChatArea.setPadding(2);
 		saChatArea.setText("");
 		addChild(saChatArea);
 		
@@ -515,31 +509,36 @@ public abstract class ChatBoxExt extends Panel {
 	
 	protected void showFiltersWindow() {
 		Element scrollableArea = filtersScrollArea.getScrollableArea();
-		filtersScrollArea.setClipPadding(10);
+		filtersScrollArea.setPadding(2);
 		
 		scrollableArea.removeAllChildren();
-		scrollableArea.setY(0);
-		scrollableArea.setHeight(filtersScrollArea.getHeight());
+		scrollableArea.setY(filtersScrollArea.getHeight());
+		scrollableArea.setHeight(0);
 		
 		boolean init = true;
 		String finalString = "";
 		float currentHeight = 0;
 		int index = 0;
 		
+		filterLineHeight = BitmapTextUtil.getTextLineHeight(scrollableArea, "Xg");
+		
 		for (ChatChannel channel : channels) {
-			filterLineHeight = BitmapTextUtil.getTextLineHeight(scrollableArea, "      " + channel.getFilterDisplayText() + "  ");
-			if (init) {
-				finalString = "        " + channel.getFilterDisplayText() + "  ";
-				init = false;
-			} else {
-				finalString += "\n        " + channel.getFilterDisplayText() + "  ";
+			if (!channel.getFilterDisplayText().equals("")) {
+				if (init) {
+					finalString = "        " + channel.getFilterDisplayText() + "  ";
+					init = false;
+				} else {
+					finalString += "\n        " + channel.getFilterDisplayText() + "  ";
+				}
+				currentHeight += filterLineHeight;
 			}
-			currentHeight += filterLineHeight;
 		}
-		currentHeight -= filterLineHeight;
+		
+		currentHeight += scrollableArea.getTextPadding()*2;
 		scrollableArea.setHeight(currentHeight);
 		scrollableArea.setWidth(getWidth());
 		scrollableArea.setText(finalString);
+	//	scrollableArea.setTextPosition(0,-filterLineHeight);
 		
 		index = 0;
 		for (ChatChannel channel : channels) {
@@ -547,13 +546,13 @@ public abstract class ChatBoxExt extends Panel {
 			index++;
 		}
 		
-		filtersScrollArea.scrollToBottom();
+		filtersScrollArea.scrollToTop();
 		filters.showWindow();
 	}
 	
 	private void addCheckBox(int index, ChatChannel channel) {
 		CheckBox checkbox = new CheckBox(screen, filtersScrollArea.getUID() + ":CheckBox:" + index,
-			new Vector2f(12,10+(index*filterLineHeight))
+			new Vector2f(8,filtersScrollArea.getTextPadding()+(index*filterLineHeight))
 		) {
 			@Override
 			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean isToggled) {
@@ -570,6 +569,7 @@ public abstract class ChatBoxExt extends Panel {
 		checkbox.setIsMovable(false);
 		checkbox.setIgnoreMouse(false);
 		checkbox.setClippingLayer(filtersScrollArea);
+		checkbox.setClipPadding(filtersScrollArea.getScrollableArea().getTextPadding());
 		if (!channel.getIsFiltered())
 			checkbox.setIsChecked(true);
 		filtersScrollArea.addScrollableChild(checkbox);
