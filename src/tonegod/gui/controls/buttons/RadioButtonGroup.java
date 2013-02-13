@@ -4,7 +4,6 @@
  */
 package tonegod.gui.controls.buttons;
 
-import com.jme3.input.event.MouseButtonEvent;
 import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.form.Form;
@@ -17,16 +16,14 @@ import tonegod.gui.core.Screen;
  */
 public abstract class RadioButtonGroup {
 	Screen screen;
-	Form form = null;
 	String UID;
 	private List<Button> radioButtons = new ArrayList();
 	int selectedIndex = -1;
 	Button selected = null;
 	
-	public RadioButtonGroup(Screen screen, String UID, Form form) {
+	public RadioButtonGroup(Screen screen, String UID) {
 		this.screen = screen;
 		this.UID = UID;
-		this.form = form;
 	}
 	
 	public String getUID() {
@@ -39,15 +36,6 @@ public abstract class RadioButtonGroup {
 		
 		if (selectedIndex == 0)
 			setSelected(0);
-	}
-	
-	public void setForm(Form form) {
-		this.form = form;
-		
-		for (Button toggleButton : radioButtons) {
-			if (form.getFormElement(toggleButton) == null)
-				form.addFormElement(form.getFormElement(toggleButton));
-		}
 	}
 	
 	public void setSelected(int index) {
