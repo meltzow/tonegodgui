@@ -5,7 +5,6 @@
 package tonegod.gui.controls.buttons;
 
 import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.math.Vector2f;
 import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.form.Form;
@@ -20,9 +19,9 @@ public abstract class RadioButtonGroup {
 	Screen screen;
 	Form form = null;
 	String UID;
-	private List<RadioButton> radioButtons = new ArrayList();
+	private List<Button> radioButtons = new ArrayList();
 	int selectedIndex = -1;
-	RadioButton selected = null;
+	Button selected = null;
 	
 	public RadioButtonGroup(Screen screen, String UID, Form form) {
 		this.screen = screen;
@@ -34,108 +33,61 @@ public abstract class RadioButtonGroup {
 		return this.UID;
 	}
 	
-	public void addRadioButton(Vector2f position, String caption, Object value) {
-		RadioButton radio = new RadioButton(position, caption,  value, this);
-		radioButtons.add(radio);
+	public void addButton(Button button) {
+		button.setRadioButtonGroup(this);
+		radioButtons.add(button);
+		
+		if (selectedIndex == 0)
+			setSelected(0);
 	}
 	
 	public void setForm(Form form) {
 		this.form = form;
 		
-		for (RadioButton radio : radioButtons) {
-			if (form.getFormElement(radio.getRadioButton()) == null)
-				form.addFormElement(form.getFormElement(radio.getRadioButton()));
+		for (Button toggleButton : radioButtons) {
+			if (form.getFormElement(toggleButton) == null)
+				form.addFormElement(form.getFormElement(toggleButton));
 		}
 	}
 	
 	public void setSelected(int index) {
 		if (index >= 0 && index < radioButtons.size()) {
-			RadioButton rb = radioButtons.get(index);
+			Button rb = radioButtons.get(index);
 			this.selected = rb;
 			this.selectedIndex = index;
-			for (RadioButton rb2 : radioButtons) {
+			for (Button rb2 : radioButtons) {
 				if (rb2 != this.selected)
-					rb2.getRadioButton().setIsChecked(false);
-				else {
-					
-				}
+					rb2.setIsToggled(false);
 			}
-			onSelect(selectedIndex, rb.getValue());
+			onSelect(selectedIndex, rb);
 		}
 	}
 	
-	protected void setSelected(RadioButton radio) {
-		this.selected = radio;
-		this.selectedIndex = radioButtons.indexOf(radio);
-		for (RadioButton rb : radioButtons) {
+	protected void setSelected(Button button) {
+		this.selected = button;
+		this.selectedIndex = radioButtons.indexOf(button);
+		for (Button rb : radioButtons) {
 			if (rb != this.selected) {
-				if (rb.getRadioButton().getIsChecked())
-					rb.getRadioButton().setIsChecked(false);
+				if (rb.getIsToggled())
+					rb.setIsToggled(false);
 			}
 		}
-		onSelect(selectedIndex, radio.getValue());
+		onSelect(selectedIndex, button);
 	}
 	
-	public abstract void onSelect(int index, Object value);
+	public abstract void onSelect(int index, Button value);
 	
 	public void setDisplayElement(Element element) {
-		for (RadioButton rb : radioButtons) {
-			CheckBox radio = rb.getRadioButton();
-			if (screen.getElementById(radio.getUID()) == null) {
+		for (Button rb : radioButtons) {
+			if (screen.getElementById(rb.getUID()) == null) {
 				if (element != null) {
-					element.addChild(radio);
+					element.addChild(rb);
 				} else {
-					screen.addElement(radio);
+					screen.addElement(rb);
 				}
 			}
 		}
 	}
 	
-	public class RadioButton {
-		CheckBox radioButton;
-		RadioButtonGroup group;
-		String caption;
-		Object value;
-		
-		public RadioButton(Vector2f position, String caption, Object value, RadioButtonGroup group) {
-			this.group = group;
-			radioButton = new CheckBox(screen, group.getUID() + "RadioButton:" + group.radioButtons.size(), position,
-				screen.getStyle("RadioButton").getVector2f("defaultSize"),
-				screen.getStyle("RadioButton").getVector4f("resizeBorders"),
-				screen.getStyle("RadioButton").getString("defaultImg")
-			) {
-				@Override
-				public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
-					setSelected(toggled);
-				}
-			};
-			radioButton.setButtonHoverInfo(
-				screen.getStyle("RadioButton").getString("hoverImg"),
-				screen.getStyle("RadioButton").getColorRGBA("hoverColor")
-			);
-			radioButton.setButtonPressedInfo(
-				screen.getStyle("RadioButton").getString("pressedImg"),
-				screen.getStyle("RadioButton").getColorRGBA("pressedColor")
-			);
-			radioButton.setCheckboxText(caption);
-			this.value = value;
-		}
-		
-		public CheckBox getRadioButton() {
-			return this.radioButton;
-		}
-		
-		public String getCaption() {
-			return this.caption;
-		}
-		
-		public Object getValue() {
-			return this.value;
-		}
-		
-		private void setSelected(boolean toggled) {
-			if (toggled)
-				group.setSelected(this);
-		}
-	}
+	
 }

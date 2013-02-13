@@ -36,18 +36,20 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	String hoverSound, pressedSound;
 	boolean useHoverSound, usePressedSound;
 	float hoverSoundVolume, pressedSoundVolume;
-	Element icon;
-	Texture hoverImg = null, pressedImg = null;
-	private ColorRGBA hoverFontColor = null, pressedFontColor = null;
-	private boolean isToggleButton = false;
-	private boolean isToggled = false;
+	protected Element icon;
+	protected Texture hoverImg = null, pressedImg = null;
+	protected ColorRGBA hoverFontColor = null, pressedFontColor = null;
+	protected boolean isToggleButton = false;
+	protected boolean isToggled = false;
 	private Spatial spatial;
-	private boolean isStillPressed = false;
+	protected boolean isStillPressed = false;
 	private boolean useInterval = false;
 	private float intervalsPerSecond = 4;
-	private float trackInterval = (4/1000), currentTrack = 0;
-	private boolean initClickPause = false;
-	private float initClickInterval = 0.25f, currentInitClickTrack = 0;
+	protected float trackInterval = (4/1000), currentTrack = 0;
+	protected boolean initClickPause = false;
+	protected float initClickInterval = 0.25f, currentInitClickTrack = 0;
+	protected RadioButtonGroup radioButtonGroup = null;
+	protected boolean isRadioButton = false;
 	
 	/**
 	 * Creates a new instance of the Button control
@@ -150,6 +152,25 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 */
 	public boolean getIsToggleButton() {
 		return this.isToggleButton;
+	}
+	
+	/**
+	 * Sets if the button is to interact as a Radio Button
+	 * Click once to activate - stays active
+	 * 
+	 * @param isRadioButton boolean
+	 */
+	public void setIsRadioButton(boolean isRadioButton) {
+		this.isRadioButton = isRadioButton;
+	}
+	
+	/**
+	 * Returns if the Button is flagged as a Toggle Button
+	 * 
+	 * @return boolean isRadioButton
+	 */
+	public boolean getIsRadioButton() {
+		return this.isRadioButton;
 	}
 	
 	public void setIsToggled(boolean isToggled) {
@@ -283,7 +304,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	public void onMouseLeftPressed(MouseButtonEvent evt) {
 		if (isToggleButton) {
 			if (isToggled) {
-				isToggled = false;
+				if (!isRadioButton) isToggled = false;
 			} else {
 				isToggled = true;
 			}
@@ -306,13 +327,6 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		initClickPause = true;
 		currentInitClickTrack = 0;
 		onButtonMouseLeftDown(evt, isToggled);
-		/*
-		if (screen.getUseToolTips()) {
-			if (getToolTipText() !=  null) {
-				screen.setToolTip(null);
-			}
-		}
-		*/
 		evt.setConsumed();
 	}
 
@@ -366,9 +380,17 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		initClickPause = false;
 		currentInitClickTrack = 0;
 		onButtonMouseLeftUp(evt, isToggled);
+		if (radioButtonGroup != null)
+			radioButtonGroup.setSelected(this);
 		evt.setConsumed();
 	}
-
+	
+	public void setRadioButtonGroup(RadioButtonGroup radioButtonGroup) {
+		this.radioButtonGroup = radioButtonGroup;
+		this.isToggleButton = true;
+		this.isRadioButton = true;
+	}
+	
 	@Override
 	public void onMouseRightPressed(MouseButtonEvent evt) {
 	//	throw new UnsupportedOperationException("Not supported yet.");

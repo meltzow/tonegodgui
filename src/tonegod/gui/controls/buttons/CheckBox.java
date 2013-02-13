@@ -110,7 +110,7 @@ public class CheckBox extends ButtonAdapter {
 		populateEffects("CheckBox");
 	}
 	
-	public void setCheckboxText(String text) {
+	public void setLabelText(String text) {
 		if (label.getParent() != null) {
 			elementChildren.remove(label.getUID());
 			label.removeFromParent();
