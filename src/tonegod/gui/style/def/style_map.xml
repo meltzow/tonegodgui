@@ -12,6 +12,7 @@
 	<style control="Slider" path="tonegod/gui/style/def/Slider/Slider.xml" />
 	<style control="Spinner" path="tonegod/gui/style/def/Spinner/Spinner.xml" />
 	<style control="TextField" path="tonegod/gui/style/def/TextField/TextField.xml" />
+	<style control="TabControl" path="tonegod/gui/style/def/Tabs/Tabs.xml" />
 	<style control="ChatBox" path="tonegod/gui/style/def/ChatBox/ChatBox.xml" />
 	<style control="Indicator" path="tonegod/gui/style/def/Common/Extras/Indicator.xml" />
 </root>

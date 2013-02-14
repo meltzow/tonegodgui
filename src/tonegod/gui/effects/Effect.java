@@ -22,6 +22,7 @@ public class Effect implements Cloneable {
 		ZoomOut,
 		SlideIn,
 		SlideOut,
+		SlideTo,
 		SpinIn,
 		SpinOut,
 		Pulse,
@@ -55,6 +56,7 @@ public class Effect implements Cloneable {
 	private float pass = 0.0f;
 	private boolean direction = true;
 	private float duration;
+	private Vector2f destination;
 	private boolean isActive = true;
 	private boolean localActive = true;
 	private Texture blendImage;
@@ -132,6 +134,14 @@ public class Effect implements Cloneable {
 		return this.effectDir;
 	}
 	
+	public void setEffectDestination(Vector2f destination) {
+		this.destination = destination;
+	}
+	
+	public Vector2f getEffectDestination() {
+		return this.destination;
+	}
+	
 	public void setDestroyOnHide(boolean destroyOnHide) {
 		this.destroyOnHide = destroyOnHide;
 	}
@@ -165,6 +175,9 @@ public class Effect implements Cloneable {
 				break;
 			case SlideOut:
 				updateSlideOut();
+				break;
+			case SlideTo:
+				updateSlideTo();
 				break;
 			case SpinIn:
 				updateSpinIn();
@@ -313,6 +326,27 @@ public class Effect implements Cloneable {
 			} else {
 				destoryElement();
 			}
+			isActive = false;
+		}
+	}
+	
+	private void updateSlideTo() {
+		if (!init) {
+			def.set(element.getPosition().clone());
+			diff.set(element.getX()-destination.getX(),element.getY()-destination.getY());
+			init = true;
+		}
+		
+		Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
+		float nextX = 0, nextY = 0;
+		if (diff.x < 0)			nextX = def.x-inc.x;
+		else if (diff.x > 0)	nextX = def.x-inc.x;
+		if (diff.y < 0)			nextY = def.y+(diff.y-inc.y);
+		else if (diff.y > 0)	nextY = def.y-(diff.y-inc.y);
+		element.setPosition(nextX,nextY);
+		
+		if (pass >= 1.0) {
+			element.setPosition(destination);
 			isActive = false;
 		}
 	}
