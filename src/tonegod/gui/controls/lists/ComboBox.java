@@ -153,7 +153,7 @@ public abstract class ComboBox extends TextField {
 			screen.addElement(DDList);
 		}
 		pack();
-		refreshSelectedIndex();
+	//	refreshSelectedIndex();
 	}
 	
 	/**

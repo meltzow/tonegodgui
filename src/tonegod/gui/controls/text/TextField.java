@@ -616,6 +616,28 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		setHasFocus(false);
 	}
 	
+	@Override
+	public void setText(String text) {
+		this.text = text;
+		if (textElement == null) {
+			textElement = new BitmapText(font, false);
+			textElement.setBox(new Rectangle(0,0,getDimensions().x,getDimensions().y));
+			centerTextVertically();
+		}
+		textElement.setLineWrapMode(textWrap);
+		textElement.setAlignment(textAlign);
+		textElement.setVerticalAlignment(textVAlign);
+		textElement.setSize(fontSize);
+		textElement.setColor(fontColor);
+		textElement.setText(text);
+		updateTextElement();
+		if (textElement.getParent() == null) {
+			this.attachChild(textElement);
+		//	textElement.move(0,0,getNextZOrder());
+		}
+		centerTextVertically();
+	}
+	
 	private void centerTextVertically() {
 		
 		float height = BitmapTextUtil.getTextLineHeight(this, testString);//widthTest.getHeight()+this.borders.x;

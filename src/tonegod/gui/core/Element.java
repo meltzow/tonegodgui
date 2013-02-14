@@ -121,7 +121,7 @@ public class Element extends Node {
 	protected LineWrapMode textWrap = LineWrapMode.Word;
 	protected BitmapFont.Align textAlign = BitmapFont.Align.Left;
 	protected BitmapFont.VAlign textVAlign = BitmapFont.VAlign.Top;
-	private String text = "";
+	protected String text = "";
 	private String toolTipText = null;
 	
 	protected BitmapFont font;
