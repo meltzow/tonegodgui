@@ -61,6 +61,10 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	private Type type = Type.DEFAULT;
 	private boolean ctrl = false, shift = false, alt = false;
 	private boolean isEnabled = true;
+	private boolean forceUpperCase = false, forceLowerCase = false;
+	private int maxLength = 0;
+	String nextChar;
+	boolean valid;
 	
 	/**
 	 * Creates a new instance of the TextField control
@@ -246,48 +250,57 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 				}
 			} else {
 				if (isEnabled) {
-					if (type == Type.DEFAULT) {
-						textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
-						caretIndex++;
-					} else if (type == Type.ALPHA) {
-						if (validateAlpha.indexOf(String.valueOf(evt.getKeyChar())) != -1) {
-							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
+					nextChar = String.valueOf(evt.getKeyChar());
+					if (forceUpperCase)			nextChar = nextChar.toUpperCase();
+					else if (forceLowerCase)	nextChar = nextChar.toLowerCase();
+					valid = true;
+					if (maxLength > 0) {
+						if (getText().length() >= maxLength) valid =false;
+					}
+					if (valid) {
+						if (type == Type.DEFAULT) {
+							textFieldText.add(caretIndex, nextChar);
 							caretIndex++;
-						}
-					} else if (type == Type.ALPHA_NOSPACE) {
-						if (validateAlpha.indexOf(String.valueOf(evt.getKeyChar())) != -1) {
-							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
-							caretIndex++;
-						}
-					} else if (type == Type.NUMERIC) {
-						if (validateNumeric.indexOf(String.valueOf(evt.getKeyChar())) != -1) {
-							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
-							caretIndex++;
-						}
-					} else if (type == Type.ALPHANUMERIC) {
-						if (validateAlpha.indexOf(String.valueOf(evt.getKeyChar())) != -1 || validateNumeric.indexOf(String.valueOf(evt.getKeyChar())) != -1) {
-							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
-							caretIndex++;
-						}
-					} else if (type == Type.ALPHANUMERIC_NOSPACE) {
-						if (validateAlphaNoSpace.indexOf(String.valueOf(evt.getKeyChar())) != -1 || validateNumeric.indexOf(String.valueOf(evt.getKeyChar())) != -1) {
-							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
-							caretIndex++;
-						}
-					} else if (type == Type.EXCLUDE_SPECIAL) {
-						if (validateSpecChar.indexOf(String.valueOf(evt.getKeyChar())) == -1) {
-							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
-							caretIndex++;
-						}
-					} else if (type == Type.EXCLUDE_CUSTOM) {
-						if (validateCustom.indexOf(String.valueOf(evt.getKeyChar())) == -1) {
-							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
-							caretIndex++;
-						}
-					} else if (type == Type.INCLUDE_CUSTOM) {
-						if (validateCustom.indexOf(String.valueOf(evt.getKeyChar())) != -1) {
-							textFieldText.add(caretIndex, String.valueOf(evt.getKeyChar()));
-							caretIndex++;
+						} else if (type == Type.ALPHA) {
+							if (validateAlpha.indexOf(nextChar) != -1) {
+								textFieldText.add(caretIndex, nextChar);
+								caretIndex++;
+							}
+						} else if (type == Type.ALPHA_NOSPACE) {
+							if (validateAlpha.indexOf(nextChar) != -1) {
+								textFieldText.add(caretIndex, nextChar);
+								caretIndex++;
+							}
+						} else if (type == Type.NUMERIC) {
+							if (validateNumeric.indexOf(nextChar) != -1) {
+								textFieldText.add(caretIndex, nextChar);
+								caretIndex++;
+							}
+						} else if (type == Type.ALPHANUMERIC) {
+							if (validateAlpha.indexOf(nextChar) != -1 || validateNumeric.indexOf(nextChar) != -1) {
+								textFieldText.add(caretIndex, nextChar);
+								caretIndex++;
+							}
+						} else if (type == Type.ALPHANUMERIC_NOSPACE) {
+							if (validateAlphaNoSpace.indexOf(nextChar) != -1 || validateNumeric.indexOf(nextChar) != -1) {
+								textFieldText.add(caretIndex, nextChar);
+								caretIndex++;
+							}
+						} else if (type == Type.EXCLUDE_SPECIAL) {
+							if (validateSpecChar.indexOf(nextChar) == -1) {
+								textFieldText.add(caretIndex, nextChar);
+								caretIndex++;
+							}
+						} else if (type == Type.EXCLUDE_CUSTOM) {
+							if (validateCustom.indexOf(nextChar) == -1) {
+								textFieldText.add(caretIndex, nextChar);
+								caretIndex++;
+							}
+						} else if (type == Type.INCLUDE_CUSTOM) {
+							if (validateCustom.indexOf(nextChar) != -1) {
+								textFieldText.add(caretIndex, nextChar);
+								caretIndex++;
+							}
 						}
 					}
 				}
@@ -529,6 +542,32 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	
 	public boolean getIsEnabled() {
 		return this.isEnabled;
+	}
+	
+	public void setForceUpperCase(boolean forceUpperCase) {
+		this.forceUpperCase = forceUpperCase;
+		this.forceLowerCase = false;
+	}
+	
+	public boolean getForceUpperCase() {
+		return this.forceUpperCase;
+	}
+	
+	public void setForceLowerCase(boolean forceLowerCase) {
+		this.forceLowerCase = forceLowerCase;
+		this.forceUpperCase = false;
+	}
+	
+	public boolean getForceLowerCase() {
+		return this.forceLowerCase;
+	}
+	
+	public void setMaxLength(int maxLength) {
+		this.maxLength = maxLength;
+	}
+	
+	public int getMaxLength() {
+		return this.maxLength;
 	}
 	
 	@Override
