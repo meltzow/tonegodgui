@@ -4,8 +4,6 @@
  */
 package tonegod.gui.controls.buttons;
 
-import com.jme3.audio.AudioNode;
-import com.jme3.cursors.plugins.JmeCursor;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
@@ -15,7 +13,6 @@ import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
