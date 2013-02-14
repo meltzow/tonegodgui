@@ -7,12 +7,15 @@ package tonegod.gui.controls.buttons;
 import com.jme3.audio.AudioNode;
 import com.jme3.cursors.plugins.JmeCursor;
 import com.jme3.font.BitmapFont;
+import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
+import com.jme3.font.Rectangle;
 import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
@@ -22,6 +25,7 @@ import com.jme3.scene.control.Control;
 import com.jme3.texture.Texture;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.KeyboardListener;
 import tonegod.gui.listeners.MouseButtonListener;
@@ -599,5 +603,39 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		if (evt.getKeyCode() == KeyInput.KEY_SPACE) {
 			onMouseLeftReleased(new MouseButtonEvent(0,false,0,0));
 		}
+	}
+	
+	@Override
+	public void setText(String text) {
+		this.text = text;
+		if (textElement == null) {
+			textElement = new BitmapText(font, false);
+			textElement.setBox(new Rectangle(0,0,getDimensions().x,getDimensions().y));
+		}
+		textElement.setLineWrapMode(textWrap);
+		textElement.setAlignment(textAlign);
+		textElement.setVerticalAlignment(textVAlign);
+		textElement.setSize(fontSize);
+		textElement.setColor(fontColor);
+		
+		if (textVAlign == BitmapFont.VAlign.Center) {
+			textElement.setVerticalAlignment(BitmapFont.VAlign.Top);
+			centerTextVertically(text);
+		}
+		
+		textElement.setText(text);
+		updateTextElement();
+		if (textElement.getParent() == null) {
+			this.attachChild(textElement);
+		//	textElement.move(0,0,getNextZOrder());
+		}
+	}
+	/**
+	 * Fix for BitmapFont.VAlign
+	 * @param text 
+	 */
+	private void centerTextVertically(String text) {
+		float height = BitmapTextUtil.getTextLineHeight(this, text);
+		setTextPosition(getTextPosition().x, getHeight()/2-((height-(height*.1f))/2));
 	}
 }
