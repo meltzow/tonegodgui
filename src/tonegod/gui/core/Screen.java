@@ -100,12 +100,15 @@ public class Screen implements Control, RawInputListener {
 	private Vector3f guiRayOrigin = new Vector3f();
 	
 	private Element eventElement = null;
+	private Element targetElement = null;
 	private Element keyboardElement = null;
 	private Element tabFocusElement = null;
 	private Form focusForm = null;
 	private Vector2f eventElementOriginXY = new Vector2f();
 	private float eventElementOffsetX = 0;
 	private float eventElementOffsetY = 0;
+	private float targetElementOffsetX = 0;
+	private float targetElementOffsetY = 0;
 	private Borders eventElementResizeDirection = null;
 	private Element mouseFocusElement = null;
 	private Element previousMouseFocusElement = null;
@@ -426,6 +429,10 @@ public class Screen implements Control, RawInputListener {
 			}
 		} else {
 			if (eventElement != null) {
+				if (eventElement.getIsDragDropDragElement())
+					targetElement = getTargetElement(evt.getX(), evt.getY());
+				else
+					targetElement = null;
 				if (mouseLeftPressed) {
 					if (eventElementResizeDirection != null) {
 						eventElement.resize(evt.getX(), evt.getY(), eventElementResizeDirection);
@@ -655,6 +662,74 @@ public class Screen implements Control, RawInputListener {
 		} else {
 			return null;
 		}
+	}
+	
+	/**
+	 * Determines and returns the current mouse focus Element
+	 * @param x The current mouse X coord
+	 * @param y The current mouse Y coord
+	 * @return Element eventElement
+	 */
+	private Element getTargetElement(float x, float y) {
+		guiRayOrigin.set(x, y, 0f);
+		
+		elementZOrderRay.setOrigin(guiRayOrigin);
+		CollisionResults results = new CollisionResults();
+
+		t0neg0dGUI.collideWith(elementZOrderRay, results);
+
+		float z = 0;
+		Element testEl = null, el = null;
+		for (CollisionResult result : results) {
+			boolean discard = false;
+			if (result.getGeometry().getParent() instanceof Element) {
+				testEl = ((Element)(result.getGeometry().getParent()));
+				if (testEl.getIgnoreMouse() || !testEl.getIsDragDropDropElement()) {
+					discard = true;
+				} else if (testEl.getIsClipped()) {
+					if (result.getContactPoint().getX() < testEl.getClippingBounds().getX() ||
+						result.getContactPoint().getX() > testEl.getClippingBounds().getZ() ||
+						result.getContactPoint().getY() < testEl.getClippingBounds().getY() ||
+						result.getContactPoint().getY() > testEl.getClippingBounds().getW()) {
+						discard = true;
+					}
+				}
+			}
+		//	System.out.println(testEl.getUID() + ": " + discard + ": " + testEl.getLocalTranslation().getZ() + ": " + z + ": " + result.getContactPoint().getZ());
+			if (!discard) {
+				
+				if (result.getContactPoint().getZ() > z) {
+					z = result.getContactPoint().getZ();
+					if (result.getGeometry().getParent() instanceof Element) {
+						el = testEl;//((Element)(result.getGeometry().getParent()));
+					}
+				}
+			}
+		}
+		if (el != null) {
+			Element parent = null;
+			if (el.getEffectParent() && mousePressed) {
+				parent = el.getElementParent();
+			} else if (el.getEffectAbsoluteParent() && mousePressed) {
+				parent = el.getAbsoluteParent();
+			}
+			if (parent != null) {
+				el = parent;
+			}
+			targetElementOffsetX = x-el.getX();
+			targetElementOffsetY = y-el.getY();
+			return el;
+		} else {
+			return null;
+		}
+	}
+	
+	public Element getDragElement() {
+		return this.eventElement;
+	}
+	
+	public Element getDropElement() {
+		return this.targetElement;
 	}
 	
 	/**

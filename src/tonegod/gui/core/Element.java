@@ -157,6 +157,7 @@ public class Element extends Node {
 	
 	private Object elementUserData;
 	
+	private boolean isDragElement = false, isDropElement = false;
 	/**
 	 * The Element class is the single primitive for all controls in the gui library.
 	 * Each element consists of an ElementQuadMesh for rendering resizable textures,
@@ -742,6 +743,26 @@ public class Element extends Node {
 	private void updateNodeLocation() {
 		this.setLocalTranslation(position.x, position.y, this.getLocalTranslation().getZ());
 		updateClipping();
+	}
+	
+	public void setIsDragDropDragElement(boolean isDragElement) {
+		this.isDragElement = isDragElement;
+		if (isDragElement)
+			this.isDropElement = false;
+	}
+	
+	public boolean getIsDragDropDragElement() {
+		return this.isDragElement;
+	}
+	
+	public void setIsDragDropDropElement(boolean isDropElement) {
+		this.isDropElement = isDropElement;
+		if (isDropElement)
+			this.isDragElement = false;
+	}
+	
+	public boolean getIsDragDropDropElement() {
+		return this.isDropElement;
 	}
 	
 	/**
