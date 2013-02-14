@@ -181,6 +181,11 @@ public class Indicator extends Element {
 		
 	}
 	
+	/**
+	 * Use this method in place of setScaleEW and setScaleNE
+	 * @param scaleNS
+	 * @param scaleEW 
+	 */
 	public void setScaling(boolean scaleNS, boolean scaleEW) {
 		setScaleNS(scaleNS);
 		elIndicator.setScaleNS(scaleNS);
@@ -195,29 +200,53 @@ public class Indicator extends Element {
 		refactorIndicator();
 	}
 	
+	/**
+	 * Returns the Indicator.Orientation of the Indicator instance
+	 * @return 
+	 */
 	public Orientation getOrientation() {
 		return this.orientation;
 	}
 	
+	/**
+	 * Sets the ColorRGBA value of the Indicator
+	 * @param indicatorColor 
+	 */
 	public void setIndicatorColor(ColorRGBA indicatorColor) {
 		this.indicatorColor = indicatorColor;
 		elIndicator.getElementMaterial().setColor("Color", this.indicatorColor);
 	}
 	
+	/**
+	 * Set the maximum value (e.g. float  = 100%)
+	 * @param maxValue 
+	 */
 	public void setMaxValue(float maxValue) {
 		this.maxValue = maxValue;
 		refactorIndicator();
 	}
 	
+	/**
+	 * Returns the maximum value set for the Indicator
+	 * @return 
+	 */
 	public float getMaxValue() {
 		return this.maxValue;
 	}
 	
+	/**
+	 * Sets the current value of the Indicator
+	 * @param currentValue 
+	 */
 	public void setCurrentValue(float currentValue) {
 		this.currentValue = currentValue;
 		refactorIndicator();
 	}
 	
+	/**
+	 * Returns the current value of the Indicator
+	 * @return 
+	 */
 	public float getCurrentValue() {
 		return this.currentValue;
 	}
@@ -255,34 +284,59 @@ public class Indicator extends Element {
 		}
 	}
 	
+	/**
+	 * Returns current value as a percent of the max value
+	 * @return 
+	 */
 	public float getCurrentPercentage() {
 		return this.percentage;
 	}
 	
+	/**
+	 * Applies and alpha map to the indicator, allowing for  curved shapes
+	 * @param alphaMapPath 
+	 */
 	public void setIndicatorAlphaMap(String alphaMapPath) {
 		this.alphaMapPath = alphaMapPath;
 		elIndicator.setAlphaMap(this.alphaMapPath);
 	}
 	
+	/**
+	 * Return the element used for displaying overlay text
+	 * @return 
+	 */
 	public Element getTextDisplayElement() {
 		return this.elOverlay;
 	}
 	
+	/**
+	 * Sets the display text to format as currentValue / maxValue
+	 */
 	public void setDisplayValues() {
 		this.displayPercentages = false;
 		this.displayValues = true;
 	}
 	
+	/**
+	 * Sets the display text to current value as percent %
+	 */
 	public void setDisplayPercentage() {
 		this.displayPercentages = true;
 		this.displayValues = false;
 	}
 	
+	/**
+	 * Hides the overlay display text
+	 */
 	public void setHideText() {
 		this.displayPercentages = false;
 		this.displayValues = false;
 	}
 	
+	/**
+	 * Set the image to use behind the indicator
+	 * @param imgPath 
+	 */
 	public void setBaseImage(String imgPath) {
 		Texture tex = screen.getApplication().getAssetManager().loadTexture(imgPath);
 		tex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);

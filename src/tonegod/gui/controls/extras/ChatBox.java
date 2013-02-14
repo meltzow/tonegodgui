@@ -164,6 +164,10 @@ public abstract class ChatBox extends Panel {
 		}
 	}
 	
+	/**
+	 * Call this method to display a server message in the ChatBox text area
+	 * @param msg The server message to display
+	 */
 	public void receiveMsg(String msg) {
 		chatMessages.add(msg);
 		updateChatHistory();
@@ -190,15 +194,32 @@ public abstract class ChatBox extends Panel {
 		saChatArea.scrollToBottom();
 	}
 	
+	/**
+	 * Sets the keyboard key code to use to send messages
+	 * @param sendKey 
+	 */
 	public void setSendKey(int sendKey) {
 		this.sendKey = sendKey;
 	}
 	
+	/**
+	 * Abstract event method that is called when the user sends a message
+	 * @param msg 
+	 */
 	public abstract void onSendMsg(String msg);
 	
+	/**
+	 * Sets the ToolTip text for mouse focus of the TextField input
+	 * @param tip 
+	 */
 	public void setToolTipTextInput(String tip) {
 		this.tfChatInput.setToolTipText(tip);
 	}
+	
+	/**
+	 * Sets the ToolTip text for mouse focus of the Send button
+	 * @param tip 
+	 */
 	public void setToolTipSendButton(String tip) {
 		this.btnChatSendMsg.setToolTipText(tip);
 	}

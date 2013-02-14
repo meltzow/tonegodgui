@@ -301,7 +301,12 @@ public abstract class ChatBoxExt extends Panel {
 		}
 	}
 	
-	public void receiveMsg(String command, String msg) {
+	/**
+	 * Call this method to display a message
+	 * @param command The object associated with the appropriate ChatChannel
+	 * @param msg The String message to display
+	 */
+	public void receiveMsg(Object command, String msg) {
 	//	System.out.println(command);
 		ChatChannel channel = getChannelByCommand(command);
 		chatMessages.add(new ChatMessage(channel, msg));
@@ -372,12 +377,30 @@ public abstract class ChatBoxExt extends Panel {
 		return l;
 	}
 	
+	/**
+	 * Sets the keyboard key code to send messages (in place of the send button)
+	 * @param sendKey 
+	 */
 	public void setSendKey(int sendKey) {
 		this.sendKey = sendKey;
 	}
 	
-	public abstract void onSendMsg(String command, String msg);
+	/**
+	 * Abstract event method called when the user sends a message
+	 * @param command The Object associated with the appropriate ChatChannel for the message
+	 * @param msg The String message to display
+	 */
+	public abstract void onSendMsg(Object command, String msg);
 	
+	/**
+	 * Adds a ChatChannel that messages are display under and are filtered by
+	 * @param UID The unique string identifier of the ChatChannel
+	 * @param name The ChatChannel display name
+	 * @param command The command associated with the ChatChannel (e.g. /group /say /ooc etc)
+	 * @param filterDisplayText The text to display for this ChatChannel in the Chat Filters window
+	 * @param color The ColorRGBA to use when displaying messages associated with the ChatChannel
+	 * @param visibleToUser 
+	 */
 	public final void addChatChannel(String UID, String name, Object command, String filterDisplayText, ColorRGBA color, boolean visibleToUser) {
 		channels.add(new ChatChannel(UID, name, command, filterDisplayText, color, visibleToUser));
 		if (visibleToUser) {
@@ -408,6 +431,10 @@ public abstract class ChatBoxExt extends Panel {
 		return c;
 	}
 	
+	/**
+	 * Hides/Shows the Filter Window button
+	 * @param showFilterButton 
+	 */
 	public void showFilterButton(boolean showFilterButton) {
 		if (showFilterButton) {
 			if (btnChatFilter.getParent() == null) {
@@ -435,6 +462,10 @@ public abstract class ChatBoxExt extends Panel {
 		this.showFilterButton = showFilterButton;
 	}
 	
+	/**
+	 * Hides/Shows the Send Button
+	 * @param showSendButton 
+	 */
 	public void showSendButton(boolean showSendButton) {
 		if (showSendButton) {
 			if (btnChatSendMsg.getParent() == null) {
@@ -502,6 +533,11 @@ public abstract class ChatBoxExt extends Panel {
 		public String getFilterDisplayText() { return filterDisplayText; }
 	}
 	
+	/**
+	 * Called by the Chat Filter Window.
+	 * @param channel
+	 * @param filter 
+	 */
 	public void setChannelFiltered(ChatChannel channel, boolean filter) {
 		channel.setIsFiltered(filter);
 		rebuildChat();
@@ -578,9 +614,18 @@ public abstract class ChatBoxExt extends Panel {
 	//		checkbox.hide();
 	}
 	
+	/**
+	 * Sets the ToolTip text to display for mouse focus of the TextField input
+	 * @param tip 
+	 */
 	public void setToolTipTextInput(String tip) {
 		this.tfChatInput.setToolTipText(tip);
 	}
+	
+	/**
+	 * Sets the ToolTip text to display for mouse focus of the Send button
+	 * @param tip 
+	 */
 	public void setToolTipSendButton(String tip) {
 		this.btnChatSendMsg.setToolTipText(tip);
 	}

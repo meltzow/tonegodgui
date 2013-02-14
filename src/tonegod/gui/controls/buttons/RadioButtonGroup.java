@@ -15,21 +15,29 @@ import tonegod.gui.core.Screen;
  * @author t0neg0d
  */
 public abstract class RadioButtonGroup {
-	Screen screen;
-	String UID;
+	private Screen screen;
+	private String UID;
 	private List<Button> radioButtons = new ArrayList();
-	int selectedIndex = -1;
-	Button selected = null;
+	private int selectedIndex = -1;
+	private Button selected = null;
 	
 	public RadioButtonGroup(Screen screen, String UID) {
 		this.screen = screen;
 		this.UID = UID;
 	}
 	
+	/**
+	 * Returns the String unique ID of the RadioButtonGroup
+	 * @return 
+	 */
 	public String getUID() {
 		return this.UID;
 	}
 	
+	/**
+	 * Adds any Button or extended class and enables the Button's Radio state
+	 * @param button 
+	 */
 	public void addButton(Button button) {
 		button.setRadioButtonGroup(this);
 		radioButtons.add(button);
@@ -38,6 +46,10 @@ public abstract class RadioButtonGroup {
 			setSelected(0);
 	}
 	
+	/**
+	 * Sets the current selected Radio Button to the Button associated with the provided index
+	 * @param index 
+	 */
 	public void setSelected(int index) {
 		if (index >= 0 && index < radioButtons.size()) {
 			Button rb = radioButtons.get(index);
@@ -51,6 +63,10 @@ public abstract class RadioButtonGroup {
 		}
 	}
 	
+	/**
+	 * Sets the current selected Radio Button to the Button instance provided
+	 * @param index 
+	 */
 	protected void setSelected(Button button) {
 		this.selected = button;
 		this.selectedIndex = radioButtons.indexOf(button);
@@ -63,8 +79,17 @@ public abstract class RadioButtonGroup {
 		onSelect(selectedIndex, button);
 	}
 	
+	/**
+	 * Abstract event method for change in selected Radio Button
+	 * @param index The index of the selected button
+	 * @param value The selected button instance
+	 */
 	public abstract void onSelect(int index, Button value);
 	
+	/**
+	 * An alternate way to add all Radio Buttons as children to the provided Element
+	 * @param element The element to add Radio Button's to.  null = Screen
+	 */
 	public void setDisplayElement(Element element) {
 		for (Button rb : radioButtons) {
 			if (screen.getElementById(rb.getUID()) == null) {

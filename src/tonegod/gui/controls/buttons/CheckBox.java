@@ -110,6 +110,10 @@ public class CheckBox extends ButtonAdapter {
 		populateEffects("CheckBox");
 	}
 	
+	/**
+	 * Sets text for the check Label
+	 * @param text 
+	 */
 	public void setLabelText(String text) {
 		if (label.getParent() != null) {
 			elementChildren.remove(label.getUID());
@@ -141,10 +145,18 @@ public class CheckBox extends ButtonAdapter {
 		addChild(label);
 	}
 	
+	/**
+	 * Checks/unchecks the checkbox
+	 * @param isChecked 
+	 */
 	public void setIsChecked(boolean isChecked) {
 		setIsToggled(isChecked);
 	}
 	
+	/**
+	 * Returns if the checkbox is checked/unchecked
+	 * @return 
+	 */
 	public boolean getIsChecked() {
 		return this.getIsToggled();
 	}

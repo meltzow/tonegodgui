@@ -173,6 +173,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		return this.isRadioButton;
 	}
 	
+	/**
+	 * Set a toggle button state to toggled/untoggled
+	 * @param isToggled boolean
+	 */
 	public void setIsToggled(boolean isToggled) {
 		this.isToggled = isToggled;
 		
@@ -468,10 +472,18 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		setHasFocus(false);
 	}
 	
+	/**
+	 * Enables/disbale hover effect sound
+	 * @param useHoverSound 
+	 */
 	public void setUseButtonHoverSound(boolean useHoverSound) {
 		this.useHoverSound = useHoverSound;
 	}
 	
+	/**
+	 * Enable/disable pressed effect sound
+	 * @param usePressedSound 
+	 */
 	public void setUseButtonPressedSound(boolean usePressedSound) {
 		this.usePressedSound = usePressedSound;
 	}
