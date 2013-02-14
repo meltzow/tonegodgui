@@ -121,6 +121,8 @@ public abstract class LoginBox extends Window {
 			new Vector4f(0,0,0,0),
 			null
 		);
+		responseMsg.setIsResizable(false);
+		responseMsg.setIgnoreMouse(true);
 		responseMsg.setDockN(true);
 		responseMsg.setDockW(true);
 		responseMsg.setScaleEW(true);
