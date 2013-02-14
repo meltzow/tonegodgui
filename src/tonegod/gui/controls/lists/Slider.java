@@ -288,6 +288,12 @@ public abstract class Slider extends ButtonAdapter {
 		}
 	}
 	
+	/**
+	 * Auto-populates stepValue with Integer values using the provided parameters
+	 * @param min Lowest number
+	 * @param max Highest number
+	 * @param inc Incremental step
+	 */
 	public void setStepIntegerRange(int min, int max, int inc) {
 		stepValues.clear();
 		isStepped = false;
@@ -299,6 +305,12 @@ public abstract class Slider extends ButtonAdapter {
 			setSelectedIndex(0);
 	}
 	
+	/**
+	 * Auto-populates stepValue with Float values using the provided parameters
+	 * @param min Lowest number
+	 * @param max Highest number
+	 * @param inc Incremental step
+	 */
 	public void setStepFloatRange(float min, float max, float inc) {
 		stepValues.clear();
 		isStepped = false;
@@ -348,6 +360,10 @@ public abstract class Slider extends ButtonAdapter {
 	//	System.out.println("Slider: " + (getHeight()-controlSize));
 	}
 	
+	/**
+	 * Returns the current selected stepValue's value
+	 * @return 
+	 */
 	public Object getSelectedValue() {
 		return stepValues.get(selectedIndex);
 	}
@@ -373,6 +389,10 @@ public abstract class Slider extends ButtonAdapter {
 		else			onChange(selectedIndex, selectedIndex);
 	}
 	
+	/**
+	 * Sets the selectedIndex to the provided index and updates appropriately
+	 * @param selectedIndex 
+	 */
 	public void setSelectedIndex(int selectedIndex) {
 		if (isStepped) {
 			if (selectedIndex < 0)							selectedIndex = 0;

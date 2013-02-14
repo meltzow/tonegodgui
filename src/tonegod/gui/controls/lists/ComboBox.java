@@ -362,6 +362,11 @@ public abstract class ComboBox extends TextField {
 		if (DDList.getIsVisible()) DDList.setHighlight(index);
 	}
 	
+	/**
+	 * Abstract event method called when a list item is selected/navigated to.
+	 * @param selectedIndex
+	 * @param value 
+	 */
 	public abstract void onChange(int selectedIndex, Object value);
 	
 	/**
@@ -389,10 +394,18 @@ public abstract class ComboBox extends TextField {
 		return this.DDList.getMenuItem(index);
 	}
 	
+	/**
+	 * Returns a List of all ListItems 
+	 * @return 
+	 */
 	public List<MenuItem> getListItems() {
 		return DDList.getMenuItems();
 	}
 	
+	/**
+	 * Returns a pointer to the dropdown list (Menu)
+	 * @return 
+	 */
 	public Menu getMenu() {
 		return this.DDList;
 	}
