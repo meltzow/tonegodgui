@@ -42,7 +42,7 @@ public class Form {
 	/**
 	 * A useless, but very funny method
 	 * @param element
-	 * @return 
+	 * @return Element
 	 */
 	public Element getFormElement(Element element) {
 		if (elements.contains(element))
@@ -54,7 +54,7 @@ public class Form {
 	/**
 	 * Returns the element containing the specified UID, or null if it does not exist
 	 * @param UID
-	 * @return 
+	 * @return Element
 	 */
 	public Element getFormElementByID(String UID) {
 		Element ret = null;

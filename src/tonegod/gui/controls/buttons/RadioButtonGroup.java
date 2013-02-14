@@ -28,7 +28,7 @@ public abstract class RadioButtonGroup {
 	
 	/**
 	 * Returns the String unique ID of the RadioButtonGroup
-	 * @return 
+	 * @return String
 	 */
 	public String getUID() {
 		return this.UID;
@@ -65,7 +65,7 @@ public abstract class RadioButtonGroup {
 	
 	/**
 	 * Sets the current selected Radio Button to the Button instance provided
-	 * @param index 
+	 * @param button 
 	 */
 	protected void setSelected(Button button) {
 		this.selected = button;

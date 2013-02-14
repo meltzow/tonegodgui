@@ -199,7 +199,7 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 	
 	/**
 	 * Returns the OSRBridge instance for the OSRViewPort
-	 * @return 
+	 * @return OSRBridge
 	 */
 	public OSRBridge getOSRBridge() {
 		return this.bridge;

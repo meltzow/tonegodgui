@@ -362,7 +362,7 @@ public abstract class Slider extends ButtonAdapter {
 	
 	/**
 	 * Returns the current selected stepValue's value
-	 * @return 
+	 * @return Object
 	 */
 	public Object getSelectedValue() {
 		return stepValues.get(selectedIndex);

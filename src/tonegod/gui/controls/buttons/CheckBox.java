@@ -155,7 +155,7 @@ public class CheckBox extends ButtonAdapter {
 	
 	/**
 	 * Returns if the checkbox is checked/unchecked
-	 * @return 
+	 * @return boolean
 	 */
 	public boolean getIsChecked() {
 		return this.getIsToggled();

@@ -236,7 +236,7 @@ public abstract class ComboBox extends TextField {
 	
 	/**
 	 * Returns false if list is empty, true if list contains List Items
-	 * @return 
+	 * @return boolean
 	 */
 	public boolean validateListSize() {
 		if (DDList == null)
@@ -371,7 +371,7 @@ public abstract class ComboBox extends TextField {
 	
 	/**
 	 * Returns the current selected index
-	 * @return 
+	 * @return selectedIndex
 	 */
 	public int getSelectIndex() {
 		return this.selectedIndex;
@@ -379,7 +379,7 @@ public abstract class ComboBox extends TextField {
 	
 	/**
 	 * Returns the object representing the current selected List Item
-	 * @return 
+	 * @return MenuITem
 	 */
 	public MenuItem getSelectedListItem() {
 		return this.DDList.getMenuItem(selectedIndex);
@@ -388,7 +388,7 @@ public abstract class ComboBox extends TextField {
 	/**
 	 * Returns the object representing the list item at the specified index
 	 * @param index
-	 * @return 
+	 * @return MenuItem
 	 */
 	public MenuItem getListItemByIndex(int index) {
 		return this.DDList.getMenuItem(index);
@@ -396,7 +396,7 @@ public abstract class ComboBox extends TextField {
 	
 	/**
 	 * Returns a List of all ListItems 
-	 * @return 
+	 * @return List<MenuItem>
 	 */
 	public List<MenuItem> getListItems() {
 		return DDList.getMenuItems();
@@ -404,7 +404,7 @@ public abstract class ComboBox extends TextField {
 	
 	/**
 	 * Returns a pointer to the dropdown list (Menu)
-	 * @return 
+	 * @return DDList
 	 */
 	public Menu getMenu() {
 		return this.DDList;

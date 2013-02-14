@@ -202,7 +202,7 @@ public class Indicator extends Element {
 	
 	/**
 	 * Returns the Indicator.Orientation of the Indicator instance
-	 * @return 
+	 * @return Indicator.Orientation
 	 */
 	public Orientation getOrientation() {
 		return this.orientation;
@@ -228,7 +228,7 @@ public class Indicator extends Element {
 	
 	/**
 	 * Returns the maximum value set for the Indicator
-	 * @return 
+	 * @return maxValue
 	 */
 	public float getMaxValue() {
 		return this.maxValue;
@@ -245,7 +245,7 @@ public class Indicator extends Element {
 	
 	/**
 	 * Returns the current value of the Indicator
-	 * @return 
+	 * @return currentValue
 	 */
 	public float getCurrentValue() {
 		return this.currentValue;
@@ -286,7 +286,7 @@ public class Indicator extends Element {
 	
 	/**
 	 * Returns current value as a percent of the max value
-	 * @return 
+	 * @return percentage
 	 */
 	public float getCurrentPercentage() {
 		return this.percentage;
@@ -303,7 +303,7 @@ public class Indicator extends Element {
 	
 	/**
 	 * Return the element used for displaying overlay text
-	 * @return 
+	 * @return elOverlay
 	 */
 	public Element getTextDisplayElement() {
 		return this.elOverlay;

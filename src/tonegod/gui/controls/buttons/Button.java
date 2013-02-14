@@ -278,7 +278,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 * If called, an overlay icon is added to the button.  This icon is centered by default
 	 * 
 	 * @param width width to display icon
-	 * @param heightheight to display icon
+	 * @param height to display icon
 	 * @param texturePath The path of the image to use as the icon overlay
 	 */
 	public void setButtonIcon(float width, float height, String texturePath) {

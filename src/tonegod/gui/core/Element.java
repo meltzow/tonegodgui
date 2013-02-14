@@ -1817,7 +1817,7 @@ public class Element extends Node {
 	 * Retrieves the Effect associated with the specified Effect.EffectEvent
 	 * 
 	 * @param effectEvent
-	 * @return 
+	 * @return effect
 	 */
 	public Effect getEffect(Effect.EffectEvent effectEvent) {
 		Effect effect = null;
@@ -1885,7 +1885,7 @@ public class Element extends Node {
 	
 	/**
 	 * Returns the tab index assigned by the Form control
-	 * @return 
+	 * @return tabIndex
 	 */
 	public int getTabIndex() {
 		return tabIndex;
