@@ -433,10 +433,6 @@ public class Screen implements Control, RawInputListener {
 			}
 		} else {
 			if (eventElement != null) {
-				if (eventElement.getIsDragDropDragElement())
-					targetElement = getTargetElement(evt.getX(), evt.getY());
-			//	else
-			//		targetElement = null;
 				if (mouseLeftPressed) {
 					if (eventElementResizeDirection != null) {
 						eventElement.resize(evt.getX(), evt.getY(), eventElementResizeDirection);
@@ -467,6 +463,8 @@ public class Screen implements Control, RawInputListener {
 					if (eventElement != null) {
 						updateZOrder(eventElement.getAbsoluteParent());
 						this.setTabFocusElement(eventElement);
+						if (eventElement.getIsDragDropDragElement())
+							targetElement = null;
 						if (eventElement.getIsResizable()) {
 							float offsetX = evt.getX();
 							float offsetY = evt.getY();
@@ -556,6 +554,8 @@ public class Screen implements Control, RawInputListener {
 				case 0:
 					mouseLeftPressed = false;
 					eventElementResizeDirection = null;
+					if (eventElement.getIsDragDropDragElement())
+						targetElement = getTargetElement(evt.getX(), evt.getY());
 					if (eventElement instanceof MouseButtonListener) {
 						((MouseButtonListener)eventElement).onMouseLeftReleased(evt);
 					}
