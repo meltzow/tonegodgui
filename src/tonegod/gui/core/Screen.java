@@ -554,8 +554,8 @@ public class Screen implements Control, RawInputListener {
 				case 0:
 					mouseLeftPressed = false;
 					eventElementResizeDirection = null;
-					if (eventElement.getIsDragDropDragElement())
-						targetElement = getTargetElement(evt.getX(), evt.getY());
+				//	if (eventElement.getIsDragDropDragElement())
+					targetElement = getTargetElement(evt.getX(), evt.getY());
 					if (eventElement instanceof MouseButtonListener) {
 						((MouseButtonListener)eventElement).onMouseLeftReleased(evt);
 					}
