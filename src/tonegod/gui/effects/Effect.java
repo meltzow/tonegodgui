@@ -341,8 +341,8 @@ public class Effect implements Cloneable {
 		float nextX = 0, nextY = 0;
 		if (diff.x < 0)			nextX = def.x-inc.x;
 		else if (diff.x > 0)	nextX = def.x-inc.x;
-		if (diff.y < 0)			nextY = def.y+(diff.y-inc.y);
-		else if (diff.y > 0)	nextY = def.y-(diff.y-inc.y);
+		if (diff.y < 0)			nextY = def.y-inc.y;
+		else if (diff.y > 0)	nextY = def.y-inc.y;
 		element.setPosition(nextX,nextY);
 		
 		if (pass >= 1.0) {
