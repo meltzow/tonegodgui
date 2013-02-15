@@ -104,11 +104,10 @@ public abstract class DragElement extends Element implements MouseButtonListener
 	 * Returns the DragElement's original position
 	 * @return Vector2f originalPosition
 	 */
-	/*
 	public Vector2f getOriginalPosition() {
 		return this.originalPosition;
 	}
-	*/
+	
 	/**
 	 * Enables/disables the DragElement
 	 * @param isEnabled boolean

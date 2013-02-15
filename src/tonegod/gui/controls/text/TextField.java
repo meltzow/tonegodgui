@@ -51,7 +51,9 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	private String testString = "Gg|/X";
 	private Element caret;
 	private Material caretMat;
-	protected int caretIndex = 0, head = 0, tail = 0, rangeHead = -1, rangeTail = -1;
+	protected int caretIndex = 0, head = 0, tail = 0;
+	protected int rangeHead = -1, rangeTail = -1;
+	protected int visibleHead = -1, visibleTail = -1;
 	protected List<String> textFieldText = new ArrayList();
 	protected String finalText = "", visibleText = "", textRangeText = "";
 	protected BitmapText widthTest;
@@ -240,39 +242,40 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 			}
 		//	updateTextElement();
 		} else if (evt.getKeyCode() == KeyInput.KEY_LEFT) {
-			if (caretIndex > 0) {
+			if (!shift) resetTextRange();
+			if (caretIndex > -1) {
+				if (!shift) setTextRangeStart(caretIndex);
+				
 				if (!ctrl)
 					caretIndex--;
 				else
-					caretIndex = finalText.substring(0,caretIndex-1).lastIndexOf(" ")+1;
+					if (caretIndex > 0) caretIndex = finalText.substring(0,caretIndex-1).lastIndexOf(" ")+1;
+					else				caretIndex = finalText.substring(0,caretIndex).lastIndexOf(" ")+1;
 				if (caretIndex < 0)
 					caretIndex = 0;
-				if (!shift) {
-					resetTextRange();
-					setTextRangeStart(caretIndex);
-				} else {
-					setTextRangeEnd(caretIndex);
-				}
+				
+			//	if (shift) setTextRangeEnd(caretIndex);
 			}
 		} else if (evt.getKeyCode() == KeyInput.KEY_RIGHT) {
-			if (caretIndex < textFieldText.size()) {
+			if (!shift) resetTextRange();
+			if (caretIndex <= textFieldText.size()) {
+				if (!shift) {
+					if (caretIndex < textFieldText.size())	setTextRangeStart(caretIndex);
+					else									setTextRangeStart(caretIndex-1);
+				}
+				
 				if (!ctrl)
 					caretIndex++;
 				else {
-					if (finalText.substring(caretIndex+1, finalText.length()).indexOf(" ") != -1)
-						
-						caretIndex += finalText.substring(caretIndex+1, finalText.length()).indexOf(" ")+2;
+					if (finalText.substring(caretIndex, finalText.length()).indexOf(" ") != -1)
+						caretIndex += finalText.substring(caretIndex, finalText.length()).indexOf(" ")+1;
 					else
 						caretIndex = finalText.length();
 				}
 				if (caretIndex > finalText.length())
 					caretIndex = finalText.length();
-				if (!shift) {
-					resetTextRange();
-					setTextRangeStart(caretIndex);
-				} else {
-					setTextRangeEnd(caretIndex);
-				}
+				
+			//	if (shift) setTextRangeEnd(caretIndex);
 			}
 		} else if (evt.getKeyCode() == KeyInput.KEY_END || evt.getKeyCode() == KeyInput.KEY_NEXT || evt.getKeyCode() == KeyInput.KEY_DOWN) {
 			caretIndex = textFieldText.size();
@@ -344,6 +347,8 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 			}
 		}
 		this.setText(getVisibleText());
+		
+		if (shift && (evt.getKeyCode() == KeyInput.KEY_LEFT || evt.getKeyCode() == KeyInput.KEY_RIGHT)) setTextRangeEnd(caretIndex);
 		
 		centerTextVertically();
 		
@@ -438,7 +443,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		widthTest = new BitmapText(font, false);
 		widthTest.setBox(null);
 		widthTest.setSize(getFontSize());
-		
+
 		int index1 = 0, index2;
 		widthTest.setText(finalText.substring(index1));
 		while(widthTest.getLineWidth() > getWidth()) {
@@ -447,7 +452,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 			index1++;
 			widthTest.setText(finalText.substring(index1));
 		}
-		
+
 		index2 = finalText.length()-1;
 		if (index2 == caretIndex && caretIndex != textFieldText.size()) {
 			index2 = caretIndex+1;
@@ -461,7 +466,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		}
 		if (index2 != textFieldText.size())
 			index2++;
-		
+
 		if (head != index1 || tail != index2) {
 			head = index1;
 			tail = index2;
@@ -471,7 +476,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		} else {
 			visibleText = "";
 		}
-		
+
 		widthTest.setText(finalText.substring(head, caretIndex));
 		caretX = widthTest.getLineWidth();
 		setCaretPosition(getAbsoluteX()+caretX);
@@ -485,6 +490,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 			textRange.setWidth(rangeW);
 		}
 		*/
+		
 		return visibleText;
 	}
 	
@@ -509,7 +515,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		int index1 = visibleText.length();
 		if (visibleText.length() > 0) {
 			widthTest.setText(visibleText.substring(0, index1));
-			while(caret.getAbsoluteX()+widthTest.getLineWidth() > x) {
+			while(caret.getAbsoluteX()+widthTest.getLineWidth() > (x+getTextPadding())) {
 				index1--;
 				widthTest.setText(visibleText.substring(0, index1));
 			}
@@ -547,13 +553,18 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		if (!visibleText.equals("")) {
 		//	System.out.println("Setting text range start to: " + head);
 			rangeHead = head;
-			if (head-this.head <= 0)
+		/*	if (head-this.head <= 0)
 				widthTest.setText("");
 			else if(head-this.head < visibleText.length())
 				widthTest.setText(visibleText.substring(0, head-this.head));
 			else
 				widthTest.setText(visibleText);
-			caret.getMaterial().setFloat("TextRangeStart", getAbsoluteX()+widthTest.getLineWidth()+getTextPadding());
+			
+			float rangeX = getTextPadding();
+			if (head >= this.head)
+				rangeX = getAbsoluteX()+widthTest.getLineWidth()+getTextPadding();
+			caret.getMaterial().setFloat("TextRangeStart", rangeX);
+			*/
 		}
 	}
 	
@@ -564,6 +575,17 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	private void setTextRangeEnd(int tail) {
 		if (!visibleText.equals("") && rangeHead != -1) {
 		//	System.out.println("Setting text range end to: " + tail);
+			if (rangeHead-this.head <= 0)
+				widthTest.setText("");
+			else if(rangeHead-this.head < visibleText.length())
+				widthTest.setText(visibleText.substring(0, rangeHead-this.head));
+			else
+				widthTest.setText(visibleText);
+			
+			float rangeX = getTextPadding();
+			if (rangeHead >= this.head)
+				rangeX = getAbsoluteX()+widthTest.getLineWidth()+getTextPadding();
+			
 			rangeTail = tail;
 			if (tail-this.head <= 0)
 				widthTest.setText("");
@@ -571,9 +593,25 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 				widthTest.setText(visibleText.substring(0, tail-this.head));
 			else
 				widthTest.setText(visibleText);
+			
 			textRangeText = (rangeHead < rangeTail) ? finalText.substring(rangeHead, rangeTail) : finalText.substring(rangeTail, rangeHead);
-			caret.getMaterial().setFloat("TextRangeEnd", getAbsoluteX()+widthTest.getLineWidth()+getTextPadding());
-		caret.getMaterial().setBoolean("ShowTextRange", true);
+			
+			float rangeW = getTextPadding();
+			if (rangeTail <= this.tail)
+				rangeW = getAbsoluteX()+widthTest.getLineWidth()+getTextPadding();
+			
+		//	System.out.println(rangeX + " : " + rangeW);
+			if (rangeHead > rangeTail) {
+				caret.getMaterial().setFloat("TextRangeStart", rangeW);
+				caret.getMaterial().setFloat("TextRangeEnd", rangeX);
+			} else {
+				caret.getMaterial().setFloat("TextRangeStart", rangeX);
+				caret.getMaterial().setFloat("TextRangeEnd", rangeW);
+			}
+			
+		//	System.out.println(this.head + " : " + this.tail + " - " + this.rangeHead + " : " + this.rangeTail);
+		//	caret.getMaterial().setFloat("TextRangeEnd", getAbsoluteX()+widthTest.getLineWidth()+getTextPadding());
+			caret.getMaterial().setBoolean("ShowTextRange", true);
 		}
 	}
 	

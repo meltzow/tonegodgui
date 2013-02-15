@@ -22,7 +22,7 @@ import tonegod.gui.listeners.MouseFocusListener;
  *
  * @author t0neg0d
  */
-public class Indicator extends Element {
+public abstract class Indicator extends Element {
 	public static enum Orientation {
 		HORIZONTAL,
 		VERTICAL
@@ -282,6 +282,8 @@ public class Indicator extends Element {
 		} else {
 			elOverlay.setText("");
 		}
+		
+		onChange(currentValue, currentValue/maxValue*100);
 	}
 	
 	/**
@@ -346,4 +348,6 @@ public class Indicator extends Element {
 		this.getElementMaterial().setTexture("ColorMap", tex);
 		this.getElementMaterial().setColor("Color", ColorRGBA.White);
 	}
+	
+	public abstract void onChange(float currentValue, float currentPercentage);
 }
