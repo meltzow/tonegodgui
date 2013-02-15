@@ -39,21 +39,21 @@ public class Password extends TextField {
 		
 	}
 	
+	/**
+	 * Sets the mask character to use when hiding text input
+	 * @param mask char
+	 */
 	public void setMask(char mask) {
 		this.mask= mask;
 	}
 	
+	/**
+	 * Returns the current mask character used when hiding text input
+	 * @return 
+	 */
 	public String getMask() {
 		return String.valueOf(this.mask);
 	}
-	
-//	@Override
-//	public void controlKeyPressHook(KeyInputEvent evt, String text) {
-//		maskedText = "";
-//		for (int i = 0; i < text.length(); i++) {
-//			maskedText += String.valueOf(mask);
-//		}
-//	}
 	
 	@Override
 	protected String getVisibleText() {

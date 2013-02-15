@@ -25,6 +25,13 @@ public class VScrollBar extends Element {
 	MouseButtonEvent trackEvent = null;
 	ScrollArea scrollableArea = null;
 	
+	/**
+	 * Creates a new instance of a Vertical Screll Bar
+	 * @param screen The screen the element will be added to
+	 * @param UID A Unique String ID for the Scrollbar
+	 * @param position The initial position of the scrollbar
+	 * @param dimensions The initial dimentions of the scrollbar
+	 */
 	public VScrollBar(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
 		super(screen, UID, position, dimensions, new Vector4f(0,0,0,0), null);
 		
@@ -223,32 +230,58 @@ public class VScrollBar extends Element {
 		this.addChild(btnScrollDown);
 	}
 	
+	/**
+	 * Sets the increment value used when scrolling by arrow button click
+	 * @param btnInc int
+	 */
 	public void setButtonInc(int btnInc) {
 		this.btnInc = btnInc;
 	}
 	
+	/**
+	 * Returns the increment value used when scrolling by arrow button click
+	 * @return int
+	 */
 	public int getButtonInc() {
 		return this.btnInc;
 	}
 	
+	/**
+	 * Sets the increment value used when scrolling by track click
+	 * @param trackInc int
+	 */
 	public void setTrackInc(int trackInc) {
 		this.trackInc = trackInc;
 	}
 	
+	/**
+	 * Returns the increment used when scrolling by track click
+	 * @return int
+	 */
 	public int getTrackInc() {
 		return this.trackInc;
 	}
 	
+	/**
+	 * Internal use only.  See ScrollArea
+	 * @param scrollableArea ScrollArea
+	 */
 	public void setScrollableArea(ScrollArea scrollableArea) {
 		this.scrollableArea = scrollableArea;
 	}
 	
+	/**
+	 * Internal use only.  See ScrollArea
+	 */
 	protected void scrollToTop() {
 		setThumbScale();
 		btnScrollThumb.setY(btnScrollTrack.getHeight()-btnScrollThumb.getHeight());
 		setByThumbPosition();
 	}
 	
+	/**
+	 * Internal use only.  See ScrollArea
+	 */
 	protected void scrollToBottom() {
 		setThumbScale();
 		btnScrollThumb.setY(0);
@@ -261,6 +294,10 @@ public class VScrollBar extends Element {
 		}
 	}
 	
+	/**
+	 * Internal use only.  See ScrollArea
+	 * @param y float
+	 */
 	public void scrollYTo(float y) {
 		float scrollLayerHeight = scrollableArea.getScrollableHeight();
 		float diff = scrollLayerHeight-scrollableArea.getHeight();
@@ -273,6 +310,10 @@ public class VScrollBar extends Element {
 		setByThumbPosition();
 	}
 	
+	/**
+	 * Internal use only.  See ScrollArea
+	 * @param yInc float
+	 */
 	public void scrollByYInc(float yInc) {
 		if (this.scrollableArea != null) {
 			// TODO: Add bounds constaints and adjust Inc accordingly
@@ -294,6 +335,9 @@ public class VScrollBar extends Element {
 		}
 	}
 	
+	/**
+	 * Recalculates the Thumb size of the scroll bar
+	 */
 	public final void setThumbScale() {
 		float scrollLayerHeight = scrollableArea.getScrollableHeight();
 	//	System.out.println(scrollLayerHeight);
@@ -320,6 +364,9 @@ public class VScrollBar extends Element {
 		
 	}
 	
+	/**
+	 * Moves the scroll area to represent the position of the scroll bar thumb
+	 */
 	public final void setByThumbPosition() {
 		float scrollLayerHeight = scrollableArea.getScrollableHeight();
 		float diff = btnScrollTrack.getHeight()-btnScrollThumb.getHeight();

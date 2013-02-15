@@ -63,8 +63,8 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	private boolean isEnabled = true;
 	private boolean forceUpperCase = false, forceLowerCase = false;
 	private int maxLength = 0;
-	String nextChar;
-	boolean valid;
+	private String nextChar;
+	private boolean valid;
 	
 	/**
 	 * Creates a new instance of the TextField control
@@ -148,34 +148,71 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	}
 
 	// Validation
+	/**
+	 * Sets the TextField.Type of the text field.  This can be used to enfoce rules on the inputted text
+	 * @param type Type
+	 */
 	public void setType(Type type) {
 		this.type = type;
 	}
 	
+	/**
+	 * Returns the current Type of the TextField
+	 * @return Type
+	 */
 	public Type getType() {
 		return this.type;
 	}
 	
+	/**
+	 * Sets a custom validation rule for the TextField.
+	 * @param grabBag String A list of character to either allow or diallow as input
+	 */
 	public void setCustomValidation(String grabBag) {
 		validateCustom = grabBag;
 	}
 	
+	/**
+	 * Attempts to parse an int from the inputted text of the TextField
+	 * @return int
+	 * @throws NumberFormatException 
+	 */
 	public int parseInt() throws NumberFormatException {
 		return Integer.parseInt(getText());
 	}
 	
+	/**
+	 * Attempts to parse a float from the inputted text of the TextField
+	 * @return float
+	 * @throws NumberFormatException 
+	 */
 	public float parseFloat() throws NumberFormatException {
 		return Float.parseFloat(getText());
 	}
 	
+	/**
+	 * Attempts to parse a short from the inputted text of the TextField
+	 * @return short
+	 * @throws NumberFormatException 
+	 */
 	public short parseShort() throws NumberFormatException {
 		return Short.parseShort(getText());
 	}
 	
+	/**
+	 * Attempts to parse a double from the inputted text of the TextField
+	 * @return double
+	 * @throws NumberFormatException 
+	 */
 	public double parseDouble() throws NumberFormatException {
 		return Double.parseDouble(getText());
 	}
 	
+	/**
+	 * Attempts to parse a long from the inputted text of the TextField
+	 * @return long
+	 * @throws NumberFormatException 
+	 */
 	public long parseLong() throws NumberFormatException {
 		return Long.parseLong(getText());
 	}
@@ -314,6 +351,11 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		evt.setConsumed();
 	}
 	
+	/**
+	 * An overridable hook for the onKeyPress event of the TextField
+	 * @param evt KeyInputEvent
+	 * @param text String
+	 */
 	public void controlKeyPressHook(KeyInputEvent evt, String text) {  }
 	
 	@Override
@@ -328,6 +370,9 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		evt.setConsumed();
 	}
 	
+	/**
+	 * Internal use
+	 */
 	protected void getTextFieldText() {
 		String ret = "";
 		int index = 0;
@@ -338,6 +383,10 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		finalText = ret;
 	}
 	
+	/**
+	 * This method should be used in place of setText.
+	 * @param s String The text to set for the TextField
+	 */
 	public void setTextFieldText(String s) {
 		caretIndex = 0;
 		textFieldText.clear();
@@ -379,6 +428,10 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		return ret;
 	}
 	
+	/**
+	 * Returns the visible portion of the TextField's text
+	 * @return String
+	 */
 	protected String getVisibleText() {
 		getTextFieldText();
 		
@@ -435,7 +488,10 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		return visibleText;
 	}
 	
-	
+	/**
+	 * For internal use - do not call this method
+	 * @param caretX float
+	 */
 	protected void setCaretPosition(float caretX) {
 		if (textElement != null) {
 			if (hasTabFocus) {
@@ -445,6 +501,10 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		}
 	}
 	
+	/**
+	 * For internal use - do not call this method
+	 * @param x float
+	 */
 	public void setCaretPositionByX(float x) {
 		int index1 = visibleText.length();
 		if (visibleText.length() > 0) {
@@ -465,6 +525,9 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		}
 	}
 	
+	/**
+	 * Sets the caret position to the end of the TextField's text
+	 */
 	public void setCaretPositionToEnd() {
 		int index1 = visibleText.length();
 		if (visibleText.length() > 0) {
@@ -476,6 +539,10 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		resetTextRange();
 	}
 	
+	/**
+	 * For internal use - do not call this method
+	 * @param head int
+	 */
 	private void setTextRangeStart(int head) {
 		if (!visibleText.equals("")) {
 		//	System.out.println("Setting text range start to: " + head);
@@ -490,6 +557,10 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		}
 	}
 	
+	/**
+	 * For internal use - do not call this method
+	 * @param tail int
+	 */
 	private void setTextRangeEnd(int tail) {
 		if (!visibleText.equals("") && rangeHead != -1) {
 		//	System.out.println("Setting text range end to: " + tail);
@@ -531,41 +602,77 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		*/
 	}
 	
+	/**
+	 * Sets the ColorRGBA value used for text & caret
+	 * @param fontColor ColorRGBA
+	 */
 	public final void setTextFieldFontColor(ColorRGBA fontColor) {
 		setFontColor(fontColor);
 		caretMat.setColor("Color", fontColor);
 	}
 	
+	/**
+	 * Enables/disables the TextField
+	 * @param isEnabled boolean
+	 */
 	public void setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 	}
 	
+	/**
+	 * Returns if the TextField is currently enabled/disabled
+	 * @return boolean
+	 */
 	public boolean getIsEnabled() {
 		return this.isEnabled;
 	}
 	
+	/**
+	 * Forces all text input to uppercase
+	 * @param forceUpperCase boolean
+	 */
 	public void setForceUpperCase(boolean forceUpperCase) {
 		this.forceUpperCase = forceUpperCase;
 		this.forceLowerCase = false;
 	}
 	
+	/**
+	 * Returns if the TextField is set to force uppercase
+	 * @return boolean
+	 */
 	public boolean getForceUpperCase() {
 		return this.forceUpperCase;
 	}
 	
+	/**
+	 * Forces all text input to lowercase
+	 * @return boolean
+	 */
 	public void setForceLowerCase(boolean forceLowerCase) {
 		this.forceLowerCase = forceLowerCase;
 		this.forceUpperCase = false;
 	}
 	
+	/**
+	 * Returns if the TextField is set to force lowercase
+	 * @return boolean
+	 */
 	public boolean getForceLowerCase() {
 		return this.forceLowerCase;
 	}
 	
+	/**
+	 * Set the maximum character limit for the TextField.  0 = unlimited
+	 * @param maxLength int
+	 */
 	public void setMaxLength(int maxLength) {
 		this.maxLength = maxLength;
 	}
 	
+	/**
+	 * Returns the maximum limit of character allowed for this TextField
+	 * @return int
+	 */
 	public int getMaxLength() {
 		return this.maxLength;
 	}
@@ -601,7 +708,14 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		}
 	}
 	
+	/**
+	 * Overridable hook for receive tab focus event
+	 */
 	public void controlTextFieldSetTabFocusHook() {  }
+	
+	/**
+	 * Overridable hook for lose tab focus event
+	 */
 	public void controlTextFieldResetTabFocusHook() {  }
 
 	@Override

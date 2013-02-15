@@ -25,20 +25,20 @@ public class SlideTray extends Element {
 		VERTICAL,
 		HORIZONTAL
 	}
-	Orientation orientation;
+	private Orientation orientation;
 	
-	ButtonAdapter btnPrevElement, btnNextElement;
-	Element elTray;
+	private ButtonAdapter btnPrevElement, btnNextElement;
+	private Element elTray;
 	
-	List<Element> trayElements = new ArrayList();
-	int currentElementIndex = 0;
+	private List<Element> trayElements = new ArrayList();
+	private int currentElementIndex = 0;
 	
-	float trayPadding = 5;
+	private float trayPadding = 5;
 	
-	boolean useSlideEffect = false;
-	Effect slideEffect;
+	private boolean useSlideEffect = false;
+	private Effect slideEffect;
 	
-	BatchEffect batch = null;
+	private BatchEffect batch = null;
 	
 	/**
 	 * Creates a new instance of the SlideTray control
@@ -150,11 +150,18 @@ public class SlideTray extends Element {
 		addChild(btnPrevElement);
 		addChild(btnNextElement);
 	}
-	
+	/**
+	 * Enables/disables the use of the SlideTo effect when using next/previous buttons
+	 * @param useSlideEffect 
+	 */
 	public void setUseSlideEffect(boolean useSlideEffect) {
 		this.useSlideEffect = useSlideEffect;
 	}
 	
+	/**
+	 * Adds the provided Element as a tray item
+	 * @param element 
+	 */
 	public void addTrayElement(Element element) {
 		if (orientation == Orientation.HORIZONTAL)
 			element.setPosition(getNextPosition(),0);

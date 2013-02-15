@@ -15,6 +15,12 @@ import tonegod.gui.core.Element;
  */
 public class BitmapTextUtil {
 	
+	/**
+	 * Returns the width of the provided text
+	 * @param ref Element The element the text will be added to (reference for font settings)
+	 * @param text String the text to be evaluated
+	 * @return float The width
+	 */
 	public static float getTextWidth(Element ref, String text) {
 		BitmapText eval = new BitmapText(ref.getFont());
 		eval.setSize(ref.getFontSize());
@@ -25,6 +31,13 @@ public class BitmapTextUtil {
 		return eval.getLineWidth();
 	}
 	
+	/**
+	 * Returns the width of the provided text or the maxwidth, which ever is less
+	 * @param ref Element The element the text will be added to (reference for font settings)
+	 * @param text String the text to be evaluated
+	 * @param maxWidth The maximum width considered a valid return value
+	 * @return float The width
+	 */
 	public static float getTextWidth(Element ref, String text, float maxWidth) {
 		BitmapText eval = new BitmapText(ref.getFont());
 		eval.setSize(ref.getFontSize());
@@ -34,6 +47,12 @@ public class BitmapTextUtil {
 		return (eval.getLineWidth() < maxWidth) ? eval.getLineWidth() : maxWidth;
 	}
 	
+	/**
+	 * Returns the height value of a single line of text
+	 * @param ref Element The element the text will be added to (reference for font settings)
+	 * @param text String the text to be evaluated
+	 * @return float
+	 */
 	public static float getTextLineHeight(Element ref, String text) {
 		BitmapText eval = new BitmapText(ref.getFont());
 		eval.setSize(ref.getFontSize());
@@ -44,6 +63,13 @@ public class BitmapTextUtil {
 		return eval.getLineHeight();
 	}
 	
+	/**
+	 * Returns the total height of a wrapped text string
+	 * @param ref Element The element the text will be added to (reference for font settings)
+	 * @param text String the text to be evaluated
+	 * @param maxWidth The maximum width considered a valid return value
+	 * @return float
+	 */
 	public static float getTextTotalHeight(Element ref, String text, float maxWidth) {
 		BitmapText eval = new BitmapText(ref.getFont());
 		eval.setSize(ref.getFontSize());

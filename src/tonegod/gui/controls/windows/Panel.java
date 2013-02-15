@@ -55,7 +55,7 @@ public class Panel extends Element {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
-	 * @param defaultImg The default image to use for the Slider's track
+	 * @param defaultImg The default image to use for the Panel
 	 */
 	public Panel(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);

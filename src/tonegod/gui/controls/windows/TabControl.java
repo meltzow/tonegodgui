@@ -24,18 +24,18 @@ import tonegod.gui.core.utils.BitmapTextUtil;
  * @author t0neg0d
  */
 public class TabControl extends Element {
-	List<Button> tabs = new ArrayList();
-	Map<Integer,TabPanel> tabPanels = new HashMap();
-	int tabButtonIndex = 0;
-	float tabWidth, tabHeight, tabXInc;
-	RadioButtonGroup tabButtonGroup;
-	Vector4f tabResizeBorders;
-	SlideTray tabSlider;
-	boolean isFixedTabWidth = false;
-	float fixedTabWidth = 0;
+	private List<Button> tabs = new ArrayList();
+	private Map<Integer,TabPanel> tabPanels = new HashMap();
+	private int tabButtonIndex = 0;
+	private float tabWidth, tabHeight, tabXInc;
+	private RadioButtonGroup tabButtonGroup;
+	private Vector4f tabResizeBorders;
+	private SlideTray tabSlider;
+	private boolean isFixedTabWidth = false;
+	private float fixedTabWidth = 0;
 	
 	/**
-	 * Creates a new instance of the Panel control
+	 * Creates a new instance of the TabControl control
 	 * 
 	 * @param screen The screen control the Element is to be added to
 	 * @param UID A unique String identifier for the Element
@@ -50,7 +50,7 @@ public class TabControl extends Element {
 	}
 	
 	/**
-	 * Creates a new instance of the Panel control
+	 * Creates a new instance of the TabControl control
 	 * 
 	 * @param screen The screen control the Element is to be added to
 	 * @param UID A unique String identifier for the Element
@@ -65,14 +65,14 @@ public class TabControl extends Element {
 	}
 	
 	/**
-	 * Creates a new instance of the Panel control
+	 * Creates a new instance of the TabControl control
 	 * 
 	 * @param screen The screen control the Element is to be added to
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
-	 * @param defaultImg The default image to use for the Slider's track
+	 * @param defaultImg The default image to use for the TabControl background
 	 */
 	public TabControl(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
@@ -114,6 +114,10 @@ public class TabControl extends Element {
 		addChild(tabSlider);
 	}
 	
+	/**
+	 * Sets the width to always use for Tabs
+	 * @param fixedTabWidth float Forced width of all Tabs
+	 */
 	public void setFixedTabWidth(float fixedTabWidth) {
 		if (fixedTabWidth > 0) {
 			isFixedTabWidth = true;
@@ -124,10 +128,18 @@ public class TabControl extends Element {
 		}
 	}
 	
+	/**
+	 * Enables the SliderToEffect of the SlideTray containing the tabs
+	 * @param useSlideEffect boolean
+	 */
 	public void setUseSlideEffect(boolean useSlideEffect) {
 		tabSlider.setUseSlideEffect(useSlideEffect);
 	}
 	
+	/**
+	 * Adds a new Tab and TabPanel to the TabControl
+	 * @param title String The Title to set for the Tab
+	 */
 	public void addTab(String title) {
 		ButtonAdapter tab = new ButtonAdapter(
 			screen,
@@ -181,6 +193,11 @@ public class TabControl extends Element {
 		tabButtonIndex++;
 	}
 	
+	/**
+	 * Adds the provided Element to the panel associated with the tab index
+	 * @param index int Tab index
+	 * @param element Element
+	 */
 	public void addTabChild(int index, Element element) {
 		if (index > -1 && index < tabs.size()) {
 			tabPanels.get(index).addChild(element);

@@ -30,12 +30,12 @@ public abstract class Spinner extends TextField {
 	private int selectedIndex = -1;
 	private Orientation orientation;
 	
-	float btnWidth;
-	float btnIncX, btnIncY, btnIncH, btnIncIconSize;
-	float btnDecX, btnDecY, btnDecH, btnDecIconSize;
-	String btnIncIcon, btnDecIcon;
+	private float btnWidth;
+	private float btnIncX, btnIncY, btnIncH, btnIncIconSize;
+	private float btnDecX, btnDecY, btnDecH, btnDecIconSize;
+	private String btnIncIcon, btnDecIcon;
 	
-	ButtonAdapter btnInc, btnDec;
+	private ButtonAdapter btnInc, btnDec;
 	
 	public Spinner(Screen screen, String UID, Vector2f position, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UID, position,
@@ -141,15 +141,27 @@ public abstract class Spinner extends TextField {
 		setIsEnabled(false);
 	}
 	
+	/**
+	 * Returns the index of the selected stepValue
+	 * @return int
+	 */
 	public int getSelectedIndex() {
 		return this.selectedIndex;
 	}
 	
+	/**
+	 * Sets the interval speed for the spinner
+	 * @param callsPerSecond float
+	 */
 	public void setInterval(float callsPerSecond) {
 		btnInc.setInterval(callsPerSecond);
 		btnDec.setInterval(callsPerSecond);
 	}
 	
+	/**
+	 * Adds a stepValue to the Spinner
+	 * @param value String
+	 */
 	public void addStepValue(String value) {
 		stepValues.add(value);
 		if (selectedIndex == -1)
@@ -157,10 +169,20 @@ public abstract class Spinner extends TextField {
 		displaySelectedStep();
 	}
 	
+	/**
+	 * Removes the provided value for the stepValues of the Spinner
+	 * @param value String
+	 */
 	public void removeStepValue(String value) {
 		stepValues.remove(value);
 	}
 	
+	/**
+	 * Populates the stepValues with an integer range using the provided information
+	 * @param min int The minimum value of the range
+	 * @param max int The maximum values of the range
+	 * @param inc int the ammount to increment from step to step
+	 */
 	public void setStepIntegerRange(int min, int max, int inc) {
 		stepValues.clear();
 		selectedIndex = -1;
@@ -172,6 +194,12 @@ public abstract class Spinner extends TextField {
 		displaySelectedStep();
 	}
 	
+	/**
+	 * Populates the stepValues with an float range using the provided information
+	 * @param min float The minimum value of the range
+	 * @param max float The maximum values of the range
+	 * @param inc float the ammount to increment from step to step
+	 */
 	public void setStepFloatRange(float min, float max, float inc) {
 		stepValues.clear();
 		selectedIndex = -1;
@@ -183,6 +211,10 @@ public abstract class Spinner extends TextField {
 		displaySelectedStep();
 	}
 	
+	/**
+	 * Sets the selected index of the Spinner to the provided index
+	 * @param selectedIndex int
+	 */
 	public void setSelectedIndex(int selectedIndex) {
 		if (selectedIndex < 0)
 			selectedIndex = 0;
@@ -235,5 +267,10 @@ public abstract class Spinner extends TextField {
 		}
 	}
 	
+	/**
+	 * The abstract event method that is called when the selectedIndex changes
+	 * @param selectedIndex int The new selectedIndex
+	 * @param value The value associated with the selected index
+	 */
 	public abstract void onChange(int selectedIndex, String value);	
 }

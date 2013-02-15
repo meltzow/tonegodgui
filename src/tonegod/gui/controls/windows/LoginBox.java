@@ -22,12 +22,12 @@ import tonegod.gui.core.Screen;
  * @author t0neg0d
  */
 public abstract class LoginBox extends Window {
-	ButtonAdapter btnLogin, btnCancel;
-	Element responseMsg;
-	Label lblUserName, lblPassword;
-	TextField userName;
-	Password password;
-	Form form;
+	private ButtonAdapter btnLogin, btnCancel;
+	private Element responseMsg;
+	private Label lblUserName, lblPassword;
+	private TextField userName;
+	private Password password;
+	private Form form;
 	
 	public LoginBox(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,

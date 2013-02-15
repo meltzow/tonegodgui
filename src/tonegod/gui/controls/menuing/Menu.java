@@ -148,14 +148,35 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		populateEffects("Menu");
 	}
 	
+	/**
+	 * Adds a MenuItem to the Menu
+	 * @param caption The display caption of the MenuItem
+	 * @param value The value to associate with the MenuItem
+	 * @param subMenu The associated Sub-Menu that should be displayed with thisMenuItem. null if N/A
+	 */
 	public void addMenuItem(String caption, Object value, Menu subMenu) {
 		addMenuItem(caption, value, subMenu, false, false);
 	}
 	
+	/**
+	 * Adds a MenuItem to the Menu
+	 * @param caption The display caption of the MenuItem
+	 * @param value The value to associate with the MenuItem
+	 * @param subMenu The associated Sub-Menu that should be displayed with thisMenuItem. null if N/A
+	 * @param isToggleItem Adds a toggleable CheckBox to the MenuItem is true
+	 */
 	public void addMenuItem(String caption, Object value, Menu subMenu, boolean isToggleItem) {
 		addMenuItem(caption, value, subMenu, isToggleItem, false);
 	}
 	
+	/**
+	 * Adds a MenuItem to the Menu
+	 * @param caption The display caption of the MenuItem
+	 * @param value The value to associate with the MenuItem
+	 * @param subMenu The associated Sub-Menu that should be displayed with thisMenuItem. null if N/A
+	 * @param isToggleItem Adds a toggleable CheckBox to the MenuItem is true
+	 * @param isToggled Sets the default state of the added CheckBox
+	 */
 	public void addMenuItem(String caption, Object value, Menu subMenu, boolean isToggleItem, boolean isToggled) {
 		this.getVScrollBar().hide();
 		MenuItem menuItem = new MenuItem(
@@ -172,14 +193,38 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		pack();
 	}
 	
+	/**
+	 * Inserts a new MenuItem at the provided index
+	 * @param index The index to insert into
+	 * @param caption The display caption of the MenuItem
+	 * @param value The value to associate with the MenuItem
+	 * @param subMenu The associated Sub-Menu that should be displayed with thisMenuItem. null if N/A
+	 */
 	public void insertMenuItem(int index, String caption, Object value, Menu subMenu) {
 		insertMenuItem(index, caption, value, subMenu, false, false);
 	}
 	
+	/**
+	 * Inserts a new MenuItem at the provided index
+	 * @param index The index to insert into
+	 * @param caption The display caption of the MenuItem
+	 * @param value The value to associate with the MenuItem
+	 * @param subMenu The associated Sub-Menu that should be displayed with thisMenuItem. null if N/A
+	 * @param isToggleItem Adds a toggleable CheckBox to the MenuItem is true
+	 */
 	public void insertMenuItem(int index, String caption, Object value, Menu subMenu, boolean isToggleItem) {
 		insertMenuItem(index, caption, value, subMenu, isToggleItem, false);
 	}
 	
+	/**
+	 * Inserts a new MenuItem at the provided index
+	 * @param index The index to insert into
+	 * @param caption The display caption of the MenuItem
+	 * @param value The value to associate with the MenuItem
+	 * @param subMenu The associated Sub-Menu that should be displayed with thisMenuItem. null if N/A
+	 * @param isToggleItem Adds a toggleable CheckBox to the MenuItem is true
+	 * @param isToggled Sets the default state of the added CheckBox
+	 */
 	public void insertMenuItem(int index, String caption, Object value, Menu subMenu, boolean isToggleItem, boolean isToggled) {
 		if (!menuItems.isEmpty()) {
 			if (index >= 0 && index < menuItems.size()) {
@@ -199,6 +244,10 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		}
 	}
 	
+	/**
+	 * Remove the MenuItem at the provided index
+	 * @param index int
+	 */
 	public void removeMenuItem(int index) {
 		this.getVScrollBar().hide();
 		if (!menuItems.isEmpty()) {
@@ -211,6 +260,10 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		}
 	}
 	
+	/**
+	 * Remove the first MenuItem that contains the provided value
+	 * @param value Object
+	 */
 	public void removeMenuItem(Object value) {
 		if (!menuItems.isEmpty()) {
 			int index = -1;
@@ -226,6 +279,10 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		}
 	}
 	
+	/**
+	 * Remove the first MenuItem that contains the provided caption
+	 * @param value Object
+	 */
 	public void removeMenuItem(String caption) {
 		if (!menuItems.isEmpty()) {
 			int index = -1;
@@ -241,36 +298,65 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		}
 	}
 	
+	/**
+	 * Removes the first MenuItem in the Menu
+	 */
 	public void removeFirstMenuItem() {
 		removeMenuItem(0);
 	}
 	
+	/**
+	 * Removes the last MenuItem in the Menu
+	 */
 	public void removeLastMenuItem() {
 		if (!menuItems.isEmpty()) {
 			removeMenuItem(menuItems.size()-1);
 		}
 	}
 	
+	/**
+	 * Defines the number of pixels this Menu should overhang it's parent Menu when called as a Sub-Menu
+	 * @param menuOverhang 
+	 */
 	public void setMenuOverhang(float menuOverhang) {
 		this.menuOverhang = menuOverhang;
 	}
 	
+	/**
+	 * Returns the number of pixels this Menu should overhang it's parent Menu when called as a Sub-Menu
+	 * @return float
+	 */
 	public float getMenuOverhang() {
 		return this.menuOverhang;
 	}
 	
+	/**
+	 * Returns the display height of a single MenuItem
+	 * @return float
+	 */
 	public float getMenuItemHeight() {
 		return this.menuItemHeight;
 	}
 	
+	/**
+	 * Return the initial width of the Menu prior to populating the MenuItems
+	 * @return 
+	 */
 	public float getInitialWidth() {
 		return this.initWidth;
 	}
 	
+	/**
+	 * Returns the number of pixels this Menu uses as padding before rendering the MenuItems
+	 * @return 
+	 */
 	public float getMenuPadding() {
 		return this.menuPadding;
 	}
 	
+	/**
+	 * Validates flags for: contains subMenus, toggle checkboxes, etc
+	 */
 	public void validateSettings() {
 		hasSubMenus = false;
 		hasToggleItems = false;
@@ -282,10 +368,17 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		}
 	}
 	
+	/**
+	 * Sets the Menu's preferredSize which is used to set maximum width and height, forcing the menu to use Scrolling
+	 * @param preferredSize Vector2f
+	 */
 	public void setPreferredSize(Vector2f preferredSize) {
 		this.preferredSize = preferredSize;
 	}
 	
+	/**
+	 * Forces the Menu to rebuild all MenuItems.  This does not need to be called, however it will not effect anything negatively if it is.
+	 */
 	public void pack() {
 		String finalString = "";
 		
@@ -421,22 +514,45 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 			checkbox.hide();
 	}
 	
+	/**
+	 * Notifies the Menu that is has been called by an Element that is expecting notification of menu item clicks
+	 * @param el Element
+	 */
 	public final void setCallerElement(Element el) {
 		this.callerElement = el;
 	}
 	
+	/**
+	 * Returns the current Element waiting notification
+	 * @return 
+	 */
 	public Element getCallerElement() {
 		return this.callerElement;
 	}
 	
+	/**
+	 * Returns a list of all MenuItems associated with this menu
+	 * @return List<MenuItem>
+	 */
 	public List<MenuItem> getMenuItems() {
 		return this.menuItems;
 	}
 	
+	/**
+	 * Returns the MenuItem at the provided index
+	 * @param index int Index of the MenuItem
+	 * @return MenuItem
+	 */
 	public MenuItem getMenuItem(int index) {
 		return this.menuItems.get(index);
 	}
 	
+	/**
+	 * Shows the Menu
+	 * @param caller Menu The Parent Menu that is calling the menu. null if not called by another Menu
+	 * @param x float The x coord to display the Menu at
+	 * @param y float the Y coord to display the Menu at
+	 */
 	public void showMenu(Menu caller, float x, float y) {
 		this.caller = caller;
 		if (caller != null) {

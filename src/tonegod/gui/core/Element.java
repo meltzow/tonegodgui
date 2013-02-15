@@ -745,22 +745,38 @@ public class Element extends Node {
 		updateClipping();
 	}
 	
+	/**
+	 * Flags Element as Drag Element for Drag & Drop interaction
+	 * @param isDragElement boolean
+	 */
 	public void setIsDragDropDragElement(boolean isDragElement) {
 		this.isDragElement = isDragElement;
 		if (isDragElement)
 			this.isDropElement = false;
 	}
 	
+	/**
+	 * Returns if the Element is currently flagged as a Drag Element for Drag & Drop interaction
+	 * @return boolean
+	 */
 	public boolean getIsDragDropDragElement() {
 		return this.isDragElement;
 	}
 	
+	/**
+	 * Flags Element as Drop Element for Drag & Drop interaction
+	 * @param isDropElement boolean
+	 */
 	public void setIsDragDropDropElement(boolean isDropElement) {
 		this.isDropElement = isDropElement;
 		if (isDropElement)
 			this.isDragElement = false;
 	}
 	
+	/**
+	 * Returns if the Element is currently flagged as a Drop Element for Drag & Drop interaction
+	 * @return boolean
+	 */
 	public boolean getIsDragDropDropElement() {
 		return this.isDropElement;
 	}
@@ -1610,6 +1626,11 @@ public class Element extends Node {
 	 */
 	public void controlHideHook() {  }
 	
+	/**
+	 * For internal use only - DO NOT CALL THIS METHOD
+	 * @param effect Effect
+	 * @param callHide boolean
+	 */
 	public void propagateEffect(Effect effect, boolean callHide) {
 		Effect nEffect = effect.clone();
 		nEffect.setCallHide(callHide);
@@ -1900,14 +1921,26 @@ public class Element extends Node {
 	}
 	
 	// Tool Tip
+	/**
+	 * Sets the Element's ToolTip text
+	 * @param toolTip String
+	 */
 	public void setToolTipText(String toolTip) {
 		this.toolTipText = toolTip;
 	}
 	
+	/**
+	 * Returns the Element's current ToolTip text
+	 * @return String
+	 */
 	public String getToolTipText() {
 		return toolTipText;
 	}
 	
+	/**
+	 * For internal use - DO NOT CALL THIS METHOD
+	 * @param hasFocus boolean
+	 */
 	public void setHasFocus(boolean hasFocus) {
 		this.hasFocus = hasFocus;
 	}
@@ -1925,19 +1958,35 @@ public class Element extends Node {
 		return this.isModal;
 	}
 	
+	/**
+	 * For internal use - DO NOT CALL THIS METHOD
+	 * @param hasFocus boolean
+	 */
 	public void setIsGlobalModal(boolean isGlobalModal) {
 		this.isGlobalModal = isGlobalModal;
 	}
 	
+	/**
+	 * For internal use - DO NOT CALL THIS METHOD
+	 * @param hasFocus boolean
+	 */
 	public boolean getIsGlobalModal() {
 		return this.isGlobalModal;
 	}
 	
 	// User data
+	/**
+	 * Stores provided data with the Element
+	 * @param elementUserData Object Data to store
+	 */
 	public void setElementUserData(Object elementUserData) {
 		this.elementUserData = elementUserData;
 	}
 	
+	/**
+	 * Returns the data stored with this Element
+	 * @return Object
+	 */
 	public Object getElementUserData() {
 		return this.elementUserData;
 	}

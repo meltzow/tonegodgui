@@ -22,8 +22,15 @@ import tonegod.gui.core.Screen;
 public abstract class AlertBox extends Window {
 	private ScrollArea dlg;
 	private ButtonAdapter btnOk;
-	Form form;
+	protected Form form;
 	
+	/**
+	 * Creates a new instance of the AlertBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
 	public AlertBox(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("Window").getVector2f("defaultSize"),
@@ -32,6 +39,14 @@ public abstract class AlertBox extends Window {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the AlertBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
 	public AlertBox(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Window").getVector4f("resizeBorders"),
@@ -39,6 +54,16 @@ public abstract class AlertBox extends Window {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the AlertBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the AlertBox window
+	 */
 	public AlertBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
@@ -87,16 +112,33 @@ public abstract class AlertBox extends Window {
 		form.addFormElement(btnOk);
 	}
 	
+	/**
+	 * Sets the message to display in the AlertBox
+	 * @param text String The message
+	 */
 	public void setMsg(String text) {
 		dlg.setText(text);
 	}
 	
+	/**
+	 * Sets the text of the Ok button
+	 * @param text String
+	 */
 	public void setButtonOkText(String text) {
 		btnOk.setText(text);
 	}
 	
+	/**
+	 * Abstract method for handling Ok button click event
+	 * @param evt MouseButtonEvent
+	 * @param toggled boolean
+	 */
 	public abstract void onButtonOkPressed(MouseButtonEvent evt, boolean toggled);
 	
+	/**
+	 * Sets the tooltip text to display when mouse hovers over the Ok button
+	 * @param tip String
+	 */
 	public void setToolTipOkButton(String tip) {
 		this.btnOk.setToolTipText(tip);
 	}

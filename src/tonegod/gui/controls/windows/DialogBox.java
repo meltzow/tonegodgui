@@ -17,6 +17,13 @@ import tonegod.gui.core.Screen;
 public abstract class DialogBox extends AlertBox {
 	private ButtonAdapter btnCancel;
 	
+	/**
+	 * Creates a new instance of the DialogBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
 	public DialogBox(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("Window").getVector2f("defaultSize"),
@@ -25,6 +32,14 @@ public abstract class DialogBox extends AlertBox {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the AlertBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
 	public DialogBox(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Window").getVector4f("resizeBorders"),
@@ -32,6 +47,16 @@ public abstract class DialogBox extends AlertBox {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the Dialog control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the DialogBox window
+	 */
 	public DialogBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
@@ -55,12 +80,25 @@ public abstract class DialogBox extends AlertBox {
 		form.addFormElement(btnCancel);
 	}
 	
+	/**
+	 * Sets the text of the Cancel button
+	 * @param text String
+	 */
 	public void setButtonCancelText(String text) {
 		btnCancel.setText(text);
 	}
 	
+	/**
+	 * Abstract method for handling Cancel button click event
+	 * @param evt MouseButtonEvent
+	 * @param toggled boolean
+	 */
 	public abstract void onButtonCancelPressed(MouseButtonEvent evt, boolean toggled);
 	
+	/**
+	 * Sets the tooltip text to display when mouse hovers over the Cancel button
+	 * @param tip String
+	 */
 	public void setToolTipCancelButton(String tip) {
 		this.btnCancel.setToolTipText(tip);
 	}

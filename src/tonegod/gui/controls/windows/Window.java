@@ -117,6 +117,10 @@ public class Window extends Element {
 		return this.dragBar;
 	}
 	
+	/**
+	 * Returns the drag bar height
+	 * @return float
+	 */
 	public float getDragBarHeight() {
 		return dragBar.getHeight();
 	}
@@ -129,6 +133,9 @@ public class Window extends Element {
 		dragBar.setText(title);
 	}
 	
+	/**
+	 * Shows the window using the default Show Effect
+	 */
 	public void showWindow() {
 		Effect effect = getEffect(Effect.EffectEvent.Show);
 		if (effect != null) {
@@ -146,6 +153,9 @@ public class Window extends Element {
 			this.show();
 	}
 	
+	/**
+	 * Hides the Window using the default Hide Effect
+	 */
 	public void hideWindow() {
 		Effect effect = getEffect(Effect.EffectEvent.Hide);
 		if (effect != null) {
@@ -163,10 +173,18 @@ public class Window extends Element {
 			this.hide();
 	}
 	
+	/**
+	 * Enables/disables the Window dragbar
+	 * @param isMovable boolean
+	 */
 	public void setWindowIsMovable(boolean isMovable) {
 		this.dragBar.setIsMovable(isMovable);
 	}
 	
+	/**
+	 * Returns if the Window dragbar is currently enabled/disabled
+	 * @return boolean
+	 */
 	public boolean getWindowIsMovable() {
 		return this.dragBar.getIsMovable();
 	}

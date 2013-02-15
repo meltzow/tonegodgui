@@ -28,13 +28,13 @@ public abstract class Slider extends ButtonAdapter {
 	}
 	
 	protected List<Object> stepValues = new ArrayList();
-	Element elThumbLock;
-	ButtonAdapter elThumb;
+	private Element elThumbLock;
+	private ButtonAdapter elThumb;
 	
 	protected Orientation orientation;
-	int selectedIndex = 0;
-	boolean isStepped = false;
-	float stepSize = 1;
+	private int selectedIndex = 0;
+	private boolean isStepped = false;
+	private float stepSize = 1;
 	private boolean trackSurroundsThumb;
 	private Vector2f thumbLockSize = new Vector2f(),
 					thumbLockPosition = new Vector2f(),

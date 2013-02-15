@@ -287,6 +287,10 @@ public class Screen implements Control, RawInputListener {
 		return ret;
 	}
 	
+	/**
+	 * Returns the guiNode used by the Screen
+	 * @return Node
+	 */
 	public Node getGUINode() {
 		return t0neg0dGUI;
 	}
@@ -724,10 +728,18 @@ public class Screen implements Control, RawInputListener {
 		}
 	}
 	
+	/**
+	 * Returns the current Drag enabled Element
+	 * @return Element
+	 */
 	public Element getDragElement() {
 		return this.eventElement;
 	}
 	
+	/**
+	 * Returns the current Drop enabled Element
+	 * @return Element
+	 */
 	public Element getDropElement() {
 		return this.targetElement;
 	}
@@ -1098,6 +1110,10 @@ public class Screen implements Control, RawInputListener {
 		return styles.get(key);
 	}
 	
+	/**
+	 * Enables the use of Style defined custom cursors.  Initally set prior to initializing screen
+	 * @param useCustomCursors boolean
+	 */
 	public void setUseCustomCursors(boolean useCustomCursors) {
 		this.useCustomCursors = useCustomCursors;
 		if (!useCustomCursors) {
@@ -1107,10 +1123,18 @@ public class Screen implements Control, RawInputListener {
 		}
 	}
 	
+	/**
+	 * Returns true if custom cursors are currently enabled
+	 * @return boolean
+	 */
 	public boolean getUseCustomCursors() {
 		return this.useCustomCursors;
 	}
 	
+	/**
+	 * For internal use - Use setForcedCursor instead
+	 * @param cur 
+	 */
 	public void setCursor(CursorType cur) {
 		if (getUseCustomCursors()) {
 			if (!forceCursor) {
@@ -1121,6 +1145,10 @@ public class Screen implements Control, RawInputListener {
 		}
 	}
 	
+	/**
+	 * Sets the cursor and locks the cursor until releaseForcedCursor is called.
+	 * @param cur CursorType
+	 */
 	public void setForcedCursor(CursorType cur) {
 		if (getUseCustomCursors()) {
 			JmeCursor jmeCur = cursors.get(cur);
@@ -1131,6 +1159,9 @@ public class Screen implements Control, RawInputListener {
 		}
 	}
 	
+	/**
+	 * Release cursor control back to the Element level
+	 */
 	public void releaseForcedCursor() {
 		if (getUseCustomCursors()) {
 			JmeCursor jmeCur = cursors.get(CursorType.POINTER);
@@ -1141,6 +1172,10 @@ public class Screen implements Control, RawInputListener {
 		}
 	}
 	
+	/**
+	 * Sets the overall opacity of all elements that have not been flagged as ignoreGlobalAlpha(true)
+	 * @param globalAlpha float
+	 */
 	public void setGlobalAlpha(float globalAlpha) {
 		this.globalAlpha = globalAlpha;
 		Set<String> keys = elements.keySet();
@@ -1149,6 +1184,10 @@ public class Screen implements Control, RawInputListener {
 		}
 	}
 	
+	/**
+	 * Returns the current value of global alpha
+	 * @return float
+	 */
 	public float getGlobalAlpha() {
 		return this.globalAlpha;
 	}
@@ -1189,6 +1228,10 @@ public class Screen implements Control, RawInputListener {
 	}
 	
 	// ToolTips
+	/**
+	 * Enables/disables the use of ToolTips
+	 * @param useToolTips boolean
+	 */
 	public void setUseToolTips(boolean useToolTips) {
 		this.useToolTips = useToolTips;
 		if (useToolTips) {
@@ -1215,10 +1258,17 @@ public class Screen implements Control, RawInputListener {
 		}
 	}
 	
+	/**
+	 * Returns if ToolTips are enabled/disabled
+	 * @return boolean
+	 */
 	public boolean getUseToolTips() {
 		return useToolTips;
 	}
 	
+	/**
+	 * For internal use only - DO NOT CALL THIS METHOD
+	 */
 	public void updateToolTipLocation() {
 		if (useToolTips) {
 			if (this.mouseFocusElement != null && getApplication().getInputManager().isCursorVisible()) {
@@ -1253,22 +1303,43 @@ public class Screen implements Control, RawInputListener {
 	}
 	
 	// Audio support
+	/**
+	 * Enables/disables UI Audio
+	 * @param useUIAudio boolean
+	 */
 	public void setUseUIAudio(boolean useUIAudio) {
 		this.useUIAudio = useUIAudio;
 	}
 	
+	/**
+	 * Returns if the UI Audio option is enabled/disabled
+	 * @return boolean
+	 */
 	public boolean getUseUIAudio() {
 		return this.useUIAudio;
 	}
 	
+	/**
+	 * Sets the global UI Audio volume
+	 * @param uiAudioVolume float
+	 */
 	public void setUIAudioVolume(float uiAudioVolume) {
 		this.uiAudioVolume = uiAudioVolume;
 	}
 	
+	/**
+	 * Gets the current global UI Audio volume
+	 * @return float
+	 */
 	public float getUIAudioVolume() {
 		return this.uiAudioVolume;
 	}
 	
+	/**
+	 * Plays an instance of an audio node
+	 * @param key String The key associated with the audio node
+	 * @param volume float the volume to play the instance at (effected by global volume)
+	 */
 	public void playAudioNode(String key, float volume) {
 		AudioNode audioNode = audioNodes.get(key);
 		if (audioNode != null) {
@@ -1278,6 +1349,10 @@ public class Screen implements Control, RawInputListener {
 	}
 	
 	// Cursor Effects
+	/**
+	 * Enables/disables the use of Cursor effects
+	 * @param useCursorEffects boolean
+	 */
 	public void setUseCursorEffects(boolean useCursorEffects) {
 		if (useCursorEffects) {
 			if (cursorEmitterVP == null) {
@@ -1332,6 +1407,9 @@ public class Screen implements Control, RawInputListener {
 		cursorEmitterVP.setIsGlobalModal(true);
 	}
 	
+	/**
+	 * For internal use - DO NOT CALL THIS METHOD
+	 */
 	public void updateCursorEmitter() {
 		Camera cam = cursorEmitterVP.getOSRBridge().getCamera();
 		CollisionResults results = new CollisionResults();
@@ -1406,6 +1484,9 @@ public class Screen implements Control, RawInputListener {
 		this.focusForm = null;
 	}
 	
+	/**
+	 * Send reset to the current Tab Focus Element
+	 */
 	private void resetFocusElement() {
 		if (tabFocusElement != null) {
 			if (tabFocusElement instanceof TabFocusListener) {

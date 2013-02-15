@@ -137,10 +137,18 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		this.addChild(scrollableArea);
 	}
 	
+	/**
+	 * Returns the Element that was created as a scrollable area for ScrollArea NOT flagged as isTextOnly
+	 * @return Element
+	 */
 	public Element getScrollableArea() {
 		return this.scrollableArea;
 	}
 	
+	/**
+	 * Returns if the ScrollArea is text only
+	 * @return boolean
+	 */
 	public boolean getIsTextOnly() {
 		return isTextOnly;
 	}
@@ -150,14 +158,26 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		vScrollBar.setScrollableArea(this);
 	}
 	
+	/**
+	 * Returns the Vertical Scroll Bar
+	 * @return VScrollBar
+	 */
 	public VScrollBar getVScrollBar() {
 		return this.vScrollBar;
 	}
 	
+	/**
+	 * Adds an Element as a child to the ScrollArea.  This is usable by ScrollAreas NOT flagged for isTextOnly
+	 * @param child Element
+	 */
 	public void addScrollableChild(Element child) {
 		scrollableArea.addChild(child);
 	}
 	
+	/**
+	 * Sets the padding for the ScrollArea
+	 * @param padding float 
+	 */
 	public void setPadding(float padding) {
 		if (isTextOnly) {
 			setTextPadding(padding);
@@ -168,6 +188,10 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		}
 	}
 	
+	/**
+	 * Returns the padding used for the ScollArea
+	 * @return float
+	 */
 	public float getPadding() {
 		if (isTextOnly) {
 			return getTextPadding();
@@ -176,6 +200,10 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		}
 	}
 	
+	/**
+	 * Returns the current height of the scrollable area
+	 * @return float
+	 */
 	public float getScrollableHeight() {
 		if (isTextOnly) {
 			return textElement.getHeight()+(getTextPadding()*2);//+(getClipPadding()*2);
@@ -204,6 +232,9 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		}
 	}
 	
+	/**
+	 * Internal use - Used to readjust the width of the scrollarea when hiding/showing scroll bars
+	 */
 	public final void adjustWidthForScroll() {
 		if (vScrollBar.getParent() == null && !scrollHidden) {
 			setWidth(getWidth()+vScrollBar.getWidth());
@@ -215,11 +246,19 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		}
 	}
 	
+	/**
+	 * Scrolls the scrollbar thumb to the specified Y coord
+	 * @param y 
+	 */
 	public void scrollThumbYTo(float y) {
 		adjustWidthForScroll();
 		vScrollBar.scrollYTo(y);
 	}
 	
+	/**
+	 * Scrolls the Scrollable Area to the specified Y coord
+	 * @param y float
+	 */
 	public void scrollYTo(float y) {
 		adjustWidthForScroll();
 		if (scrollableArea == null) {
@@ -231,8 +270,15 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		controlScrollHook();
 	}
 	
+	/**
+	 * Overridable method for hooking the scroll event
+	 */
 	public void controlScrollHook() {  }
 	
+	/**
+	 * To be used with interval calls.  Scrolls the Scrollable Area by the provided value
+	 * @param yInc float
+	 */
 	public void scrollYBy(float yInc) {
 		adjustWidthForScroll();
 		if (scrollableArea == null) {
@@ -243,11 +289,17 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		}
 	}
 	
+	/**
+	 * Scrolls to the bottom of the Scrollable Area
+	 */
 	public void scrollToBottom() {
 		adjustWidthForScroll();
 		vScrollBar.scrollToBottom();
 	}
 	
+	/**
+	 * Scrolls to the top of the Scrollable Area
+	 */
 	public void scrollToTop() {
 		adjustWidthForScroll();
 		vScrollBar.scrollToTop();
