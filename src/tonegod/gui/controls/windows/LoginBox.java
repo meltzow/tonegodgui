@@ -173,12 +173,20 @@ public abstract class LoginBox extends Window {
 		responseMsg.setText(text);
 	}
 	
+	public TextField getUserName() {
+		return userName;
+	}
+	
 	public String getTextUserName() {
 		return this.userName.getText();
 	}
 	
 	public void setTextUserName(String text) {
 		this.userName.setTextFieldText(text);
+	}
+	
+	public Password getPassword() {
+		return this.password;
 	}
 	
 	public String getTextPassword() {
