@@ -10,6 +10,7 @@ import com.jme3.font.LineWrapMode;
 import com.jme3.font.Rectangle;
 import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
+import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -23,6 +24,7 @@ import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.KeyboardListener;
+import tonegod.gui.listeners.MouseButtonListener;
 import tonegod.gui.listeners.MouseFocusListener;
 import tonegod.gui.listeners.TabFocusListener;
 
@@ -31,7 +33,8 @@ import tonegod.gui.listeners.TabFocusListener;
  *
  * @author t0neg0d
  */
-public class TextField extends Element implements KeyboardListener, TabFocusListener, MouseFocusListener {
+public class TextField extends Element implements KeyboardListener, TabFocusListener, MouseFocusListener, MouseButtonListener {
+
 	public static enum Type {
 		DEFAULT,
 		ALPHA,
@@ -67,6 +70,8 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	private int maxLength = 0;
 	private String nextChar;
 	private boolean valid;
+	
+	float lastClick = 0;
 	
 	/**
 	 * Creates a new instance of the TextField control
@@ -244,38 +249,50 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		} else if (evt.getKeyCode() == KeyInput.KEY_LEFT) {
 			if (!shift) resetTextRange();
 			if (caretIndex > -1) {
-				if (!shift) setTextRangeStart(caretIndex);
-				
 				if (!ctrl)
 					caretIndex--;
-				else
-					if (caretIndex > 0) caretIndex = finalText.substring(0,caretIndex-1).lastIndexOf(" ")+1;
-					else				caretIndex = finalText.substring(0,caretIndex).lastIndexOf(" ")+1;
+				else {
+					int cIndex = caretIndex;
+					if (cIndex > 0)
+						if (finalText.charAt(cIndex-1) == ' ')
+							cIndex--;
+					int index = 0;
+					if (cIndex > 0) index = finalText.substring(0,cIndex).lastIndexOf(' ');;
+					if (index < 0)	index = 0;
+					caretIndex = index;
+				}
 				if (caretIndex < 0)
 					caretIndex = 0;
 				
-			//	if (shift) setTextRangeEnd(caretIndex);
+				if (!shift) setTextRangeStart(caretIndex);
 			}
 		} else if (evt.getKeyCode() == KeyInput.KEY_RIGHT) {
 			if (!shift) resetTextRange();
 			if (caretIndex <= textFieldText.size()) {
-				if (!shift) {
-					if (caretIndex < textFieldText.size())	setTextRangeStart(caretIndex);
-					else									setTextRangeStart(caretIndex-1);
-				}
-				
 				if (!ctrl)
 					caretIndex++;
 				else {
-					if (finalText.substring(caretIndex, finalText.length()).indexOf(" ") != -1)
-						caretIndex += finalText.substring(caretIndex, finalText.length()).indexOf(" ")+1;
-					else
-						caretIndex = finalText.length();
+					int cIndex = caretIndex;
+					if (cIndex < finalText.length())
+						if (finalText.charAt(cIndex) == ' ')
+							cIndex++;
+					int index = finalText.length();
+					if (cIndex < finalText.length()) {
+						index = finalText.substring(cIndex, finalText.length()).indexOf(' ');
+						if (index == -1)	index = finalText.length();
+						else				index += cIndex;
+					} else {
+						index = finalText.length();
+					}
+					caretIndex = index;
 				}
 				if (caretIndex > finalText.length())
 					caretIndex = finalText.length();
 				
-			//	if (shift) setTextRangeEnd(caretIndex);
+				if (!shift) {
+					if (caretIndex < textFieldText.size())	setTextRangeStart(caretIndex);
+					else									setTextRangeStart(textFieldText.size());
+				}
 			}
 		} else if (evt.getKeyCode() == KeyInput.KEY_END || evt.getKeyCode() == KeyInput.KEY_NEXT || evt.getKeyCode() == KeyInput.KEY_DOWN) {
 			caretIndex = textFieldText.size();
@@ -290,6 +307,20 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 				}
 			} else {
 				if (isEnabled) {
+					if (rangeHead != -1 && rangeTail != -1) {
+						String newText;
+						if (rangeTail > rangeHead)	{
+							newText = finalText.substring(0,rangeHead) + finalText.substring(rangeTail, finalText.length());
+							int tempIndex = rangeHead;
+							setTextFieldText(newText);
+							caretIndex = tempIndex;
+						} else {
+							newText = finalText.substring(0,rangeTail) + finalText.substring(rangeHead, finalText.length());
+							int tempIndex = rangeTail;
+							setTextFieldText(newText);
+							caretIndex = tempIndex;
+						}
+					}
 					nextChar = String.valueOf(evt.getKeyChar());
 					if (forceUpperCase)			nextChar = nextChar.toUpperCase();
 					else if (forceLowerCase)	nextChar = nextChar.toLowerCase();
@@ -376,7 +407,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	}
 	
 	/**
-	 * Internal use
+	 * Internal use - NEVER USE THIS!!
 	 */
 	protected void getTextFieldText() {
 		String ret = "";
@@ -464,32 +495,20 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 				widthTest.setText(finalText.substring(index1, index2));
 			}
 		}
-		if (index2 != textFieldText.size())
-			index2++;
-
+		if (index2 != textFieldText.size()) index2++;
+		
 		if (head != index1 || tail != index2) {
 			head = index1;
 			tail = index2;
 		}
-		if (head != tail && head != -1 && tail != -1) {
+		if (head != tail && head != -1 && tail != -1)
 			visibleText = finalText.substring(head, tail);
-		} else {
+		else
 			visibleText = "";
-		}
 
 		widthTest.setText(finalText.substring(head, caretIndex));
 		caretX = widthTest.getLineWidth();
 		setCaretPosition(getAbsoluteX()+caretX);
-		//caret.setLocalTranslation(caret.getLocalTranslation().setX(caretX));
-		/*
-		if (rangeHead != -1 && rangeTail != -1) {
-			float rangeX = getFont().getLineWidth(finalText.substring(head, rangeHead));
-			float rangeW = getFont().getLineWidth(finalText.substring(rangeHead, rangeTail));
-			System.out.println(rangeX + " : " + rangeW);
-			textRange.setX(rangeX);
-			textRange.setWidth(rangeW);
-		}
-		*/
 		
 		return visibleText;
 	}
@@ -514,6 +533,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	public void setCaretPositionByX(float x) {
 		int index1 = visibleText.length();
 		if (visibleText.length() > 0) {
+			widthTest.setSize(getFontSize());
 			widthTest.setText(visibleText.substring(0, index1));
 			while(caret.getAbsoluteX()+widthTest.getLineWidth() > (x+getTextPadding())) {
 				index1--;
@@ -543,85 +563,6 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		caretIndex = head+index1;
 		setCaretPosition(getAbsoluteX()+caretX);
 		resetTextRange();
-	}
-	
-	/**
-	 * For internal use - do not call this method
-	 * @param head int
-	 */
-	private void setTextRangeStart(int head) {
-		if (!visibleText.equals("")) {
-		//	System.out.println("Setting text range start to: " + head);
-			rangeHead = head;
-		/*	if (head-this.head <= 0)
-				widthTest.setText("");
-			else if(head-this.head < visibleText.length())
-				widthTest.setText(visibleText.substring(0, head-this.head));
-			else
-				widthTest.setText(visibleText);
-			
-			float rangeX = getTextPadding();
-			if (head >= this.head)
-				rangeX = getAbsoluteX()+widthTest.getLineWidth()+getTextPadding();
-			caret.getMaterial().setFloat("TextRangeStart", rangeX);
-			*/
-		}
-	}
-	
-	/**
-	 * For internal use - do not call this method
-	 * @param tail int
-	 */
-	private void setTextRangeEnd(int tail) {
-		if (!visibleText.equals("") && rangeHead != -1) {
-		//	System.out.println("Setting text range end to: " + tail);
-			if (rangeHead-this.head <= 0)
-				widthTest.setText("");
-			else if(rangeHead-this.head < visibleText.length())
-				widthTest.setText(visibleText.substring(0, rangeHead-this.head));
-			else
-				widthTest.setText(visibleText);
-			
-			float rangeX = getTextPadding();
-			if (rangeHead >= this.head)
-				rangeX = getAbsoluteX()+widthTest.getLineWidth()+getTextPadding();
-			
-			rangeTail = tail;
-			if (tail-this.head <= 0)
-				widthTest.setText("");
-			else if (tail-this.head < visibleText.length())
-				widthTest.setText(visibleText.substring(0, tail-this.head));
-			else
-				widthTest.setText(visibleText);
-			
-			textRangeText = (rangeHead < rangeTail) ? finalText.substring(rangeHead, rangeTail) : finalText.substring(rangeTail, rangeHead);
-			
-			float rangeW = getTextPadding();
-			if (rangeTail <= this.tail)
-				rangeW = getAbsoluteX()+widthTest.getLineWidth()+getTextPadding();
-			
-		//	System.out.println(rangeX + " : " + rangeW);
-			if (rangeHead > rangeTail) {
-				caret.getMaterial().setFloat("TextRangeStart", rangeW);
-				caret.getMaterial().setFloat("TextRangeEnd", rangeX);
-			} else {
-				caret.getMaterial().setFloat("TextRangeStart", rangeX);
-				caret.getMaterial().setFloat("TextRangeEnd", rangeW);
-			}
-			
-		//	System.out.println(this.head + " : " + this.tail + " - " + this.rangeHead + " : " + this.rangeTail);
-		//	caret.getMaterial().setFloat("TextRangeEnd", getAbsoluteX()+widthTest.getLineWidth()+getTextPadding());
-			caret.getMaterial().setBoolean("ShowTextRange", true);
-		}
-	}
-	
-	private void resetTextRange() {
-		textRangeText = "";
-		rangeHead = -1;
-		rangeTail = -1;
-		caret.getMaterial().setFloat("TextRangeStart", 0);
-		caret.getMaterial().setFloat("TextRangeEnd", 0);
-		caret.getMaterial().setBoolean("ShowTextRange", false);
 	}
 	
 	private void pasteTextInto() {
@@ -800,5 +741,145 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	//	if (height > getHeight())
 			setTextPosition(getTextPosition().x, -nextY);
 		
+	}
+	
+	@Override
+	public void onMouseLeftPressed(MouseButtonEvent evt) {
+		float time = screen.getApplication().getTimer().getTimeInSeconds();
+		float diff;
+		if (lastClick != 0) {
+			diff = time-lastClick;
+			if (diff > 0.5f) {
+				lastClick = 0;
+			}
+		}
+		
+		if (lastClick == 0)
+			lastClick = time;
+		else {
+			diff = time-lastClick;
+			if (diff < 0.2f) {
+				// Double Click Madness!
+				if (this.isEnabled)
+					selectTextRangeDoubleClick();
+			}
+			lastClick = 0;
+		}
+	}
+
+	@Override
+	public void onMouseLeftReleased(MouseButtonEvent evt) {  }
+
+	@Override
+	public void onMouseRightPressed(MouseButtonEvent evt) {  }
+
+	@Override
+	public void onMouseRightReleased(MouseButtonEvent evt) {  }
+	
+	// Text Range methods
+	public void selectTextRangeAll() {
+		setTextRangeStart(0);
+		setTextRangeStart(finalText.length());
+		caretIndex = finalText.length();
+		getVisibleText();
+	}
+	
+	public void selectTextRangeNone() {
+		this.resetTextRange();
+	}
+	
+	public void selectTextRangeBySubstring(String s) {
+		int head = finalText.indexOf(s);
+		if (head != -1) {
+			setTextRangeStart(head);
+			int tail = head+s.length();
+			setTextRangeEnd(tail);
+			caretIndex = tail;
+			getVisibleText();
+		}
+	}
+	
+	public void selectTextRangeByIndex(int head, int tail) {
+		int nHead = head;
+		int nTail = tail;
+		if (head > tail) {
+			nHead = tail;
+			nTail = head;
+		}
+		if (nHead < 0) nHead = 0;
+		if (nTail > finalText.length()) nTail = finalText.length();
+		
+		this.setTextRangeStart(nHead);
+		this.setTextRangeEnd(nTail);
+		caretIndex = nTail;
+		getVisibleText();
+	}
+	
+	private void selectTextRangeDoubleClick() {
+		int end = caretIndex+finalText.substring(caretIndex, finalText.length()).indexOf(' ');
+		int start = finalText.substring(0,caretIndex).lastIndexOf(' ')+1;
+		if (start == -1) start = 0;
+		setTextRangeStart(start);
+		setTextRangeEnd(end);
+		caretIndex = end;
+		getVisibleText();
+	}
+	
+	private void setTextRangeStart(int head) {
+		if (!visibleText.equals("")) {
+			rangeHead = head;
+		}
+	}
+	
+	private void setTextRangeEnd(int tail) {
+		if (!visibleText.equals("") && rangeHead != -1) {
+			widthTest.setSize(getFontSize());
+			
+			if (rangeHead-this.head <= 0)
+				widthTest.setText("");
+			else if(rangeHead-this.head < visibleText.length())
+				widthTest.setText(visibleText.substring(0, rangeHead-this.head));
+			else
+				widthTest.setText(visibleText);
+			
+			float rangeX = getTextPadding();
+			if (rangeHead >= this.head)
+				rangeX = getAbsoluteX()+widthTest.getLineWidth()+getTextPadding();
+			
+			rangeTail = tail;
+			if (tail-this.head <= 0)
+				widthTest.setText("");
+			else if (tail-this.head < visibleText.length())
+				widthTest.setText(visibleText.substring(0, tail-this.head));
+			else
+				widthTest.setText(visibleText);
+			
+			textRangeText = (rangeHead < rangeTail) ? finalText.substring(rangeHead, rangeTail) : finalText.substring(rangeTail, rangeHead);
+			
+		//	System.out.println(textRangeText);
+			
+			float rangeW = getTextPadding();
+			if (rangeTail <= this.tail)
+				rangeW = getAbsoluteX()+widthTest.getLineWidth()+getTextPadding();
+			
+			if (rangeHead > rangeTail) {
+				caret.getMaterial().setFloat("TextRangeStart", rangeW);
+				caret.getMaterial().setFloat("TextRangeEnd", rangeX);
+			} else {
+				caret.getMaterial().setFloat("TextRangeStart", rangeX);
+				caret.getMaterial().setFloat("TextRangeEnd", rangeW);
+			}
+			
+			caret.getMaterial().setBoolean("ShowTextRange", true);
+		}
+	}
+	
+	private void resetTextRange() {
+		textRangeText = "";
+		rangeHead = -1;
+		rangeTail = -1;
+		caret.getMaterial().setFloat("TextRangeStart", 0);
+		caret.getMaterial().setFloat("TextRangeEnd", 0);
+		caret.getMaterial().setBoolean("ShowTextRange", false);
 	}
 }
