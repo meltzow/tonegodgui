@@ -779,7 +779,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	// Text Range methods
 	public void selectTextRangeAll() {
 		setTextRangeStart(0);
-		setTextRangeStart(finalText.length());
+		setTextRangeEnd(finalText.length());
 		caretIndex = finalText.length();
 		getVisibleText();
 	}
