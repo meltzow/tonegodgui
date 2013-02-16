@@ -41,6 +41,12 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.shape.Quad;
 import java.awt.Cursor;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -71,7 +77,8 @@ import tonegod.gui.listeners.*;
  *
  * @author t0neg0d
  */
-public class Screen implements Control, RawInputListener {
+public class Screen implements Control, RawInputListener, ClipboardOwner {
+
 	public static enum CursorType {
 		POINTER,
 		HAND,
@@ -152,6 +159,9 @@ public class Screen implements Control, RawInputListener {
 	private Node cursorEmitterNode = new Node("cursorEmitterNode");
 	private Node cursorEmitterPlaneNode = new Node("cursorEmitterPlaneNode");
 	private boolean useCursorEffects = false;
+	
+	private Clipboard clipboard;
+	private boolean clipboardActive = false;
 	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
@@ -750,7 +760,13 @@ public class Screen implements Control, RawInputListener {
 	 * @param text The text to store
 	 */
 	public void setClipboardText(String text) {
-		this.clipboardText = text;
+		try {
+			clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			StringSelection stringSelection = new StringSelection( text );
+			clipboard.setContents(stringSelection, this);
+		} catch (Exception ex) {
+			this.clipboardText = text;
+		}
 	}
 	
 	/**
@@ -758,7 +774,20 @@ public class Screen implements Control, RawInputListener {
 	 * @return String text
 	 */
 	public String getClipboardText() {
-		return this.clipboardText;
+		String ret = "";
+		clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		Transferable text = clipboard.getContents(null);
+		boolean isText = (text != null && text.isDataFlavorSupported(DataFlavor.stringFlavor));
+		if (isText) {
+			try {
+				ret = (String)text.getTransferData(DataFlavor.stringFlavor);
+			} catch (Exception ex) {
+				ret = this.clipboardText;
+				if (ret == null)
+					ret = "";
+			}
+		}
+		return ret;
 	}
 	
 	/**
@@ -1501,5 +1530,11 @@ public class Screen implements Control, RawInputListener {
 	 */
 	public void setKeyboardElemeent(Element element) {
 		keyboardElement = element;
+	}
+	
+	@Override
+	public void lostOwnership(Clipboard clipboard, Transferable contents) {
+	//	System.out.println("Clipboard failed, switching to internal clipboard.");
+	//	this.clipboardActive = false;
 	}
 }
