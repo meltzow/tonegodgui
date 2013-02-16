@@ -258,9 +258,9 @@ public abstract class Spinner extends TextField {
 	
 	@Override
 	public void controlKeyPressHook(KeyInputEvent evt, String text) {
-		if (evt.getKeyCode() == KeyInput.KEY_LEFT) {
+		if (evt.getKeyCode() == KeyInput.KEY_LEFT || evt.getKeyCode() == KeyInput.KEY_DOWN) {
 			decStep();
-		} else if (evt.getKeyCode() == KeyInput.KEY_RIGHT) {
+		} else if (evt.getKeyCode() == KeyInput.KEY_RIGHT || evt.getKeyCode() == KeyInput.KEY_UP) {
 			incStep();
 		} else {
 			displaySelectedStep();
