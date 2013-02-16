@@ -496,9 +496,23 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 			visibleText = finalText.substring(head, tail);
 		else
 			visibleText = "";
-
-		widthTest.setText(finalText.substring(head, caretIndex));
-		caretX = widthTest.getLineWidth();
+		
+		widthTest.setText(".");
+		float fixWidth = widthTest.getLineWidth();
+		boolean useFix = false;
+		
+		String testString = finalText.substring(head, caretIndex);
+		
+		if (testString.charAt(testString.length()-1) == ' ') {
+			testString += ".";
+			useFix = true;
+		}
+		
+		widthTest.setText(testString);
+		float nextCaretX = widthTest.getLineWidth();
+		if (useFix) nextCaretX -= fixWidth;
+		
+		caretX = nextCaretX; //widthTest.getLineWidth();
 		setCaretPosition(getAbsoluteX()+caretX);
 		
 		return visibleText;
