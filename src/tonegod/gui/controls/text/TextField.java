@@ -503,10 +503,12 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		
 		String testString = finalText.substring(head, caretIndex);
 		
-		if (testString.charAt(testString.length()-1) == ' ') {
-			testString += ".";
-			useFix = true;
-		}
+		try {
+			if (testString.charAt(testString.length()-1) == ' ') {
+				testString += ".";
+				useFix = true;
+			}
+		} catch (Exception ex) {  }
 		
 		widthTest.setText(testString);
 		float nextCaretX = widthTest.getLineWidth();
