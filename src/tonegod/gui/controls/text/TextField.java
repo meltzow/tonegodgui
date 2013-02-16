@@ -70,7 +70,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	private int maxLength = 0;
 	private String nextChar;
 	private boolean valid;
-	
+	private boolean copy = true, paste = true;
 	float lastClick = 0;
 	
 	/**
@@ -301,25 +301,16 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		} else {
 			if (ctrl) {
 				if (evt.getKeyCode() == KeyInput.KEY_C) {
-					screen.setClipboardText(textRangeText);
+					if (copy)
+						screen.setClipboardText(textRangeText);
 				} else if (evt.getKeyCode() == KeyInput.KEY_V) {
-					this.pasteTextInto();
+					if (paste)
+						this.pasteTextInto();
 				}
 			} else {
 				if (isEnabled) {
 					if (rangeHead != -1 && rangeTail != -1) {
-						String newText;
-						if (rangeTail > rangeHead)	{
-							newText = finalText.substring(0,rangeHead) + finalText.substring(rangeTail, finalText.length());
-							int tempIndex = rangeHead;
-							setTextFieldText(newText);
-							caretIndex = tempIndex;
-						} else {
-							newText = finalText.substring(0,rangeTail) + finalText.substring(rangeHead, finalText.length());
-							int tempIndex = rangeTail;
-							setTextFieldText(newText);
-							caretIndex = tempIndex;
-						}
+						editTextRangeText("");
 					}
 					nextChar = String.valueOf(evt.getKeyChar());
 					if (forceUpperCase)			nextChar = nextChar.toUpperCase();
@@ -566,19 +557,8 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	}
 	
 	private void pasteTextInto() {
-		// TODO: Disabled this feature for the time being.  Will re-enable at a later date.
-		/*
 		String text = screen.getClipboardText();
-		int index = caretIndex;
-		if (text.length() > 0) {
-			for (int i = 0; i < text.length(); i++) {
-				textFieldText.add(index, String.valueOf(text.charAt(i)));
-				index++;
-			}
-			caretIndex += index;
-			getVisibleText();
-		}
-		*/
+		editTextRangeText(text);
 	}
 	
 	/**
@@ -604,6 +584,47 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	 */
 	public boolean getIsEnabled() {
 		return this.isEnabled;
+	}
+	
+	/**
+	 * Enables/disables the use of the Copy text feature
+	 * @param copy boolean
+	 */
+	public void setAllowCopy(boolean copy) {
+		this.copy = copy;
+	}
+	
+	/**
+	 * Returns if the Copy feature is enabled/disabled
+	 * @return copy
+	 */
+	public boolean getAllowCopy() {
+		return this.copy;
+	}
+	
+	/**
+	 * Eanbles/disables use of the Paste text feature
+	 * @param paste boolean
+	 */
+	public void setAllowPaste(boolean paste) {
+		this.paste = paste;
+	}
+	
+	/**
+	 * Returns if the Paste feature is enabled/disabled
+	 * @return paste
+	 */
+	public boolean getAllowPaste() {
+		return this.paste;
+	}
+	
+	/**
+	 * Enables/disables both the Copy and Paste feature
+	 * @param copyAndPaste boolean
+	 */
+	public void setAllowCopyAndPaste(boolean copyAndPaste) {
+		this.copy = copyAndPaste;
+		this.paste = copyAndPaste;
 	}
 	
 	/**
@@ -710,7 +731,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	}
 	
 	@Override
-	public void setText(String text) {
+	public final void setText(String text) {
 		this.text = text;
 		if (textElement == null) {
 			textElement = new BitmapText(font, false);
@@ -733,14 +754,12 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	
 	private void centerTextVertically() {
 		
-		float height = BitmapTextUtil.getTextLineHeight(this, testString);//widthTest.getHeight()+this.borders.x;
+		float height = BitmapTextUtil.getTextLineHeight(this, testString);
 		float nextY = height-FastMath.floor(getHeight());
 		nextY /= 2;
 		nextY = (float)FastMath.ceil(nextY)+1;
 		
-	//	if (height > getHeight())
-			setTextPosition(getTextPosition().x, -nextY);
-		
+		setTextPosition(getTextPosition().x, -nextY);
 	}
 	
 	@Override
@@ -777,6 +796,9 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	public void onMouseRightReleased(MouseButtonEvent evt) {  }
 	
 	// Text Range methods
+	/**
+	 * Sets the current text range to all text within the TextField
+	 */
 	public void selectTextRangeAll() {
 		setTextRangeStart(0);
 		setTextRangeEnd(finalText.length());
@@ -784,10 +806,17 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		getVisibleText();
 	}
 	
+	/**
+	 * Resets the current text range
+	 */
 	public void selectTextRangeNone() {
 		this.resetTextRange();
 	}
 	
+	/**
+	 * Sets the current text range to the first instance of the provided string, if found
+	 * @param s The String to search for
+	 */
 	public void selectTextRangeBySubstring(String s) {
 		int head = finalText.indexOf(s);
 		if (head != -1) {
@@ -799,6 +828,12 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		}
 	}
 	
+	/**
+	 * Sets the selected text range to head-tail or tail-head depending on the provided indexes.
+	 * Selects nothing if either of the provided indexes are out of range
+	 * @param head The start or end index of the desired text range
+	 * @param tail The end or start index of the desired text range
+	 */
 	public void selectTextRangeByIndex(int head, int tail) {
 		int nHead = head;
 		int nTail = tail;
@@ -881,5 +916,30 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		caret.getMaterial().setFloat("TextRangeStart", 0);
 		caret.getMaterial().setFloat("TextRangeEnd", 0);
 		caret.getMaterial().setBoolean("ShowTextRange", false);
+	}
+	
+	private void editTextRangeText(String insertText) {
+		int head = 0, tail = 0;
+		if (rangeHead != -1 && rangeTail != -1) {
+			head = rangeHead;
+			tail = rangeTail;
+		} else {
+			head = caretIndex-1;
+			if (head == -1)
+				head = 0;
+			tail = caretIndex;
+		}
+		String newText;
+		if (tail > head)	{
+			newText = finalText.substring(0,head) + insertText + finalText.substring(tail, finalText.length());
+			int tempIndex = head+insertText.length();
+			setTextFieldText(newText);
+			caretIndex = tempIndex;
+		} else {
+			newText = finalText.substring(0,tail) + insertText + finalText.substring(head, finalText.length());
+			int tempIndex = tail+insertText.length();
+			setTextFieldText(newText);
+			caretIndex = tempIndex;
+		}
 	}
 }
