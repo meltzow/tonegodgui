@@ -970,17 +970,77 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			tail = caretIndex;
 		}
 		String newText;
+		int tempIndex;
 		if (tail > head)	{
 			newText = finalText.substring(0,head) + insertText + finalText.substring(tail, finalText.length());
-			int tempIndex = head+insertText.length();
-			setTextFieldText(newText);
-			caretIndex = tempIndex;
+			tempIndex = head+insertText.length();
 		} else {
 			newText = finalText.substring(0,tail) + insertText + finalText.substring(head, finalText.length());
-			int tempIndex = tail+insertText.length();
-			setTextFieldText(newText);
-			caretIndex = tempIndex;
+			tempIndex = tail+insertText.length();
 		}
+		
+		try { newText = newText.replace("\r", ""); }
+		catch (Exception ex) {  }
+		
+		if (this.type != Type.DEFAULT) {
+			String grabBag = "";
+			switch (type) {
+				case EXCLUDE_CUSTOM:
+					grabBag = validateCustom;
+					break;
+				case EXCLUDE_SPECIAL:
+					grabBag = validateSpecChar;
+					break;
+				case ALPHA:
+					grabBag = validateAlpha;
+					break;
+				case ALPHA_NOSPACE:
+					grabBag = validateAlphaNoSpace;
+					break;
+				case NUMERIC:
+					grabBag = validateNumeric;
+					break;
+				case ALPHANUMERIC:
+					grabBag = validateAlpha + validateNumeric;
+					break;
+				case ALPHANUMERIC_NOSPACE:
+					grabBag = validateAlphaNoSpace + validateNumeric;
+					break;
+			}
+			if (this.type == Type.EXCLUDE_CUSTOM || this.type == Type.EXCLUDE_SPECIAL) {
+				for (int i = 0; i < grabBag.length(); i++) {
+					try {
+						String ret = newText.replace(String.valueOf(grabBag.charAt(i)), "");
+						if (ret != null)
+							newText = ret;
+					} catch (Exception ex) {  }
+				}
+			} else {
+				String ret = newText;
+				for (int i = 0; i < newText.length(); i++) {
+					try {
+						int index = grabBag.indexOf(String.valueOf(newText.charAt(i)));
+						if (index == -1) {
+							String temp = ret.replace(String.valueOf(String.valueOf(newText.charAt(i))), "");
+							if (temp != null)
+								ret = temp;
+						}
+					} catch (Exception ex) {  }
+				}
+				if (!ret.equals(""))
+					newText = ret;
+			}
+			tempIndex = newText.length();;
+		}
+		
+		if (maxLength != 0 && newText.length() > maxLength) {
+			newText = newText.substring(0, maxLength);
+			tempIndex = maxLength;
+		}
+		
+		//this.setCaretPositionToEnd();
+		setTextFieldText(newText);
+		caretIndex = tempIndex;
 	}
 	
 	// Control methods
