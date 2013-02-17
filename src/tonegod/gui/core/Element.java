@@ -115,6 +115,7 @@ public class Element extends Node {
 	private ElementQuadGrid model;
 	private Material mat;
 	private Texture defaultTex;
+	private Texture alphaMap = null;
 	
 	protected BitmapText textElement;
 	protected Vector2f textPosition = new Vector2f(0,0);
@@ -1524,7 +1525,23 @@ public class Element extends Node {
 		alpha.setMagFilter(Texture.MagFilter.Bilinear);
 		alpha.setWrap(Texture.WrapMode.Repeat);
 		
+		this.alphaMap = alpha;
+		
+		if (defaultTex == null) {
+			float imgWidth = alpha.getImage().getWidth();
+			float imgHeight = alpha.getImage().getHeight();
+			float pixelWidth = 1f/imgWidth;
+			float pixelHeight = 1f/imgHeight;
+			
+			this.model = new ElementQuadGrid(this.dimensions, borders, imgWidth, imgHeight, pixelWidth, pixelHeight);
+			
+			geom.setMesh(model);
+		}
 		mat.setTexture("AlphaMap", alpha);
+	}
+	
+	public Texture getAlphaMap() {
+		return this.alphaMap;
 	}
 	
 	/**
