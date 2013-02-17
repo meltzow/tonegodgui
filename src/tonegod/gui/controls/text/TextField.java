@@ -17,6 +17,10 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.control.Control;
 import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.core.Element;
@@ -33,7 +37,7 @@ import tonegod.gui.listeners.TabFocusListener;
  *
  * @author t0neg0d
  */
-public class TextField extends Element implements KeyboardListener, TabFocusListener, MouseFocusListener, MouseButtonListener {
+public class TextField extends Element implements Control, KeyboardListener, TabFocusListener, MouseFocusListener, MouseButtonListener {
 
 	public static enum Type {
 		DEFAULT,
@@ -62,7 +66,6 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	protected BitmapText widthTest;
 	private boolean hasTabFocus = false;
 	protected float caretX = 0;
-	private char searchStr = ' ';
 	private Type type = Type.DEFAULT;
 	private boolean ctrl = false, shift = false, alt = false;
 	private boolean isEnabled = true;
@@ -257,7 +260,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 						if (finalText.charAt(cIndex-1) == ' ')
 							cIndex--;
 					int index = 0;
-					if (cIndex > 0) index = finalText.substring(0,cIndex).lastIndexOf(' ');;
+					if (cIndex > 0) index = finalText.substring(0,cIndex).lastIndexOf(' ');
 					if (index < 0)	index = 0;
 					caretIndex = index;
 				}
@@ -276,7 +279,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 					if (cIndex < finalText.length())
 						if (finalText.charAt(cIndex) == ' ')
 							cIndex++;
-					int index = finalText.length();
+					int index;
 					if (cIndex < finalText.length()) {
 						index = finalText.substring(cIndex, finalText.length()).indexOf(' ');
 						if (index == -1)	index = finalText.length();
@@ -501,22 +504,24 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		float fixWidth = widthTest.getLineWidth();
 		boolean useFix = false;
 		
-		String testString = finalText.substring(head, caretIndex);
-		
-		try {
-			if (testString.charAt(testString.length()-1) == ' ') {
-				testString += ".";
-				useFix = true;
-			}
-		} catch (Exception ex) {  }
-		
-		widthTest.setText(testString);
-		float nextCaretX = widthTest.getLineWidth();
-		if (useFix) nextCaretX -= fixWidth;
-		
-		caretX = nextCaretX; //widthTest.getLineWidth();
-		setCaretPosition(getAbsoluteX()+caretX);
-		
+		if (!finalText.equals("")) {
+			String testString = finalText.substring(head, caretIndex);
+
+			try {
+				if (testString.charAt(testString.length()-1) == ' ') {
+					testString += ".";
+					useFix = true;
+				}
+			} catch (Exception ex) {  }
+
+			widthTest.setText(testString);
+			float nextCaretX = widthTest.getLineWidth();
+			if (useFix) nextCaretX -= fixWidth;
+
+			caretX = nextCaretX; //widthTest.getLineWidth();
+			setCaretPosition(getAbsoluteX()+caretX);
+		}
+
 		return visibleText;
 	}
 	
@@ -706,6 +711,10 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 			effect.setColor(ColorRGBA.DarkGray);
 			screen.getEffectManager().applyEffect(effect);
 		}
+		if (isEnabled && !this.controls.contains(this)) {
+			addControl(this);
+			System.out.println(getUID() + " : Is now receiving updates.");
+		}
 	}
 	
 	@Override
@@ -721,6 +730,10 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		if (effect != null) {
 			effect.setColor(ColorRGBA.White);
 			screen.getEffectManager().applyEffect(effect);
+		}
+		if (isEnabled && this.controls.contains(this)) {
+			removeControl(this);
+			System.out.println(getUID() + " : Is no longer receiving updates.");
 		}
 	}
 	
@@ -886,6 +899,9 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		if (!visibleText.equals("") && rangeHead != -1) {
 			widthTest.setSize(getFontSize());
 			
+			widthTest.setText(".");
+			float diff = widthTest.getLineWidth();
+			
 			if (rangeHead-this.head <= 0)
 				widthTest.setText("");
 			else if(rangeHead-this.head < visibleText.length())
@@ -910,8 +926,16 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 		//	System.out.println(textRangeText);
 			
 			float rangeW = getTextPadding();
-			if (rangeTail <= this.tail)
-				rangeW = getAbsoluteX()+widthTest.getLineWidth()+getTextPadding();
+			if (rangeTail <= this.tail) {
+				float width = widthTest.getLineWidth();
+				if (widthTest.getText().length() > 0) {
+					if (widthTest.getText().charAt(widthTest.getText().length()-1) == ' ') {
+						widthTest.setText(widthTest.getText() + ".");
+						width = widthTest.getLineWidth()-diff;
+					}
+				}
+				rangeW = getAbsoluteX()+width+getTextPadding();
+			}
 			
 			if (rangeHead > rangeTail) {
 				caret.getMaterial().setFloat("TextRangeStart", rangeW);
@@ -935,7 +959,7 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 	}
 	
 	private void editTextRangeText(String insertText) {
-		int head = 0, tail = 0;
+		int head, tail;
 		if (rangeHead != -1 && rangeTail != -1) {
 			head = rangeHead;
 			tail = rangeTail;
@@ -958,4 +982,21 @@ public class TextField extends Element implements KeyboardListener, TabFocusList
 			caretIndex = tempIndex;
 		}
 	}
+	
+	// Control methods
+	@Override
+	public Control cloneForSpatial(Spatial spatial) {
+		return this;
+	}
+	
+	@Override
+	public void setSpatial(Spatial spatial) {  }
+	
+	@Override
+	public void update(float tpf) {
+		
+	}
+	
+	@Override
+	public void render(RenderManager rm, ViewPort vp) {  }
 }
