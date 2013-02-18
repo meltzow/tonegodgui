@@ -713,7 +713,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		}
 		if (isEnabled && !this.controls.contains(this)) {
 			addControl(this);
-			System.out.println(getUID() + " : Is now receiving updates.");
+		//	System.out.println(getUID() + " : Is now receiving updates.");
 		}
 	}
 	
@@ -733,7 +733,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		}
 		if (isEnabled && this.controls.contains(this)) {
 			removeControl(this);
-			System.out.println(getUID() + " : Is no longer receiving updates.");
+		//	System.out.println(getUID() + " : Is no longer receiving updates.");
 		}
 	}
 	
