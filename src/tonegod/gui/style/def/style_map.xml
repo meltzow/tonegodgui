@@ -7,6 +7,7 @@
 	<style control="Scrolling" path="tonegod/gui/style/def/Scrolling/Scrolling.xml" />
 	<style control="Window" path="tonegod/gui/style/def/Window/Window.xml" />
 	<style control="Button" path="tonegod/gui/style/def/Button/Button.xml" />
+	<style control="Dial" path="tonegod/gui/style/def/Dial/Dial.xml" />
 	<style control="Menu" path="tonegod/gui/style/def/Menu/Menu.xml" />
 	<style control="Label" path="tonegod/gui/style/def/Label/Label.xml" />
 	<style control="Slider" path="tonegod/gui/style/def/Slider/Slider.xml" />
