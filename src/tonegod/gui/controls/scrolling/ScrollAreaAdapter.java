@@ -35,14 +35,12 @@ public class ScrollAreaAdapter extends ScrollArea {
 	 * @param screen The screen control the Element is to be added to
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
-	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
 	 */
-	public ScrollAreaAdapter(Screen screen, String UID, Vector2f position, boolean isTextOnly) {
+	public ScrollAreaAdapter(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("ScrollArea").getVector2f("defaultSize"),
 			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
-			screen.getStyle("ScrollArea").getString("defaultImg"),
-			isTextOnly
+			screen.getStyle("ScrollArea").getString("defaultImg")
 		);
 	}
 	
@@ -53,13 +51,11 @@ public class ScrollAreaAdapter extends ScrollArea {
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
-	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
 	 */
-	public ScrollAreaAdapter(Screen screen, String UID, Vector2f position, Vector2f dimensions, boolean isTextOnly) {
+	public ScrollAreaAdapter(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
-			screen.getStyle("ScrollArea").getString("defaultImg"),
-			isTextOnly
+			screen.getStyle("ScrollArea").getString("defaultImg")
 		);
 	}
 	
@@ -72,9 +68,8 @@ public class ScrollAreaAdapter extends ScrollArea {
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Slider's track
-	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
 	 */
-	public ScrollAreaAdapter (Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isTextOnly) {
+	public ScrollAreaAdapter (Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super (screen, UID, position, dimensions, resizeBorders, defaultImg, false);
 		scrollableArea.setText("");
 		scrollableArea.setIgnoreMouse(true);
