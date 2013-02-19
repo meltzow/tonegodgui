@@ -88,10 +88,31 @@ public class ScrollAreaAdapter extends ScrollArea {
 		child.setDockS(true);
 		child.setClippingLayer(this);
 		child.setClipPadding(15);
-		childInfo.put(child.getUID(), new ChildInfo(child.getPosition().x, child.getPosition().y, child.getDimensions().x, child.getDimensions().y));
+		childInfo.put(child.getUID(), new ChildInfo(child, child.getPosition().x, child.getPosition().y, child.getDimensions().x, child.getDimensions().y));
 		scrollableChildren.add(child);
 		scrollableArea.addChild(child);
 		pack();
+	}
+	
+	public void removeScrollableChild(String UID) {
+		ChildInfo ci = childInfo.get(UID);
+		if (ci != null) {
+			Element el = ci.el;
+			scrollableChildren.remove(el);
+			childInfo.remove(UID);
+			scrollableArea.removeChild(el);
+			pack();
+		}
+	}
+	
+	public void removeScrollableChild(Element el) {
+		String UID = el.getUID();
+		if (childInfo.get(UID) != null) {
+			childInfo.remove(UID);
+			scrollableChildren.remove(el);
+			scrollableArea.removeChild(el);
+			pack();
+		}
 	}
 	
 	@Override
@@ -118,26 +139,28 @@ public class ScrollAreaAdapter extends ScrollArea {
 		this.resize(getAbsoluteWidth(), getAbsoluteHeight(), Borders.SE);
 		
 		scrollableArea.setWidth(getWidth());
-		scrollableArea.setHeight(nHeight);
+		scrollableArea.setHeight(nHeight+(scrollableArea.getTextPosition().y*2));
 		
 		if (scrollableArea.getTextElement().getHeight() > nHeight)
 			scrollableArea.setHeight(scrollableArea.getTextElement().getHeight());
 		
 		for (Element el : scrollableChildren) {
 			ChildInfo info = childInfo.get(el.getUID());
-			el.setY(scrollableArea.getHeight()-info.y-50-getPadding());
+			el.setY(scrollableArea.getHeight()-info.y-info.h-getPadding());
 		}
 		
 		scrollToTop();
 	}
 	
 	public class ChildInfo {
-		float x;
-		float y;
-		float w;
-		float h;
+		public Element el;
+		public float x;
+		public float y;
+		public float w;
+		public float h;
 		
-		public ChildInfo(float x, float y, float w, float h) {
+		public ChildInfo(Element el, float x, float y, float w, float h) {
+			this.el = el;
 			this.x = x;
 			this.y = y;
 			this.w = w;
