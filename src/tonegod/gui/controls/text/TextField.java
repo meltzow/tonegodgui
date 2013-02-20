@@ -74,7 +74,8 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	private String nextChar;
 	private boolean valid;
 	private boolean copy = true, paste = true;
-	float lastClick = 0;
+	private float lastClick = 0;
+	private boolean isPressed = false;
 	
 	/**
 	 * Creates a new instance of the TextField control
@@ -470,6 +471,112 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		widthTest.setSize(getFontSize());
 
 		int index1 = 0, index2;
+		
+		widthTest.setText(finalText);
+		if (head == -1 || tail == -1 || widthTest.getLineWidth() < getWidth()) {
+			head = 0;
+			tail = finalText.length();
+			if (head != tail && head != -1 && tail != -1)
+				visibleText = finalText.substring(head, tail);
+			else
+				visibleText = "";
+		} else if (caretIndex < head) {
+			head = caretIndex;
+			index2 = caretIndex; //finalText.length()-1;
+			if (index2 == caretIndex && caretIndex != textFieldText.size()) {
+				index2 = caretIndex+1;
+				widthTest.setText(finalText.substring(caretIndex, index2));
+				while(widthTest.getLineWidth() < getWidth()-(getTextPadding()*2)) {
+					if (index2 == textFieldText.size())
+						break;
+					widthTest.setText(finalText.substring(caretIndex, index2+1));
+					if (widthTest.getLineWidth() < getWidth()-(getTextPadding()*2)) {
+						index2++;
+					}
+				}
+			}
+			if (index2 != textFieldText.size()) index2++;
+			tail = index2;
+			if (head != tail && head != -1 && tail != -1)
+				visibleText = finalText.substring(head, tail);
+			else
+				visibleText = "";
+		} else if (caretIndex > tail) {
+			tail = caretIndex;
+			index2 = caretIndex; //finalText.length()-1;
+			if (index2 == caretIndex && caretIndex != 0) {
+				index2 = caretIndex-1;
+				widthTest.setText(finalText.substring(index2, caretIndex));
+				while(widthTest.getLineWidth() < getWidth()-(getTextPadding()*2)) {
+					if (index2 == 0)
+						break;
+					widthTest.setText(finalText.substring(index2-1, caretIndex));
+					if (widthTest.getLineWidth() < getWidth()-(getTextPadding()*2)) {
+						index2--;
+					}
+				}
+			}
+			head = index2;
+			if (head != tail && head != -1 && tail != -1)
+				visibleText = finalText.substring(head, caretIndex);
+			else
+				visibleText = "";
+		} else {
+			index2 = tail; //finalText.length()-1;
+			if (index2 > finalText.length())
+				index2 = finalText.length();
+			if (tail != head) {
+				widthTest.setText(finalText.substring(head, index2));
+				if (widthTest.getLineWidth() > getWidth()-(getTextPadding()*2)) {
+					while(widthTest.getLineWidth() > getWidth()-(getTextPadding()*2)) {
+						if (index2 == head)
+							break;
+						widthTest.setText(finalText.substring(head, index2-1));
+						if (widthTest.getLineWidth() > getWidth()-(getTextPadding()*2)) {
+							index2--;
+						}
+					}
+				} else if (widthTest.getLineWidth() < getWidth()-(getTextPadding()*2)) {
+					while(widthTest.getLineWidth() < getWidth()-(getTextPadding()*2) && index2 < finalText.length()) {
+						if (index2 == head)
+							break;
+						widthTest.setText(finalText.substring(head, index2+1));
+						if (widthTest.getLineWidth() < getWidth()-(getTextPadding()*2)) {
+							index2++;
+						}
+						
+					}
+				}
+			}
+			tail = index2;
+			if (head != tail && head != -1 && tail != -1)
+				visibleText = finalText.substring(head, tail);
+			else
+				visibleText = "";
+		}
+		
+		String testString = finalText.substring(head, caretIndex);
+		widthTest.setText(".");
+		float fixWidth = widthTest.getLineWidth();
+		boolean useFix = false;
+		
+		if (!finalText.equals("")) {
+			try {
+				if (testString.charAt(testString.length()-1) == ' ') {
+					testString += ".";
+					useFix = true;
+				}
+			} catch (Exception ex) {  }
+		}
+
+		widthTest.setText(testString);
+		float nextCaretX = widthTest.getLineWidth();
+		if (useFix) nextCaretX -= fixWidth;
+
+		caretX = nextCaretX; //widthTest.getLineWidth();
+		setCaretPosition(getAbsoluteX()+caretX);
+		
+		/*
 		widthTest.setText(finalText.substring(index1));
 		while(widthTest.getLineWidth() > getWidth()) {
 			if (index1 == caretIndex)
@@ -521,8 +628,32 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			caretX = nextCaretX; //widthTest.getLineWidth();
 			setCaretPosition(getAbsoluteX()+caretX);
 		}
-
+		*/
 		return visibleText;
+	}
+	
+	private void setCaretPositionToIndex() {
+		widthTest.setText(".");
+		float fixWidth = widthTest.getLineWidth();
+		boolean useFix = false;
+		
+		if (!finalText.equals("")) {
+			String testString = finalText.substring(head, caretIndex);
+
+			try {
+				if (testString.charAt(testString.length()-1) == ' ') {
+					testString += ".";
+					useFix = true;
+				}
+			} catch (Exception ex) {  }
+
+			widthTest.setText(testString);
+			float nextCaretX = widthTest.getLineWidth();
+			if (useFix) nextCaretX -= fixWidth;
+
+			caretX = nextCaretX; //widthTest.getLineWidth();
+			setCaretPosition(getAbsoluteX()+caretX);
+		}
 	}
 	
 	/**
@@ -542,7 +673,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	 * For internal use - do not call this method
 	 * @param x float
 	 */
-	public void setCaretPositionByX(float x) {
+	private void setCaretPositionByX(float x) {
 		int index1 = visibleText.length();
 		if (visibleText.length() > 0) {
 			widthTest.setSize(getFontSize());
@@ -561,6 +692,25 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		} else {
 			setTextRangeEnd(caretIndex);
 		}
+	}
+	
+	private void setCaretPositionByXNoRange(float x) {
+		int index1 = visibleText.length();
+		if (visibleText.length() > 0) {
+			widthTest.setSize(getFontSize());
+			widthTest.setText(visibleText.substring(0, index1));
+			while(caret.getAbsoluteX()+widthTest.getLineWidth() > (x+getTextPadding())) {
+				if (index1 > 0) {
+					index1--;
+					widthTest.setText(visibleText.substring(0, index1));
+				} else {
+					break;
+				}
+			}
+			caretX = widthTest.getLineWidth();
+		}
+		caretIndex = head+index1;
+		setCaretPosition(getAbsoluteX()+caretX);
 	}
 	
 	/**
@@ -793,36 +943,68 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	
 	@Override
 	public void onMouseLeftPressed(MouseButtonEvent evt) {
-		float time = screen.getApplication().getTimer().getTimeInSeconds();
-		float diff;
-		if (lastClick != 0) {
-			diff = time-lastClick;
-			if (diff > 0.5f) {
+		if (this.isEnabled) {
+			float time = screen.getApplication().getTimer().getTimeInSeconds();
+			float diff;
+			if (lastClick != 0) {
+				diff = time-lastClick;
+				if (diff > 0.5f) {
+					lastClick = 0;
+				}
+			}
+
+			if (lastClick == 0) {
+				lastClick = time;
+				resetTextRange();
+				isPressed = true;
+				setCaretPositionByXNoRange(evt.getX());
+				if (caretIndex >= 0)
+					this.setTextRangeStart(caretIndex);
+				else
+					this.setTextRangeStart(0);
+			} else {
+				diff = time-lastClick;
+				if (diff < 0.2f) {
+					// Double Click Madness!
+					selectTextRangeDoubleClick();
+				}
 				lastClick = 0;
 			}
-		}
-		
-		if (lastClick == 0)
-			lastClick = time;
-		else {
-			diff = time-lastClick;
-			if (diff < 0.2f) {
-				// Double Click Madness!
-				if (this.isEnabled)
-					selectTextRangeDoubleClick();
-			}
-			lastClick = 0;
 		}
 	}
 
 	@Override
-	public void onMouseLeftReleased(MouseButtonEvent evt) {  }
+	public void onMouseLeftReleased(MouseButtonEvent evt) {
+		if (isEnabled) {
+			if (isPressed) {
+				isPressed = false;
+				setCaretPositionByXNoRange(evt.getX());
+				if (caretIndex >= 0)
+					this.setTextRangeEnd(caretIndex);
+				else
+					this.setTextRangeEnd(0);
+			}
+		}
+	}
 
 	@Override
 	public void onMouseRightPressed(MouseButtonEvent evt) {  }
 
 	@Override
 	public void onMouseRightReleased(MouseButtonEvent evt) {  }
+	
+	private void stillPressedInterval() {
+		if (screen.getMouseXY().x > getAbsoluteWidth() && caretIndex < finalText.length())
+			caretIndex++;
+		else if (screen.getMouseXY().x < getAbsoluteX() && caretIndex > 0)
+			caretIndex--;
+		setText(getVisibleText());
+		setCaretPositionByXNoRange(screen.getMouseXY().x);
+		if (caretIndex >= 0)
+			this.setTextRangeEnd(caretIndex);
+		else
+			this.setTextRangeEnd(0);
+	}
 	
 	// Text Range methods
 	/**
@@ -1054,7 +1236,9 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	
 	@Override
 	public void update(float tpf) {
-		
+		if (isPressed) {
+			stillPressedInterval();
+		}
 	}
 	
 	@Override

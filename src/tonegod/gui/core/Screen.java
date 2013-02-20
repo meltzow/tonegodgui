@@ -520,7 +520,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 							keyboardElement = eventElement;
 							if (keyboardElement instanceof TextField) {
 								((TextField)keyboardElement).setTabFocus();
-								((TextField)keyboardElement).setCaretPositionByX(evt.getX());
+							//	((TextField)keyboardElement).setCaretPositionByX(evt.getX());
 							}
 							// TODO: Update target element's font shader
 						} else {
