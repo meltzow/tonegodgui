@@ -246,8 +246,12 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			alt = true;
 		} else if (evt.getKeyCode() == KeyInput.KEY_BACK) {
 			if (caretIndex > 0) {
-				textFieldText.remove(caretIndex-1);
-				caretIndex--;
+				if (rangeHead != -1 && rangeTail != -1) {
+					editTextRangeText("");
+				} else {
+					textFieldText.remove(caretIndex-1);
+					caretIndex--;
+				}
 			}
 		//	updateTextElement();
 		} else if (evt.getKeyCode() == KeyInput.KEY_LEFT) {
@@ -300,8 +304,10 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			}
 		} else if (evt.getKeyCode() == KeyInput.KEY_END || evt.getKeyCode() == KeyInput.KEY_NEXT || evt.getKeyCode() == KeyInput.KEY_DOWN) {
 			caretIndex = textFieldText.size();
+			if (shift) setTextRangeEnd(caretIndex);
 		} else if (evt.getKeyCode() == KeyInput.KEY_HOME || evt.getKeyCode() == KeyInput.KEY_PRIOR || evt.getKeyCode() == KeyInput.KEY_UP) {
 			caretIndex = 0;
+			if (shift) setTextRangeEnd(caretIndex);
 		} else {
 			if (ctrl) {
 				if (evt.getKeyCode() == KeyInput.KEY_C) {
@@ -316,6 +322,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 					if (rangeHead != -1 && rangeTail != -1) {
 						editTextRangeText("");
 					}
+					if (!shift) resetTextRange();
 					nextChar = String.valueOf(evt.getKeyChar());
 					if (forceUpperCase)			nextChar = nextChar.toUpperCase();
 					else if (forceLowerCase)	nextChar = nextChar.toLowerCase();
@@ -368,6 +375,10 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 								caretIndex++;
 							}
 						}
+					}
+					if (!shift) {
+						if (caretIndex < textFieldText.size())	setTextRangeStart(caretIndex);
+						else									setTextRangeStart(textFieldText.size());
 					}
 				}
 			}
@@ -555,13 +566,14 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 				visibleText = "";
 		}
 		
-		String testString = finalText.substring(head, caretIndex);
+		String testString = "";
 		widthTest.setText(".");
 		float fixWidth = widthTest.getLineWidth();
 		boolean useFix = false;
 		
 		if (!finalText.equals("")) {
 			try {
+				testString = finalText.substring(head, caretIndex);
 				if (testString.charAt(testString.length()-1) == ' ') {
 					testString += ".";
 					useFix = true;
@@ -1145,6 +1157,11 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		if (rangeHead != -1 && rangeTail != -1) {
 			head = rangeHead;
 			tail = rangeTail;
+			if (head < 0) head = 0;
+			else if (head > finalText.length()) head = finalText.length();
+			if (tail < 0) tail = 0;
+			else if (tail > finalText.length()) tail = finalText.length();
+			resetTextRange();
 		} else {
 			head = caretIndex-1;
 			if (head == -1)
