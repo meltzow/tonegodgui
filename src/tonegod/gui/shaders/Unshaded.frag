@@ -1,7 +1,3 @@
-#if defined(HAS_GLOWMAP) || defined(HAS_COLORMAP) || (defined(HAS_LIGHTMAP) && !defined(SEPARATE_TEXCOORD))
-    #define NEED_TEXCOORD1
-#endif
-
 #ifdef HAS_ALPHAMAP
 	uniform sampler2D m_AlphaMap;
 #endif
@@ -34,10 +30,8 @@ uniform float m_TextRangeEnd;
 
 uniform vec4 m_Color;
 uniform sampler2D m_ColorMap;
-uniform sampler2D m_LightMap;
 
 varying vec2 texCoord1;
-varying vec2 texCoord2;
 
 varying vec4 vertColor;
 
@@ -74,14 +68,6 @@ void main(){
 	#ifdef HAS_VERTEXCOLOR
 		color *= vertColor;
 	#endif
-	
-    #ifdef HAS_LIGHTMAP
-        #ifdef SEPARATE_TEXCOORD
-            color.rgb *= texture2D(m_LightMap, texCoord2).rgb;
-        #else
-            color.rgb *= texture2D(m_LightMap, texCoord1).rgb;
-        #endif
-    #endif
 	
 	#ifdef IS_TEXTFIELD
 	if (m_ShowTextRange) {

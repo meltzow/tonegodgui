@@ -11,10 +11,8 @@ MaterialDef Unshaded {
 		Float GlobalAlpha : 1.0
 		
         Texture2D ColorMap
-        Texture2D LightMap
         Color Color (Color)
         Boolean VertexColor (UseVertexColor)
-        Boolean SeparateTexCoord
 		Boolean UseClipping : false
 		Vector4 Clipping
 		Boolean IsTextField
@@ -45,9 +43,7 @@ MaterialDef Unshaded {
         }
 
         Defines {
-            SEPARATE_TEXCOORD : SeparateTexCoord
             HAS_COLORMAP : ColorMap
-            HAS_LIGHTMAP : LightMap
             HAS_VERTEXCOLOR : VertexColor
             HAS_COLOR : Color
 			HAS_ALPHAMAP : AlphaMap
