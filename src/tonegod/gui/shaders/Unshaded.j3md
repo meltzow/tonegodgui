@@ -9,8 +9,7 @@ MaterialDef Unshaded {
 		Boolean EffectFade : false
 		Float EffectStep
 		Float GlobalAlpha : 1.0
-		
-        Texture2D ColorMap
+		Texture2D ColorMap
         Color Color (Color)
         Boolean VertexColor (UseVertexColor)
 		Boolean UseClipping : false
@@ -23,12 +22,6 @@ MaterialDef Unshaded {
 		Boolean ShowTextRange : false
 		Float TextRangeStart : 0.0
 		Float TextRangeEnd : 0.0
-		
-        // Texture of the glowing parts of the material
-        Texture2D GlowMap
-        // The glow color of the object
-        Color GlowColor
-		
 		Texture2D AlphaMap
     }
 
@@ -48,34 +41,6 @@ MaterialDef Unshaded {
             HAS_COLOR : Color
 			HAS_ALPHAMAP : AlphaMap
 			IS_TEXTFIELD : IsTextField
-        }
-    }
-
-	Technique PreNormalPass {
-		VertexShader GLSL100 :   Common/MatDefs/SSAO/normal.vert
-		FragmentShader GLSL100 : Common/MatDefs/SSAO/normal.frag
-
-		WorldParameters {
-			WorldViewProjectionMatrix
-			NormalMatrix
-		}
-		RenderState {  }
-	}
-
-
-    Technique Glow {
-
-        VertexShader GLSL100:   Common/MatDefs/Misc/Unshaded.vert
-        FragmentShader GLSL100: Common/MatDefs/Light/Glow.frag
-
-        WorldParameters {
-            WorldViewProjectionMatrix
-        }
-
-        Defines {
-            NEED_TEXCOORD1
-            HAS_GLOWMAP : GlowMap
-            HAS_GLOWCOLOR : GlowColor
         }
     }
 }
