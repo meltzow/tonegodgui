@@ -1084,7 +1084,11 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	
 	private void selectTextRangeDoubleClick() {
 		if (!finalText.equals("")) {
-			int end = caretIndex+finalText.substring(caretIndex, finalText.length()).indexOf(' ');
+			int end;
+			if (finalText.substring(caretIndex, finalText.length()).indexOf(' ') != -1)
+				end = caretIndex+finalText.substring(caretIndex, finalText.length()).indexOf(' ');
+			else
+				end = caretIndex+finalText.substring(caretIndex, finalText.length()).length();
 			int start = finalText.substring(0,caretIndex).lastIndexOf(' ')+1;
 			if (start == -1) start = 0;
 			setTextRangeStart(start);
