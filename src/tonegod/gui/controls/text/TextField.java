@@ -270,7 +270,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 						if (finalText.charAt(cIndex-1) == ' ')
 							cIndex--;
 					int index = 0;
-					if (cIndex > 0) index = finalText.substring(0,cIndex).lastIndexOf(' ');
+					if (cIndex > 0) index = finalText.substring(0,cIndex).lastIndexOf(' ')+1;
 					if (index < 0)	index = 0;
 					caretIndex = index;
 				}
@@ -1111,16 +1111,30 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			widthTest.setText(".");
 			float diff = widthTest.getLineWidth();
 			
-			if (rangeHead-this.head <= 0)
-				widthTest.setText("");
-			else if(rangeHead-this.head < visibleText.length())
-				widthTest.setText(visibleText.substring(0, rangeHead-this.head));
-			else
-				widthTest.setText(visibleText);
+			float rangeX;
 			
-			float rangeX = getTextPadding();
+			if (rangeHead-this.head <= 0) {
+				widthTest.setText("");
+				rangeX = widthTest.getLineWidth();
+			} else if(rangeHead-this.head < visibleText.length()) {
+				widthTest.setText(visibleText.substring(0, rangeHead-this.head));
+				float width = widthTest.getLineWidth();
+				if (widthTest.getText().length() > 0) {
+					if (widthTest.getText().charAt(widthTest.getText().length()-1) == ' ') {
+						widthTest.setText(widthTest.getText() + ".");
+						width = widthTest.getLineWidth()-diff;
+					}
+				}
+				rangeX = width;
+			} else {
+				widthTest.setText(visibleText);
+				rangeX = widthTest.getLineWidth();
+			}
+			
 			if (rangeHead >= this.head)
-				rangeX = getAbsoluteX()+widthTest.getLineWidth()+getTextPadding();
+				rangeX = getAbsoluteX()+rangeX+getTextPadding();
+			else
+				rangeX = getTextPadding();
 			
 			rangeTail = tail;
 			if (tail-this.head <= 0)
