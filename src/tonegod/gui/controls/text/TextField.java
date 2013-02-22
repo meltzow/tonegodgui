@@ -438,6 +438,11 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		setText(text);
 	}
 	
+	@Deprecated
+	public void setTextFieldText(String text) {
+		setText(text);
+	}
+	
 	@Override
 	public void setText(String s) {
 		caretIndex = 0;
@@ -1258,7 +1263,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 				if (!ret.equals(""))
 					newText = ret;
 			}
-			tempIndex = newText.length();;
+			tempIndex = newText.length();
 		}
 		
 		if (maxLength != 0 && newText.length() > maxLength) {
