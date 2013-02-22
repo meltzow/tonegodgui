@@ -153,7 +153,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		setTextFieldFontColor(screen.getStyle("TextField").getColorRGBA("fontColor"));
 		this.addChild(caret);
 		
-		this.setText("");
+		this.updateText("");
 		
 		populateEffects("TextField");
 	}
@@ -244,6 +244,11 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			shift = true;
 		} else if (evt.getKeyCode() == KeyInput.KEY_LMENU || evt.getKeyCode() == KeyInput.KEY_RMENU) {
 			alt = true;
+		} else if (evt.getKeyCode() == KeyInput.KEY_DELETE) {
+			if (caretIndex < finalText.length()) {
+				if (rangeHead != -1 && rangeTail != -1)	editTextRangeText("");
+				else									textFieldText.remove(caretIndex);
+			}
 		} else if (evt.getKeyCode() == KeyInput.KEY_BACK) {
 			if (caretIndex > 0) {
 				if (rangeHead != -1 && rangeTail != -1) {
@@ -383,7 +388,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 				}
 			}
 		}
-		this.setText(getVisibleText());
+		this.updateText(getVisibleText());
 		
 		if (shift && (evt.getKeyCode() == KeyInput.KEY_LEFT || evt.getKeyCode() == KeyInput.KEY_RIGHT)) setTextRangeEnd(caretIndex);
 		
@@ -426,17 +431,22 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	}
 	
 	/**
-	 * This method should be used in place of setText.
+	 * This method now forwards to setText.  Feel free to use setText directly.
 	 * @param s String The text to set for the TextField
 	 */
-	public void setTextFieldText(String s) {
+	public void setTextRangeText(String text) {
+		setText(text);
+	}
+	
+	@Override
+	public void setText(String s) {
 		caretIndex = 0;
 		textFieldText.clear();
 		for (int i = 0; i < s.length(); i++) {
 			textFieldText.add(caretIndex, String.valueOf(s.charAt(i)));
 			caretIndex++;
 		}
-		this.setText(getVisibleText());
+		this.updateText(getVisibleText());
 		
 		setCaretPositionToEnd();
 		
@@ -921,8 +931,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		setHasFocus(false);
 	}
 	
-	@Override
-	public final void setText(String text) {
+	public final void updateText(String text) {
 		this.text = text;
 		if (textElement == null) {
 			textElement = new BitmapText(font, false);
@@ -1010,7 +1019,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			caretIndex++;
 		else if (screen.getMouseXY().x < getAbsoluteX() && caretIndex > 0)
 			caretIndex--;
-		setText(getVisibleText());
+		updateText(getVisibleText());
 		setCaretPositionByXNoRange(screen.getMouseXY().x);
 		if (caretIndex >= 0)
 			this.setTextRangeEnd(caretIndex);
@@ -1238,7 +1247,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		}
 		
 		//this.setCaretPositionToEnd();
-		setTextFieldText(newText);
+		setText(newText);
 		caretIndex = tempIndex;
 	}
 	

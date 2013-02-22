@@ -159,7 +159,7 @@ public abstract class ChatBox extends Panel {
 		if (tfChatInput.getText().length() > 0) {
 			if (!tfChatInput.getText().equals("")) {
 				onSendMsg(tfChatInput.getText());
-				tfChatInput.setTextFieldText("");
+				tfChatInput.setText("");
 			}
 		}
 	}

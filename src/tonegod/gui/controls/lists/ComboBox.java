@@ -210,9 +210,9 @@ public abstract class ComboBox extends TextField {
 		//		this.setSelectedIndex(selectedIndex);
 		//	else
 			if (DDList.getMenuItems().isEmpty())
-				setTextFieldText("");
+				setText("");
 		} else {
-			setTextFieldText("");
+			setText("");
 		}
 	}
 	
@@ -270,7 +270,7 @@ public abstract class ComboBox extends TextField {
 		this.selectedIndex = index;
 		this.selectedCaption = caption;
 		this.selectedValue = value;
-		setTextFieldText(selectedCaption);
+		setText(selectedCaption);
 		
 		int rIndex = DDList.getMenuItems().size()-index;
 		float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);

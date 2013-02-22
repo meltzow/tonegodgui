@@ -296,7 +296,7 @@ public abstract class ChatBoxExt extends Panel {
 			if (!tfChatInput.getText().equals("")) {
 				String command = (String)sbDefaultChannel.getSelectedListItem().getValue();
 				onSendMsg(command, tfChatInput.getText());
-				tfChatInput.setTextFieldText("");
+				tfChatInput.setText("");
 			}
 		}
 	}

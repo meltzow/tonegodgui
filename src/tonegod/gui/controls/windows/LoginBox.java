@@ -182,7 +182,7 @@ public abstract class LoginBox extends Window {
 	}
 	
 	public void setTextUserName(String text) {
-		this.userName.setTextFieldText(text);
+		this.userName.setText(text);
 	}
 	
 	public Password getPassword() {
@@ -194,7 +194,7 @@ public abstract class LoginBox extends Window {
 	}
 	
 	public void setTextPassword(String text) {
-		this.password.setTextFieldText(text);
+		this.password.setText(text);
 	}
 	
 	public void setButtonLoginText(String text) {
