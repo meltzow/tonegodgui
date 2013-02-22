@@ -295,10 +295,21 @@ public abstract class Indicator extends Element {
 	}
 	
 	/**
-	 * Applies and alpha map to the indicator, allowing for  curved shapes
+	 * Use setAlphaMap instead
 	 * @param alphaMapPath 
 	 */
+	@Deprecated
 	public void setIndicatorAlphaMap(String alphaMapPath) {
+		this.alphaMapPath = alphaMapPath;
+		elIndicator.setAlphaMap(this.alphaMapPath);
+	}
+	
+	/**
+	 * Applies an alpha map to the indicator, allowing for curved shapes
+	 * @param alphaMapPath 
+	 */
+	@Override
+	public void setAlphaMap(String alphaMapPath) {
 		this.alphaMapPath = alphaMapPath;
 		elIndicator.setAlphaMap(this.alphaMapPath);
 	}
