@@ -1537,4 +1537,22 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	//	System.out.println("Clipboard failed, switching to internal clipboard.");
 	//	this.clipboardActive = false;
 	}
+	
+	// Determining OS
+	public static boolean isWindows() {
+		String OS = System.getProperty("os.name").toLowerCase();
+		return (OS.indexOf("win") >= 0);
+	}
+	public static boolean isMac() {
+ 		String OS = System.getProperty("os.name").toLowerCase();
+		return (OS.indexOf("mac") >= 0);
+	}
+	public static boolean isUnix() {
+		String OS = System.getProperty("os.name").toLowerCase();
+		return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 );
+	}
+	public static boolean isSolaris() {
+		String OS = System.getProperty("os.name").toLowerCase();
+		return (OS.indexOf("sunos") >= 0);
+	}
 }

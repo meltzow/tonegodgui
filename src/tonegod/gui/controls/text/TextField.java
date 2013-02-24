@@ -74,7 +74,10 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	private String nextChar;
 	private boolean valid;
 	private boolean copy = true, paste = true;
-	private float lastClick = 0;
+	private float firstClick = 0, secondClick = 0, compareClick = 0;
+	private float firstClickDiff = 0, secondClickDiff = 0;
+	private boolean doubleClick = false, tripleClick = false;
+	private int clickCount = 0;
 	private boolean isPressed = false;
 	
 	/**
@@ -124,6 +127,8 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		this.setScaleNS(false);
 		this.setDockN(true);
 		this.setDockW(true);
+		
+		compareClick = screen.getApplication().getTimer().getTimeInSeconds();
 		
 		float padding = screen.getStyle("TextField").getFloat("textPadding");
 		
@@ -262,7 +267,23 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		} else if (evt.getKeyCode() == KeyInput.KEY_LEFT) {
 			if (!shift) resetTextRange();
 			if (caretIndex > -1) {
-				if (!ctrl)
+				if (Screen.isMac()) {
+					if (ctrl) {
+						caretIndex = 0;
+						getVisibleText();
+						if (shift) setTextRangeEnd(caretIndex);
+						else {
+							resetTextRange();
+							setTextRangeStart(caretIndex);
+						}
+						return;
+					}
+				}
+				
+				if ((Screen.isMac() && !alt) ||
+					(Screen.isWindows() && !ctrl) ||
+					(Screen.isUnix() && !ctrl) ||
+					(Screen.isSolaris() && !ctrl))
 					caretIndex--;
 				else {
 					int cIndex = caretIndex;
@@ -282,7 +303,23 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		} else if (evt.getKeyCode() == KeyInput.KEY_RIGHT) {
 			if (!shift) resetTextRange();
 			if (caretIndex <= textFieldText.size()) {
-				if (!ctrl)
+				if (Screen.isMac()) {
+					if (ctrl) {
+						caretIndex = textFieldText.size();
+						getVisibleText();
+						if (shift) setTextRangeEnd(caretIndex);
+						else {
+							resetTextRange();
+							setTextRangeStart(caretIndex);
+						}
+						return;
+					}
+				}
+				
+				if ((Screen.isMac() && !alt) ||
+					(Screen.isWindows() && !ctrl) ||
+					(Screen.isUnix() && !ctrl) ||
+					(Screen.isSolaris() && !ctrl))
 					caretIndex++;
 				else {
 					int cIndex = caretIndex;
@@ -309,10 +346,20 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			}
 		} else if (evt.getKeyCode() == KeyInput.KEY_END || evt.getKeyCode() == KeyInput.KEY_NEXT || evt.getKeyCode() == KeyInput.KEY_DOWN) {
 			caretIndex = textFieldText.size();
-			if (shift) setTextRangeEnd(caretIndex);
+			getVisibleText();
+			if (shift)	setTextRangeEnd(caretIndex);
+			else {
+				resetTextRange();
+				setTextRangeStart(caretIndex);
+			}
 		} else if (evt.getKeyCode() == KeyInput.KEY_HOME || evt.getKeyCode() == KeyInput.KEY_PRIOR || evt.getKeyCode() == KeyInput.KEY_UP) {
 			caretIndex = 0;
-			if (shift) setTextRangeEnd(caretIndex);
+			getVisibleText();
+			if (shift)	setTextRangeEnd(caretIndex);
+			else {
+				resetTextRange();
+				setTextRangeStart(caretIndex);
+			}
 		} else {
 			if (ctrl) {
 				if (evt.getKeyCode() == KeyInput.KEY_C) {
@@ -432,12 +479,8 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	
 	/**
 	 * This method now forwards to setText.  Feel free to use setText directly.
-	 * @param s String The text to set for the TextField
+	 * @param text String The text to set for the TextField
 	 */
-	public void setTextRangeText(String text) {
-		setText(text);
-	}
-	
 	@Deprecated
 	public void setTextFieldText(String text) {
 		setText(text);
@@ -603,59 +646,6 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		caretX = nextCaretX; //widthTest.getLineWidth();
 		setCaretPosition(getAbsoluteX()+caretX);
 		
-		/*
-		widthTest.setText(finalText.substring(index1));
-		while(widthTest.getLineWidth() > getWidth()) {
-			if (index1 == caretIndex)
-				break;
-			index1++;
-			widthTest.setText(finalText.substring(index1));
-		}
-
-		index2 = finalText.length()-1;
-		if (index2 == caretIndex && caretIndex != textFieldText.size()) {
-			index2 = caretIndex+1;
-			widthTest.setText(finalText.substring(index1, index2));
-			while(widthTest.getLineWidth() < getWidth()) {
-				if (index2 == textFieldText.size())
-					break;
-				index2++;
-				widthTest.setText(finalText.substring(index1, index2));
-			}
-		}
-		if (index2 != textFieldText.size()) index2++;
-		
-		if (head != index1 || tail != index2) {
-			head = index1;
-			tail = index2;
-		}
-		if (head != tail && head != -1 && tail != -1)
-			visibleText = finalText.substring(head, tail);
-		else
-			visibleText = "";
-		
-		widthTest.setText(".");
-		float fixWidth = widthTest.getLineWidth();
-		boolean useFix = false;
-		
-		if (!finalText.equals("")) {
-			String testString = finalText.substring(head, caretIndex);
-
-			try {
-				if (testString.charAt(testString.length()-1) == ' ') {
-					testString += ".";
-					useFix = true;
-				}
-			} catch (Exception ex) {  }
-
-			widthTest.setText(testString);
-			float nextCaretX = widthTest.getLineWidth();
-			if (useFix) nextCaretX -= fixWidth;
-
-			caretX = nextCaretX; //widthTest.getLineWidth();
-			setCaretPosition(getAbsoluteX()+caretX);
-		}
-		*/
 		return visibleText;
 	}
 	
@@ -971,44 +961,70 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	public void onMouseLeftPressed(MouseButtonEvent evt) {
 		if (this.isEnabled) {
 			float time = screen.getApplication().getTimer().getTimeInSeconds();
-			float diff;
-			if (lastClick != 0) {
-				diff = time-lastClick;
-				if (diff > 0.5f) {
-					lastClick = 0;
-				}
-			}
-
-			if (lastClick == 0) {
-				lastClick = time;
-				resetTextRange();
-				isPressed = true;
-				setCaretPositionByXNoRange(evt.getX());
-				if (caretIndex >= 0)
-					this.setTextRangeStart(caretIndex);
-				else
-					this.setTextRangeStart(0);
-			} else {
-				diff = time-lastClick;
-				if (diff < 0.2f) {
-					// Double Click Madness!
-					selectTextRangeDoubleClick();
-				}
-				lastClick = 0;
+			if (time-compareClick > .2f) resetClickCounter();
+			compareClick = time;
+			
+			isPressed = true;
+			clickCount++;
+			
+			switch (clickCount) {
+				case 1:
+					firstClick = time;
+					resetTextRange();
+					setCaretPositionByXNoRange(evt.getX());
+					if (caretIndex >= 0)
+						this.setTextRangeStart(caretIndex);
+					else
+						this.setTextRangeStart(0);
+					break;
+				case 2:
+					secondClick = time;
+					firstClickDiff = time-firstClick;
+					if (firstClickDiff <= 0.2f) {
+						doubleClick = true;
+					} else {
+						resetClickCounter();
+					}
+					break;
+				case 3:
+					secondClickDiff = time-secondClick;
+					if (secondClickDiff <= 0.2f) {
+						tripleClick = true;
+					}
+					resetClickCounter();
+					break;
+				default:
+					resetClickCounter();
 			}
 		}
 	}
-
+	
+	private void resetClickCounter() {
+		clickCount = 0;
+		firstClick = 0;
+		secondClick = 0;
+		firstClickDiff = 0;
+		secondClickDiff = 0;
+	}
+	
 	@Override
 	public void onMouseLeftReleased(MouseButtonEvent evt) {
 		if (isEnabled) {
 			if (isPressed) {
 				isPressed = false;
-				setCaretPositionByXNoRange(evt.getX());
-				if (caretIndex >= 0)
-					this.setTextRangeEnd(caretIndex);
-				else
-					this.setTextRangeEnd(0);
+				if (doubleClick) {
+					selectTextRangeDoubleClick();
+					doubleClick = false;
+				} else if (tripleClick) {
+					selectTextRangeTripleClick();
+					tripleClick = false;
+				} else {
+					setCaretPositionByXNoRange(evt.getX());
+					if (caretIndex >= 0)
+						this.setTextRangeEnd(caretIndex);
+					else
+						this.setTextRangeEnd(0);
+				}
 			}
 		}
 	}
@@ -1097,9 +1113,19 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			int start = finalText.substring(0,caretIndex).lastIndexOf(' ')+1;
 			if (start == -1) start = 0;
 			setTextRangeStart(start);
-			setTextRangeEnd(end);
+			System.out.println(caretIndex + " : " + start + " : " + end);
 			caretIndex = end;
-			getVisibleText();
+			updateText(getVisibleText());
+			setTextRangeEnd(end);
+		}
+	}
+	
+	private void selectTextRangeTripleClick() {
+		if (!finalText.equals("")) {
+			caretIndex = finalText.length();
+			updateText(getVisibleText());
+			setTextRangeStart(0);
+			setTextRangeEnd(finalText.length());
 		}
 	}
 	
@@ -1213,6 +1239,9 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		}
 		
 		try { newText = newText.replace("\r", ""); }
+		catch (Exception ex) {  }
+		
+		try { newText = newText.replace("\n", ""); }
 		catch (Exception ex) {  }
 		
 		if (this.type != Type.DEFAULT) {
