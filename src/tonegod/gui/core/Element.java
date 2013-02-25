@@ -85,9 +85,9 @@ public class Element extends Node {
 	protected Application app;
 	protected Screen screen;
 	private String UID;
-	private Vector2f position;
+	private Vector2f position = new Vector2f();
 	private Vector2f orgPosition;
-	private Vector2f dimensions;
+	private Vector2f dimensions = new Vector2f();
 	public Vector4f borders = new Vector4f(1,1,1,1);
 	public Vector4f borderHandles = new Vector4f(12,12,12,12);
 	private Vector2f minDimensions = null; //new Vector2f(100, 50);
@@ -178,10 +178,10 @@ public class Element extends Node {
 		this.app = screen.getApplication();
 		this.screen = screen;
 		this.UID = UID;
-		this.position = position;
-		this.dimensions = dimensions;
+		this.position.set(position);
+		this.dimensions.set(dimensions);
 	//	this.minDimensions = dimensions.clone();
-		this.borders = resizeBorders;
+		this.borders.set(resizeBorders);
 		
 		BitmapFont tempFont = app.getAssetManager().loadFont(screen.getStyle("Font").getString("defaultFont"));
 		
@@ -212,7 +212,7 @@ public class Element extends Node {
 		mat = new Material(app.getAssetManager(), "tonegod/gui/shaders/Unshaded.j3md");
 		if (texturePath != null) {
 			mat.setTexture("ColorMap", defaultTex);
-			mat.setColor("Color", ColorRGBA.White);
+			mat.setColor("Color", new ColorRGBA(1,1,1,1));
 		} else {
 			mat.setColor("Color", defaultColor);
 		}
