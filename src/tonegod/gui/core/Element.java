@@ -704,7 +704,7 @@ public class Element extends Node {
 	 * @param position Vector2f screen poisition of Element
 	 */
 	public void setPosition(Vector2f position) {
-		this.position = position;
+		this.position.set(position);
 		updateNodeLocation();
 	}
 	
@@ -855,7 +855,7 @@ public class Element extends Node {
 	 * @param dimensions Vector2f
 	 */
 	public void setDimensions(Vector2f dimensions) {
-		this.dimensions = dimensions;
+		this.dimensions.set(dimensions);
 		getModel().updateDimensions(dimensions.x, dimensions.y);
 		geom.updateModelBound();
 		if (textElement != null) {
@@ -865,7 +865,8 @@ public class Element extends Node {
 	}
 	
 	public void setMinDimensions(Vector2f minDimensions) {
-		this.minDimensions = minDimensions;
+		if (this.minDimensions == null) this.minDimensions = new Vector2f();
+		this.minDimensions.set(minDimensions);
 	}
 	
 	/**
