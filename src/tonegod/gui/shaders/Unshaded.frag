@@ -35,6 +35,10 @@ varying vec2 texCoord1;
 
 varying vec4 vertColor;
 
+vec3 altMix(in vec3 color1, in vec3 color2, in float alpha) {
+	return (color1.rgb * vec3(1.0-alpha) + color2.rgb * vec3(alpha));
+}
+
 void main(){
 	if (m_UseClipping) {
 		if (pos.x < m_Clipping.x || pos.x > m_Clipping.z || 
@@ -50,13 +54,20 @@ void main(){
 		
 		if (m_UseEffect) {
 			if (m_EffectPulse) {
-				color = mix(color, texture2D(m_EffectMap, texCoord1), m_EffectStep);
+				vec4 mixColor;
+				mixColor = texture2D(m_EffectMap, texCoord1);
+				color.rgb = altMix(color.rgb, mixColor.rgb, m_EffectStep);
+			//	color.rgb = color.rgb * vec3(1.0-m_EffectStep) + mixColor.rgb * vec3(m_EffectStep);
+			//	color = mix(color, texture2D(m_EffectMap, texCoord1), m_EffectStep);
 			} else if (m_EffectFade) {
 				color.a *= m_EffectStep;
 			} else if (m_EffectPulseColor) {
-				color =  mix(color, m_EffectColor, m_EffectStep*0.5);
+				color.rgb =  altMix(color.rgb, m_EffectColor.rgb, m_EffectStep*0.5);
 			} else {
-				color = mix(color, texture2D(m_EffectMap, texCoord1), 1.0);
+				vec4 mixColor;
+				mixColor = texture2D(m_EffectMap, texCoord1);
+				color.rgb = altMix(color.rgb, mixColor.rgb, 1.0);
+			//	color = mix(color, texture2D(m_EffectMap, texCoord1), 1.0);
 			}
 		}
 	#endif
