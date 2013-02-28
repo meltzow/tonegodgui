@@ -37,7 +37,7 @@
 			<property name="event0" type="Effect">
 				<event value="TabFocus" />
 				<effect value="PulseColor" />
-				<speed value=".15" />
+				<speed value=".3" />
 			</property>
 			<property name="event1" type="Effect">
 				<event value="LoseTabFocus" />

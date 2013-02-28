@@ -52,7 +52,7 @@
 			<property name="event0" type="Effect">
 				<event value="Hover" />
 				<effect value="Pulse" />
-				<speed value=".15" />
+				<speed value=".3" />
 			</property>
 			<property name="event1" type="Effect">
 				<event value="Press" />
@@ -67,7 +67,7 @@
 			<property name="event3" type="Effect">
 				<event value="TabFocus" />
 				<effect value="PulseColor" />
-				<speed value=".15" />
+				<speed value=".3" />
 			</property>
 			<property name="event4" type="Effect">
 				<event value="LoseTabFocus" />
@@ -122,7 +122,7 @@
 			<property name="event0" type="Effect">
 				<event value="Hover" />
 				<effect value="Pulse" />
-				<speed value=".15" />
+				<speed value=".3" />
 			</property>
 			<property name="event1" type="Effect">
 				<event value="Press" />
@@ -137,7 +137,7 @@
 			<property name="event3" type="Effect">
 				<event value="TabFocus" />
 				<effect value="PulseColor" />
-				<speed value=".15" />
+				<speed value=".3" />
 			</property>
 			<property name="event4" type="Effect">
 				<event value="LoseTabFocus" />
@@ -192,7 +192,7 @@
 			<property name="event0" type="Effect">
 				<event value="Hover" />
 				<effect value="Pulse" />
-				<speed value=".15" />
+				<speed value=".3" />
 			</property>
 			<property name="event1" type="Effect">
 				<event value="Press" />
@@ -207,7 +207,7 @@
 			<property name="event3" type="Effect">
 				<event value="TabFocus" />
 				<effect value="PulseColor" />
-				<speed value=".15" />
+				<speed value=".3" />
 			</property>
 			<property name="event4" type="Effect">
 				<event value="LoseTabFocus" />

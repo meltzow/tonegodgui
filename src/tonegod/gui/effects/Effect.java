@@ -209,8 +209,10 @@ public class Effect implements Cloneable {
 			} else {
 				if (type == EffectType.Pulse) {
 					if (pass >= 1.0f) {
+						pass = 1.0f;
 						direction = false;
-					} else if (pass <= -1.0f) {
+					} else if (pass <= 0.0f) {
+						pass = 0.0f;
 						direction = true;
 					}
 					if (direction) pass += tpf/duration;
@@ -226,8 +228,10 @@ public class Effect implements Cloneable {
 					element.getElementMaterial().setFloat("EffectStep", pass);
 				} else if (type == EffectType.PulseColor) {
 					if (pass >= 1.0f) {
+						pass = 1.0f;
 						direction = false;
-					} else if (pass <= -1.0f) {
+					} else if (pass <= 0.0f) {
+						pass = 0.0f;
 						direction = true;
 					}
 					if (direction) pass += tpf/duration;
