@@ -5,6 +5,7 @@
 package tonegod.gui.controls.extras;
 
 import com.jme3.input.event.MouseButtonEvent;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
@@ -30,8 +31,6 @@ public abstract class DragElement extends Element implements MouseButtonListener
 	
 	private Effect slideTo;
 	
-	private List<Element> dropElements = new ArrayList();
-	
 	public DragElement(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
@@ -50,54 +49,6 @@ public abstract class DragElement extends Element implements MouseButtonListener
 		
 		
 		
-	}
-	
-	/**
-	 * Adds an element to the list of drop elements and flags it as such
-	 * @param element The element to add
-	 */
-	public void addDropElement(Element element) {
-		element.setIsDragDropDropElement(true);
-		dropElements.add(element);
-	}
-	
-	/**
-	 * Returns all drop  elements associated with the DragElement
-	 * @return dropElements
-	 */
-	public List<Element> getDropElements() {
-		return this.dropElements;
-	}
-	
-	/**
-	 * Returns the drop element at the specified index.  null if not found
-	 * @param index int
-	 * @return Element 
-	 */
-	public Element getDropElement(int index) {
-		if (index > -1 && index < dropElements.size()) {
-			return dropElements.get(index);
-		} else {
-			return null;
-		}
-	}
-	
-	/**
-	 * Remove the drop element at the provided index
-	 * @param index int
-	 */
-	public void removeDropElement(int index) {
-		if (index > -1 && index < dropElements.size()) {
-			dropElements.remove(index);
-		}
-	}
-	
-	/**
-	 * Removes the provided element from the list of drop elements for this DragElement
-	 * @param element Element
-	 */
-	public void removeDropElement(Element element) {
-		dropElements.remove(element);
 	}
 	
 	/**
@@ -202,35 +153,37 @@ public abstract class DragElement extends Element implements MouseButtonListener
 		Element dropEl = screen.getDropElement();
 		int index = -1;
 		
-		if (dropEl != null) {
-			if (dropElements.contains(dropEl)) {
-				if (lockToDropElementCenter) {
-					Vector2f destination = new Vector2f(
-						dropEl.getAbsoluteWidth()-(dropEl.getWidth()/2)-(getWidth()/2),
-						dropEl.getAbsoluteHeight()-(dropEl.getHeight()/2)-(getHeight()/2)
-					);
-					if (useLockToDropElementEffect) {
-						slideTo = new Effect(Effect.EffectType.SlideTo, Effect.EffectEvent.Release, .15f);
-						slideTo.setElement(this);
-						slideTo.setEffectDestination(destination);
-						screen.getEffectManager().applyEffect(slideTo);
-					} else {
-						setPosition(destination);
-					}
+		boolean success = onDragEnd(evt, dropEl);
+		
+		if (success) {
+			Vector2f pos = new Vector2f(getAbsoluteX(),getAbsoluteY());
+			Element parent = getElementParent();
+			if (parent != dropEl) {
+				if (parent != null) {
+					parent.removeChild(this);
+				} else {
+					screen.removeElement(this);
 				}
-			} else {
-				dropEl = null;
-				if (useSpringBack) {
-					Vector2f destination = originalPosition.clone();
-					if (useSpringBackEffect) {
-						slideTo = new Effect(Effect.EffectType.SlideTo, Effect.EffectEvent.Release, .15f);
-						slideTo.setElement(this);
-						slideTo.setEffectDestination(destination);
-						screen.getEffectManager().applyEffect(slideTo);
-					} else {
-						setPosition(destination);
-					}
+				float nextY = (pos.y-dropEl.getAbsoluteY());
+				nextY = -nextY;
+				setPosition(pos.x-dropEl.getAbsoluteX(), nextY);
+				dropEl.addChild(this);
+				this.setZOrder(screen.getZOrderStepMinor());
+			}
+			if (lockToDropElementCenter) {
+				Vector2f destination = new Vector2f(
+					(dropEl.getWidth()/2)-(getWidth()/2),
+					(dropEl.getHeight()/2)-(getHeight()/2)
+				);
+				if (useLockToDropElementEffect) {
+					slideTo = new Effect(Effect.EffectType.SlideTo, Effect.EffectEvent.Release, .15f);
+					slideTo.setElement(this);
+					slideTo.setEffectDestination(destination);
+					screen.getEffectManager().applyEffect(slideTo);
+				} else {
+					setPosition(destination);
 				}
+				originalPosition = destination.clone();
 			}
 		} else {
 			if (useSpringBack) {
@@ -245,8 +198,6 @@ public abstract class DragElement extends Element implements MouseButtonListener
 				}
 			}
 		}
-		
-		onDragEnd(evt, index, dropEl);
 	}
 	@Override
 	public void onMouseRightPressed(MouseButtonEvent evt) {  }
@@ -254,5 +205,5 @@ public abstract class DragElement extends Element implements MouseButtonListener
 	public void onMouseRightReleased(MouseButtonEvent evt) {  }
 	
 	public abstract void onDragStart(MouseButtonEvent evt);
-	public abstract void onDragEnd(MouseButtonEvent evt, int index, Element dropElement);
+	public abstract boolean onDragEnd(MouseButtonEvent evt, Element dropElement);
 }
