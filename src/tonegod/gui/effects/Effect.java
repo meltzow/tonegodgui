@@ -342,7 +342,7 @@ public class Effect implements Cloneable {
 		}
 		
 		Vector2f inc = new Vector2f(diff.x*pass,diff.y*pass);
-		float nextX = 0, nextY = 0;
+		float nextX = def.x, nextY = def.y;
 		if (diff.x < 0)			nextX = def.x-inc.x;
 		else if (diff.x > 0)	nextX = def.x-inc.x;
 		if (diff.y < 0)			nextY = def.y-inc.y;
