@@ -54,6 +54,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.lwjgl.input.Mouse;
@@ -243,18 +245,23 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		if (element instanceof Menu)
 			element.hide();
 		
-		elements.put(element.getUID(), element);
-		
-	//	element.validateLayout();
-		
-		element.setY(getHeight()-element.getHeight()-element.getY());
-		
-		t0neg0dGUI.attachChild(element);
-		
-		// Set initla z-order
-		getNextZOrder(true);
-		element.initZOrder(zOrderCurrent);
-		element.resize(element.getX()+element.getWidth(), element.getY()+element.getHeight(), Borders.SE);
+		if (elements.containsKey(element.getUID())) {
+			try {
+				throw new ConflictingIDException();
+			} catch (ConflictingIDException ex) {
+				Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The child element '" + element.getUID() + "' (" + element.getClass() + ") conflicts with a previously added child element in parent Screen.", ex);
+				System.exit(0);
+			}
+		} else {
+			elements.put(element.getUID(), element);
+			element.setY(getHeight()-element.getHeight()-element.getY());
+			t0neg0dGUI.attachChild(element);
+
+			// Set initla z-order
+			getNextZOrder(true);
+			element.initZOrder(zOrderCurrent);
+			element.resize(element.getX()+element.getWidth(), element.getY()+element.getHeight(), Borders.SE);
+		}
 	}
 	
 	/**

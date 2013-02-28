@@ -23,6 +23,8 @@ import com.jme3.texture.Texture;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.effects.Effect;
 
@@ -259,8 +261,17 @@ public class Element extends Node {
 		child.orgPosition.setY(child.getY());
 		child.setQueueBucket(RenderQueue.Bucket.Gui);
 		
-		elementChildren.put(child.getUID(), child);
-		this.attachChild(child);
+		if (elementChildren.containsKey(child.getUID())) {
+			try {
+				throw new ConflictingIDException();
+			} catch (ConflictingIDException ex) {
+				Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The child element '" + child.getUID() + "' (" + child.getClass() + ") conflicts with a previously added child element in parent element '" + getUID() + "'.", ex);
+				System.exit(0);
+			}
+		} else {
+			elementChildren.put(child.getUID(), child);
+			this.attachChild(child);
+		}
 	}
 	
 	/**
