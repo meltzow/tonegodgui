@@ -382,6 +382,8 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	public void pack() {
 		String finalString = "";
 		
+		menuItemHeight = BitmapTextUtil.getTextLineHeight(this, "Xg");
+		
 		scrollableArea.removeAllChildren();
 		scrollableArea.setHeight(menuItemHeight);
 		
@@ -446,8 +448,8 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 			highlight.getElementMaterial().setColor("Color", highlightColor);
 			highlight.setClippingLayer(this);
 			highlight.setClipPadding(menuPadding);
-			highlight.hide();
 			scrollableArea.addChild(highlight);
+			highlight.hide();
 		} else {
 			highlight.setWidth( ((getWidth() > width) ? getWidth() : width)-(menuPadding*2) );
 		}

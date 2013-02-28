@@ -147,6 +147,8 @@ public abstract class ComboBox extends TextField {
 			DDList.setCallerElement(this);
 			DDList.setPreferredSize(new Vector2f(getWidth()+btnHeight,DDList.getMenuItemHeight()*5));
 		}
+		DDList.setFontSize(fontSize);
+		DDList.getScrollableArea().setFontSize(fontSize);
 		DDList.addMenuItem(caption, value, null);
 		
 		if (DDList.getParent() == null) {
