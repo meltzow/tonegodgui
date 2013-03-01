@@ -251,20 +251,19 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		} else if (evt.getKeyCode() == KeyInput.KEY_LMETA || evt.getKeyCode() == KeyInput.KEY_RMETA) {
 			meta = true;
 		} else if (evt.getKeyCode() == KeyInput.KEY_DELETE) {
-			if (caretIndex < finalText.length()) {
-				if (rangeHead != -1 && rangeTail != -1)	editTextRangeText("");
-				else									textFieldText.remove(caretIndex);
+			if (rangeHead != -1 && rangeTail != -1)	editTextRangeText("");
+			else {
+				if (caretIndex < finalText.length()) textFieldText.remove(caretIndex);
 			}
 		} else if (evt.getKeyCode() == KeyInput.KEY_BACK) {
-			if (caretIndex > 0) {
-				if (rangeHead != -1 && rangeTail != -1) {
-					editTextRangeText("");
-				} else {
+			if (rangeHead != -1 && rangeTail != -1) {
+				editTextRangeText("");
+			} else {
+				if (caretIndex > 0) {
 					textFieldText.remove(caretIndex-1);
 					caretIndex--;
 				}
 			}
-		//	updateTextElement();
 		} else if (evt.getKeyCode() == KeyInput.KEY_LEFT) {
 			if (!shift) resetTextRange();
 			if (caretIndex > -1) {
@@ -717,17 +716,37 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	private void setCaretPositionByXNoRange(float x) {
 		int index1 = visibleText.length();
 		if (visibleText.length() > 0) {
+			String testString = "";
+			widthTest.setText(".");
+			float fixWidth = widthTest.getLineWidth();
+			boolean useFix = false;
+			
 			widthTest.setSize(getFontSize());
 			widthTest.setText(visibleText.substring(0, index1));
 			while(caret.getAbsoluteX()+widthTest.getLineWidth() > (x+getTextPadding())) {
 				if (index1 > 0) {
 					index1--;
-					widthTest.setText(visibleText.substring(0, index1));
+					testString = visibleText.substring(0, index1);
+					widthTest.setText(testString);
 				} else {
 					break;
 				}
 			}
-			caretX = widthTest.getLineWidth();
+		
+			try {
+				testString = finalText.substring(head, caretIndex);
+				if (testString.charAt(testString.length()-1) == ' ') {
+					testString += ".";
+					useFix = true;
+				}
+			} catch (Exception ex) {  }
+		
+
+			widthTest.setText(testString);
+			float nextCaretX = widthTest.getLineWidth();
+			if (useFix) nextCaretX -= fixWidth;
+
+			caretX = nextCaretX;
 		}
 		caretIndex = head+index1;
 		setCaretPosition(getAbsoluteX()+caretX);
