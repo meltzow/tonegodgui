@@ -245,7 +245,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		if (element instanceof Menu)
 			element.hide();
 		
-		if (elements.containsKey(element.getUID())) {
+		if (getElementById(element.getUID()) != null) {
 			try {
 				throw new ConflictingIDException();
 			} catch (ConflictingIDException ex) {

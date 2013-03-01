@@ -261,7 +261,7 @@ public class Element extends Node {
 		child.orgPosition.setY(child.getY());
 		child.setQueueBucket(RenderQueue.Bucket.Gui);
 		
-		if (elementChildren.containsKey(child.getUID())) {
+		if (screen.getElementById(child.getUID()) != null) {
 			try {
 				throw new ConflictingIDException();
 			} catch (ConflictingIDException ex) {
