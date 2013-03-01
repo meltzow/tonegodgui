@@ -67,7 +67,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	private boolean hasTabFocus = false;
 	protected float caretX = 0;
 	private Type type = Type.DEFAULT;
-	private boolean ctrl = false, shift = false, alt = false;
+	private boolean ctrl = false, shift = false, alt = false, meta = false;
 	private boolean isEnabled = true;
 	private boolean forceUpperCase = false, forceLowerCase = false;
 	private int maxLength = 0;
@@ -236,8 +236,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	// Interaction
 	@Override
 	public void onKeyPress(KeyInputEvent evt) {
-		if (evt.getKeyCode() == KeyInput.KEY_LMETA || evt.getKeyCode() == KeyInput.KEY_RMETA ||
-			evt.getKeyCode() == KeyInput.KEY_F1 || evt.getKeyCode() == KeyInput.KEY_F2 ||
+		if (evt.getKeyCode() == KeyInput.KEY_F1 || evt.getKeyCode() == KeyInput.KEY_F2 ||
 			evt.getKeyCode() == KeyInput.KEY_F3 || evt.getKeyCode() == KeyInput.KEY_F4 ||
 			evt.getKeyCode() == KeyInput.KEY_F5 || evt.getKeyCode() == KeyInput.KEY_F6 ||
 			evt.getKeyCode() == KeyInput.KEY_F7 || evt.getKeyCode() == KeyInput.KEY_F8 ||
@@ -249,6 +248,8 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			shift = true;
 		} else if (evt.getKeyCode() == KeyInput.KEY_LMENU || evt.getKeyCode() == KeyInput.KEY_RMENU) {
 			alt = true;
+		} else if (evt.getKeyCode() == KeyInput.KEY_LMETA || evt.getKeyCode() == KeyInput.KEY_RMETA) {
+			meta = true;
 		} else if (evt.getKeyCode() == KeyInput.KEY_DELETE) {
 			if (caretIndex < finalText.length()) {
 				if (rangeHead != -1 && rangeTail != -1)	editTextRangeText("");
@@ -268,7 +269,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			if (!shift) resetTextRange();
 			if (caretIndex > -1) {
 				if (Screen.isMac()) {
-					if (ctrl) {
+					if (meta) {
 						caretIndex = 0;
 						getVisibleText();
 						if (shift) setTextRangeEnd(caretIndex);
@@ -304,7 +305,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			if (!shift) resetTextRange();
 			if (caretIndex <= textFieldText.size()) {
 				if (Screen.isMac()) {
-					if (ctrl) {
+					if (meta) {
 						caretIndex = textFieldText.size();
 						getVisibleText();
 						if (shift) setTextRangeEnd(caretIndex);
@@ -460,6 +461,8 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			shift = false;
 		} else if (evt.getKeyCode() == KeyInput.KEY_LMENU || evt.getKeyCode() == KeyInput.KEY_RMENU) {
 			alt = false;
+		} else if (evt.getKeyCode() == KeyInput.KEY_LMETA || evt.getKeyCode() == KeyInput.KEY_RMETA) {
+			meta = false;
 		}
 		evt.setConsumed();
 	}
