@@ -302,7 +302,7 @@ public abstract class Slider extends ButtonAdapter {
 			addStepValue(i);
 		}
 		if (selectedIndex == -1)
-			setSelectedIndex(0);
+			setSelectedIndexWithCallback(0);
 	}
 	
 	/**
@@ -320,7 +320,7 @@ public abstract class Slider extends ButtonAdapter {
 			addStepValue(i);
 		}
 		if (selectedIndex == -1)
-			setSelectedIndex(0);
+			setSelectedIndexWithCallback(0);
 	}
 	
 	/**
@@ -339,7 +339,7 @@ public abstract class Slider extends ButtonAdapter {
 			if (selectedIndex > stepValues.size()-1) {
 				selectedIndex = stepValues.size()-1;
 			}
-			this.setSelectedIndex(selectedIndex);
+			this.setSelectedIndexWithCallback(selectedIndex);
 		}
 	}
 	
@@ -390,6 +390,35 @@ public abstract class Slider extends ButtonAdapter {
 	}
 	
 	/**
+	 * Sets the selectedIndex to the provided index and updates appropriately then calling the onChange event
+	 * @param selectedIndex 
+	 */
+	public void setSelectedIndexWithCallback(int selectedIndex) {
+		if (isStepped) {
+			if (selectedIndex < 0)							selectedIndex = 0;
+			else if (selectedIndex > stepValues.size()-1)	selectedIndex = stepValues.size()-1;
+		} else {
+			if (selectedIndex < 0)							selectedIndex = 0;
+			else if (selectedIndex > 100)					selectedIndex = 100;
+		}
+		
+		this.selectedIndex = selectedIndex;
+		
+		float step = (isStepped) ? stepSize : ((trackSurroundsThumb) ? (getWidth()-controlSize)/100 : getWidth()/100);
+		step *= selectedIndex;
+		if (orientation == Orientation.HORIZONTAL) {
+			if (trackSurroundsThumb)elThumbLock.setX(step+(controlSize/2));
+			else					elThumbLock.setX(step);
+		} else {
+			if (trackSurroundsThumb)elThumbLock.setY(step+(controlSize/2));
+			else					elThumbLock.setY(step);
+		}
+		
+		if( isStepped)	onChange(selectedIndex, stepValues.get(selectedIndex));
+		else			onChange(selectedIndex, selectedIndex);
+	}
+	
+	/**
 	 * Sets the selectedIndex to the provided index and updates appropriately
 	 * @param selectedIndex 
 	 */
@@ -414,8 +443,8 @@ public abstract class Slider extends ButtonAdapter {
 			else					elThumbLock.setY(step);
 		}
 		
-		if( isStepped)	onChange(selectedIndex, stepValues.get(selectedIndex));
-		else			onChange(selectedIndex, selectedIndex);
+	//	if( isStepped)	onChange(selectedIndex, stepValues.get(selectedIndex));
+	//	else			onChange(selectedIndex, selectedIndex);
 	}
 	
 	/**
@@ -443,29 +472,29 @@ public abstract class Slider extends ButtonAdapter {
 		if (orientation == Orientation.HORIZONTAL) {
 			if (trackSurroundsThumb) {
 				if (elThumbLock.getX() > trackEvt.getX()-getAbsoluteX() && startPosition.x > trackEvt.getX()-getAbsoluteX()) {
-					setSelectedIndex(selectedIndex-1);
+					setSelectedIndexWithCallback(selectedIndex-1);
 				} else if (elThumbLock.getX() < trackEvt.getX()-getAbsoluteX() && startPosition.x < trackEvt.getX()-getAbsoluteX()) {
-					setSelectedIndex(selectedIndex+1);
+					setSelectedIndexWithCallback(selectedIndex+1);
 				}
 			} else {
 				if (elThumbLock.getX() > trackEvt.getX()-getAbsoluteX() && startPosition.x > trackEvt.getX()-getAbsoluteX()) {
-					setSelectedIndex(selectedIndex-1);
+					setSelectedIndexWithCallback(selectedIndex-1);
 				} else if (elThumbLock.getX() < trackEvt.getX()-getAbsoluteX() && startPosition.x < trackEvt.getX()-getAbsoluteX()) {
-					setSelectedIndex(selectedIndex+1);
+					setSelectedIndexWithCallback(selectedIndex+1);
 				}
 			}
 		} else {
 			if (trackSurroundsThumb) {
 				if (elThumbLock.getY() > trackEvt.getY()-getAbsoluteY() && startPosition.y > trackEvt.getY()-getAbsoluteY()) {
-					setSelectedIndex(selectedIndex-1);
+					setSelectedIndexWithCallback(selectedIndex-1);
 				} else if (elThumbLock.getY() < trackEvt.getY()-getAbsoluteY() && startPosition.y < trackEvt.getY()-getAbsoluteY()) {
-					setSelectedIndex(selectedIndex+1);
+					setSelectedIndexWithCallback(selectedIndex+1);
 				}
 			} else {
 				if (elThumbLock.getY() > trackEvt.getY()-getAbsoluteY() &&  startPosition.y > trackEvt.getY()-getAbsoluteY()) {
-					setSelectedIndex(selectedIndex-1);
+					setSelectedIndexWithCallback(selectedIndex-1);
 				} else if (elThumbLock.getY() < trackEvt.getY()-getAbsoluteY() && startPosition.y < trackEvt.getY()-getAbsoluteY()) {
-					setSelectedIndex(selectedIndex+1);
+					setSelectedIndexWithCallback(selectedIndex+1);
 				}
 			}
 		}

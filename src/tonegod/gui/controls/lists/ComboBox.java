@@ -139,7 +139,7 @@ public abstract class ComboBox extends TextField {
 			DDList = new Menu(screen, ddUID, new Vector2f(0,0), true) {
 				@Override
 				public void onMenuItemClicked(int index, Object value, boolean isToggled) {
-					((ComboBox)getCallerElement()).setSelected(index, DDList.getMenuItem(index).getCaption(), value);
+					((ComboBox)getCallerElement()).setSelectedWithCallback(index, DDList.getMenuItem(index).getCaption(), value);
 					screen.setTabFocusElement(((ComboBox)getCallerElement()));
 					hide();
 				}
@@ -151,7 +151,7 @@ public abstract class ComboBox extends TextField {
 		DDList.getScrollableArea().setFontSize(fontSize);
 		DDList.addMenuItem(caption, value, null);
 		
-		if (DDList.getParent() == null) {
+		if (screen.getElementById(DDList.getUID()) == null) {
 			screen.addElement(DDList);
 		}
 		pack();
@@ -207,7 +207,7 @@ public abstract class ComboBox extends TextField {
 	private void refreshSelectedIndex() {
 		if (DDList != null) {
 			if (selectedIndex > DDList.getMenuItems().size()-1)
-				this.setSelectedIndex(DDList.getMenuItems().size()-1);
+				this.setSelectedIndexWithCallback(DDList.getMenuItems().size()-1);
 		//	if (!DDList.getMenuItems().isEmpty())
 		//		this.setSelectedIndex(selectedIndex);
 		//	else
@@ -225,7 +225,7 @@ public abstract class ComboBox extends TextField {
 	 */
 	public void pack() {
 		if (selectedIndex == -1) {
-			setSelectedIndex(0);
+			setSelectedIndexWithCallback(0);
 		}
 		int rIndex = DDList.getMenuItems().size()-selectedIndex;
 		float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);
@@ -247,6 +247,41 @@ public abstract class ComboBox extends TextField {
 			return false;
 		else
 			return true;
+	}
+	
+	/**
+	 * Selects the List Item at the specified index and call the onChange event
+	 * @param selectedIndex 
+	 */
+	public void setSelectedIndexWithCallback(int selectedIndex) {
+		if (validateListSize()) {
+			if (selectedIndex < 0)
+				selectedIndex = 0;
+			else if (selectedIndex > DDList.getMenuItems().size()-1)
+				selectedIndex = DDList.getMenuItems().size()-1;
+		
+			MenuItem mi = DDList.getMenuItem(selectedIndex);
+			String caption = mi.getCaption();
+			Object value = mi.getValue();
+			setSelectedWithCallback(selectedIndex, caption, value);
+		}
+	}
+	
+	protected void setSelectedWithCallback(int index, String caption, Object value) {
+		this.hlIndex = index;
+		this.selectedIndex = index;
+		this.selectedCaption = caption;
+		this.selectedValue = value;
+		setText(selectedCaption);
+		
+		int rIndex = DDList.getMenuItems().size()-index;
+		float diff = rIndex * DDList.getMenuItemHeight() + (DDList.getMenuPadding()*2);
+
+		DDList.scrollThumbYTo(
+			( DDList.getHeight()-diff )
+		);
+		
+		onChange(selectedIndex, selectedValue);
 	}
 	
 	/**
@@ -281,7 +316,7 @@ public abstract class ComboBox extends TextField {
 			( DDList.getHeight()-diff )
 		);
 		
-		onChange(selectedIndex, selectedValue);
+	//	onChange(selectedIndex, selectedValue);
 	}
 	
 	/**
@@ -331,7 +366,7 @@ public abstract class ComboBox extends TextField {
 							( DDList.getHeight()-diff )
 						);
 						handleHightlight(hlIndex);
-						setSelected(hlIndex, hlCaption, hlValue);
+						setSelectedWithCallback(hlIndex, hlCaption, hlValue);
 					}
 				} else if (evt.getKeyCode() == KeyInput.KEY_DOWN) {
 					if (hlIndex < DDList.getMenuItems().size()-1) {
@@ -345,7 +380,7 @@ public abstract class ComboBox extends TextField {
 							( DDList.getHeight()-diff )
 						);
 						handleHightlight(hlIndex);
-						setSelected(hlIndex, hlCaption, hlValue);
+						setSelectedWithCallback(hlIndex, hlCaption, hlValue);
 					}
 				}
 				if (evt.getKeyCode() == KeyInput.KEY_RETURN) {
@@ -356,7 +391,7 @@ public abstract class ComboBox extends TextField {
 	}
 	
 	private void updateSelected() {
-		setSelected(hlIndex, hlCaption, hlValue);
+		setSelectedWithCallback(hlIndex, hlCaption, hlValue);
 		if (DDList.getIsVisible()) DDList.hide();
 	}
 	

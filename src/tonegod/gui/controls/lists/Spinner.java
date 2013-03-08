@@ -207,8 +207,23 @@ public abstract class Spinner extends TextField {
 			stepValues.add(String.valueOf(i));
 		}
 		if (selectedIndex == -1)
-			setSelectedIndex(0);
+			setSelectedIndexWithCallback(0);
 		displaySelectedStep();
+	}
+	
+	/**
+	 * Sets the selected index of the Spinner to the provided index and calls the onChange event
+	 * @param selectedIndex int
+	 */
+	public void setSelectedIndexWithCallback(int selectedIndex) {
+		if (selectedIndex < 0)
+			selectedIndex = 0;
+		else if (selectedIndex > stepValues.size()-1)
+			selectedIndex = stepValues.size()-1;
+		
+		this.selectedIndex = selectedIndex;
+		displaySelectedStep();
+		onChange(selectedIndex, stepValues.get(selectedIndex));
 	}
 	
 	/**
@@ -223,7 +238,7 @@ public abstract class Spinner extends TextField {
 		
 		this.selectedIndex = selectedIndex;
 		displaySelectedStep();
-		onChange(selectedIndex, stepValues.get(selectedIndex));
+	//	onChange(selectedIndex, stepValues.get(selectedIndex));
 	}
 	
 	private void incStep() {
