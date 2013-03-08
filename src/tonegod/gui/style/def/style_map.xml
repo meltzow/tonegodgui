@@ -16,4 +16,5 @@
 	<style control="TabControl" path="tonegod/gui/style/def/Tabs/Tabs.xml" />
 	<style control="ChatBox" path="tonegod/gui/style/def/ChatBox/ChatBox.xml" />
 	<style control="Indicator" path="tonegod/gui/style/def/Common/Extras/Indicator.xml" />
+	<style control="ColorWheel" path="tonegod/gui/style/def/Common/Extras/ColorWheel.xml" />
 </root>
