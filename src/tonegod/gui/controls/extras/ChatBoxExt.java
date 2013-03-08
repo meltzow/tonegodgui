@@ -39,6 +39,7 @@ public abstract class ChatBoxExt extends Panel {
 	private float saContentPadding;
 	private boolean showSendButton = true;
 	private boolean showFilterButton = true;
+	private boolean showChannelLabels = true;
 	private Form chatForm;
 	
 	private Window filters = null;
@@ -291,6 +292,10 @@ public abstract class ChatBoxExt extends Panel {
 		populateEffects("Window");
 	}
 	
+	public ScrollArea getChatArea() {
+		return saChatArea;
+	}
+	
 	private void sendMsg() {
 		if (tfChatInput.getText().length() > 0) {
 			if (!tfChatInput.getText().equals("")) {
@@ -308,7 +313,12 @@ public abstract class ChatBoxExt extends Panel {
 	 */
 	public void receiveMsg(Object command, String msg) {
 	//	System.out.println(command);
-		ChatChannel channel = getChannelByCommand(command);
+		
+		ChatChannel channel = null;
+		if (command instanceof String)
+			channel = getChannelByStringCommand((String)command);
+		else
+			channel = getChannelByCommand(command);
 		chatMessages.add(new ChatMessage(channel, msg));
 		updateChatHistory();
 	}
@@ -370,7 +380,9 @@ public abstract class ChatBoxExt extends Panel {
 		l.setClipPadding(saContentPadding);
 		l.setFontColor(cm.getChannel().getColor());
 		l.setFontSize(saChatArea.getFontSize());
-		l.setText("[" + cm.getChannel().getName() + "] " + s);
+		String channelLabel = "";
+		if (showChannelLabels) channelLabel = "[" + cm.getChannel().getName() + "] ";
+		l.setText(channelLabel + s);
 		l.setHeight(l.getTextElement().getHeight());
 		l.setIgnoreMouse(true);
 		
@@ -409,10 +421,30 @@ public abstract class ChatBoxExt extends Panel {
 		}
 	}
 	
+	public void removeChatChannel(String name) {
+		ChatChannel channel = getChannelByName(name);
+		if (channel != null) {
+			channels.remove(channel);
+			this.sbDefaultChannel.removeListItem(name);
+			this.sbDefaultChannel.pack();
+		}
+	}
+	
 	private ChatChannel getChannelByCommand(Object command) {
 		ChatChannel c = null;
 		for (ChatChannel channel : channels) {
 			if (channel.getCommand() == command) {
+				c = channel;
+				break;
+			}
+		}
+		return c;
+	}
+	
+	private ChatChannel getChannelByStringCommand(String command) {
+		ChatChannel c = null;
+		for (ChatChannel channel : channels) {
+			if (((String)channel.getCommand()).equals(command)) {
 				c = channel;
 				break;
 			}
@@ -481,6 +513,10 @@ public abstract class ChatBoxExt extends Panel {
 			}
 		}
 		this.showSendButton = showSendButton;
+	}
+	
+	public void setShowChannelLabels(boolean showChannelLabels) {
+		this.showChannelLabels = showChannelLabels;
 	}
 	
 	public class ChatMessage {
