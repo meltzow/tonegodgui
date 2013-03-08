@@ -4,6 +4,7 @@
  */
 package tonegod.gui.core;
 
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import com.jme3.scene.Mesh;
@@ -21,6 +22,7 @@ public class ElementQuadGrid extends Mesh {
 	private FloatBuffer coords = BufferUtils.createFloatBuffer(16*2);
 	private IntBuffer indexes = BufferUtils.createIntBuffer(3*3*6);
 	private FloatBuffer normals = BufferUtils.createFloatBuffer(16*3);
+	private FloatBuffer colors = null;
 	
 	private float[] templateNormals = new float[] { 0f,0f,1f };
 	private Vector2f dimensions;
@@ -130,6 +132,53 @@ public class ElementQuadGrid extends Mesh {
 		updateMesh();
 		setBuffers(false);
 	}
+	public void setColorBuffer(FloatBuffer colors) {
+		this.colors = colors;
+		setBuffers(true);
+	}
+	public void setGradientFillVertical(ColorRGBA start, ColorRGBA end) {
+		colors = BufferUtils.createFloatBuffer(16*4);
+		for (int i = 0; i < 4; i++) {
+			colors.put(start.r);
+			colors.put(start.g);
+			colors.put(start.b);
+			colors.put(start.a);
+			colors.put(start.r);
+			colors.put(start.g);
+			colors.put(start.b);
+			colors.put(start.a);
+			colors.put(end.r);
+			colors.put(end.g);
+			colors.put(end.b);
+			colors.put(end.a);
+			colors.put(end.r);
+			colors.put(end.g);
+			colors.put(end.b);
+			colors.put(end.a);
+		}
+		setBuffers(true);
+	}
+	public void setGradientFillHorizontal(ColorRGBA start, ColorRGBA end) {
+		colors = BufferUtils.createFloatBuffer(16*4);
+		for (int i = 0; i < 8; i++) {
+			colors.put(start.r);
+			colors.put(start.g);
+			colors.put(start.b);
+			colors.put(start.a);
+		}
+		for (int i = 0; i < 8; i++) {
+			colors.put(end.r);
+			colors.put(end.g);
+			colors.put(end.b);
+			colors.put(end.a);
+		}
+		setBuffers(true);
+	}
+	
+	public void resetColorBuffer() {
+		colors = null;
+		setBuffers(true);
+	}
 	
 	private void updateMesh() {
 		int index = 0, indexX = 0, indexY = 0;
@@ -155,6 +204,10 @@ public class ElementQuadGrid extends Mesh {
 			this.setBuffer(Type.TexCoord, 2, coords);
 			this.clearBuffer(Type.Index);
 			this.setBuffer(Type.Index, 3, indexes);
+			this.clearBuffer(Type.Color);
+			if (colors != null) {
+				this.setBuffer(Type.Color, 4, colors);
+			}
 		}
 		createCollisionData();
 		updateBound();
