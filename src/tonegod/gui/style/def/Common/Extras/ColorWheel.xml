@@ -26,8 +26,8 @@
 				<y value="20" />
 			</property>
 			<property name="defaultSize" type="Vector2f">
-				<x value="150" />
-				<y value="20" />
+				<x value="440" />
+				<y value="220" />
 			</property>
 		</attributes>
 		<images>
