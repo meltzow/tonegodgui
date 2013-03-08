@@ -6,6 +6,7 @@ package tonegod.gui.controls.extras;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
+import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
@@ -13,6 +14,7 @@ import com.jme3.math.Vector4f;
 import com.jme3.util.BufferUtils;
 import java.nio.FloatBuffer;
 import java.util.Set;
+import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.lists.Dial;
 import tonegod.gui.controls.lists.Slider;
 import tonegod.gui.controls.text.Label;
@@ -25,13 +27,13 @@ import tonegod.gui.core.Screen;
  *
  * @author t0neg0d
  */
-public class ColorWheel extends Window {
+public abstract class ColorWheel extends Window {
 	Dial primarySelector;
 	Element colorSwatch;
-	Slider secondarySelector, sR, sG, sB, sH, sL, sS;
-	TextField tfR, tfG, tfB;
-	TextField tfC, tfY, tfK, tfM;
+	Slider secondarySelector, sR, sG, sB, sH, sL, sS, sA;
+	TextField tfR, tfG, tfB, tfA;
 	TextField tfHex;
+	ButtonAdapter bFinish;
 	
 	int R = 255, G = 0, B = 0, A = 100, H = 100, S = 100, L = 100;
 	float red = 1.0f, green = 0.0f, blue = 0.0f, alpha = 1.0f, hue = 1.0f, saturation = 1.0f, light = 1.0f;
@@ -46,7 +48,7 @@ public class ColorWheel extends Window {
 	 */
 	public ColorWheel(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,
-			screen.getStyle("Window").getVector2f("defaultSize"),
+			screen.getStyle("ColorWheel").getVector2f("defaultSize"),
 			screen.getStyle("Window").getVector4f("resizeBorders"),
 			screen.getStyle("Window").getString("defaultImg")
 		);
@@ -62,7 +64,7 @@ public class ColorWheel extends Window {
 	 */
 	public ColorWheel(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
-			screen.getStyle("Window").getVector4f("resizeBorders"),
+			screen.getStyle("ColorWheel").getVector4f("resizeBorders"),
 			screen.getStyle("Window").getString("defaultImg")
 		);
 	}
@@ -82,8 +84,19 @@ public class ColorWheel extends Window {
 		
 		setScaleEW(false);
 		setScaleNS(false);
+		setIsResizable(false);
 		
-		tfR = new TextField(screen, UID + ":tfR", new Vector2f(350, 35), new Vector2f(60, 15)) {
+		float sX = 194;
+		float lX = 343;
+		float tfX = 370;
+		float yInc = 20;
+		float tfY = 38;
+		float lY = 32;
+		float sY = 38;
+		float hexX = 242;
+		float hexY = getHeight()-34;
+		
+		tfR = new TextField(screen, UID + ":tfR", new Vector2f(tfX, tfY), new Vector2f(60, 15)) {
 			
 		};
 		tfR.setType(TextField.Type.NUMERIC);
@@ -94,7 +107,9 @@ public class ColorWheel extends Window {
 		tfR.setScaleNS(false);
 		addChild(tfR);
 		
-		tfG = new TextField(screen, UID + ":tfG", new Vector2f(350, 55), new Vector2f(60, 15)) {
+		tfY += yInc;
+		
+		tfG = new TextField(screen, UID + ":tfG", new Vector2f(tfX, tfY), new Vector2f(60, 15)) {
 			
 		};
 		tfG.setType(TextField.Type.NUMERIC);
@@ -105,7 +120,9 @@ public class ColorWheel extends Window {
 		tfG.setScaleNS(false);
 		addChild(tfG);
 		
-		tfB = new TextField(screen, UID + ":tfB", new Vector2f(350, 75), new Vector2f(60, 15)) {
+		tfY += yInc;
+		
+		tfB = new TextField(screen, UID + ":tfB", new Vector2f(tfX, tfY), new Vector2f(60, 15)) {
 			
 		};
 		tfB.setType(TextField.Type.NUMERIC);
@@ -115,6 +132,30 @@ public class ColorWheel extends Window {
 		tfB.setScaleEW(false);
 		tfB.setScaleNS(false);
 		addChild(tfB);
+		
+		tfY += yInc*4;
+		
+		tfA = new TextField(screen, UID + ":tfA", new Vector2f(tfX, tfY), new Vector2f(60, 15)) {
+			
+		};
+		tfA.setType(TextField.Type.NUMERIC);
+		tfA.setMaxLength(5);
+		tfA.setFontSize(16);
+		tfA.setIsEnabled(false);
+		tfA.setScaleEW(false);
+		tfA.setScaleNS(false);
+		addChild(tfA);
+		
+		tfHex = new TextField(screen, UID + ":tfHex", new Vector2f(hexX, hexY), new Vector2f(60, 15)) {
+			
+		};
+		tfHex.setType(TextField.Type.ALPHANUMERIC_NOSPACE);
+		tfHex.setMaxLength(6);
+		tfHex.setFontSize(16);
+		tfHex.setIsEnabled(false);
+		tfHex.setScaleEW(false);
+		tfHex.setScaleNS(false);
+		addChild(tfHex);
 		
 		primarySelector = new Dial(screen, UID + ":primarySelector", new Vector2f(10,35), new Vector2f(getHeight()-45,getHeight()-45), Vector4f.ZERO, screen.getStyle("ColorWheel").getString("colorWheelImg")) {
 			@Override
@@ -141,10 +182,10 @@ public class ColorWheel extends Window {
 		primarySelector.setDockW(true);
 		addChild(primarySelector);
 		
-		float csX = 10+(primarySelector.getWidth()/2)-25;
-		float csY = 35+(primarySelector.getHeight()/2)-25;
-		float csW = 50;
-		float csH = 50;
+		float csX = 10+(primarySelector.getWidth()/2)-38;
+		float csY = 35+(primarySelector.getHeight()/2)-38;
+		float csW = 76;
+		float csH = 76;
 		colorSwatch = new Element(screen, UID + ":colorSwatch", new Vector2f(csX, csY), new Vector2f(csW, csH), Vector4f.ZERO, null);
 		colorSwatch.getElementMaterial().setColor("Color", new ColorRGBA(1.0f, 0.0f, 0.0f, 1.0f));
 		colorSwatch.setScaleEW(false);
@@ -153,7 +194,7 @@ public class ColorWheel extends Window {
 		colorSwatch.setIsResizable(false);
 		addChild(colorSwatch);
 		
-		sR = new Slider(screen, UID + ":sR", new Vector2f(174, 35), new Vector2f(150, 15), Vector4f.ZERO, null, Slider.Orientation.HORIZONTAL, true) {
+		sR = new Slider(screen, UID + ":sR", new Vector2f(sX, sY), new Vector2f(150, 15), Vector4f.ZERO, null, Slider.Orientation.HORIZONTAL, true) {
 			@Override
 			public void onChange(int selectedIndex, Object value) {
 				R = (int)(selectedIndex*2.55f);
@@ -163,13 +204,16 @@ public class ColorWheel extends Window {
 		sR.getElementMaterial().setColor("Color", new ColorRGBA(1.0f, 0.0f, 0.0f, 1.0f));
 		addChild(sR);
 		
-		Label lR = new Label(screen, UID + ":lR", new Vector2f(326, 32), new Vector2f(30, 15));
+		Label lR = new Label(screen, UID + ":lR", new Vector2f(lX, lY), new Vector2f(30, 15));
 		lR.setFontSize(18);
 		lR.setTextVAlign(BitmapFont.VAlign.Center);
 		lR.setText("  R  ");
 		addChild(lR);
 		
-		sG = new Slider(screen, UID + ":sG", new Vector2f(174, 55), new Vector2f(150, 15), Vector4f.ZERO, null, Slider.Orientation.HORIZONTAL, true) {
+		lY += yInc;
+		sY += yInc;
+		
+		sG = new Slider(screen, UID + ":sG", new Vector2f(sX, sY), new Vector2f(150, 15), Vector4f.ZERO, null, Slider.Orientation.HORIZONTAL, true) {
 			@Override
 			public void onChange(int selectedIndex, Object value) {
 				G = (int)(selectedIndex*2.55f);
@@ -179,13 +223,16 @@ public class ColorWheel extends Window {
 		sG.getElementMaterial().setColor("Color", new ColorRGBA(0.0f, 1.0f, 0.0f, 1.0f));
 		addChild(sG);
 		
-		Label lG = new Label(screen, UID + ":lG", new Vector2f(326, 52), new Vector2f(30, 15));
+		Label lG = new Label(screen, UID + ":lG", new Vector2f(lX, lY), new Vector2f(30, 15));
 		lG.setFontSize(18);
 		lG.setTextVAlign(BitmapFont.VAlign.Center);
 		lG.setText("  G  ");
 		addChild(lG);
 		
-		sB = new Slider(screen, UID + ":sB", new Vector2f(174, 75), new Vector2f(150, 15), Vector4f.ZERO, null, Slider.Orientation.HORIZONTAL, true) {
+		lY += yInc;
+		sY += yInc;
+		
+		sB = new Slider(screen, UID + ":sB", new Vector2f(sX, sY), new Vector2f(150, 15), Vector4f.ZERO, null, Slider.Orientation.HORIZONTAL, true) {
 			@Override
 			public void onChange(int selectedIndex, Object value) {
 				B = (int)(selectedIndex*2.55f);
@@ -195,13 +242,16 @@ public class ColorWheel extends Window {
 		sB.getElementMaterial().setColor("Color", new ColorRGBA(0.0f, 0.0f, 1.0f, 1.0f));
 		addChild(sB);
 		
-		Label lB = new Label(screen, UID + ":lB", new Vector2f(326, 72), new Vector2f(30, 15));
+		Label lB = new Label(screen, UID + ":lB", new Vector2f(lX, lY), new Vector2f(30, 15));
 		lB.setFontSize(18);
 		lB.setTextVAlign(BitmapFont.VAlign.Center);
 		lB.setText("  B  ");
 		addChild(lB);
 		
-		sH = new Slider(screen, UID + ":sH", new Vector2f(174, 95), new Vector2f(150,15), Vector4f.ZERO, null, Slider.Orientation.HORIZONTAL, true) {
+		lY += yInc;
+		sY += yInc;
+		
+		sH = new Slider(screen, UID + ":sH", new Vector2f(sX, sY), new Vector2f(150,15), Vector4f.ZERO, null, Slider.Orientation.HORIZONTAL, true) {
 			@Override
 			public void onChange(int selectedIndex, Object value) {
 				H = selectedIndex;
@@ -213,13 +263,16 @@ public class ColorWheel extends Window {
 		sH.getModel().setGradientFillVertical(ColorRGBA.White, new ColorRGBA(red, green, blue, 1.0f));
 		addChild(sH);
 		
-		Label lH = new Label(screen, UID + ":lH", new Vector2f(326, 92), new Vector2f(30, 15));
+		Label lH = new Label(screen, UID + ":lH", new Vector2f(lX, lY), new Vector2f(30, 15));
 		lH.setFontSize(18);
 		lH.setTextVAlign(BitmapFont.VAlign.Center);
 		lH.setText("  H  ");
 		addChild(lH);
 		
-		sS = new Slider(screen, UID + ":sS", new Vector2f(174, 115), new Vector2f(150,15), Vector4f.ZERO, screen.getStyle("ColorWheel").getString("colorSImg"), Slider.Orientation.HORIZONTAL, true) {
+		lY += yInc;
+		sY += yInc;
+		
+		sS = new Slider(screen, UID + ":sS", new Vector2f(sX, sY), new Vector2f(150,15), Vector4f.ZERO, screen.getStyle("ColorWheel").getString("colorSImg"), Slider.Orientation.HORIZONTAL, true) {
 			@Override
 			public void onChange(int selectedIndex, Object value) {
 				S = selectedIndex;
@@ -233,13 +286,16 @@ public class ColorWheel extends Window {
 		sS.getModel().setGradientFillVertical(ColorRGBA.Gray, new ColorRGBA(red, green, blue, 1.0f));
 		addChild(sS);
 		
-		Label lS = new Label(screen, UID + ":lS", new Vector2f(326, 112), new Vector2f(30, 15));
+		Label lS = new Label(screen, UID + ":lS", new Vector2f(lX, lY), new Vector2f(30, 15));
 		lS.setFontSize(18);
 		lS.setTextVAlign(BitmapFont.VAlign.Center);
 		lS.setText("  S  ");
 		addChild(lS);
 		
-		sL = new Slider(screen, UID + ":sL", new Vector2f(174, 135), new Vector2f(150,15), Vector4f.ZERO, screen.getStyle("ColorWheel").getString("colorLImg"), Slider.Orientation.HORIZONTAL, true) {
+		lY += yInc;
+		sY += yInc;
+		
+		sL = new Slider(screen, UID + ":sL", new Vector2f(sX, sY), new Vector2f(150,15), Vector4f.ZERO, screen.getStyle("ColorWheel").getString("colorLImg"), Slider.Orientation.HORIZONTAL, true) {
 			@Override
 			public void onChange(int selectedIndex, Object value) {
 				L = selectedIndex;
@@ -253,16 +309,56 @@ public class ColorWheel extends Window {
 		sL.getModel().setGradientFillVertical(ColorRGBA.Black, new ColorRGBA(red, green, blue, 1.0f));
 		addChild(sL);
 		
-		Label lL = new Label(screen, UID + ":lL", new Vector2f(326, 132), new Vector2f(30, 15));
+		Label lL = new Label(screen, UID + ":lL", new Vector2f(lX, lY), new Vector2f(30, 15));
 		lL.setFontSize(18);
 		lL.setTextVAlign(BitmapFont.VAlign.Center);
 		lL.setText("  L  ");
 		addChild(lL);
 		
+		lY += yInc;
+		sY += yInc;
+		
+		sA = new Slider(screen, UID + ":sA", new Vector2f(sX, sY), new Vector2f(150,15), Vector4f.ZERO, screen.getStyle("ColorWheel").getString("colorLImg"), Slider.Orientation.HORIZONTAL, true) {
+			@Override
+			public void onChange(int selectedIndex, Object value) {
+				A = selectedIndex;
+				alpha = A*0.01f;
+				finalAlpha = alpha;
+				factorAndDisplay();
+			}
+		};
+		sA.getElementMaterial().setColor("Color", new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+		sA.getElementMaterial().setBoolean("VertexColor", true);
+		sA.getModel().setGradientFillVertical(new ColorRGBA(finalRed, finalGreen, finalBlue, 0.0f), new ColorRGBA(finalRed, finalGreen, finalBlue, 1.0f));
+		addChild(sA);
+		
+		Label lA = new Label(screen, UID + ":lA", new Vector2f(lX, lY), new Vector2f(30, 15));
+		lA.setFontSize(18);
+		lA.setTextVAlign(BitmapFont.VAlign.Center);
+		lA.setText("  A  ");
+		addChild(lA);
+		
+		Label lHex = new Label(screen, UID + ":lHex", new Vector2f(sX, hexY-5), new Vector2f(60, 15));
+		lHex.setFontSize(18);
+		lHex.setTextVAlign(BitmapFont.VAlign.Center);
+		lHex.setText("HEX: #");
+		addChild(lHex);
+		
+		bFinish = new ButtonAdapter(screen, UID + ":bFiniah", new Vector2f(getWidth()-110, getHeight()-40)) {
+			@Override
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean isToggled) {
+				onComplete(new ColorRGBA(finalRed, finalGreen, finalBlue, finalAlpha));
+				hideWindow();
+			}
+		};
+		bFinish.setText("Done");
+		addChild(bFinish);
+		
 		sR.setSelectedIndexWithCallback(100);
 		sH.setSelectedIndexWithCallback(100);
 		sS.setSelectedIndexWithCallback(100);
 		sL.setSelectedIndexWithCallback(100);
+		sA.setSelectedIndexWithCallback(100);
 		
 	}
 	
@@ -307,22 +403,23 @@ public class ColorWheel extends Window {
 		finalSaturation = saturation;
 	}
 	
-	private float applySaturation(float c) {
+	private float average() {
 		red = (float)R/255f;
 		green = (float)G/255f;
 		blue = (float)B/255f;
-		float max = Math.max(red, green);
-		max = Math.max(max, blue);
-		float min = Math.min(red, green);
-		min = Math.min(min, blue);
-		float mid = min+(max-min/2);
+		float sum = red+green+blue;
+		return sum/3;
+	}
+	private float applySaturation(float c) {
+		float mid = average();
+		float diff = FastMath.abs(c-mid);
 		float ret = c;
 		if (c < mid) {
-			ret = mid-(FastMath.abs(mid-c))*(finalSaturation);
+			ret = mid-(diff*finalSaturation);
 		} else {
-			ret = mid+(c-mid*finalSaturation/2);
+			ret = mid+(diff*finalSaturation);
 		}
-		return c;
+		return ret;
 	}
 	
 	private void factorLight() {
@@ -345,12 +442,187 @@ public class ColorWheel extends Window {
 		String strB = String.valueOf(finalBlue);
 		if (strB.length() > 5) strB = strB.substring(0,5);
 		tfB.setText(strB);
+		String strA = String.valueOf(finalAlpha);
+		if (strA.length() > 5) strA = strA.substring(0,5);
+		tfA.setText(strA);
+		String hex = String.format("%02x%02x%02x", (int)(finalRed*255), (int)(finalGreen*255), (int)(finalBlue*255));
+		tfHex.setText(hex);
 		sR.setSelectedIndex((int)((int)(red*100)));
 		sG.setSelectedIndex((int)((int)(green*100)));
 		sB.setSelectedIndex((int)((int)(blue*100)));
 		colorSwatch.getElementMaterial().setColor("Color", new ColorRGBA(finalRed, finalGreen, finalBlue, finalAlpha));
 		sH.getModel().setGradientFillVertical(ColorRGBA.White, new ColorRGBA(red, green, blue, 1.0f));
-		sS.getModel().setGradientFillVertical(ColorRGBA.Gray, new ColorRGBA(red, green, blue, 1.0f));
+		float av = average();
+		sS.getModel().setGradientFillVertical(new ColorRGBA(av, av, av, 1.0f), new ColorRGBA(red, green, blue, 1.0f));
 		sL.getModel().setGradientFillVertical(ColorRGBA.Black, new ColorRGBA(red, green, blue, 1.0f));
+		sA.getModel().setGradientFillVertical(new ColorRGBA(finalRed, finalGreen, finalBlue, 0.0f), new ColorRGBA(finalRed, finalGreen, finalBlue, 1.0f));
 	}
+	
+	public void setColor(ColorRGBA color) {
+		R = (int)(color.r*255);
+		if (R < 0) R = 0;
+		else if (R > 255) R = 255;
+		G = (int)(color.g*255);
+		if (G < 0) G = 0;
+		else if (G > 255) G = 255;
+		B = (int)(color.b*255);
+		if (B < 0) B = 0;
+		else if (B > 255) B = 255;
+		A = (int)(color.a*100);
+		if (A < 0) A = 0;
+		else if (A > 100) A = 100;
+		sA.setSelectedIndex(A);
+		factorAndDisplay();
+	}
+	
+	public void setColor(float red, float green, float blue) {
+		if (red < 0) red = 0;
+		else if (red > 1) red = 1;
+		R = (int)(red*255);
+		if (green < 0) green = 0;
+		else if (green > 1) green = 1;
+		G = (int)(green*255);
+		if (blue < 0) blue = 0;
+		else if (blue > 1) blue = 1;
+		B = (int)(blue*255);
+		factorAndDisplay();
+	}
+	
+	public void setColor(float red, float green, float blue, float alpha) {
+		if (red < 0) red = 0;
+		else if (red > 1) red = 1;
+		R = (int)(red*255);
+		if (green < 0) green = 0;
+		else if (green > 1) green = 1;
+		G = (int)(green*255);
+		if (blue < 0) blue = 0;
+		else if (blue > 1) blue = 1;
+		B = (int)(blue*255);
+		if (alpha < 0) alpha = 0;
+		else if (alpha > 1) alpha = 1;
+		A = (int)(alpha*100);
+		sA.setSelectedIndex(A);
+		factorAndDisplay();
+	}
+	
+	public void setColor(int red, int green, int blue) {
+		if (red < 0) red = 0;
+		else if (red > 255) red = 255;
+		R = red;
+		if (green < 0) green = 0;
+		else if (green > 255) green = 255;
+		G = green;
+		if (blue < 0) blue = 0;
+		else if (blue > 255) blue = 255;
+		B = blue;
+		factorAndDisplay();
+	}
+	
+	public void setRed(int red) {
+		if (red < 0) red = 0;
+		else if (red > 255) red = 255;
+		R = red;
+		factorAndDisplay();
+	}
+	
+	public void setRed(float red) {
+		if (red < 0) red = 0;
+		else if (red > 1) red = 1;
+		R = (int)(red*255);
+		factorAndDisplay();
+	}
+	
+	public void setGreen(int green) {
+		if (green < 0) green = 0;
+		else if (green > 255) green = 255;
+		G = green;
+		factorAndDisplay();
+	}
+	
+	public void setGreen(float green) {
+		if (green < 0) green = 0;
+		else if (green > 1) green = 1;
+		G = (int)(green*255);
+		factorAndDisplay();
+	}
+	
+	public void setBlue(int blue) {
+		if (blue < 0) blue = 0;
+		else if (blue > 255) blue = 255;
+		B = blue;
+		factorAndDisplay();
+	}
+	
+	public void setBlue(float blue) {
+		if (blue < 0) blue = 0;
+		else if (blue > 1) blue = 1;
+		B = (int)(blue*255);
+		factorAndDisplay();
+	}
+	
+	public void setAlpha(float alpha) {
+		if (alpha < 0) alpha = 0;
+		else if (alpha > 1) alpha = 1;
+		A = (int)(alpha*100);
+		sA.setSelectedIndex(A);
+		factorAndDisplay();
+	}
+	
+	public void setHue(float hue) {
+		if (hue < 0) hue = 0;
+		else if (hue > 1) hue = 1;
+		H = (int)(hue*100);
+		sH.setSelectedIndex(H);
+		factorAndDisplay();
+	}
+	
+	public void setSaturation(float saturation) {
+		if (saturation < 0) saturation = 0;
+		else if (saturation > 1) saturation = 1;
+		S = (int)(saturation*100);
+		sS.setSelectedIndex(S);
+		factorAndDisplay();
+	}
+	
+	public void setLight(float light) {
+		if (light < 0) light = 0;
+		else if (light > 1) light = 1;
+		L = (int)(light*100);
+		sL.setSelectedIndex(L);
+		factorAndDisplay();
+	}
+	
+	public ColorRGBA getColor() {
+		return new ColorRGBA(finalRed, finalGreen, finalBlue, finalAlpha);
+	}
+	
+	public float getRed() {
+		return finalRed;
+	}
+	
+	public float getGreen() {
+		return finalGreen;
+	}
+	
+	public float getBlue() {
+		return finalGreen;
+	}
+	
+	public float getAlpha() {
+		return finalAlpha;
+	}
+	
+	public float getHue() {
+		return finalHue;
+	}
+	
+	public float getSaturation() {
+		return finalSaturation;
+	}
+	
+	public float getLight() {
+		return finalLight;
+	}
+	
+	public abstract void onComplete(ColorRGBA color);
 }
