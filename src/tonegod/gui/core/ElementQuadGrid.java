@@ -35,7 +35,7 @@ public class ElementQuadGrid extends Mesh {
 		0,1,5,5,4,0
 	};
 	
-	public ElementQuadGrid(Vector2f dimensions, Vector4f borders, float imgWidth, float imgHeight, float pixelWidth, float pixelHeight) {
+	public ElementQuadGrid(Vector2f dimensions, Vector4f borders, float imgWidth, float imgHeight, float pixelWidth, float pixelHeight, float atlasX, float atlasY, float atlasW, float atlasH) {
 		this.dimensions = dimensions;
 		this.borders = borders;
 		
@@ -48,11 +48,18 @@ public class ElementQuadGrid extends Mesh {
 		};
 		
 		// Place verts according to resize borders
+		float fX = pixelWidth*atlasX;
+		float fW = pixelWidth*(atlasX+atlasW);
+		float fY = pixelHeight*atlasY;
+		float fH = pixelHeight*(atlasY+atlasH);
+		
+	//	System.out.println(fX + " : " + fY + " : " + fW + " : " + fH);
+		
 		templateCoordX = new float[] {
-			0f, pixelWidth*borders.y, pixelWidth*(imgWidth-borders.z), pixelWidth*imgWidth
+			fX, fX+(pixelWidth*borders.y), fW-(pixelWidth*borders.z), fW
 		};
 		templateCoordY = new float[] {
-			0f, pixelHeight*borders.x, pixelHeight*(imgHeight-borders.w), pixelHeight*imgHeight
+			fY, fY+(pixelHeight*borders.x), fH-(pixelHeight*borders.w), fH
 		};
 		
 		updateMesh();

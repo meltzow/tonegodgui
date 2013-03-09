@@ -20,9 +20,11 @@ import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import tonegod.gui.controls.form.Form;
@@ -199,8 +201,26 @@ public class Element extends Node {
 		float imgHeight = 100;
 		float pixelWidth = 1f/imgWidth;
 		float pixelHeight = 1f/imgHeight;
+		float textureAtlasX = 0, textureAtlasY = 0, textureAtlasW = 0, textureAtlasH = 0;
 		
 		if (texturePath != null) {
+			if (texturePath.indexOf('?') != -1) {
+				StringTokenizer st = new StringTokenizer(texturePath.substring(texturePath.indexOf('?')+1), "&");
+				if (st.countTokens() == 4) {
+					try {
+						String token = st.nextToken();
+						textureAtlasX = Float.parseFloat(token.substring(token.indexOf('=')+1));
+						token = st.nextToken();
+						textureAtlasY = Float.parseFloat(token.substring(token.indexOf('=')+1));
+						token = st.nextToken();
+						textureAtlasW = Float.parseFloat(token.substring(token.indexOf('=')+1));
+						token = st.nextToken();
+						textureAtlasH = Float.parseFloat(token.substring(token.indexOf('=')+1));
+					} catch (Exception ex) { throwParserException(); }
+					System.out.println(textureAtlasX + " : " + textureAtlasY + " : " + textureAtlasW + " : " + textureAtlasH);
+				} else throwParserException();
+				texturePath = texturePath.substring(0, texturePath.indexOf('?'));
+			}
 			defaultTex = app.getAssetManager().loadTexture(texturePath);
 			defaultTex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
 			defaultTex.setMagFilter(Texture.MagFilter.Bilinear);
@@ -210,6 +230,15 @@ public class Element extends Node {
 			imgHeight = defaultTex.getImage().getHeight();
 			pixelWidth = 1f/imgWidth;
 			pixelHeight = 1f/imgHeight;
+			
+			if (textureAtlasW == 0 && textureAtlasH == 0) {
+				textureAtlasW = imgWidth;
+				textureAtlasH = imgHeight;
+			} else {
+			//	textureAtlasX += textureAtlasW;
+			//	textureAtlasY -= textureAtlasH;
+				textureAtlasY = imgHeight-textureAtlasY-textureAtlasH;
+			}
 		}
 		mat = new Material(app.getAssetManager(), "tonegod/gui/shaders/Unshaded.j3md");
 		if (texturePath != null) {
@@ -223,7 +252,7 @@ public class Element extends Node {
 		mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
 		mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
 		
-		this.model = new ElementQuadGrid(this.dimensions, borders, imgWidth, imgHeight, pixelWidth, pixelHeight);
+		this.model = new ElementQuadGrid(this.dimensions, borders, imgWidth, imgHeight, pixelWidth, pixelHeight, textureAtlasX, textureAtlasY, textureAtlasW, textureAtlasH);
 		
 		this.setName(UID + ":Node");
 		geom = new Geometry(UID + ":Geometry");
@@ -236,6 +265,14 @@ public class Element extends Node {
 		this.setQueueBucket(Bucket.Gui);
 		
 		this.setLocalTranslation(position.x, position.y, 0);
+	}
+	
+	private void throwParserException() {
+		try {
+			throw new java.text.ParseException("The provided texture information does not conform to the expected standard of ?x=(int)&y=(int)&w=(int)&h=(int)", 0);
+		} catch (ParseException ex) {
+			Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The provided texture information does not conform to the expected standard of ?x=(int)&y=(int)&w=(int)&h=(int)", ex);
+		}
 	}
 	
 	public final Vector2f getV2fPercentToPixels(Vector2f in) {
@@ -1545,7 +1582,7 @@ public class Element extends Node {
 			float pixelWidth = 1f/imgWidth;
 			float pixelHeight = 1f/imgHeight;
 			
-			this.model = new ElementQuadGrid(this.dimensions, borders, imgWidth, imgHeight, pixelWidth, pixelHeight);
+			this.model = new ElementQuadGrid(this.dimensions, borders, imgWidth, imgHeight, pixelWidth, pixelHeight, 0, 0, imgWidth, imgHeight);
 			
 			geom.setMesh(model);
 		}
