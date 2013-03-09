@@ -201,10 +201,12 @@ public class Element extends Node {
 		float imgHeight = 100;
 		float pixelWidth = 1f/imgWidth;
 		float pixelHeight = 1f/imgHeight;
-		float textureAtlasX = 0, textureAtlasY = 0, textureAtlasW = 0, textureAtlasH = 0;
+		float textureAtlasX = 0, textureAtlasY = 0, textureAtlasW = imgWidth, textureAtlasH = imgHeight;
+		boolean useAtlas = false;
 		
 		if (texturePath != null) {
 			if (texturePath.indexOf('?') != -1) {
+				useAtlas = true;
 				StringTokenizer st = new StringTokenizer(texturePath.substring(texturePath.indexOf('?')+1), "&");
 				if (st.countTokens() == 4) {
 					try {
@@ -231,12 +233,10 @@ public class Element extends Node {
 			pixelWidth = 1f/imgWidth;
 			pixelHeight = 1f/imgHeight;
 			
-			if (textureAtlasW == 0 && textureAtlasH == 0) {
+			if (!useAtlas) {
 				textureAtlasW = imgWidth;
 				textureAtlasH = imgHeight;
 			} else {
-			//	textureAtlasX += textureAtlasW;
-			//	textureAtlasY -= textureAtlasH;
 				textureAtlasY = imgHeight-textureAtlasY-textureAtlasH;
 			}
 		}
