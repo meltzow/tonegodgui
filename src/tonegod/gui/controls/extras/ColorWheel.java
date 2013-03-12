@@ -36,6 +36,7 @@ public abstract class ColorWheel extends Window {
 	TextField tfHex;
 	ButtonAdapter bFinish;
 	Element blackToColor, colorToWhite;
+	ColorRGBA finalColor = new ColorRGBA(1,0,0,1);
 	
 	int R = 255, G = 0, B = 0, A = 100, H = 100, S = 100, L = 100;
 	float red = 1.0f, green = 0.0f, blue = 0.0f, alpha = 1.0f, hue = 1.0f, saturation = 1.0f, light = 1.0f;
@@ -566,6 +567,8 @@ public abstract class ColorWheel extends Window {
 		sL.getModel().setGradientFillVertical(ColorRGBA.Black, new ColorRGBA(red, green, blue, 1.0f));
 	//	colorToWhite.getModel().setGradientFillVertical(new ColorRGBA(red, green, blue, 1.0f), ColorRGBA.White);
 		sA.getModel().setGradientFillVertical(new ColorRGBA(finalRed, finalGreen, finalBlue, 0.0f), new ColorRGBA(finalRed, finalGreen, finalBlue, 1.0f));
+		finalColor.set(finalRed, finalGreen, finalBlue, finalAlpha);
+		onChange(finalColor);
 	}
 	
 	public void setColor(ColorRGBA color) {
@@ -733,6 +736,8 @@ public abstract class ColorWheel extends Window {
 	public float getLight() {
 		return finalLight;
 	}
+	
+	public abstract void onChange(ColorRGBA color);
 	
 	public abstract void onComplete(ColorRGBA color);
 }
