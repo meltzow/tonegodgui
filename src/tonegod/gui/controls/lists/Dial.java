@@ -224,6 +224,26 @@ public abstract class Dial extends ButtonAdapter {
 		if (isStepped) {
 			if (index < 0) index = 0;
 			else if (index > stepValues.size()-1) index = stepValues.size()-1;
+			selectedIndex = index;
+			angle = index*stepSize-180+startGap;
+		} else {
+			if (index < 0) index = 0;
+			else if (index > 100) index = 100;
+			selectedIndex = index;
+			angle = index*stepSize-180+startGap;
+		}
+		elCenter.setLocalRotation(elCenter.getLocalRotation().fromAngleAxis(-(angle*FastMath.DEG_TO_RAD), Vector3f.UNIT_Z));
+	}
+	
+	/**
+	 * Sets the selected index for both free-floating and stepped Dials
+	 * @param index float
+	 */
+	public void setSelectedIndexWithCallback(int index) {
+		float angle;
+		if (isStepped) {
+			if (index < 0) index = 0;
+			else if (index > stepValues.size()-1) index = stepValues.size()-1;
 			setInternalIndex(index);
 			angle = index*stepSize-180+startGap;
 		} else {
@@ -240,6 +260,27 @@ public abstract class Dial extends ButtonAdapter {
 	 * @param index float A range from 0.0 to 100.0 for a more accurate representation of the angle desired
 	 */
 	public void setSelectedIndex(float index) {
+		float angle;
+		int index1 = (int)Math.round(index);
+		if (isStepped) {
+			if (index1 < 0) index1 = 0;
+			else if (index1 > stepValues.size()-1) index1 = stepValues.size()-1;
+			this.selectedIndex = index1;
+			angle = index1*stepSize-180+startGap;
+		} else {
+			if (index1 < 0) index1 = 0;
+			else if (index1 > 100) index1 = 100;
+			this.selectedIndex = index1;
+			angle = index*stepSize-180+startGap;
+		}
+		elCenter.setLocalRotation(elCenter.getLocalRotation().fromAngleAxis(-(angle*FastMath.DEG_TO_RAD), Vector3f.UNIT_Z));
+	}
+	
+	/**
+	 * For use with free-floating Dials - Sets the selected index of the Dial
+	 * @param index float A range from 0.0 to 100.0 for a more accurate representation of the angle desired
+	 */
+	public void setSelectedIndexWithCallback(float index) {
 		float angle;
 		int index1 = (int)Math.round(index);
 		if (isStepped) {
