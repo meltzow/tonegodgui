@@ -378,6 +378,10 @@ public class Element extends Node {
 		initZOrder(zOrder);
 	}
 	
+	/**
+	 * Returns a list of all children that are an instance of DragElement
+	 * @return List<Element>
+	 */
 	public List<Element> getDraggableChildren() {
 		List<Element> ret = new ArrayList();
 		Set<String> keys = elementChildren.keySet();
