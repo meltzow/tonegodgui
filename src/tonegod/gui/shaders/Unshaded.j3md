@@ -7,6 +7,7 @@ MaterialDef Unshaded {
 		Boolean EffectPulse : false
 		Boolean EffectPulseColor : false
 		Boolean EffectFade : false
+		Boolean EffectSaturate : false
 		Float EffectStep
 		Float GlobalAlpha : 1.0
 		Texture2D ColorMap
