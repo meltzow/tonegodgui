@@ -14,6 +14,7 @@ uniform bool m_UseEffect;
 uniform bool m_EffectFade;
 uniform bool m_EffectPulse;
 uniform bool m_EffectPulseColor;
+uniform bool m_EffectSaturate;
 uniform float m_EffectStep;
 uniform float m_GlobalAlpha;
 
@@ -63,6 +64,9 @@ void main(){
 				color.a *= m_EffectStep;
 			} else if (m_EffectPulseColor) {
 				color =  mix(color, m_EffectColor, m_EffectStep*0.5);
+			} else if (m_EffectSaturate) {
+				float intensity = (0.2125 * color.r) + (0.7154 * color.g) + (0.0721 * color.b);
+				color = mix(color, vec4(intensity,intensity,intensity,color.a), m_EffectStep);
 			} else {
 			//	vec4 mixColor;
 			//	mixColor = texture2D(m_EffectMap, texCoord1);
