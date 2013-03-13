@@ -28,7 +28,9 @@ public class Effect implements Cloneable {
 		Pulse,
 		ColorSwap,
 		PulseColor,
-		ImageSwap
+		ImageSwap,
+		Desaturate,
+		Saturate
 	}
 	
 	public enum EffectEvent {
@@ -197,6 +199,12 @@ public class Effect implements Cloneable {
 			case ColorSwap:
 				updateColorSwap();
 				break;
+			case Saturate:
+			    updateSaturate();
+			    break;
+			case Desaturate:
+			    updateDesaturate();
+			    break;
 		}
 
 		if (isActive) {
@@ -250,7 +258,7 @@ public class Effect implements Cloneable {
 		}
 	}
 	
-	private void destoryElement() {
+    private void destoryElement() {
 		if (element.getElementParent() == null) {
 			element.getScreen().removeElement(element);
 		} else {
@@ -262,6 +270,7 @@ public class Effect implements Cloneable {
 		element.getElementMaterial().setBoolean("UseEffect", false);
 		element.getElementMaterial().setBoolean("EffectFade", false);
 		element.getElementMaterial().setBoolean("EffectPulse", false);
+		element.getElementMaterial().setBoolean("EffectSaturate", false);
 		element.getElementMaterial().setTexture("EffectMap", null);
 		element.getElementMaterial().setFloat("EffectStep", 0.0f);
 	}
@@ -409,12 +418,14 @@ public class Effect implements Cloneable {
 		element.getElementMaterial().setBoolean("EffectFade", false);
 		element.getElementMaterial().setBoolean("EffectPulse", false);
 		element.getElementMaterial().setBoolean("EffectPulseColor", false);
+		element.getElementMaterial().setBoolean("EffectSaturate", false);
 	}
 	
 	private void initFades() {
 		element.getElementMaterial().setBoolean("UseEffect", true);
 		element.getElementMaterial().setBoolean("EffectFade", true);
 		element.getElementMaterial().setBoolean("EffectPulse", false);
+		element.getElementMaterial().setBoolean("EffectSaturate", false);
 	}
 	
 	private void updateFadeIn() {
@@ -514,5 +525,44 @@ public class Effect implements Cloneable {
 			init = true;
 			isActive = false;
 		}
+	}
+	
+    private void updateDesaturate() {
+        if (!init) {
+            element.getElementMaterial().setBoolean("UseEffect", true);
+            element.getElementMaterial().setBoolean("EffectFade", false);
+            element.getElementMaterial().setBoolean("EffectPulse", false);
+            element.getElementMaterial().setBoolean("EffectSaturate", true);
+            init = true;
+        }
+        element.getElementMaterial().setFloat("EffectStep", pass);
+        if (pass >= 1.0) {
+            isActive = false;
+        }
+        
+    }
+
+    private void updateSaturate() {
+        if (!init) {
+            element.getElementMaterial().setBoolean("UseEffect", true);
+            element.getElementMaterial().setBoolean("EffectFade", false);
+            element.getElementMaterial().setBoolean("EffectPulse", false);
+            element.getElementMaterial().setBoolean("EffectSaturate", true);
+            init = true;
+        }
+        if (pass >= 1.0) {
+            disableShaderEffect();
+            isActive = false;
+        } else {
+            element.getElementMaterial().setFloat("EffectStep", Math.max(0,1-pass));
+        }
+    }
+
+
+	
+	
+	@Override
+	public String toString() {
+	    return "Event @"+element.getName() + " " + event + " " + type; 
 	}
 }
