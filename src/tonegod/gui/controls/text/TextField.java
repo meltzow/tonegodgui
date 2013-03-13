@@ -250,6 +250,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			alt = true;
 		} else if (evt.getKeyCode() == KeyInput.KEY_LMETA || evt.getKeyCode() == KeyInput.KEY_RMETA) {
 			meta = true;
+		} else if (evt.getKeyCode() == KeyInput.KEY_RETURN) {
 		} else if (evt.getKeyCode() == KeyInput.KEY_DELETE) {
 			if (rangeHead != -1 && rangeTail != -1)	editTextRangeText("");
 			else {

@@ -121,7 +121,7 @@ public abstract class ChatBox extends Panel {
 			public void controlKeyPressHook(KeyInputEvent evt, String text) {
 				if (evt.getKeyCode() == sendKey) {
 					if (tfChatInput.getText().length() > 0) {
-						tfChatInput.setText(tfChatInput.getText().substring(0,tfChatInput.getText().length()-1));
+					//	tfChatInput.setText(tfChatInput.getText().substring(0,tfChatInput.getText().length()-1));
 						sendMsg();
 					}
 				}
