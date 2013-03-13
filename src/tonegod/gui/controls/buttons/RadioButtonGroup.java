@@ -51,15 +51,19 @@ public abstract class RadioButtonGroup {
 	 * @param index 
 	 */
 	public void setSelected(int index) {
-		if (index >= 0 && index < radioButtons.size()) {
-			Button rb = radioButtons.get(index);
-			this.selected = rb;
-			this.selectedIndex = index;
-			for (Button rb2 : radioButtons) {
-				if (rb2 != this.selected)
-					rb2.setIsToggled(false);
+		if (this.selectedIndex != index) {
+			if (index >= 0 && index < radioButtons.size()) {
+				Button rb = radioButtons.get(index);
+				this.selected = rb;
+				this.selectedIndex = index;
+				for (Button rb2 : radioButtons) {
+					if (rb2 != this.selected)
+						rb2.setIsToggled(false);
+					else
+						rb2.setIsToggled(true);
+				}
+				onSelect(selectedIndex, rb);
 			}
-			onSelect(selectedIndex, rb);
 		}
 	}
 	
@@ -68,15 +72,18 @@ public abstract class RadioButtonGroup {
 	 * @param button 
 	 */
 	protected void setSelected(Button button) {
-		this.selected = button;
-		this.selectedIndex = radioButtons.indexOf(button);
-		for (Button rb : radioButtons) {
-			if (rb != this.selected) {
-				if (rb.getIsToggled())
-					rb.setIsToggled(false);
+		if (this.selected != button) {
+			this.selected = button;
+			this.selectedIndex = radioButtons.indexOf(button);
+			for (Button rb : radioButtons) {
+				if (rb != this.selected) {
+					if (rb.getIsToggled())
+						rb.setIsToggled(false);
+				} else
+					rb.setIsToggled(true);
 			}
+			onSelect(selectedIndex, button);
 		}
-		onSelect(selectedIndex, button);
 	}
 	
 	/**
