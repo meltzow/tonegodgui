@@ -21,12 +21,15 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import tonegod.gui.controls.extras.DragElement;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.effects.Effect;
 
@@ -373,6 +376,18 @@ public class Element extends Node {
 	public void setZOrder(float zOrder) {
 		this.zOrder = zOrder;
 		initZOrder(zOrder);
+	}
+	
+	public List<Element> getDraggableChildren() {
+		List<Element> ret = new ArrayList();
+		Set<String> keys = elementChildren.keySet();
+		for (String key : keys) {
+			Element el = elementChildren.get(key);
+			if (el instanceof DragElement) {
+				ret.add(el);
+			}
+		}
+		return ret;
 	}
 	
 	// Recursive & non-recursive parent/child element searches
