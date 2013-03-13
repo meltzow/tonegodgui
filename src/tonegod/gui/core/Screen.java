@@ -576,19 +576,24 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 					if (eventElement instanceof MouseButtonListener) {
 						((MouseButtonListener)eventElement).onMouseLeftReleased(evt);
 					}
+					if (eventElement != null)
+						evt.setConsumed();
 					break;
 				case 1:
 					mouseRightPressed = false;
 					if (eventElement instanceof MouseButtonListener) {
 						((MouseButtonListener)eventElement).onMouseRightReleased(evt);
 					}
+					if (eventElement != null)
+						evt.setConsumed();
 					break;
 				case 2:
-					mouseWheelPressed = true;
-					
+					mouseWheelPressed = false;
 					if (eventElement instanceof MouseWheelListener) {
 						((MouseWheelListener)eventElement).onMouseWheelReleased(evt);
 					}
+					if (eventElement != null)
+						evt.setConsumed();
 					break;
 			}
 			mousePressed = false;
