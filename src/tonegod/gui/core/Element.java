@@ -1603,6 +1603,19 @@ public class Element extends Node {
 		this.wasVisible = wasVisible;
 	}
 	
+	public void showWithEffect() {
+		Effect effect = getEffect(Effect.EffectEvent.Show);
+		if (effect != null) {
+			if (effect.getEffectType() == Effect.EffectType.FadeIn) {
+				Effect clone = effect.clone();
+				clone.setAudioFile(null);
+				this.propagateEffect(clone, false);
+			} else
+				screen.getEffectManager().applyEffect(effect);
+		} else
+			this.show();
+	}
+	
 	/**
 	 * Sets this Element and any Element contained within it's nesting order to visible.
 	 * 
@@ -1651,6 +1664,19 @@ public class Element extends Node {
 	 * An overridable method for extending the show event.
 	 */
 	public void controlShowHook() {  }
+	
+	public void hideWithEffect() {
+		Effect effect = getEffect(Effect.EffectEvent.Hide);
+		if (effect != null) {
+			if (effect.getEffectType() == Effect.EffectType.FadeOut) {
+				Effect clone = effect.clone();
+				clone.setAudioFile(null);
+				this.propagateEffect(clone, true);
+			} else
+				screen.getEffectManager().applyEffect(effect);
+		} else
+			this.hide();
+	}
 	
 	/**
 	 * Recursive call that sets this Element and any Element contained within it's 
