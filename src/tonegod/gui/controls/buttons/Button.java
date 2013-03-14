@@ -51,6 +51,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	protected float initClickInterval = 0.25f, currentInitClickTrack = 0;
 	protected RadioButtonGroup radioButtonGroup = null;
 	protected boolean isRadioButton = false;
+	private boolean isEnabled = true;
 	
 	/**
 	 * Creates a new instance of the Button control
@@ -128,6 +129,33 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		populateEffects("Button");
 	}
 	
+	public void setIsEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+		if (!isEnabled) {
+			Effect effect = getEffect(Effect.EffectEvent.Press);
+			if (effect != null) {
+				effect.setBlendImage(pressedImg);
+				screen.getEffectManager().applyEffect(effect);
+			}
+			if (pressedFontColor != null) {
+				setFontColor(pressedFontColor);
+			}
+		} else {
+			Effect effect = getEffect(Effect.EffectEvent.Press);
+			if (effect != null) {
+				effect.setBlendImage(getElementTexture());
+				screen.getEffectManager().applyEffect(effect);
+			}
+			if (fontColor != null) {
+				setFontColor(fontColor);
+			}
+		}
+	}
+	
+	public boolean getIsEnabled() {
+		return this.isEnabled;
+	}
+	
 	/**
 	 * Clears current hover and pressed images set by Style defines
 	 */
@@ -196,8 +224,8 @@ public abstract class Button extends Element implements Control, MouseButtonList
 				effect.setBlendImage(getElementTexture());
 				screen.getEffectManager().applyEffect(effect);
 			}
-			if (pressedFontColor != null) {
-				setFontColor(pressedFontColor);
+			if (fontColor != null) {
+				setFontColor(fontColor);
 			}
 		}
 		
@@ -311,86 +339,90 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	
 	@Override
 	public void onMouseLeftPressed(MouseButtonEvent evt) {
-		if (isToggleButton) {
-			if (isToggled) {
-				if (!isRadioButton) isToggled = false;
-			} else {
-				isToggled = true;
-			}
-		}
-		if (pressedImg != null) {
-			Effect effect = getEffect(Effect.EffectEvent.Press);
-			if (effect != null) {
-				if (usePressedSound && screen.getUseUIAudio()) {
-					effect.setAudioFile(pressedSound);
-					effect.setAudioVolume(pressedSoundVolume);
+		if (isEnabled) {
+			if (isToggleButton) {
+				if (isToggled) {
+					if (!isRadioButton) isToggled = false;
+				} else {
+					isToggled = true;
 				}
-				effect.setBlendImage(pressedImg);
-				screen.getEffectManager().applyEffect(effect);
 			}
+			if (pressedImg != null) {
+				Effect effect = getEffect(Effect.EffectEvent.Press);
+				if (effect != null) {
+					if (usePressedSound && screen.getUseUIAudio()) {
+						effect.setAudioFile(pressedSound);
+						effect.setAudioVolume(pressedSoundVolume);
+					}
+					effect.setBlendImage(pressedImg);
+					screen.getEffectManager().applyEffect(effect);
+				}
+			}
+			if (pressedFontColor != null) {
+				setFontColor(pressedFontColor);
+			}
+			isStillPressed = true;
+			initClickPause = true;
+			currentInitClickTrack = 0;
+			onButtonMouseLeftDown(evt, isToggled);
 		}
-		if (pressedFontColor != null) {
-			setFontColor(pressedFontColor);
-		}
-		isStillPressed = true;
-		initClickPause = true;
-		currentInitClickTrack = 0;
-		onButtonMouseLeftDown(evt, isToggled);
 		evt.setConsumed();
 	}
 
 	@Override
 	public void onMouseLeftReleased(MouseButtonEvent evt) {
-		if (!isToggleButton) {
-			if (getHasFocus()) {
-				Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
-				if (effect != null) {
-					effect.setBlendImage(getElementTexture());
-					screen.getEffectManager().applyEffect(effect);
-				}
-				if (hoverImg != null) {
-				//	screen.getEffectManager().removeEffect(this);
-					Effect effect2 = getEffect(Effect.EffectEvent.Hover);
-					if (effect2 != null) {
-						effect2.setBlendImage(hoverImg);
-						screen.getEffectManager().applyEffect(effect2);
-					}
-				}
-				if (hoverFontColor != null) {
-					setFontColor(hoverFontColor);
-				}
-			} else {
-				Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
-				if (effect != null) {
-					effect.setBlendImage(getElementTexture());
-					screen.getEffectManager().applyEffect(effect);
-				}
-			}
-		} else {
-			if (!isToggled) {
-				if (hoverImg != null) {
+		if (isEnabled) {
+			if (!isToggleButton) {
+				if (getHasFocus()) {
 					Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
 					if (effect != null) {
 						effect.setBlendImage(getElementTexture());
 						screen.getEffectManager().applyEffect(effect);
 					}
-					Effect effect2 = getEffect(Effect.EffectEvent.Hover);
-					if (effect2 != null) {
-						effect2.setBlendImage(hoverImg);
-						screen.getEffectManager().applyEffect(effect2);
+					if (hoverImg != null) {
+					//	screen.getEffectManager().removeEffect(this);
+						Effect effect2 = getEffect(Effect.EffectEvent.Hover);
+						if (effect2 != null) {
+							effect2.setBlendImage(hoverImg);
+							screen.getEffectManager().applyEffect(effect2);
+						}
+					}
+					if (hoverFontColor != null) {
+						setFontColor(hoverFontColor);
+					}
+				} else {
+					Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
+					if (effect != null) {
+						effect.setBlendImage(getElementTexture());
+						screen.getEffectManager().applyEffect(effect);
 					}
 				}
-				if (hoverFontColor != null) {
-					setFontColor(hoverFontColor);
+			} else {
+				if (!isToggled) {
+					if (hoverImg != null) {
+						Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
+						if (effect != null) {
+							effect.setBlendImage(getElementTexture());
+							screen.getEffectManager().applyEffect(effect);
+						}
+						Effect effect2 = getEffect(Effect.EffectEvent.Hover);
+						if (effect2 != null) {
+							effect2.setBlendImage(hoverImg);
+							screen.getEffectManager().applyEffect(effect2);
+						}
+					}
+					if (hoverFontColor != null) {
+						setFontColor(hoverFontColor);
+					}
 				}
 			}
+			isStillPressed = false;
+			initClickPause = false;
+			currentInitClickTrack = 0;
+			onButtonMouseLeftUp(evt, isToggled);
+			if (radioButtonGroup != null)
+				radioButtonGroup.setSelected(this);
 		}
-		isStillPressed = false;
-		initClickPause = false;
-		currentInitClickTrack = 0;
-		onButtonMouseLeftUp(evt, isToggled);
-		if (radioButtonGroup != null)
-			radioButtonGroup.setSelected(this);
 		evt.setConsumed();
 	}
 	
@@ -402,11 +434,12 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	
 	@Override
 	public void onMouseRightPressed(MouseButtonEvent evt) {
-	//	throw new UnsupportedOperationException("Not supported yet.");
-		onButtonMouseRightDown(evt, isToggled);
-		if (screen.getUseToolTips()) {
-			if (getToolTipText() !=  null) {
-			//	screen.setToolTip(null);
+		if (isEnabled) {
+			onButtonMouseRightDown(evt, isToggled);
+			if (screen.getUseToolTips()) {
+				if (getToolTipText() !=  null) {
+				//	screen.setToolTip(null);
+				}
 			}
 		}
 		evt.setConsumed();
@@ -414,63 +447,68 @@ public abstract class Button extends Element implements Control, MouseButtonList
 
 	@Override
 	public void onMouseRightReleased(MouseButtonEvent evt) {
-	//	throw new UnsupportedOperationException("Not supported yet.");
-		onButtonMouseRightUp(evt, isToggled);
+		if (isEnabled) {
+			onButtonMouseRightUp(evt, isToggled);
+		}
 		evt.setConsumed();
 	}
 
 	@Override
 	public void onGetFocus(MouseMotionEvent evt) {
-		if (!getHasFocus()) {
-			if (!isToggled) {
-				if (hoverImg != null) {
-					Effect effect = getEffect(Effect.EffectEvent.Hover);
-					if (effect != null) {
-						if (useHoverSound && screen.getUseUIAudio()) {
-							effect.setAudioFile(hoverSound);
-							effect.setAudioVolume(hoverSoundVolume);
+		if (isEnabled) {
+			if (!getHasFocus()) {
+				if (!isToggled) {
+					if (hoverImg != null) {
+						Effect effect = getEffect(Effect.EffectEvent.Hover);
+						if (effect != null) {
+							if (useHoverSound && screen.getUseUIAudio()) {
+								effect.setAudioFile(hoverSound);
+								effect.setAudioVolume(hoverSoundVolume);
+							}
+							effect.setBlendImage(hoverImg);
+							screen.getEffectManager().applyEffect(effect);
 						}
-						effect.setBlendImage(hoverImg);
-						screen.getEffectManager().applyEffect(effect);
+					}
+					if (hoverFontColor != null) {
+						setFontColor(hoverFontColor);
 					}
 				}
-				if (hoverFontColor != null) {
-					setFontColor(hoverFontColor);
+				screen.setCursor(Screen.CursorType.HAND);
+				onButtonFocus(evt);
+				if (screen.getUseToolTips()) {
+					if (getToolTipText() !=  null) {
+					//	screen.setToolTip(getToolTipText());
+					}
 				}
 			}
-			screen.setCursor(Screen.CursorType.HAND);
-			onButtonFocus(evt);
-			if (screen.getUseToolTips()) {
-				if (getToolTipText() !=  null) {
-				//	screen.setToolTip(getToolTipText());
-				}
-			}
+			setHasFocus(true);
 		}
-		setHasFocus(true);
 	}
 
 	@Override
 	public void onLoseFocus(MouseMotionEvent evt) {
-		if (getHasFocus()) {
-			if (!isToggled) {
-				Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
-				if (effect != null) {
-					effect.setBlendImage(getElementTexture());
-					screen.getEffectManager().applyEffect(effect);
+		if (isEnabled) {
+			if (getHasFocus()) {
+				if (!isToggled) {
+					Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
+					if (effect != null) {
+						effect.setBlendImage(getElementTexture());
+						screen.getEffectManager().applyEffect(effect);
+					}
+					setFontColor(getFontColor());
 				}
-				setFontColor(getFontColor());
-			}
-			screen.setCursor(Screen.CursorType.POINTER);
-			onButtonLostFocus(evt);
-			/*
-			if (screen.getUseToolTips()) {
-				if (getToolTipText() !=  null) {
-					screen.setToolTip(null);
+				screen.setCursor(Screen.CursorType.POINTER);
+				onButtonLostFocus(evt);
+				/*
+				if (screen.getUseToolTips()) {
+					if (getToolTipText() !=  null) {
+						screen.setToolTip(null);
+					}
 				}
+				*/
 			}
-			*/
+			setHasFocus(false);
 		}
-		setHasFocus(false);
 	}
 	
 	/**
@@ -527,18 +565,20 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	
 	@Override
 	public void update(float tpf) {
-		if (useInterval && isStillPressed) {
-			if (initClickPause) {
-				currentInitClickTrack += tpf;
-				if (currentInitClickTrack >= initClickInterval) {
-					initClickPause = false;
-					currentInitClickTrack = 0;
-				}
-			} else {
-				currentTrack += tpf;
-				if (currentTrack >= trackInterval) {
-					onButtonStillPressedInterval();
-					currentTrack = 0;
+		if (isEnabled) {
+			if (useInterval && isStillPressed) {
+				if (initClickPause) {
+					currentInitClickTrack += tpf;
+					if (currentInitClickTrack >= initClickInterval) {
+						initClickPause = false;
+						currentInitClickTrack = 0;
+					}
+				} else {
+					currentTrack += tpf;
+					if (currentTrack >= trackInterval) {
+						onButtonStillPressedInterval();
+						currentTrack = 0;
+					}
 				}
 			}
 		}
