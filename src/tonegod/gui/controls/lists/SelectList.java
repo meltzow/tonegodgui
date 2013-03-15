@@ -377,6 +377,7 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 			setWidth(getWidth());
 			getVScrollBar().setX(getWidth());
 		}
+		scrollToTop();
 	}
 	
 	private void displayHighlights() {
