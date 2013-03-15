@@ -96,11 +96,11 @@ public abstract class ChatBox extends Panel {
 		saChatArea = new ScrollArea(screen, UID + ":ChatArea",
 			new Vector2f(
 				indents.y,
-				indents.x+controlSpacing
+				indents.x
 			),
 			new Vector2f(
-				getWidth()-scrollSize-indents.y-indents.z,
-				getHeight()-(controlSpacing*2)-indents.x-indents.w
+				getWidth()-indents.y-indents.z,
+				getHeight()-controlSize-(controlSpacing*2)-indents.x-indents.w
 			),
 			true
 		);
