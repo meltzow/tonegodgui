@@ -533,4 +533,9 @@ public abstract class ComboBox extends TextField {
 	public void controlTextFieldResetTabFocusHook() {
 	//	DDList.hideMenu();
 	}
+	
+	@Override
+	public void controlCleanupHook() {
+		screen.removeElement(DDList);
+	}
 }

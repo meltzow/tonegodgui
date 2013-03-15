@@ -103,7 +103,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		CUSTOM_9
 	}
 	private Application app;
-	private Spatial spatial;
+	protected Spatial spatial;
 	private Map<String, Element> elements = new HashMap();
 	private Ray elementZOrderRay = new Ray();
 	private Vector3f guiRayOrigin = new Vector3f();
@@ -136,8 +136,8 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	private String styleMap;
 	private Map<String, Style> styles = new HashMap();
 	
-	private EffectManager effectManager;
-	private Node t0neg0dGUI = new Node("t0neg0dGUI");
+	protected EffectManager effectManager;
+	protected Node t0neg0dGUI = new Node("t0neg0dGUI");
 	
 	private Vector2f mouseXY = new Vector2f(0,0);
 	private boolean SHIFT = false;
@@ -280,6 +280,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		}
 		zOrderCurrent -= zOrderStepMajor;
 		element.removeFromParent();
+		element.cleanup();
 	}
 	
 	/**

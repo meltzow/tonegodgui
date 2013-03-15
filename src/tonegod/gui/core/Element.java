@@ -320,8 +320,10 @@ public class Element extends Node {
 	 */
 	public void removeChild(Element child) {
 		Element e = elementChildren.remove(child.getUID());
-		if (e != null)
+		if (e != null) {
 			e.removeFromParent();
+			e.cleanup();
+		}
 	}
 	
 	/**
@@ -1722,6 +1724,17 @@ public class Element extends Node {
 	 * An overridable method for extending the hide event.
 	 */
 	public void controlHideHook() {  }
+	
+	public void cleanup() {
+		controlCleanupHook();
+		for (Element el : elementChildren.values()) {
+			el.cleanup();
+		}
+	}
+	/**
+	 * An overridable method for handling control specific cleanup.
+	 */
+	public void controlCleanupHook() {  }
 	
 	/**
 	 * For internal use only - DO NOT CALL THIS METHOD
