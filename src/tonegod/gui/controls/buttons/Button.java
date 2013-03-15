@@ -52,6 +52,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	protected RadioButtonGroup radioButtonGroup = null;
 	protected boolean isRadioButton = false;
 	private boolean isEnabled = true;
+	private ColorRGBA originalFontColor;
 	
 	/**
 	 * Creates a new instance of the Button control
@@ -118,7 +119,8 @@ public abstract class Button extends Element implements Control, MouseButtonList
 				screen.getStyle("Button").getColorRGBA("pressedColor")
 			);
 		}
-	
+		originalFontColor = fontColor.clone();
+		
 		hoverSound = screen.getStyle("Button").getString("hoverSound");
 		useHoverSound = screen.getStyle("Button").getBoolean("useHoverSound");
 		hoverSoundVolume = screen.getStyle("Button").getFloat("hoverSoundVolume");
@@ -146,8 +148,8 @@ public abstract class Button extends Element implements Control, MouseButtonList
 				effect.setBlendImage(getElementTexture());
 				screen.getEffectManager().applyEffect(effect);
 			}
-			if (fontColor != null) {
-				setFontColor(fontColor);
+			if (originalFontColor != null) {
+				setFontColor(originalFontColor);
 			}
 		}
 	}
@@ -224,8 +226,8 @@ public abstract class Button extends Element implements Control, MouseButtonList
 				effect.setBlendImage(getElementTexture());
 				screen.getEffectManager().applyEffect(effect);
 			}
-			if (fontColor != null) {
-				setFontColor(fontColor);
+			if (originalFontColor != null) {
+				setFontColor(originalFontColor);
 			}
 		}
 		
@@ -396,6 +398,9 @@ public abstract class Button extends Element implements Control, MouseButtonList
 						effect.setBlendImage(getElementTexture());
 						screen.getEffectManager().applyEffect(effect);
 					}
+					if (originalFontColor != null) {
+						setFontColor(originalFontColor);
+					}
 				}
 			} else {
 				if (!isToggled) {
@@ -495,7 +500,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 						effect.setBlendImage(getElementTexture());
 						screen.getEffectManager().applyEffect(effect);
 					}
-					setFontColor(getFontColor());
+					setFontColor(originalFontColor);
 				}
 				screen.setCursor(Screen.CursorType.POINTER);
 				onButtonLostFocus(evt);
