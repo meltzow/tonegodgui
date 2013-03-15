@@ -328,10 +328,7 @@ public class Element extends Node {
 	 * Remove all child Elements from this Element
 	 */
 	public void removeAllChildren() {
-		Set<String> keys = elementChildren.keySet();
-		Element e;
-		for (String key : keys) {
-			e = elementChildren.get(key);
+		for (Element e : elementChildren.values()) {
 			e.removeFromParent();
 		}
 		elementChildren.clear();
@@ -355,9 +352,8 @@ public class Element extends Node {
 				screen.getZOrderStepMinor()
 			));
 		
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			elementChildren.get(key).initZOrder(screen.getZOrderStepMinor());
+		for (Element el : elementChildren.values()) {
+			el.initZOrder(screen.getZOrderStepMinor());
 		}
 	}
 	
@@ -384,9 +380,7 @@ public class Element extends Node {
 	 */
 	public List<Element> getDraggableChildren() {
 		List<Element> ret = new ArrayList();
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			Element el = elementChildren.get(key);
+		for (Element el : elementChildren.values()) {
 			if (el instanceof DragElement) {
 				ret.add(el);
 			}
@@ -408,9 +402,8 @@ public class Element extends Node {
 			if (elementChildren.containsKey(UID)) {
 				ret = elementChildren.get(UID);
 			} else {
-				Set<String> keys = elementChildren.keySet();
-				for (String key : keys) {
-					ret = elementChildren.get(key).getChildElementById(UID);
+				for (Element el : elementChildren.values()) {
+					ret = el.getChildElementById(UID);
 					if (ret != null) {
 						break;
 					}
@@ -1018,9 +1011,8 @@ public class Element extends Node {
 		else
 			setY(screen.getHeight()-getHeight()-getY());
 		
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			elementChildren.get(key).validateLayout();
+		for (Element el : elementChildren.values()) {
+			el.validateLayout();
 		}
 	}
 	
@@ -1147,10 +1139,9 @@ public class Element extends Node {
 		float diffX = prevWidth-getWidth();
 		float diffY = prevHeight-getHeight();
 		controlResizeHook();
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			elementChildren.get(key).childResize(diffX,diffY,dir);
-			elementChildren.get(key).controlResizeHook();
+		for (Element el : elementChildren.values()) {
+			el.childResize(diffX,diffY,dir);
+			el.controlResizeHook();
 		}
 	}
 	/*
@@ -1211,10 +1202,9 @@ public class Element extends Node {
 			if (getScaleEW()) setWidth(getWidth()-diffX);
 			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
 		}
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			elementChildren.get(key).childResize(diffX,diffY,dir);
-			elementChildren.get(key).controlResizeHook();
+		for (Element el : elementChildren.values()) {
+			el.childResize(diffX,diffY,dir);
+			el.controlResizeHook();
 		}
 	}
 	
@@ -1656,9 +1646,8 @@ public class Element extends Node {
 				}
 			}
 			
-			Set<String> keys = elementChildren.keySet();
-			for (String key : keys) {
-				elementChildren.get(key).childShow();
+			for (Element el : elementChildren.values()) {
+				el.childShow();
 			}
 		}
 	}
@@ -1673,9 +1662,8 @@ public class Element extends Node {
 		this.isClipped = wasClipped;
 		updateClipping();
 		controlShowHook();
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			elementChildren.get(key).childShow();
+		for (Element el : elementChildren.values()) {
+			el.childShow();
 		}
 	}
 	
@@ -1712,9 +1700,8 @@ public class Element extends Node {
 		updateClipping();
 		controlHideHook();
 		removeFromParent();
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			elementChildren.get(key).childHide();
+		for (Element el : elementChildren.values()) {
+			el.childHide();
 		}
 	}
 	
@@ -1726,9 +1713,8 @@ public class Element extends Node {
 		}
 		updateClipping();
 		controlHideHook();
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			elementChildren.get(key).childHide();
+		for (Element el : elementChildren.values()) {
+			el.childHide();
 		}
 	}
 	
@@ -1747,9 +1733,8 @@ public class Element extends Node {
 		nEffect.setCallHide(callHide);
 		nEffect.setElement(this);
 		screen.getEffectManager().applyEffect(nEffect);
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			elementChildren.get(key).propagateEffect(effect, false);
+		for (Element el : elementChildren.values()) {
+			el.propagateEffect(effect, false);
 		}
 	}
 	
@@ -1786,9 +1771,8 @@ public class Element extends Node {
 	 */
 	public void setControlClippingLayer(Element clippingLayer) {
 		setClippingLayer(clippingLayer);
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			elementChildren.get(key).setControlClippingLayer(clippingLayer);
+		for (Element el : elementChildren.values()) {
+			el.setControlClippingLayer(clippingLayer);
 		}
 	}
 	
@@ -1841,9 +1825,8 @@ public class Element extends Node {
 	 */
 	public void updateClipping() {
 		updateLocalClipping();
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			elementChildren.get(key).updateClipping();
+		for (Element el : elementChildren.values()) {
+			el.updateClipping();
 		}
 	}
 	
@@ -1977,9 +1960,8 @@ public class Element extends Node {
 	public void setGlobalAlpha(float globalAlpha) {
 		if (!ignoreGlobalAlpha) {
 			getElementMaterial().setFloat("GlobalAlpha", globalAlpha);
-			Set<String> keys = elementChildren.keySet();
-			for (String key : keys) {
-				elementChildren.get(key).setGlobalAlpha(globalAlpha);
+			for (Element el : elementChildren.values()) {
+				el.setGlobalAlpha(globalAlpha);
 			}
 		} else {
 			getElementMaterial().setFloat("GlobalAlpha", 1);

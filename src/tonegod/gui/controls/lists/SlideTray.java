@@ -267,10 +267,10 @@ public class SlideTray extends Element {
 	@Override
 	public void setControlClippingLayer(Element clippingLayer) {
 		setClippingLayer(clippingLayer);
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			if (!trayElements.contains(elementChildren.get(key)))
-				elementChildren.get(key).setControlClippingLayer(clippingLayer);
+	//	Set<String> keys = elementChildren.keySet();
+		for (Element el : elementChildren.values()) {
+			if (!trayElements.contains(el))
+				el.setControlClippingLayer(clippingLayer);
 		}
 	}
 }

@@ -271,11 +271,10 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	public void removeElement(Element element) {
 		elements.remove(element.getUID());
 		float shiftZ = element.getLocalTranslation().getZ();
-		Set<String> keys = elements.keySet();
-		for (String key : keys) {
-			if (!(elements.get(key) instanceof ToolTip)) {
-				if (elements.get(key).getLocalTranslation().getZ() > shiftZ) {
-					elements.get(key).move(0,0,-zOrderStepMajor);
+		for (Element el : elements.values()) {
+			if (!(el instanceof ToolTip)) {
+				if (el.getLocalTranslation().getZ() > shiftZ) {
+					el.move(0,0,-zOrderStepMajor);
 				}
 			}
 		}
@@ -293,9 +292,8 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		if (elements.containsKey(UID)) {
 			ret = elements.get(UID);
 		} else {
-			Set<String> keys = elements.keySet();
-			for (String key : keys) {
-				ret = elements.get(key).getChildElementById(UID);
+			for (Element el : elements.values()) {
+				ret = el.getChildElementById(UID);
 				if (ret != null) {
 					break;
 				}
@@ -337,9 +335,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		String topMostUID = topMost.getUID();
 		float shiftZ = topMost.getLocalTranslation().getZ();
 		
-		Set<String> keys = elements.keySet();
-		for (String key : keys) {
-			Element el = elements.get(key);
+		for (Element el : elements.values()) {
 			if (topMost.getIsGlobalModal()) {
 				
 			} else if (topMost.getIsModal()) {
@@ -1219,9 +1215,8 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	 */
 	public void setGlobalAlpha(float globalAlpha) {
 		this.globalAlpha = globalAlpha;
-		Set<String> keys = elements.keySet();
-		for (String key : keys) {
-			elements.get(key).setGlobalAlpha(globalAlpha);
+		for (Element el : elements.values()) {
+			el.setGlobalAlpha(globalAlpha);
 		}
 	}
 	
@@ -1236,32 +1231,28 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	// Menu handling
 	private void handleMenuState() {
 		if (eventElement == null) {
-			Set<String> keys = elements.keySet();
-			for (String key :keys) {
-				if (elements.get(key) instanceof Menu) {
-					elements.get(key).hide();
+			for (Element el : elements.values()) {
+				if (el instanceof Menu) {
+					el.hide();
 				}
 			}
 		} else {
 			if (!(eventElement.getAbsoluteParent() instanceof Menu) && !(eventElement.getParent() instanceof ComboBox)) {
-				Set<String> keys = elements.keySet();
-				for (String key :keys) {
-					if (elements.get(key) instanceof Menu) {
-						elements.get(key).hide();
+				for (Element el : elements.values()) {
+					if (el instanceof Menu) {
+						el.hide();
 					}
 				}
 			} else if (eventElement.getAbsoluteParent() instanceof Menu) {
-				Set<String> keys = elements.keySet();
-				for (String key :keys) {
-					if (elements.get(key) instanceof Menu && elements.get(key) != eventElement.getAbsoluteParent()) {
-						elements.get(key).hide();
+				for (Element el : elements.values()) {
+					if (el instanceof Menu && el != eventElement.getAbsoluteParent()) {
+						el.hide();
 					}
 				}
 			} else if (eventElement.getParent() instanceof ComboBox) {
-				Set<String> keys = elements.keySet();
-				for (String key :keys) {
-					if (elements.get(key) instanceof Menu && elements.get(key) != ((ComboBox)eventElement.getParent()).getMenu()) {
-						elements.get(key).hide();
+				for (Element el : elements.values()) {
+					if (el instanceof Menu && el != ((ComboBox)eventElement.getParent()).getMenu()) {
+						el.hide();
 					}
 				}
 			}

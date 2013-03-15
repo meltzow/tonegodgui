@@ -228,9 +228,9 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	@Override
 	public void setControlClippingLayer(Element clippingLayer) {
 	//	setClippingLayer(clippingLayer);
-		Set<String> keys = elementChildren.keySet();
-		for (String key : keys) {
-			elementChildren.get(key).setControlClippingLayer(clippingLayer);
+	//	Set<String> keys = elementChildren.keySet();
+		for (Element el : elementChildren.values()) {
+			el.setControlClippingLayer(clippingLayer);
 		}
 	}
 	

@@ -122,9 +122,9 @@ public class ScrollAreaAdapter extends ScrollArea {
 		float nWidth = 0;
 		float nHeight = 0;
 		
-		Set<String> keys = childInfo.keySet();
-		for (String key : keys) {
-			ChildInfo el = childInfo.get(key);
+	//	Set<String> keys = childInfo.keySet();
+		for (ChildInfo el : childInfo.values()) {
+		//	ChildInfo el = childInfo.get(key);
 			float w = el.x+el.w;
 			float h = el.y+el.h;
 			nWidth = (w > nWidth) ? w : nWidth;
