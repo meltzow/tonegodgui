@@ -31,7 +31,7 @@ import tonegod.gui.listeners.TabFocusListener;
  *
  * @author t0neg0d
  */
-public class SelectList extends ScrollArea implements MouseMovementListener, MouseWheelListener, MouseButtonListener, TabFocusListener, KeyboardListener {
+public abstract class SelectList extends ScrollArea implements MouseMovementListener, MouseWheelListener, MouseButtonListener, TabFocusListener, KeyboardListener {
 	List<ListItem> listItems = new ArrayList();
 	List<Integer> selectedIndexes = new ArrayList();
 	List<Element> highlights = new ArrayList();
@@ -236,9 +236,10 @@ public class SelectList extends ScrollArea implements MouseMovementListener, Mou
 	 * @param index int
 	 */
 	public void setSelectedIndex(Integer index) {
-		selectedIndexes.clear();
+		selectedIndexes = new ArrayList();
 		selectedIndexes.add(index);
 		displayHighlights();
+		onChange();
 	}
 	
 	/**
@@ -251,6 +252,7 @@ public class SelectList extends ScrollArea implements MouseMovementListener, Mou
 				selectedIndexes.add(indexes[i]);
 		}
 		displayHighlights();
+		onChange();
 	}
 	
 	/**
@@ -261,6 +263,7 @@ public class SelectList extends ScrollArea implements MouseMovementListener, Mou
 		if (!selectedIndexes.contains(index))
 			selectedIndexes.add(index);
 		displayHighlights();
+		onChange();
 	}
 	
 	/**
@@ -270,6 +273,7 @@ public class SelectList extends ScrollArea implements MouseMovementListener, Mou
 	public void removeSelectedIndex(Integer index) {
 		selectedIndexes.remove(index);
 		displayHighlights();
+		onChange();
 	}
 	
 	/**
@@ -442,14 +446,10 @@ public class SelectList extends ScrollArea implements MouseMovementListener, Mou
 				setSelectedIndex(currentListItemIndex);
 			}
 		} else {
-			setSelectedIndex(currentListItemIndex);
-		}
-		System.out.println("Current selected items:");
-		int count = 0;
-		for (ListItem li : listItems) {
-			if (selectedIndexes.contains(count))
-				System.out.println(li.getCaption());
-			count++;
+			if (currentListItemIndex >= 0 && currentListItemIndex < listItems.size())
+				setSelectedIndex(currentListItemIndex);
+			else
+				selectedIndexes = new ArrayList();
 		}
 		evt.setConsumed();
 	}
@@ -491,6 +491,8 @@ public class SelectList extends ScrollArea implements MouseMovementListener, Mou
 	public void resetTabFocus() {
 		screen.setKeyboardElemeent(null);
 	}
+	
+	public abstract void onChange();
 	
 	public class ListItem {
 		SelectList owner;
