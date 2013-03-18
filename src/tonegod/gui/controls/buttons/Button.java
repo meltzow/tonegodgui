@@ -263,9 +263,13 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			this.hoverImg.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
 			this.hoverImg.setMagFilter(Texture.MagFilter.Nearest);
 			this.hoverImg.setWrap(Texture.WrapMode.Repeat);
+		} else {
+			this.hoverImg = null;
 		}
 		if (hoverFontColor != null) {
 			this.hoverFontColor = hoverFontColor;
+		} else {
+			this.hoverFontColor = null;
 		}
 	}
 	
@@ -289,9 +293,13 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			this.pressedImg.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
 			this.pressedImg.setMagFilter(Texture.MagFilter.Nearest);
 			this.pressedImg.setWrap(Texture.WrapMode.Repeat);
+		} else {
+			this.pressedImg = null;
 		}
 		if (pressedFontColor != null) {
 			this.pressedFontColor = pressedFontColor;
+		} else {
+			this.pressedFontColor = null;
 		}
 	}
 	
