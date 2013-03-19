@@ -15,6 +15,7 @@ import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
 import com.jme3.font.Rectangle;
 import com.jme3.font.plugins.BitmapFontLoader;
+import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.RawInputListener;
 import com.jme3.input.event.JoyAxisEvent;
@@ -191,6 +192,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		parseStyles(styleMap);
 		
 		effectManager = new EffectManager(this);
+		app.getInputManager().addRawInputListener(this);
 	}
 	
 	/**
@@ -223,10 +225,10 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	 * Initializes the Screen control
 	 */
 	public void initialize() {
-		app.getInputManager().addRawInputListener(this);
+	//	app.getInputManager().addRawInputListener(this);
 		
-		if (getUseCustomCursors())
-			setCursor(CursorType.POINTER);
+	//	if (getUseCustomCursors())
+	//		setCursor(CursorType.POINTER);
 	}
 	
 	@Override
@@ -1155,9 +1157,9 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	public void setUseCustomCursors(boolean useCustomCursors) {
 		this.useCustomCursors = useCustomCursors;
 		if (!useCustomCursors) {
-			try {
-				getApplication().getInputManager().setMouseCursor(null);
-			} catch (Exception ex) {  }
+			getApplication().getInputManager().setMouseCursor(null);
+		} else {
+			setCursor(CursorType.POINTER);
 		}
 	}
 	
