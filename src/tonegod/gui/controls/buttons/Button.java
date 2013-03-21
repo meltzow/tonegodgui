@@ -53,6 +53,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	protected boolean isRadioButton = false;
 	private boolean isEnabled = true;
 	private ColorRGBA originalFontColor;
+	private boolean cancelMouseUpAction = false;
 	
 	/**
 	 * Creates a new instance of the Button control
@@ -347,6 +348,11 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		this.addChild(icon);
 	}
 	
+	public void setCancelMouseUpAction() {
+		cancelMouseUpAction = true;
+		if (isToggleButton) isToggled = !isToggled;
+	}
+	
 	@Override
 	public void onMouseLeftPressed(MouseButtonEvent evt) {
 		if (isEnabled) {
@@ -381,60 +387,64 @@ public abstract class Button extends Element implements Control, MouseButtonList
 
 	@Override
 	public void onMouseLeftReleased(MouseButtonEvent evt) {
-		if (isEnabled) {
-			if (!isToggleButton) {
-				if (getHasFocus()) {
-					Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
-					if (effect != null) {
-						effect.setBlendImage(getElementTexture());
-						screen.getEffectManager().applyEffect(effect);
-					}
-					if (hoverImg != null) {
-					//	screen.getEffectManager().removeEffect(this);
-						Effect effect2 = getEffect(Effect.EffectEvent.Hover);
-						if (effect2 != null) {
-							effect2.setBlendImage(hoverImg);
-							screen.getEffectManager().applyEffect(effect2);
-						}
-					}
-					if (hoverFontColor != null) {
-						setFontColor(hoverFontColor);
-					}
-				} else {
-					Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
-					if (effect != null) {
-						effect.setBlendImage(getElementTexture());
-						screen.getEffectManager().applyEffect(effect);
-					}
-					if (originalFontColor != null) {
-						setFontColor(originalFontColor);
-					}
-				}
-			} else {
-				if (!isToggled) {
-					if (hoverImg != null) {
+		if (!cancelMouseUpAction) {
+			if (isEnabled) {
+				if (!isToggleButton) {
+					if (getHasFocus()) {
 						Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
 						if (effect != null) {
 							effect.setBlendImage(getElementTexture());
 							screen.getEffectManager().applyEffect(effect);
 						}
-						Effect effect2 = getEffect(Effect.EffectEvent.Hover);
-						if (effect2 != null) {
-							effect2.setBlendImage(hoverImg);
-							screen.getEffectManager().applyEffect(effect2);
+						if (hoverImg != null) {
+						//	screen.getEffectManager().removeEffect(this);
+							Effect effect2 = getEffect(Effect.EffectEvent.Hover);
+							if (effect2 != null) {
+								effect2.setBlendImage(hoverImg);
+								screen.getEffectManager().applyEffect(effect2);
+							}
+						}
+						if (hoverFontColor != null) {
+							setFontColor(hoverFontColor);
+						}
+					} else {
+						Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
+						if (effect != null) {
+							effect.setBlendImage(getElementTexture());
+							screen.getEffectManager().applyEffect(effect);
+						}
+						if (originalFontColor != null) {
+							setFontColor(originalFontColor);
 						}
 					}
-					if (hoverFontColor != null) {
-						setFontColor(hoverFontColor);
+				} else {
+					if (!isToggled) {
+						if (hoverImg != null) {
+							Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
+							if (effect != null) {
+								effect.setBlendImage(getElementTexture());
+								screen.getEffectManager().applyEffect(effect);
+							}
+							Effect effect2 = getEffect(Effect.EffectEvent.Hover);
+							if (effect2 != null) {
+								effect2.setBlendImage(hoverImg);
+								screen.getEffectManager().applyEffect(effect2);
+							}
+						}
+						if (hoverFontColor != null) {
+							setFontColor(hoverFontColor);
+						}
 					}
 				}
+				isStillPressed = false;
+				initClickPause = false;
+				currentInitClickTrack = 0;
+				onButtonMouseLeftUp(evt, isToggled);
+				if (radioButtonGroup != null)
+					radioButtonGroup.setSelected(this);
 			}
-			isStillPressed = false;
-			initClickPause = false;
-			currentInitClickTrack = 0;
-			onButtonMouseLeftUp(evt, isToggled);
-			if (radioButtonGroup != null)
-				radioButtonGroup.setSelected(this);
+		} else {
+			cancelMouseUpAction = false;
 		}
 		evt.setConsumed();
 	}
@@ -460,8 +470,12 @@ public abstract class Button extends Element implements Control, MouseButtonList
 
 	@Override
 	public void onMouseRightReleased(MouseButtonEvent evt) {
-		if (isEnabled) {
-			onButtonMouseRightUp(evt, isToggled);
+		if (!cancelMouseUpAction) {
+			if (isEnabled) {
+				onButtonMouseRightUp(evt, isToggled);
+			}
+		} else {
+			cancelMouseUpAction = false;
 		}
 		evt.setConsumed();
 	}
