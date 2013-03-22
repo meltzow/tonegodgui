@@ -71,7 +71,7 @@ public abstract class RadioButtonGroup {
 	 * Sets the current selected Radio Button to the Button instance provided
 	 * @param button 
 	 */
-	protected void setSelected(Button button) {
+	public void setSelected(Button button) {
 		if (this.selected != button) {
 			this.selected = button;
 			this.selectedIndex = radioButtons.indexOf(button);

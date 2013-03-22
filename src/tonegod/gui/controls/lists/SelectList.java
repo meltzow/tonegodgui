@@ -351,14 +351,14 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 			}
 			if (selectedIndexes.contains(index)) {
 				Element highlight = createHighlight(index);
-				highlight.setX(listPadding);
+				highlight.setX(0);
 			//	highlight.setY(listPadding);
-				highlight.setWidth( ((getWidth() > width) ? getWidth() : width)-(listPadding*2) );
+				highlight.setWidth( getWidth()-(listPadding*2) );
 				highlight.setHeight(listItemHeight);
 				highlight.getElementMaterial().setColor("Color", highlightColor);
 				highlight.setClippingLayer(this);
 				highlight.setClipPadding(listPadding);
-				highlight.setY(scrollableArea.getHeight()-((listItems.size()-index)*listItemHeight));
+				highlight.setY(scrollableArea.getHeight()-((listItems.size()-index)*listItemHeight)+listPadding);
 				scrollableArea.addChild(highlight);
 			}
 			currentHeight += listItemHeight;
@@ -387,9 +387,9 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 		for (ListItem mi : listItems) {
 			if (selectedIndexes.contains(index)) {
 				Element highlight = createHighlight(index);
-				highlight.setX(listPadding);
+				highlight.setX(0);
 			//	highlight.setY(listPadding);
-				highlight.setWidth( getWidth() );
+				highlight.setWidth( getWidth()-(listPadding*2) );
 				highlight.setHeight(listItemHeight);
 				highlight.getElementMaterial().setColor("Color", highlightColor);
 				highlight.setClippingLayer(this);
@@ -407,7 +407,7 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 			screen,
 			getUID() + ":Highlight" + index,
 			new Vector2f(0,0),
-			new Vector2f(10,10),
+			new Vector2f(listPadding,listPadding),
 			new Vector4f(1,1,1,1),
 			null
 		);

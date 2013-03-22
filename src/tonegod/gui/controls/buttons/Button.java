@@ -34,9 +34,9 @@ import tonegod.gui.listeners.TabFocusListener;
  * @author t0neg0d
  */
 public abstract class Button extends Element implements Control, MouseButtonListener, MouseFocusListener, KeyboardListener, TabFocusListener {
-	String hoverSound, pressedSound;
-	boolean useHoverSound, usePressedSound;
-	float hoverSoundVolume, pressedSoundVolume;
+	protected String hoverSound, pressedSound;
+	protected boolean useHoverSound, usePressedSound;
+	protected float hoverSoundVolume, pressedSoundVolume;
 	protected Element icon;
 	protected Texture hoverImg = null, pressedImg = null;
 	protected ColorRGBA hoverFontColor = null, pressedFontColor = null;
