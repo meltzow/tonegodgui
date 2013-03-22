@@ -231,6 +231,12 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 		}
 	}
 	
+	public void removeAllListItems() {
+		this.listItems = new ArrayList();
+		this.selectedIndexes = new ArrayList();
+		pack();
+	}
+	
 	/**
 	 * Sets the current selected index for single select SelectLists
 	 * @param index int
