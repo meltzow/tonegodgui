@@ -321,6 +321,10 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 		return ret;
 	}
 	
+	public List<ListItem> getListItems() {
+		return this.listItems;
+	}
+		
 	/**
 	 * Forces the SelectList to rebuild all ListItems.  This does not need to be called, however it will not effect anything negatively if it is.
 	 */
