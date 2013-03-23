@@ -123,6 +123,7 @@ public class Element extends Node {
 	private ElementQuadGrid model;
 	private Material mat;
 	private Texture defaultTex;
+	private boolean useLocalAtlas = false;
 	private Texture alphaMap = null;
 	
 	protected BitmapText textElement;
@@ -276,6 +277,32 @@ public class Element extends Node {
 			Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The provided texture information does not conform to the expected standard of ?x=(int)&y=(int)&w=(int)&h=(int)", ex);
 		}
 	}
+	
+	public void setTextureAtlasImage(Texture tex, String queryString) {
+		this.defaultTex = tex;
+		mat.setTexture("ColorMap", tex);
+		mat.setBoolean("UseEffectTexCoords", true);
+		
+		this.useLocalAtlas = true;
+		
+		float[] coords = screen.parseAtlasCoords(queryString);
+		float textureAtlasX = coords[0];
+		float textureAtlasY = coords[1];
+		float textureAtlasW = coords[2];
+		float textureAtlasH = coords[3];
+
+		float imgWidth = defaultTex.getImage().getWidth();
+		float imgHeight = defaultTex.getImage().getHeight();
+		float pixelWidth = 1f/imgWidth;
+		float pixelHeight = 1f/imgHeight;
+
+		textureAtlasY = imgHeight-textureAtlasY-textureAtlasH;
+		
+		this.model = new ElementQuadGrid(this.dimensions, borders, imgWidth, imgHeight, pixelWidth, pixelHeight, textureAtlasX, textureAtlasY, textureAtlasW, textureAtlasH);
+		geom.setMesh(model);
+	}
+	
+	public boolean getUseLocalAtlas() { return this.useLocalAtlas; }
 	
 	public Vector2f getAtlasTextureOffset(float[] coords) {
 		Texture tex;
@@ -1597,7 +1624,8 @@ public class Element extends Node {
 	public void setAlphaMap(String alphaMap) {
 		Texture alpha = null;
 		if (screen.getUseTextureAtlas()) {
-			alpha = screen.getAtlasTexture();
+			if (this.getElementTexture() != null)	alpha = getElementTexture();
+			else									alpha = screen.getAtlasTexture();
 			Vector2f alphaOffset = getAtlasTextureOffset(screen.parseAtlasCoords(alphaMap));
 			mat.setVector2("OffsetAlphaTexCoord", alphaOffset);
 		} else {

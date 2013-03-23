@@ -239,13 +239,13 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 */
 	public final void setButtonHoverInfo(String pathHoverImg, ColorRGBA hoverFontColor) {
 		if (pathHoverImg != null) {
-			if (!screen.getUseTextureAtlas()) {
+			if (!screen.getUseTextureAtlas() && !getUseLocalAtlas()) {
 				this.hoverImg = app.getAssetManager().loadTexture(pathHoverImg);
 				this.hoverImg.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
 				this.hoverImg.setMagFilter(Texture.MagFilter.Nearest);
 				this.hoverImg.setWrap(Texture.WrapMode.Repeat);
 			} else {
-				this.hoverImg = screen.getAtlasTexture();
+				this.hoverImg = this.getElementTexture();//screen.getAtlasTexture();
 				hoverImgOffset = getAtlasTextureOffset(screen.parseAtlasCoords(pathHoverImg));
 			}
 		} else {
@@ -276,7 +276,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 					effect.setAudioVolume(hoverSoundVolume);
 				}
 				effect.setBlendImage(hoverImg);
-				if (screen.getUseTextureAtlas()) effect.setBlendImageOffset(hoverImgOffset);
+				if (screen.getUseTextureAtlas() || getUseLocalAtlas()) effect.setBlendImageOffset(hoverImgOffset);
 				screen.getEffectManager().applyEffect(effect);
 			}
 		}
@@ -292,13 +292,13 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 */
 	public final void setButtonPressedInfo(String pathPressedImg, ColorRGBA pressedFontColor) {
 		if (pathPressedImg != null) {
-			if (!screen.getUseTextureAtlas()) {
+			if (!screen.getUseTextureAtlas() && !getUseLocalAtlas()) {
 				this.pressedImg = app.getAssetManager().loadTexture(pathPressedImg);
 				this.pressedImg.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
 				this.pressedImg.setMagFilter(Texture.MagFilter.Nearest);
 				this.pressedImg.setWrap(Texture.WrapMode.Repeat);
 			} else {
-				this.pressedImg = screen.getAtlasTexture();
+				this.pressedImg = this.getElementTexture();//screen.getAtlasTexture();
 				pressedImgOffset = getAtlasTextureOffset(screen.parseAtlasCoords(pathPressedImg));
 			}
 		} else {
@@ -329,7 +329,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 					effect.setAudioVolume(pressedSoundVolume);
 				}
 				effect.setBlendImage(pressedImg);
-				if (screen.getUseTextureAtlas()) effect.setBlendImageOffset(pressedImgOffset);
+				if (screen.getUseTextureAtlas() || getUseLocalAtlas()) effect.setBlendImageOffset(pressedImgOffset);
 				screen.getEffectManager().applyEffect(effect);
 			}
 		}
@@ -342,7 +342,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
 		if (effect != null) {
 			effect.setBlendImage(getElementTexture());
-			if (screen.getUseTextureAtlas()) effect.setBlendImageOffset(new Vector2f(0,0));
+			if (screen.getUseTextureAtlas() || getUseLocalAtlas()) effect.setBlendImageOffset(new Vector2f(0,0));
 			screen.getEffectManager().applyEffect(effect);
 		}
 		if (originalFontColor != null) {
@@ -354,7 +354,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		Effect effect = getEffect(Effect.EffectEvent.Press);
 		if (effect != null) {
 				effect.setBlendImage(getElementTexture());
-				if (screen.getUseTextureAtlas()) effect.setBlendImageOffset(new Vector2f(0,0));
+				if (screen.getUseTextureAtlas() || getUseLocalAtlas()) effect.setBlendImageOffset(new Vector2f(0,0));
 				screen.getEffectManager().applyEffect(effect);
 		}
 		if (originalFontColor != null) {
@@ -395,6 +395,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		icon.setScaleEW(false);
 		icon.setScaleNS(false);
 		this.addChild(icon);
+	}
+	
+	public Element getButtonIcon() {
+		return this.icon;
 	}
 	
 	@Override
