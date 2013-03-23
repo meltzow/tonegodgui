@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="Dial">
+		<font></font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="minSize" type="Vector2f">
+				<x value="50" />
+				<y value="50" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="50" />
+				<y value="50" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="x=200|y=100|w=200|h=200" />
+			<property name="radialImg" type="String" value="x=0|y=100|w=200|h=200" />
+		</images>
+		<effects></effects>
+	</element>
+</root>
