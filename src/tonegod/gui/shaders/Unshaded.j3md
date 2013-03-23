@@ -3,11 +3,14 @@ MaterialDef Unshaded {
     MaterialParameters {
 		Texture2D EffectMap
 		Color EffectColor
+		Boolean UseEffectTexCoords : false
+		Vector2 OffsetTexCoord
 		Boolean UseEffect : false
 		Boolean EffectPulse : false
 		Boolean EffectPulseColor : false
 		Boolean EffectFade : false
 		Boolean EffectSaturate : false
+		Boolean EffectImageSwap : false
 		Float EffectStep
 		Float GlobalAlpha : 1.0
 		Texture2D ColorMap
@@ -24,6 +27,7 @@ MaterialDef Unshaded {
 		Float TextRangeStart : 0.0
 		Float TextRangeEnd : 0.0
 		Texture2D AlphaMap
+		Vector2 OffsetAlphaTexCoord
     }
 
     Technique {
