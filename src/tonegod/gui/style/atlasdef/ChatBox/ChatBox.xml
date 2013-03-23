@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="ChatBox">
+		<font></font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="14" />
+				<y value="14" />
+				<z value="14" />
+				<w value="14" />
+			</property>
+			<property name="minSize" type="Vector2f">
+				<x value="150" />
+				<y value="50" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="350" />
+				<y value="200" />
+			</property>
+			<property name="contentPadding" type="float" value="6" />
+		</attributes>
+		<images></images>
+		<effects></effects>
+	</element>
+</root>
