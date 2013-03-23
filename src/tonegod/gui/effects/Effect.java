@@ -62,6 +62,7 @@ public class Effect implements Cloneable {
 	private boolean isActive = true;
 	private boolean localActive = true;
 	private Texture blendImage;
+	private Vector2f blendImageOffset;
 	private ColorRGBA blendColor;
 	private boolean init = false;
 	private boolean destroyOnHide = false;
@@ -94,6 +95,10 @@ public class Effect implements Cloneable {
 	
 	public void setBlendImage(Texture blendImage) {
 		this.blendImage = blendImage;
+	}
+	
+	public void setBlendImageOffset(Vector2f blendImageOffset) {
+		this.blendImageOffset = blendImageOffset;
 	}
 	
 	public void setColor(ColorRGBA blendColor) {
@@ -230,7 +235,10 @@ public class Effect implements Cloneable {
 						element.getElementMaterial().setBoolean("EffectFade", false);
 						element.getElementMaterial().setBoolean("EffectPulse", true);
 						element.getElementMaterial().setBoolean("EffectPulseColor", false);
+						element.getElementMaterial().setBoolean("EffectImageSwap", false);
 						element.getElementMaterial().setTexture("EffectMap", blendImage);
+						if (element.getScreen().getUseTextureAtlas())
+							element.getElementMaterial().setVector2("OffsetTexCoord", blendImageOffset);
 						init = true;
 					}
 					element.getElementMaterial().setFloat("EffectStep", pass);
@@ -249,6 +257,7 @@ public class Effect implements Cloneable {
 						element.getElementMaterial().setBoolean("EffectFade", false);
 						element.getElementMaterial().setBoolean("EffectPulse", false);
 						element.getElementMaterial().setBoolean("EffectPulseColor", true);
+						element.getElementMaterial().setBoolean("EffectImageSwap", false);
 						element.getElementMaterial().setColor("EffectColor", blendColor);
 						init = true;
 					}
@@ -419,6 +428,8 @@ public class Effect implements Cloneable {
 		element.getElementMaterial().setBoolean("EffectPulse", false);
 		element.getElementMaterial().setBoolean("EffectPulseColor", false);
 		element.getElementMaterial().setBoolean("EffectSaturate", false);
+		element.getElementMaterial().setBoolean("EffectImageSwap", false);
+	//	element.getElementMaterial().setBoolean("UseEffectTexCoords", false);
 	}
 	
 	private void initFades() {
@@ -512,6 +523,10 @@ public class Effect implements Cloneable {
 			disableShaderEffect();
 			element.getElementMaterial().setTexture("ColorMap", blendImage);
 			element.getElementMaterial().setFloat("EffectStep", 1.0f);
+		//	element.getElementMaterial().setBoolean("UseEffectTexCoords", true);
+			element.getElementMaterial().setBoolean("EffectImageSwap", true);
+			if (element.getScreen().getUseTextureAtlas())
+				element.getElementMaterial().setVector2("OffsetTexCoord", blendImageOffset);
 			init = true;
 			isActive = false;
 		}
@@ -557,9 +572,6 @@ public class Effect implements Cloneable {
             element.getElementMaterial().setFloat("EffectStep", Math.max(0,1-pass));
         }
     }
-
-
-	
 	
 	@Override
 	public String toString() {
