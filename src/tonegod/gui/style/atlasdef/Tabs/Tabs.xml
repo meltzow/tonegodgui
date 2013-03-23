@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="Tab">
+		<font>
+			<property name="fontSize" type="float" value="20" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+			<property name="textPadding" type="float" value="8" />
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="12" />
+				<y value="12" />
+				<z value="12" />
+				<w value="12" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="100" />
+				<y value="40" />
+			</property>
+			<property name="pressedSound" type="String" value="button_pressed" />
+			<property name="usePressedSound" type="boolean" value="true" />
+			<property name="pressedSoundVolume" type="float" value="1" />
+			<property name="hoverSound" type="String" value="button_focus" />
+			<property name="useHoverSound" type="boolean" value="true" />
+			<property name="hoverSoundVolume" type="float" value=".5" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="x=0|y=0|w=78|h=78" />
+			<property name="hoverImg" type="String" value="x=397|y=0|w=78|h=78" />
+			<property name="pressedImg" type="String" value="x=397|y=0|w=78|h=78" />
+		</images>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Hover" />
+				<effect value="Pulse" />
+				<speed value=".15" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Press" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event2" type="Effect">
+				<event value="LoseFocus" />
+				<effect value="ImageSwap" />
+				<speed value="0" />
+			</property>
+			<property name="event3" type="Effect">
+				<event value="TabFocus" />
+				<effect value="PulseColor" />
+				<speed value=".15" />
+			</property>
+			<property name="event4" type="Effect">
+				<event value="LoseTabFocus" />
+				<effect value="ColorSwap" />
+				<speed value="0" />
+			</property>
+		</effects>
+	</element>
+</root>
