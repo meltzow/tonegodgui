@@ -15,6 +15,8 @@ uniform bool m_EffectFade;
 uniform bool m_EffectPulse;
 uniform bool m_EffectPulseColor;
 uniform bool m_EffectSaturate;
+uniform bool m_EffectImageSwap;
+uniform bool m_UseEffectTexCoords;
 uniform float m_EffectStep;
 uniform float m_GlobalAlpha;
 
@@ -33,6 +35,8 @@ uniform vec4 m_Color;
 uniform sampler2D m_ColorMap;
 
 varying vec2 texCoord1;
+varying vec2 texCoord2;
+varying vec2 alphaTexCoord;
 
 varying vec4 vertColor;
 
@@ -51,15 +55,15 @@ void main(){
 	vec4 color = vec4(1.0);
 	
 	#ifdef HAS_COLORMAP
-        color *= texture2D(m_ColorMap, texCoord1);
+		if (m_EffectImageSwap) {
+			color *= texture2D(m_ColorMap, texCoord2);
+		} else {
+			color *= texture2D(m_ColorMap, texCoord1);
+		}
 		
 		if (m_UseEffect) {
 			if (m_EffectPulse) {
-			//	vec4 mixColor;
-			//	mixColor = texture2D(m_EffectMap, texCoord1);
-			//	color.rgb = altMix(color.rgb, mixColor.rgb, m_EffectStep);
-			//	color.rgb = color.rgb * vec3(1.0-m_EffectStep) + mixColor.rgb * vec3(m_EffectStep);
-				color = mix(color, texture2D(m_EffectMap, texCoord1), m_EffectStep);
+				color = mix(color, texture2D(m_EffectMap, texCoord2), m_EffectStep);
 			} else if (m_EffectFade) {
 				color.a *= m_EffectStep;
 			} else if (m_EffectPulseColor) {
@@ -68,10 +72,7 @@ void main(){
 				float intensity = (0.2125 * color.r) + (0.7154 * color.g) + (0.0721 * color.b);
 				color = mix(color, vec4(intensity,intensity,intensity,color.a), m_EffectStep);
 			} else {
-			//	vec4 mixColor;
-			//	mixColor = texture2D(m_EffectMap, texCoord1);
-			//	color.rgb = altMix(color.rgb, mixColor.rgb, 1.0);
-				color = mix(color, texture2D(m_EffectMap, texCoord1), 1.0);
+				color = mix(color, texture2D(m_EffectMap, texCoord2), 1.0);
 			}
 		}
 	#endif
@@ -122,7 +123,7 @@ void main(){
 	#endif
 	
 	#if defined(HAS_ALPHAMAP)
-		color.a *= texture2D(m_AlphaMap, texCoord1).r;
+		color.a *= texture2D(m_AlphaMap, alphaTexCoord).r;
 	#endif
 	
 	color.a *= m_GlobalAlpha;
