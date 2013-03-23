@@ -53,6 +53,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	protected boolean isRadioButton = false;
 	private boolean isEnabled = true;
 	protected ColorRGBA originalFontColor;
+	protected Vector2f hoverImgOffset, pressedImgOffset;
 	
 	/**
 	 * Creates a new instance of the Button control
@@ -134,14 +135,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	public void setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 		if (!isEnabled) {
-			Effect effect = getEffect(Effect.EffectEvent.Press);
-			if (effect != null) {
-				effect.setBlendImage(pressedImg);
-				screen.getEffectManager().applyEffect(effect);
-			}
-			if (pressedFontColor != null) {
-				setFontColor(pressedFontColor);
-			}
+			runResetEffect();
 		} else {
 			Effect effect = getEffect(Effect.EffectEvent.Press);
 			if (effect != null) {
@@ -212,23 +206,9 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		this.isToggled = isToggled;
 		
 		if (pressedImg != null && isToggled) {
-			Effect effect = getEffect(Effect.EffectEvent.Press);
-			if (effect != null) {
-				effect.setBlendImage(pressedImg);
-				screen.getEffectManager().applyEffect(effect);
-			}
-			if (pressedFontColor != null) {
-				setFontColor(pressedFontColor);
-			}
+			runPressedEffect(false);
 		} else {
-			Effect effect = getEffect(Effect.EffectEvent.Press);
-			if (effect != null) {
-				effect.setBlendImage(getElementTexture());
-				screen.getEffectManager().applyEffect(effect);
-			}
-			if (originalFontColor != null) {
-				setFontColor(originalFontColor);
-			}
+			runResetEffect();
 		}
 		
 		MouseButtonEvent evtd = new MouseButtonEvent(0,true,0,0);
@@ -259,10 +239,15 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 */
 	public final void setButtonHoverInfo(String pathHoverImg, ColorRGBA hoverFontColor) {
 		if (pathHoverImg != null) {
-			this.hoverImg = app.getAssetManager().loadTexture(pathHoverImg);
-			this.hoverImg.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
-			this.hoverImg.setMagFilter(Texture.MagFilter.Nearest);
-			this.hoverImg.setWrap(Texture.WrapMode.Repeat);
+			if (!screen.getUseTextureAtlas()) {
+				this.hoverImg = app.getAssetManager().loadTexture(pathHoverImg);
+				this.hoverImg.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
+				this.hoverImg.setMagFilter(Texture.MagFilter.Nearest);
+				this.hoverImg.setWrap(Texture.WrapMode.Repeat);
+			} else {
+				this.hoverImg = screen.getAtlasTexture();
+				hoverImgOffset = getAtlasTextureOffset(screen.parseAtlasCoords(pathHoverImg));
+			}
 		} else {
 			this.hoverImg = null;
 		}
@@ -282,6 +267,24 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		return this.hoverImg;
 	}
 	
+	private void runHoverEffect(boolean audio) {
+		if (hoverImg != null) {
+			Effect effect = getEffect(Effect.EffectEvent.Hover);
+			if (effect != null) {
+				if (useHoverSound && screen.getUseUIAudio() && audio) {
+					effect.setAudioFile(hoverSound);
+					effect.setAudioVolume(hoverSoundVolume);
+				}
+				effect.setBlendImage(hoverImg);
+				if (screen.getUseTextureAtlas()) effect.setBlendImageOffset(hoverImgOffset);
+				screen.getEffectManager().applyEffect(effect);
+			}
+		}
+		if (hoverFontColor != null) {
+			setFontColor(hoverFontColor);
+		}
+	}
+	
 	/**
 	 * Sets the image and font color to use when the button is depressed
 	 * @param pathPressedImg Path to the image for pressed state
@@ -289,10 +292,15 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 */
 	public final void setButtonPressedInfo(String pathPressedImg, ColorRGBA pressedFontColor) {
 		if (pathPressedImg != null) {
-			this.pressedImg = app.getAssetManager().loadTexture(pathPressedImg);
-			this.pressedImg.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
-			this.pressedImg.setMagFilter(Texture.MagFilter.Nearest);
-			this.pressedImg.setWrap(Texture.WrapMode.Repeat);
+			if (!screen.getUseTextureAtlas()) {
+				this.pressedImg = app.getAssetManager().loadTexture(pathPressedImg);
+				this.pressedImg.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
+				this.pressedImg.setMagFilter(Texture.MagFilter.Nearest);
+				this.pressedImg.setWrap(Texture.WrapMode.Repeat);
+			} else {
+				this.pressedImg = screen.getAtlasTexture();
+				pressedImgOffset = getAtlasTextureOffset(screen.parseAtlasCoords(pathPressedImg));
+			}
 		} else {
 			this.pressedImg = null;
 		}
@@ -310,6 +318,48 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 */
 	public Texture getButtonPressedImg() {
 		return this.pressedImg;
+	}
+	
+	private void runPressedEffect(boolean audio) {
+		if (pressedImg != null) {
+			Effect effect = getEffect(Effect.EffectEvent.Press);
+			if (effect != null) {
+				if (usePressedSound && screen.getUseUIAudio() && audio) {
+					effect.setAudioFile(pressedSound);
+					effect.setAudioVolume(pressedSoundVolume);
+				}
+				effect.setBlendImage(pressedImg);
+				if (screen.getUseTextureAtlas()) effect.setBlendImageOffset(pressedImgOffset);
+				screen.getEffectManager().applyEffect(effect);
+			}
+		}
+		if (pressedFontColor != null) {
+			setFontColor(pressedFontColor);
+		}
+	}
+	
+	private void runLoseFocusEffect() {
+		Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
+		if (effect != null) {
+			effect.setBlendImage(getElementTexture());
+			if (screen.getUseTextureAtlas()) effect.setBlendImageOffset(new Vector2f(0,0));
+			screen.getEffectManager().applyEffect(effect);
+		}
+		if (originalFontColor != null) {
+			setFontColor(originalFontColor);
+		}
+	}
+	
+	private void runResetEffect() {
+		Effect effect = getEffect(Effect.EffectEvent.Press);
+		if (effect != null) {
+				effect.setBlendImage(getElementTexture());
+				if (screen.getUseTextureAtlas()) effect.setBlendImageOffset(new Vector2f(0,0));
+				screen.getEffectManager().applyEffect(effect);
+		}
+		if (originalFontColor != null) {
+				setFontColor(originalFontColor);
+		}
 	}
 	
 	/**
@@ -357,20 +407,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 					isToggled = true;
 				}
 			}
-			if (pressedImg != null) {
-				Effect effect = getEffect(Effect.EffectEvent.Press);
-				if (effect != null) {
-					if (usePressedSound && screen.getUseUIAudio()) {
-						effect.setAudioFile(pressedSound);
-						effect.setAudioVolume(pressedSoundVolume);
-					}
-					effect.setBlendImage(pressedImg);
-					screen.getEffectManager().applyEffect(effect);
-				}
-			}
-			if (pressedFontColor != null) {
-				setFontColor(pressedFontColor);
-			}
+			runPressedEffect(true);
 			isStillPressed = true;
 			initClickPause = true;
 			currentInitClickTrack = 0;
@@ -384,49 +421,15 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		if (isEnabled) {
 			if (!isToggleButton) {
 				if (getHasFocus()) {
-					Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
-					if (effect != null) {
-						effect.setBlendImage(getElementTexture());
-						screen.getEffectManager().applyEffect(effect);
-					}
-					if (hoverImg != null) {
-					//	screen.getEffectManager().removeEffect(this);
-						Effect effect2 = getEffect(Effect.EffectEvent.Hover);
-						if (effect2 != null) {
-							effect2.setBlendImage(hoverImg);
-							screen.getEffectManager().applyEffect(effect2);
-						}
-					}
-					if (hoverFontColor != null) {
-						setFontColor(hoverFontColor);
-					}
+					runLoseFocusEffect();
+					runHoverEffect(false);
 				} else {
-					Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
-					if (effect != null) {
-						effect.setBlendImage(getElementTexture());
-						screen.getEffectManager().applyEffect(effect);
-					}
-					if (originalFontColor != null) {
-						setFontColor(originalFontColor);
-					}
+					runLoseFocusEffect();
 				}
 			} else {
 				if (!isToggled) {
-					if (hoverImg != null) {
-						Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
-						if (effect != null) {
-							effect.setBlendImage(getElementTexture());
-							screen.getEffectManager().applyEffect(effect);
-						}
-						Effect effect2 = getEffect(Effect.EffectEvent.Hover);
-						if (effect2 != null) {
-							effect2.setBlendImage(hoverImg);
-							screen.getEffectManager().applyEffect(effect2);
-						}
-					}
-					if (hoverFontColor != null) {
-						setFontColor(hoverFontColor);
-					}
+					runLoseFocusEffect();
+					runHoverEffect(false);
 				}
 			}
 			isStillPressed = false;
@@ -471,20 +474,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		if (isEnabled) {
 			if (!getHasFocus()) {
 				if (!isToggled) {
-					if (hoverImg != null) {
-						Effect effect = getEffect(Effect.EffectEvent.Hover);
-						if (effect != null) {
-							if (useHoverSound && screen.getUseUIAudio()) {
-								effect.setAudioFile(hoverSound);
-								effect.setAudioVolume(hoverSoundVolume);
-							}
-							effect.setBlendImage(hoverImg);
-							screen.getEffectManager().applyEffect(effect);
-						}
-					}
-					if (hoverFontColor != null) {
-						setFontColor(hoverFontColor);
-					}
+					runHoverEffect(true);
 				}
 				screen.setCursor(Screen.CursorType.HAND);
 				onButtonFocus(evt);
@@ -503,12 +493,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		if (isEnabled) {
 			if (getHasFocus()) {
 				if (!isToggled) {
-					Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
-					if (effect != null) {
-						effect.setBlendImage(getElementTexture());
-						screen.getEffectManager().applyEffect(effect);
-					}
-					setFontColor(originalFontColor);
+					runLoseFocusEffect();
 				}
 				screen.setCursor(Screen.CursorType.POINTER);
 				onButtonLostFocus(evt);
