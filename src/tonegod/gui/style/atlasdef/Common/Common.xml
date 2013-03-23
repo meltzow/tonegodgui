@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="Common">
+		<font>
+			<property name="fontSize" type="float" value="22" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Top" />
+			<property name="textWrap" type="String" value="Word" />
+			<property name="textPadding" type="float" value="3" />
+		</font>
+		<attributes>
+			<property name="defaultControlSize" type="float" value="24" />
+			<property name="defaultControlSpacing" type="float" value="5" />
+		</attributes>
+		<images>
+			<property name="blankImg" type="String" value="x=181|y=0|w=1|h=1" />
+			<property name="arrowUp" type="String" value="x=181|y=0|w=17|h=17" />
+			<property name="arrowDown" type="String" value="x=181|y=17|w=17|h=17" />
+			<property name="arrowLeft" type="String" value="x=181|y=34|w=17|h=17" />
+			<property name="arrowRight" type="String" value="x=181|y=51|w=17|h=17" />
+		</images>
+		<effects></effects>
+	</element>
+</root>
