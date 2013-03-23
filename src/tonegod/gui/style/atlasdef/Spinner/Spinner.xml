@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="Spinner">
+		<font></font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="150" />
+				<y value="24" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="x=156|y=25|w=22|h=22" />
+		</images>
+		<effects></effects>
+	</element>
+</root>
