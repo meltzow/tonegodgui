@@ -9,11 +9,13 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.texture.Texture;
 import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.ElementQuadGrid;
 import tonegod.gui.core.Screen;
 import tonegod.gui.effects.Effect;
 
@@ -169,11 +171,31 @@ public abstract class Dial extends ButtonAdapter {
 	 * @param imgPath String Path to image
 	 */
 	public void setDialImageIndicator(String imgPath) {
-		indicatorTex = screen.getApplication().getAssetManager().loadTexture(imgPath);
-		indicatorTex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
-		indicatorTex.setMagFilter(Texture.MagFilter.Bilinear);
-		indicatorTex.setWrap(Texture.WrapMode.Repeat);
-		
+		if (screen.getUseTextureAtlas()) {
+			indicatorTex = screen.getAtlasTexture();
+			float[] coords = screen.parseAtlasCoords(imgPath);
+			float textureAtlasX = coords[0];
+			float textureAtlasY = coords[1];
+			float textureAtlasW = coords[2];
+			float textureAtlasH = coords[3];
+
+			float imgWidth = indicatorTex.getImage().getWidth();
+			float imgHeight = indicatorTex.getImage().getHeight();
+			float pixelWidth = 1f/imgWidth;
+			float pixelHeight = 1f/imgHeight;
+
+			textureAtlasY = imgHeight-textureAtlasY-textureAtlasH;
+			
+			Mesh model = new ElementQuadGrid(this.getDimensions(), borders, imgWidth, imgHeight, pixelWidth, pixelHeight, textureAtlasX, textureAtlasY, textureAtlasW, textureAtlasH);
+			
+			elCenter.getGeometry().setMesh(model);
+			elCenter.getGeometry().center();
+		} else {
+			indicatorTex = screen.getApplication().getAssetManager().loadTexture(imgPath);
+			indicatorTex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
+			indicatorTex.setMagFilter(Texture.MagFilter.Bilinear);
+			indicatorTex.setWrap(Texture.WrapMode.Repeat);
+		}
 		elCenter.getElementMaterial().setTexture("ColorMap", indicatorTex);
 	}
 	
