@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="Window">
+		<font></font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="14" />
+				<y value="14" />
+				<z value="14" />
+				<w value="14" />
+			</property>
+			<property name="minSize" type="Vector2f">
+				<x value="150" />
+				<y value="50" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="350" />
+				<y value="200" />
+			</property>
+			<property name="contentIndents" type="Vector4f">
+				<x value="12" />
+				<y value="12" />
+				<z value="12" />
+				<w value="12" />
+			</property>
+			<property name="clipPadding" type="float" value="6" />
+			<property name="buttonAreaHeight" type="float" value="40" />
+			<property name="showSound" type="String" value="fade" />
+			<property name="useShowSound" type="boolean" value="true" />
+			<property name="showSoundVolume" type="float" value="1" />
+			<property name="hideSound" type="String" value="fade" />
+			<property name="useHideSound" type="boolean" value="true" />
+			<property name="hideSoundVolume" type="float" value="1" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="x=0|y=0|w=78|h=78" />
+		</images>
+		<effects>
+			<property name="event0" type="Effect">
+				<event value="Show" />
+				<effect value="FadeIn" />
+				<speed value=".25" />
+			</property>
+			<property name="event1" type="Effect">
+				<event value="Hide" />
+				<effect value="FadeOut" />
+				<speed value=".25" />
+			</property>
+		</effects>
+	</element>
+
+	<element name="Window#Dragbar">
+		<font>
+			<property name="fontSize" type="float" value="20" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="textPadding" type="float" value="3" />
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="6" />
+				<y value="6" />
+				<z value="6" />
+				<w value="6" />
+			</property>
+			<property name="indents" type="Vector4f">
+				<x value="7" />
+				<y value="7" />
+				<z value="7" />
+				<w value="7" />
+			</property>
+			<property name="defaultControlSize" type="float" value="25" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="x=156|y=0|w=25|h=25" />
+		</images>
+		<effects></effects>
+	</element>
+</root>
