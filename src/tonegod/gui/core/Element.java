@@ -18,6 +18,7 @@ import com.jme3.math.Vector4f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
 import java.text.ParseException;
@@ -205,42 +206,38 @@ public class Element extends Node {
 		float pixelWidth = 1f/imgWidth;
 		float pixelHeight = 1f/imgHeight;
 		float textureAtlasX = 0, textureAtlasY = 0, textureAtlasW = imgWidth, textureAtlasH = imgHeight;
-		boolean useAtlas = false;
+		
+		boolean useAtlas = screen.getUseTextureAtlas();
 		
 		if (texturePath != null) {
-			if (texturePath.indexOf('?') != -1) {
-				useAtlas = true;
-				StringTokenizer st = new StringTokenizer(texturePath.substring(texturePath.indexOf('?')+1), "&");
-				if (st.countTokens() == 4) {
-					try {
-						String token = st.nextToken();
-						textureAtlasX = Float.parseFloat(token.substring(token.indexOf('=')+1));
-						token = st.nextToken();
-						textureAtlasY = Float.parseFloat(token.substring(token.indexOf('=')+1));
-						token = st.nextToken();
-						textureAtlasW = Float.parseFloat(token.substring(token.indexOf('=')+1));
-						token = st.nextToken();
-						textureAtlasH = Float.parseFloat(token.substring(token.indexOf('=')+1));
-					} catch (Exception ex) { throwParserException(); }
-					System.out.println(textureAtlasX + " : " + textureAtlasY + " : " + textureAtlasW + " : " + textureAtlasH);
-				} else throwParserException();
-				texturePath = texturePath.substring(0, texturePath.indexOf('?'));
-			}
-			defaultTex = app.getAssetManager().loadTexture(texturePath);
-			defaultTex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
-			defaultTex.setMagFilter(Texture.MagFilter.Bilinear);
-			defaultTex.setWrap(Texture.WrapMode.Repeat);
+			if (useAtlas) {
+				float[] coords = screen.parseAtlasCoords(texturePath);
+				textureAtlasX = coords[0];
+				textureAtlasY = coords[1];
+				textureAtlasW = coords[2];
+				textureAtlasH = coords[3];
 
-			imgWidth = defaultTex.getImage().getWidth();
-			imgHeight = defaultTex.getImage().getHeight();
-			pixelWidth = 1f/imgWidth;
-			pixelHeight = 1f/imgHeight;
-			
-			if (!useAtlas) {
+				defaultTex = screen.getAtlasTexture();
+
+				imgWidth = defaultTex.getImage().getWidth();
+				imgHeight = defaultTex.getImage().getHeight();
+				pixelWidth = 1f/imgWidth;
+				pixelHeight = 1f/imgHeight;
+
+				textureAtlasY = imgHeight-textureAtlasY-textureAtlasH;
+			} else {
+				defaultTex = app.getAssetManager().loadTexture(texturePath);
+				defaultTex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
+				defaultTex.setMagFilter(Texture.MagFilter.Bilinear);
+				defaultTex.setWrap(Texture.WrapMode.Repeat);
+
+				imgWidth = defaultTex.getImage().getWidth();
+				imgHeight = defaultTex.getImage().getHeight();
+				pixelWidth = 1f/imgWidth;
+				pixelHeight = 1f/imgHeight;
+
 				textureAtlasW = imgWidth;
 				textureAtlasH = imgHeight;
-			} else {
-				textureAtlasY = imgHeight-textureAtlasY-textureAtlasH;
 			}
 		}
 		mat = new Material(app.getAssetManager(), "tonegod/gui/shaders/Unshaded.j3md");
@@ -250,6 +247,8 @@ public class Element extends Node {
 		} else {
 			mat.setColor("Color", defaultColor);
 		}
+		if (useAtlas) mat.setBoolean("UseEffectTexCoords", true);
+		mat.setVector2("OffsetAlphaTexCoord", new Vector2f(0,0));
 		mat.setFloat("GlobalAlpha", screen.getGlobalAlpha());
 		
 		mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
@@ -276,6 +275,18 @@ public class Element extends Node {
 		} catch (ParseException ex) {
 			Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The provided texture information does not conform to the expected standard of ?x=(int)&y=(int)&w=(int)&h=(int)", ex);
 		}
+	}
+	
+	public Vector2f getAtlasTextureOffset(float[] coords) {
+		Texture tex;
+		if (defaultTex != null) tex = defaultTex;
+		else					tex = screen.getAtlasTexture();
+		float imgWidth = tex.getImage().getWidth();
+		float imgHeight = tex.getImage().getHeight();
+		float pixelWidth = 1f/imgWidth;
+		float pixelHeight = 1f/imgHeight;
+
+		return new Vector2f( getModel().getEffectOffset( pixelWidth*coords[0], pixelHeight*(imgHeight-coords[1]-coords[3]) ));
 	}
 	
 	public final Vector2f getV2fPercentToPixels(Vector2f in) {
@@ -1370,6 +1381,10 @@ public class Element extends Node {
 		return this.model;
 	}
 	
+	public Geometry getGeometry() {
+		return this.geom;
+	}
+	
 	// Font & text
 	/**
 	 * Sets the element's text layer font
@@ -1580,22 +1595,49 @@ public class Element extends Node {
 	 * @param alphaMap A String path to the alpha map
 	 */
 	public void setAlphaMap(String alphaMap) {
-		Texture alpha = app.getAssetManager().loadTexture(alphaMap);
-		alpha.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
-		alpha.setMagFilter(Texture.MagFilter.Bilinear);
-		alpha.setWrap(Texture.WrapMode.Repeat);
+		Texture alpha = null;
+		if (screen.getUseTextureAtlas()) {
+			alpha = screen.getAtlasTexture();
+			Vector2f alphaOffset = getAtlasTextureOffset(screen.parseAtlasCoords(alphaMap));
+			mat.setVector2("OffsetAlphaTexCoord", alphaOffset);
+		} else {
+			alpha = app.getAssetManager().loadTexture(alphaMap);
+			alpha.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
+			alpha.setMagFilter(Texture.MagFilter.Bilinear);
+			alpha.setWrap(Texture.WrapMode.Repeat);
+		}
 		
 		this.alphaMap = alpha;
 		
 		if (defaultTex == null) {
-			float imgWidth = alpha.getImage().getWidth();
-			float imgHeight = alpha.getImage().getHeight();
-			float pixelWidth = 1f/imgWidth;
-			float pixelHeight = 1f/imgHeight;
-			
-			this.model = new ElementQuadGrid(this.dimensions, borders, imgWidth, imgHeight, pixelWidth, pixelHeight, 0, 0, imgWidth, imgHeight);
-			
-			geom.setMesh(model);
+			if (!screen.getUseTextureAtlas()) {
+				float imgWidth = alpha.getImage().getWidth();
+				float imgHeight = alpha.getImage().getHeight();
+				float pixelWidth = 1f/imgWidth;
+				float pixelHeight = 1f/imgHeight;
+
+				this.model = new ElementQuadGrid(this.dimensions, borders, imgWidth, imgHeight, pixelWidth, pixelHeight, 0, 0, imgWidth, imgHeight);
+
+				geom.setMesh(model);
+			} else {
+				float[] coords = screen.parseAtlasCoords(alphaMap);
+				float textureAtlasX = coords[0];
+				float textureAtlasY = coords[1];
+				float textureAtlasW = coords[2];
+				float textureAtlasH = coords[3];
+				
+				float imgWidth = alpha.getImage().getWidth();
+				float imgHeight = alpha.getImage().getHeight();
+				float pixelWidth = 1f/imgWidth;
+				float pixelHeight = 1f/imgHeight;
+				
+				textureAtlasY = imgHeight-textureAtlasY-textureAtlasH;
+				
+				model = new ElementQuadGrid(this.getDimensions(), borders, imgWidth, imgHeight, pixelWidth, pixelHeight, textureAtlasX, textureAtlasY, textureAtlasW, textureAtlasH);
+				
+				geom.setMesh(model);
+				mat.setVector2("OffsetAlphaTexCoord", new Vector2f(0,0));
+			}
 		}
 		mat.setTexture("AlphaMap", alpha);
 	}

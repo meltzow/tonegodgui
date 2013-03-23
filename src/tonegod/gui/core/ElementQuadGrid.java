@@ -30,6 +30,7 @@ public class ElementQuadGrid extends Mesh {
 	
 	private float[] templateX, templateY, templateCoordX, templateCoordY;
 	private float templateZ = 0;
+	private float imgWidth, imgHeight, pixelWidth, pixelHeight, atlasX, atlasY, atlasW, atlasH;
 	
 	private int[] templateIndexes = new int[] {
 		0,1,5,5,4,0
@@ -38,6 +39,10 @@ public class ElementQuadGrid extends Mesh {
 	public ElementQuadGrid(Vector2f dimensions, Vector4f borders, float imgWidth, float imgHeight, float pixelWidth, float pixelHeight, float atlasX, float atlasY, float atlasW, float atlasH) {
 		this.dimensions = dimensions;
 		this.borders = borders;
+		this.imgWidth = imgWidth;
+		this.imgHeight = imgHeight;
+		this.pixelWidth = pixelWidth;
+		this.pixelHeight = pixelHeight;
 		
 		// Place verts according to resize borders
 		templateX = new float[] {
@@ -52,6 +57,10 @@ public class ElementQuadGrid extends Mesh {
 		float fW = pixelWidth*(atlasX+atlasW);
 		float fY = pixelHeight*atlasY;
 		float fH = pixelHeight*(atlasY+atlasH);
+		this.atlasX = fX;
+		this.atlasY = fY;
+		this.atlasW = fW;
+		this.atlasH = fH;
 		
 	//	System.out.println(fX + " : " + fY + " : " + fW + " : " + fH);
 		
@@ -113,6 +122,9 @@ public class ElementQuadGrid extends Mesh {
 		}
 		
 		setBuffers(true);
+	}
+	public Vector2f getEffectOffset(float x, float y) {
+		return  new Vector2f( x-atlasX, y-atlasY );
 	}
 	
 	public void updateDimensions(float w, float h) {

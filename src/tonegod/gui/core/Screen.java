@@ -41,6 +41,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.shape.Quad;
+import com.jme3.texture.Texture;
 import java.awt.Cursor;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -50,11 +51,13 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -165,6 +168,9 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	
 	private Clipboard clipboard;
 	private boolean clipboardActive = false;
+	
+	private boolean useTextureAtlas = false;
+	private Texture atlasTexture;
 	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
@@ -311,6 +317,52 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	 */
 	public Node getGUINode() {
 		return t0neg0dGUI;
+	}
+	
+	public void setUseTextureAtlas(boolean useTextureAtlas, String texturePath) {
+		this.useTextureAtlas = useTextureAtlas;
+		
+		if (texturePath != null) {
+			atlasTexture = app.getAssetManager().loadTexture(texturePath);
+			atlasTexture.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
+			atlasTexture.setMagFilter(Texture.MagFilter.Bilinear);
+			atlasTexture.setWrap(Texture.WrapMode.Repeat);
+		} else {
+			atlasTexture = null;
+		}
+	}
+	
+	public boolean getUseTextureAtlas() { return this.useTextureAtlas; }
+	
+	public Texture getAtlasTexture() { return atlasTexture; }
+	
+	public float[] parseAtlasCoords(String texturePath) {
+		float[] coords = new float[4];
+		
+		if (texturePath != null) {
+			StringTokenizer st = new StringTokenizer(texturePath, "|");
+			if (st.countTokens() == 4) {
+				try {
+					String token = st.nextToken();
+					coords[0] = Float.parseFloat(token.substring(token.indexOf('=')+1));
+					token = st.nextToken();
+					coords[1] = Float.parseFloat(token.substring(token.indexOf('=')+1));
+					token = st.nextToken();
+					coords[2] = Float.parseFloat(token.substring(token.indexOf('=')+1));
+					token = st.nextToken();
+					coords[3] = Float.parseFloat(token.substring(token.indexOf('=')+1));
+				} catch (Exception ex) { throwParserException(); }
+			} else throwParserException();
+		}
+		return coords;
+	}
+	
+	private void throwParserException() {
+		try {
+			throw new java.text.ParseException("The provided texture information does not conform to the expected standard of ?x=(int)&y=(int)&w=(int)&h=(int)", 0);
+		} catch (ParseException ex) {
+			Logger.getLogger(Screen.class.getName()).log(Level.SEVERE, "The provided texture information does not conform to the expected standard of ?x=(int)&y=(int)&w=(int)&h=(int)", ex);
+		}
 	}
 	
 	// Z-ORDER
