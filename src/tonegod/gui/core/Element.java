@@ -281,6 +281,7 @@ public class Element extends Node {
 	public void setTextureAtlasImage(Texture tex, String queryString) {
 		this.defaultTex = tex;
 		mat.setTexture("ColorMap", tex);
+		mat.setColor("Color", new ColorRGBA(1,1,1,1));
 		mat.setBoolean("UseEffectTexCoords", true);
 		
 		this.useLocalAtlas = true;
