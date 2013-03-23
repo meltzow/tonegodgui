@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="ScrollArea">
+		<font>
+			<property name="fontSize" type="float" value="20" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Top" />
+			<property name="textWrap" type="String" value="Word" />
+			<property name="textPadding" type="float" value="8" />
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="14" />
+				<y value="14" />
+				<z value="14" />
+				<w value="14" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="320" />
+				<y value="120" />
+			</property>
+			<property name="scrollAreaPadding" type="float" value="0" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="x=78|y=0|w=78|h=78" />
+		</images>
+		<effects></effects>
+	</element>
+	<element name="ScrollArea#VScrollBar">
+		<font></font>
+		<attributes>
+			<property name="defaultControlSize" type="float" value="24" />
+			<property name="trackResizeBorders" type="Vector4f">
+				<x value="5" />
+				<y value="5" />
+				<z value="5" />
+				<w value="5" />
+			</property>
+			<property name="thumbResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="btnUpResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="btnDownResizeBorders" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
+			<property name="useBtnUpArrowIcon" type="boolean" value="true" />
+			<property name="useBtnDownArrowIcon" type="boolean" value="true" />
+		</attributes>
+		<images>
+			<property name="trackImg" type="String" value="x=156|y=25|w=22|h=22" />
+			<property name="thumbImg" type="String" value="x=0|y=78|w=23|h=22" />
+			<property name="thumbHoverImg" type="String" value="x=23|y=78|w=23|h=22" />
+			<property name="thumbPressedImg" type="String" value="x=46|y=78|w=23|h=22" />
+			<property name="btnUpImg" type="String" value="x=0|y=78|w=23|h=22" />
+			<property name="btnUpHoverImg" type="String" value="x=23|y=78|w=23|h=22" />
+			<property name="btnUpPressedImg" type="String" value="x=46|y=78|w=23|h=22" />
+			<property name="btnDownImg" type="String" value="x=0|y=78|w=23|h=22" />
+			<property name="btnDownHoverImg" type="String" value="x=23|y=78|w=23|h=22" />
+			<property name="btnDownPressedImg" type="String" value="x=46|y=78|w=23|h=22" />
+		</images>
+		<effects></effects>
+	</element>
+</root>
