@@ -135,7 +135,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	public void setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 		if (!isEnabled) {
-			runResetEffect();
+			runPressedEffect(false);
 		} else {
 			Effect effect = getEffect(Effect.EffectEvent.Press);
 			if (effect != null) {
