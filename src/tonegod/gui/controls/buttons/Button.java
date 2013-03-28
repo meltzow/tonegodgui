@@ -202,6 +202,21 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 * Set a toggle button state to toggled/untoggled
 	 * @param isToggled boolean
 	 */
+	public void setIsToggledNoCallback(boolean isToggled) {
+		this.isToggled = isToggled;
+		
+		if (pressedImg != null && isToggled) {
+			runPressedEffect(false);
+		} else {
+			runResetEffect();
+		}
+		
+		if (radioButtonGroup != null) {
+			if (isToggled)
+				radioButtonGroup.setSelected(this);
+		}
+	}
+	
 	public void setIsToggled(boolean isToggled) {
 		this.isToggled = isToggled;
 		
@@ -267,7 +282,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		return this.hoverImg;
 	}
 	
-	private void runHoverEffect(boolean audio) {
+	protected void runHoverEffect(boolean audio) {
 		if (hoverImg != null) {
 			Effect effect = getEffect(Effect.EffectEvent.Hover);
 			if (effect != null) {
@@ -320,7 +335,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		return this.pressedImg;
 	}
 	
-	private void runPressedEffect(boolean audio) {
+	protected void runPressedEffect(boolean audio) {
 		if (pressedImg != null) {
 			Effect effect = getEffect(Effect.EffectEvent.Press);
 			if (effect != null) {
@@ -338,7 +353,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		}
 	}
 	
-	private void runLoseFocusEffect() {
+	protected void runLoseFocusEffect() {
 		Effect effect = getEffect(Effect.EffectEvent.LoseFocus);
 		if (effect != null) {
 			effect.setBlendImage(getElementTexture());
@@ -350,7 +365,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		}
 	}
 	
-	private void runResetEffect() {
+	protected void runResetEffect() {
 		Effect effect = getEffect(Effect.EffectEvent.Press);
 		if (effect != null) {
 				effect.setBlendImage(getElementTexture());

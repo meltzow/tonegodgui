@@ -153,6 +153,10 @@ public class CheckBox extends ButtonAdapter {
 		setIsToggled(isChecked);
 	}
 	
+	public void setIsCheckedNoCallback(boolean isChecked) {
+		setIsToggledNoCallback(isChecked);
+	}
+	
 	/**
 	 * Returns if the checkbox is checked/unchecked
 	 * @return boolean
