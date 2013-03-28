@@ -145,6 +145,8 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	
 	private Vector2f mouseXY = new Vector2f(0,0);
 	private boolean SHIFT = false;
+	private boolean CTRL = false;
+	private boolean ALT = false;
 	
 	private boolean useCustomCursors = false;
 	private boolean forceCursor = false;
@@ -657,6 +659,14 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		if (evt.getKeyCode() == KeyInput.KEY_LSHIFT || evt.getKeyCode() == KeyInput.KEY_RSHIFT) {
 			if (evt.isPressed()) SHIFT = true;
 			else SHIFT = false;
+		}
+		if (evt.getKeyCode() == KeyInput.KEY_LCONTROL || evt.getKeyCode() == KeyInput.KEY_RCONTROL) {
+			if (evt.isPressed()) CTRL = true;
+			else CTRL = false;
+		}
+		if (evt.getKeyCode() == KeyInput.KEY_LMENU || evt.getKeyCode() == KeyInput.KEY_RMENU) {
+			if (evt.isPressed()) ALT = true;
+			else ALT = false;
 		}
 		if (evt.getKeyCode() == KeyInput.KEY_TAB && evt.isPressed()) {
 			if (focusForm != null) {
@@ -1595,6 +1605,11 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	//	System.out.println("Clipboard failed, switching to internal clipboard.");
 	//	this.clipboardActive = false;
 	}
+	
+	// Key states
+	public boolean getCtrl() { return this.CTRL; }
+	public boolean getShift() { return this.SHIFT; }
+	public boolean getAlt() { return this.ALT; }
 	
 	// Determining OS
 	public static boolean isWindows() {
