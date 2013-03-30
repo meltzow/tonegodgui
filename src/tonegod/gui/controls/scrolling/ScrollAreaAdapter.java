@@ -20,6 +20,7 @@ import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.UIDUtil;
 
 /**
  *
@@ -30,7 +31,48 @@ public class ScrollAreaAdapter extends ScrollArea {
 	List<Element> scrollableChildren = new ArrayList();
 	
 	/**
-	 * Creates a new instance of the ScrollArea control
+	 * Creates a new instance of the ScrollAreaAdapter control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
+	public ScrollAreaAdapter(Screen screen, Vector2f position) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("ScrollArea").getVector2f("defaultSize"),
+			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
+			screen.getStyle("ScrollArea").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the ScrollAreaAdapter control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
+	public ScrollAreaAdapter(Screen screen, Vector2f position, Vector2f dimensions) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
+			screen.getStyle("ScrollArea").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the ScrollAreaAdapter control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the ScrollAreaAdapter
+	 */
+	public ScrollAreaAdapter(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg);
+	}
+	
+	/**
+	 * Creates a new instance of the ScrollAreaAdapter control
 	 * 
 	 * @param screen The screen control the Element is to be added to
 	 * @param UID A unique String identifier for the Element
@@ -45,7 +87,7 @@ public class ScrollAreaAdapter extends ScrollArea {
 	}
 	
 	/**
-	 * Creates a new instance of the ScrollArea control
+	 * Creates a new instance of the ScrollAreaAdapter control
 	 * 
 	 * @param screen The screen control the Element is to be added to
 	 * @param UID A unique String identifier for the Element
@@ -60,16 +102,16 @@ public class ScrollAreaAdapter extends ScrollArea {
 	}
 	
 	/**
-	 * Creates a new instance of the ScrollArea control
+	 * Creates a new instance of the ScrollAreaAdapter control
 	 * 
 	 * @param screen The screen control the Element is to be added to
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
-	 * @param defaultImg The default image to use for the Slider's track
+	 * @param defaultImg The default image to use for the ScrollAreaAdapter
 	 */
-	public ScrollAreaAdapter (Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public ScrollAreaAdapter(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super (screen, UID, position, dimensions, resizeBorders, defaultImg, false);
 		scrollableArea.setText("");
 		scrollableArea.setIgnoreMouse(true);

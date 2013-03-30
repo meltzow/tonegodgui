@@ -484,6 +484,20 @@ public class Element extends Node {
 	
 	// Getters & Setters
 	/**
+	 * Allows for setting the Element UID if (and ONLY if) the Element Parent is null
+	 * @param UID The new UID
+	 * @return boolean If setting the UID was successful
+	 */
+	public boolean setUID(String UID) {
+		if (this.elementParent == null) {
+			this.UID = UID;
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
 	 * Returns the element's unique string identifier
 	 * @return String UID
 	 */

@@ -13,6 +13,7 @@ import java.util.Set;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.BatchEffect;
 import tonegod.gui.effects.Effect;
 
@@ -44,8 +45,55 @@ public class SlideTray extends Element {
 	 * Creates a new instance of the SlideTray control
 	 * 
 	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param orientation The orientation of the SlideTray
+	 */
+	public SlideTray(Screen screen, Vector2f position, Orientation orientation) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("Menu").getVector2f("defaultSize"),
+			screen.getStyle("Menu").getVector4f("resizeBorders"),
+			screen.getStyle("Menu").getString("defaultImg"),
+			orientation
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the SlideTray control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param orientation The orientation of the SlideTray
+	 */
+	public SlideTray(Screen screen, Vector2f position, Vector2f dimensions, Orientation orientation) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("Menu").getVector4f("resizeBorders"),
+			screen.getStyle("Menu").getString("defaultImg"),
+			orientation
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the SlideTray control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the SlideTray's track
+	 * @param orientation The orientation of the SlideTray
+	 */
+	public SlideTray(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg, orientation);
+	}
+	
+	/**
+	 * Creates a new instance of the SlideTray control
+	 * 
+	 * @param screen The screen control the Element is to be added to
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param orientation The orientation of the SlideTray
 	 */
 	public SlideTray(Screen screen, String UID, Vector2f position, Orientation orientation) {
 		this(screen, UID, position,
@@ -63,6 +111,7 @@ public class SlideTray extends Element {
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param orientation The orientation of the SlideTray
 	 */
 	public SlideTray(Screen screen, String UID, Vector2f position, Vector2f dimensions, Orientation orientation) {
 		this(screen, UID, position, dimensions,
@@ -81,6 +130,7 @@ public class SlideTray extends Element {
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the SlideTray's track
+	 * @param orientation The orientation of the SlideTray
 	 */
 	public SlideTray(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
 		super(screen, UID, position, dimensions, resizeBorders, null);
@@ -150,6 +200,7 @@ public class SlideTray extends Element {
 		addChild(btnPrevElement);
 		addChild(btnNextElement);
 	}
+	
 	/**
 	 * Enables/disables the use of the SlideTo effect when using next/previous buttons
 	 * @param useSlideEffect 

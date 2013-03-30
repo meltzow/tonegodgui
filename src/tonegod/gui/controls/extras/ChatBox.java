@@ -20,6 +20,7 @@ import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.controls.windows.Panel;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.UIDUtil;
 
 /**
  *
@@ -36,6 +37,47 @@ public abstract class ChatBox extends Panel {
 	private int sendKey;
 	private int chatHistorySize = 30;
 	protected List<String> chatMessages = new ArrayList();
+	
+	/**
+	 * Creates a new instance of the ChatBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
+	public ChatBox(Screen screen, Vector2f position) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("Window").getVector2f("defaultSize"),
+			screen.getStyle("Window").getVector4f("resizeBorders"),
+			screen.getStyle("Window").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the ChatBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
+	public ChatBox(Screen screen, Vector2f position, Vector2f dimensions) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("Window").getVector4f("resizeBorders"),
+			screen.getStyle("Window").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the ChatBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Slider's track
+	 */
+	public ChatBox(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+		this(screen, UIDUtil.getUID(), position, dimensions,resizeBorders,defaultImg);
+	}
 	
 	/**
 	 * Creates a new instance of the ChatBox control

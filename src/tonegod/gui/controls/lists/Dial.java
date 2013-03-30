@@ -17,6 +17,7 @@ import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementQuadGrid;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
 /**
@@ -37,6 +38,48 @@ public abstract class Dial extends ButtonAdapter {
 	float maxDegrees = 359;
 	
 	Texture indicatorTex;
+	
+	/**
+	 * Creates a new instance of the Dial control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
+	public Dial(Screen screen, Vector2f position) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("Dial").getVector2f("defaultSize"),
+			screen.getStyle("Dial").getVector4f("resizeBorders"),
+			screen.getStyle("Dial").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the Dial control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
+	public Dial(Screen screen, Vector2f position, Vector2f dimensions) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("Dial").getVector4f("resizeBorders"),
+			screen.getStyle("Dial").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the Dial control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Dial's background image
+	 */
+	public Dial(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg);
+	}
+	
 	/**
 	 * Creates a new instance of the Dial control
 	 * 

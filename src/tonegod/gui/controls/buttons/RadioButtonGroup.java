@@ -9,6 +9,7 @@ import java.util.List;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.UIDUtil;
 
 /**
  *
@@ -20,6 +21,11 @@ public abstract class RadioButtonGroup {
 	private List<Button> radioButtons = new ArrayList();
 	private int selectedIndex = -1;
 	private Button selected = null;
+	
+	public RadioButtonGroup(Screen screen) {
+		this.screen = screen;
+		this.UID = UIDUtil.getUID();
+	}
 	
 	public RadioButtonGroup(Screen screen, String UID) {
 		this.screen = screen;

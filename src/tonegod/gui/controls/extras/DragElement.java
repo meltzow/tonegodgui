@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.MouseButtonListener;
 
@@ -30,6 +31,10 @@ public abstract class DragElement extends Element implements MouseButtonListener
 	private boolean isEnabled = true;
 	
 	private Effect slideTo;
+	
+	public DragElement(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg);
+	}
 	
 	public DragElement(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);

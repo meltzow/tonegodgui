@@ -16,6 +16,7 @@ import java.util.Set;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.listeners.MouseFocusListener;
 import tonegod.gui.listeners.MouseWheelListener;
 
@@ -31,6 +32,52 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	protected float scrollSize;
 	private boolean scrollHidden = false;
 //	protected float orgWidth;
+	
+	/**
+	 * Creates a new instance of the ScrollArea control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
+	 */
+	public ScrollArea(Screen screen, Vector2f position, boolean isTextOnly) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("ScrollArea").getVector2f("defaultSize"),
+			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
+			screen.getStyle("ScrollArea").getString("defaultImg"),
+			isTextOnly
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the ScrollArea control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
+	 */
+	public ScrollArea(Screen screen, Vector2f position, Vector2f dimensions, boolean isTextOnly) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
+			screen.getStyle("ScrollArea").getString("defaultImg"),
+			isTextOnly
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the ScrollArea control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Slider's track
+	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
+	 */
+	public ScrollArea(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isTextOnly) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg, isTextOnly);
+	}
 	
 	/**
 	 * Creates a new instance of the ScrollArea control

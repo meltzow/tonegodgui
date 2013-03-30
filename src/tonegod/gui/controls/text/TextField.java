@@ -26,6 +26,7 @@ import java.util.List;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.BitmapTextUtil;
+import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.KeyboardListener;
 import tonegod.gui.listeners.MouseButtonListener;
@@ -79,6 +80,47 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	private boolean doubleClick = false, tripleClick = false;
 	private int clickCount = 0;
 	private boolean isPressed = false;
+	
+	/**
+	 * Creates a new instance of the TextField control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
+	public TextField(Screen screen, Vector2f position) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("TextField").getVector2f("defaultSize"),
+			screen.getStyle("TextField").getVector4f("resizeBorders"),
+			screen.getStyle("TextField").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the TextField control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
+	public TextField(Screen screen, Vector2f position, Vector2f dimensions) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("TextField").getVector4f("resizeBorders"),
+			screen.getStyle("TextField").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the TextField control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the TextField
+	 */
+	public TextField(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg);
+	}
 	
 	/**
 	 * Creates a new instance of the TextField control

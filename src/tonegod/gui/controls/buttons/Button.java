@@ -23,6 +23,7 @@ import com.jme3.texture.Texture;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.BitmapTextUtil;
+import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.KeyboardListener;
 import tonegod.gui.listeners.MouseButtonListener;
@@ -54,6 +55,47 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	private boolean isEnabled = true;
 	protected ColorRGBA originalFontColor;
 	protected Vector2f hoverImgOffset, pressedImgOffset;
+	
+	/**
+	 * Creates a new instance of the Button control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
+	public Button(Screen screen, Vector2f position) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("Button").getVector2f("defaultSize"),
+			screen.getStyle("Button").getVector4f("resizeBorders"),
+			screen.getStyle("Button").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the Button control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
+	public Button(Screen screen, Vector2f position, Vector2f dimensions) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("Button").getVector4f("resizeBorders"),
+			screen.getStyle("Button").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the Button control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Slider's track
+	 */
+	public Button(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+		this(screen, UIDUtil.getUID(), position, dimensions,resizeBorders,defaultImg);
+	}
 	
 	/**
 	 * Creates a new instance of the Button control
@@ -132,6 +174,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		populateEffects("Button");
 	}
 	
+	/**
+	 * Allows for dynamically enabling/disabling the button
+	 * @param isEnabled boolean
+	 */
 	public void setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 		if (!isEnabled) {
@@ -148,6 +194,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		}
 	}
 	
+	/**
+	 * Returns if the button is currently enabled
+	 * @return boolean
+	 */
 	public boolean getIsEnabled() {
 		return this.isEnabled;
 	}
@@ -217,6 +267,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		}
 	}
 	
+	/**
+	 * Set a toggle button state to toggled/untoggled and calls the user left mouse button event methods
+	 * @param isToggled boolean
+	 */
 	public void setIsToggled(boolean isToggled) {
 		this.isToggled = isToggled;
 		

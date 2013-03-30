@@ -20,6 +20,7 @@ import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.BitmapTextUtil;
+import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.MouseButtonListener;
 import tonegod.gui.listeners.MouseMovementListener;
@@ -46,6 +47,51 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	private boolean hasSubMenus = false;
 	private boolean hasToggleItems = false;
 	
+	/**
+	 * Creates a new instance of the Menu control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param isScrollable Boolean defining if the menu is a scrollable list
+	 */
+	public Menu(Screen screen, Vector2f position, boolean isScrollable) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("Menu").getVector2f("defaultSize"),
+			screen.getStyle("Menu").getVector4f("resizeBorders"),
+			screen.getStyle("Menu").getString("defaultImg"),
+			isScrollable
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the Menu control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param isScrollable Boolean defining if the menu is a scrollable list
+	 */
+	public Menu(Screen screen, Vector2f position, Vector2f dimensions, boolean isScrollable) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("Menu").getVector4f("resizeBorders"),
+			screen.getStyle("Menu").getString("defaultImg"),
+			isScrollable
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the Menu control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Slider's track
+	 * @param isScrollable Boolean defining if the menu is a scrollable list
+	 */
+	public Menu(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isScrollable) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg, isScrollable);
+	}
 	
 	/**
 	 * Creates a new instance of the Menu control

@@ -13,6 +13,7 @@ import com.jme3.math.Vector4f;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
 /**
@@ -24,6 +25,16 @@ public class VScrollBar extends Element {
 	int btnInc = 1, trackInc = 10;
 	MouseButtonEvent trackEvent = null;
 	ScrollArea scrollableArea = null;
+	
+	/**
+	 * Creates a new instance of a Vertical Screll Bar
+	 * @param screen The screen the element will be added to
+	 * @param position The initial position of the scrollbar
+	 * @param dimensions The initial dimentions of the scrollbar
+	 */
+	public VScrollBar(Screen screen, Vector2f position, Vector2f dimensions) {
+		this(screen, UIDUtil.getUID(), position, dimensions);
+	}
 	
 	/**
 	 * Creates a new instance of a Vertical Screll Bar

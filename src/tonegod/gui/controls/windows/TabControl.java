@@ -18,6 +18,7 @@ import tonegod.gui.controls.lists.SlideTray;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.BitmapTextUtil;
+import tonegod.gui.core.utils.UIDUtil;
 
 /**
  *
@@ -33,6 +34,47 @@ public class TabControl extends Element {
 	private SlideTray tabSlider;
 	private boolean isFixedTabWidth = false;
 	private float fixedTabWidth = 0;
+	
+	/**
+	 * Creates a new instance of the TabControl control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
+	public TabControl(Screen screen, Vector2f position) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("Window").getVector2f("defaultSize"),
+			screen.getStyle("Window").getVector4f("resizeBorders"),
+			null
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the TabControl control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
+	public TabControl(Screen screen, Vector2f position, Vector2f dimensions) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("Window").getVector4f("resizeBorders"),
+			null
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the TabControl control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the TabControl background
+	 */
+	public TabControl(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg);
+	}
 	
 	/**
 	 * Creates a new instance of the TabControl control

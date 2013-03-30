@@ -7,12 +7,54 @@ package tonegod.gui.controls.lists;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.UIDUtil;
 
 /**
  *
  * @author t0neg0d
  */
 public abstract class SelectBox extends ComboBox {
+	/**
+	 * Creates a new instance of the SelectBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
+	public SelectBox(Screen screen, Vector2f position) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("TextField").getVector2f("defaultSize"),
+			screen.getStyle("TextField").getVector4f("resizeBorders"),
+			screen.getStyle("TextField").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the SelectBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
+	public SelectBox(Screen screen, Vector2f position, Vector2f dimensions) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("TextField").getVector4f("resizeBorders"),
+			screen.getStyle("TextField").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the SelectBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the SelectBox
+	 */
+	public SelectBox(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg);
+	}
+	
 	/**
 	 * Creates a new instance of the SelectBox control
 	 * 

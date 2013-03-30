@@ -15,6 +15,7 @@ import java.util.List;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
 /**
@@ -44,6 +45,57 @@ public abstract class Slider extends ButtonAdapter {
 	private Vector2f evalDimensions = new Vector2f();
 	private MouseButtonEvent trackEvt;
 	private Vector2f startPosition;
+	
+	/**
+	 * Creates a new instance of the Slider control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param trackSurroundsThumb Boolean used to determine thumb placement when control is configured
+	 */
+	public Slider(Screen screen, Vector2f position, Orientation orientation, boolean trackSurroundsThumb) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("Slider").getVector2f("defaultSize"),
+			screen.getStyle("Slider").getVector4f("resizeBorders"),
+			screen.getStyle("Slider").getString("defaultImg"),
+			orientation,
+			trackSurroundsThumb
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the Slider control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param trackSurroundsThumb  Boolean used to determine thumb placement when control is configured
+	 */
+	public Slider(Screen screen, Vector2f position, Vector2f dimensions, Orientation orientation, boolean trackSurroundsThumb) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("Slider").getVector4f("resizeBorders"),
+			screen.getStyle("Slider").getString("defaultImg"),
+			orientation,
+			trackSurroundsThumb
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the Slider control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Slider's track
+	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param trackSurroundsThumb  Boolean used to determine thumb placement when control is configured
+	 */
+	public Slider(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation, boolean trackSurroundsThumb) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg, orientation, trackSurroundsThumb);
+	}
 	
 	/**
 	 * Creates a new instance of the Slider control

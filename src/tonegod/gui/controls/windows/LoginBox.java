@@ -16,6 +16,7 @@ import tonegod.gui.controls.text.Password;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.UIDUtil;
 
 /**
  *
@@ -28,6 +29,25 @@ public abstract class LoginBox extends Window {
 	private TextField userName;
 	private Password password;
 	private Form form;
+	
+	public LoginBox(Screen screen, Vector2f position) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("Window").getVector2f("defaultSize"),
+			screen.getStyle("Window").getVector4f("resizeBorders"),
+			screen.getStyle("Window").getString("defaultImg")
+		);
+	}
+	
+	public LoginBox(Screen screen, Vector2f position, Vector2f dimensions) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("Window").getVector4f("resizeBorders"),
+			screen.getStyle("Window").getString("defaultImg")
+		);
+	}
+	
+	public LoginBox(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg);
+	}
 	
 	public LoginBox(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,

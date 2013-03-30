@@ -10,6 +10,7 @@ import com.jme3.input.event.KeyInputEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.UIDUtil;
 
 /**
  *
@@ -18,6 +19,25 @@ import tonegod.gui.core.Screen;
 public class Password extends TextField {
 	char mask = '*';
 	String maskedText = "";
+	
+	public Password(Screen screen, Vector2f position) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("TextField").getVector2f("defaultSize"),
+			screen.getStyle("TextField").getVector4f("resizeBorders"),
+			screen.getStyle("TextField").getString("defaultImg")
+		);
+	}
+	
+	public Password(Screen screen, Vector2f position, Vector2f dimensions) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("TextField").getVector4f("resizeBorders"),
+			screen.getStyle("TextField").getString("defaultImg")
+		);
+	}
+	
+	public Password (Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg);
+	}
 	
 	public Password(Screen screen, String UID, Vector2f position) {
 		this(screen, UID, position,

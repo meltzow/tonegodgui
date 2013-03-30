@@ -14,6 +14,7 @@ import java.util.List;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.utils.UIDUtil;
 
 /**
  *
@@ -37,6 +38,66 @@ public abstract class Spinner extends TextField {
 	
 	private ButtonAdapter btnInc, btnDec;
 	
+	/**
+	 * Creates a new instance of the Spinner control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param cycle Boolean used to determine if the spinner should cycle back through values
+	 */
+	public Spinner(Screen screen, Vector2f position, Spinner.Orientation orientation, boolean cycle) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("TextField").getVector2f("defaultSize"),
+			screen.getStyle("TextField").getVector4f("resizeBorders"),
+			screen.getStyle("TextField").getString("defaultImg"),
+			orientation,
+			cycle
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the Spinner control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param cycle Boolean used to determine if the spinner should cycle back through values
+	 */
+	public Spinner(Screen screen, Vector2f position, Vector2f dimensions, Spinner.Orientation orientation, boolean cycle) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("TextField").getVector4f("resizeBorders"),
+			screen.getStyle("TextField").getString("defaultImg"),
+			orientation,
+			cycle
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the Spinner control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Spinner
+	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param cycle Boolean used to determine if the spinner should cycle back through values
+	 */
+	public Spinner(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Spinner.Orientation orientation, boolean cycle) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg, orientation, cycle);
+	}
+	
+	/**
+	 * Creates a new instance of the Spinner control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param cycle Boolean used to determine if the spinner should cycle back through values
+	 */
 	public Spinner(Screen screen, String UID, Vector2f position, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UID, position,
 			screen.getStyle("TextField").getVector2f("defaultSize"),
@@ -47,6 +108,16 @@ public abstract class Spinner extends TextField {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the Spinner control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param cycle Boolean used to determine if the spinner should cycle back through values
+	 */
 	public Spinner(Screen screen, String UID, Vector2f position, Vector2f dimensions, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
@@ -56,6 +127,18 @@ public abstract class Spinner extends TextField {
 		);
 	}
 	
+	/**
+	 * Creates a new instance of the Spinner control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Spinner
+	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param cycle Boolean used to determine if the spinner should cycle back through values
+	 */
 	public Spinner(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Spinner.Orientation orientation, boolean cycle) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg
 		);
