@@ -35,6 +35,8 @@ public abstract class Indicator extends Element {
 	private String overlayImg;
 	private Element elIndicator, elOverlay;
 	private boolean displayValues = false, displayPercentages = false;
+	private Vector2f indDimensions = new Vector2f();
+	private Vector4f indPadding = Vector4f.ZERO.clone();
 	
 	/**
 	 * Creates a new instance of the Indicator control
@@ -124,6 +126,8 @@ public abstract class Indicator extends Element {
 	public Indicator(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
 		super(screen, UID, position, dimensions, resizeBorders, null);
 		
+		indDimensions.set(dimensions);
+		
 		setScaleEW(true);
 		setScaleNS(false);
 		
@@ -206,7 +210,7 @@ public abstract class Indicator extends Element {
 		elOverlay.setIgnoreMouse(true);
 		elOverlay.setDockS(true);
 		elOverlay.setDockW(true);
-		elOverlay.setScaleEW(false);
+		elOverlay.setScaleEW(true);
 		elOverlay.setScaleNS(false);
 		
 	//	elOverlay.setTextAlign(BitmapFont.Align.Center);
@@ -241,6 +245,7 @@ public abstract class Indicator extends Element {
 	
 	@Override
 	public void controlResizeHook() {
+		setIndicatorPadding(indPadding);
 		refactorIndicator();
 	}
 	
@@ -302,22 +307,22 @@ public abstract class Indicator extends Element {
 			currentValue = 0;
 		}
 		percentage = currentValue/maxValue;
-		if (alphaMapPath == null) {
+	//	if (alphaMapPath == null) {
+	//		if (orientation == Orientation.HORIZONTAL) {
+	//			percentage *= getWidth();
+	//			elIndicator.setWidth(percentage);
+	//		} else {
+	//			percentage *= getHeight();
+	//			elIndicator.setHeight(percentage);
+	//		}
+	//	} else {
 			if (orientation == Orientation.HORIZONTAL) {
-				percentage *= getWidth();
-				elIndicator.setWidth(percentage);
+				percentage *= indDimensions.x;
 			} else {
-				percentage *= getHeight();
-				elIndicator.setHeight(percentage);
-			}
-		} else {
-			if (orientation == Orientation.HORIZONTAL) {
-				percentage *= getWidth();
-			} else {
-				percentage *= getHeight();
+				percentage *= indDimensions.y;
 			}
 			elIndicator.updateLocalClipping();
-		}
+	//	}
 		
 		if (this.displayValues) {
 			elOverlay.setText(String.valueOf((int)this.currentValue) + "/" + String.valueOf((int)this.maxValue));
@@ -395,13 +400,26 @@ public abstract class Indicator extends Element {
 	 * @param imgPath 
 	 */
 	public void setBaseImage(String imgPath) {
-		Texture tex = screen.getApplication().getAssetManager().loadTexture(imgPath);
-		tex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
-		tex.setMagFilter(Texture.MagFilter.Bilinear);
-		tex.setWrap(Texture.WrapMode.Repeat);
-		
-		this.getElementMaterial().setTexture("ColorMap", tex);
-		this.getElementMaterial().setColor("Color", ColorRGBA.White);
+		setColorMap(imgPath);
+	}
+	
+	/**
+	 * Set the image to use in front of the indicator
+	 * @param imgPath
+	 */
+	public void setOverlayImage(String imgPath) {
+		elOverlay.setColorMap(imgPath);
+	}
+	
+	public void setIndicatorImage(String imgPath) {
+		elIndicator.setColorMap(imgPath);
+	}
+	
+	public void setIndicatorPadding(Vector4f padding) {
+		indPadding.set(padding);
+		indDimensions.set(getWidth()-(padding.x+padding.z),getHeight()-(padding.y+padding.w));
+		elIndicator.setPosition(padding.x,padding.y);
+		elIndicator.setDimensions(indDimensions);
 	}
 	
 	public abstract void onChange(float currentValue, float currentPercentage);
