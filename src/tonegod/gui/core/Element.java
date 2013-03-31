@@ -1689,6 +1689,52 @@ public class Element extends Node {
 		return this.alphaMap;
 	}
 	
+	public void setColorMap(String colorMap) {
+		Texture color = null;
+		if (screen.getUseTextureAtlas()) {
+			if (this.getElementTexture() != null)	color = getElementTexture();
+			else									color = screen.getAtlasTexture();
+		} else {
+			color = app.getAssetManager().loadTexture(colorMap);
+			color.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
+			color.setMagFilter(Texture.MagFilter.Bilinear);
+			color.setWrap(Texture.WrapMode.Repeat);
+		}
+		
+		this.defaultTex = color;
+		
+		if (!screen.getUseTextureAtlas()) {
+			float imgWidth = color.getImage().getWidth();
+			float imgHeight = color.getImage().getHeight();
+			float pixelWidth = 1f/imgWidth;
+			float pixelHeight = 1f/imgHeight;
+
+			this.model = new ElementQuadGrid(this.dimensions, borders, imgWidth, imgHeight, pixelWidth, pixelHeight, 0, 0, imgWidth, imgHeight);
+
+			geom.setMesh(model);
+		} else {
+			float[] coords = screen.parseAtlasCoords(colorMap);
+			float textureAtlasX = coords[0];
+			float textureAtlasY = coords[1];
+			float textureAtlasW = coords[2];
+			float textureAtlasH = coords[3];
+
+			float imgWidth = color.getImage().getWidth();
+			float imgHeight = color.getImage().getHeight();
+			float pixelWidth = 1f/imgWidth;
+			float pixelHeight = 1f/imgHeight;
+
+			textureAtlasY = imgHeight-textureAtlasY-textureAtlasH;
+
+			model = new ElementQuadGrid(this.getDimensions(), borders, imgWidth, imgHeight, pixelWidth, pixelHeight, textureAtlasX, textureAtlasY, textureAtlasW, textureAtlasH);
+
+			geom.setMesh(model);
+		}
+		
+		mat.setTexture("ColorMap", color);
+		mat.setColor("Color", ColorRGBA.White);
+	}
+	
 	/**
 	 * This may be remove soon and probably should not be used as the method of handling
 	 * hide show was updated making this unnecissary.
