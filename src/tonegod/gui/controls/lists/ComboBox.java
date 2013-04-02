@@ -153,7 +153,7 @@ public abstract class ComboBox extends TextField {
 				if (validateListSize()) {
 					if (!DDList.getIsVisible()) {
 						DDList.showMenu(
-							null,
+							(Menu)null,
 							getElementParent().getAbsoluteX(),
 							getElementParent().getAbsoluteY()-DDList.getHeight()
 						);
@@ -394,7 +394,7 @@ public abstract class ComboBox extends TextField {
 				}
 				if (miIndexOf > -1 && miIndexOf < DDList.getMenuItems().size()-1)
 					handleHightlight(miIndexOf);
-				if (!DDList.getIsVisible() && evt.getKeyCode() != KeyInput.KEY_LSHIFT && evt.getKeyCode() != KeyInput.KEY_RSHIFT) DDList.showMenu(null, getAbsoluteX(), getAbsoluteY()-DDList.getHeight());
+				if (!DDList.getIsVisible() && evt.getKeyCode() != KeyInput.KEY_LSHIFT && evt.getKeyCode() != KeyInput.KEY_RSHIFT) DDList.showMenu((Menu)null, getAbsoluteX(), getAbsoluteY()-DDList.getHeight());
 			} else {
 				if (evt.getKeyCode() == KeyInput.KEY_UP) {
 					if (hlIndex > 0) {
