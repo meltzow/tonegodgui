@@ -1298,6 +1298,14 @@ public class Element extends Node {
 		
 	}
 	
+	public void centerToParent() {
+		if (elementParent == null) {
+			setPosition(screen.getWidth()/2-(getWidth()/2),screen.getHeight()/2-(getHeight()/2));
+		} else {
+			setPosition(elementParent.getWidth()/2-(getWidth()/2),elementParent.getHeight()/2-(getHeight()/2));
+		}
+	}
+	
 	/**
 	 * Set the north, west, east and south borders in number of pixels
 	 * @param borderSize 
