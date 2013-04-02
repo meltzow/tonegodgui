@@ -1,6 +1,8 @@
 package tonegod.gui.core;
 
 import com.jme3.app.Application;
+import com.jme3.app.state.AbstractAppState;
+import com.jme3.app.state.AppState;
 import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -174,6 +176,8 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	private boolean useTextureAtlas = false;
 	private Texture atlasTexture;
 	
+	private LayoutParser layoutParser;
+	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
 	 * provided with the library.
@@ -201,6 +205,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		
 		effectManager = new EffectManager(this);
 		app.getInputManager().addRawInputListener(this);
+		layoutParser = new LayoutParser(this);
 	}
 	
 	/**
@@ -232,6 +237,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	/**
 	 * Initializes the Screen control
 	 */
+	@Deprecated
 	public void initialize() {
 	//	app.getInputManager().addRawInputListener(this);
 		
@@ -1604,6 +1610,11 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	public void lostOwnership(Clipboard clipboard, Transferable contents) {
 	//	System.out.println("Clipboard failed, switching to internal clipboard.");
 	//	this.clipboardActive = false;
+	}
+	
+	// Layout Parser
+	public void parseLayout(String path, AbstractAppState state) {
+		layoutParser.parseLayout(path, state);
 	}
 	
 	// Key states
