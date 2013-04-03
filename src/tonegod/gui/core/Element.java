@@ -415,6 +415,15 @@ public class Element extends Node {
 		initZOrder(zOrder);
 	}
 	
+	public void setGlobalUIScale(float widthPercent, float heightPercent) {
+		for (Element el : elementChildren.values()) {
+			el.setPosition(el.getPosition().x*widthPercent, el.getPosition().y*heightPercent);
+			el.setDimensions(el.getDimensions().x*widthPercent, el.getDimensions().y*heightPercent);
+			el.setFontSize(el.getFontSize()*heightPercent);
+			el.setGlobalUIScale(widthPercent, heightPercent);
+		}
+	}
+	
 	/**
 	 * Returns a list of all children that are an instance of DragElement
 	 * @return List<Element>

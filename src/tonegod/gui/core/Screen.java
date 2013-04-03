@@ -877,6 +877,15 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		return this.effectManager;
 	}
 	
+	public void setGlobalUIScale(float widthPercent, float heightPercent) {
+		for (Element el : elements.values()) {
+			el.setPosition(el.getPosition().x*widthPercent, el.getPosition().y*heightPercent);
+			el.setDimensions(el.getDimensions().x*widthPercent, el.getDimensions().y*heightPercent);
+			el.setFontSize(el.getFontSize()*heightPercent);
+			el.setGlobalUIScale(widthPercent, heightPercent);
+		}
+	}
+	
 	@Override
 	public Control cloneForSpatial(Spatial spatial) {
 		Screen screen = new Screen(this.app, this.styleMap);
