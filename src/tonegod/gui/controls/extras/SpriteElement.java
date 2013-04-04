@@ -32,6 +32,7 @@ public class SpriteElement extends Element implements Control {
 	private float framesPerSecond = 4;
 	protected float trackInterval = (1/framesPerSecond), currentTrack = 0;
 	private Texture sprite;
+	private int spriteCols, spriteRows;
 	private float imgWidth, imgHeight, spriteWidth, spriteHeight, currentX = 0, currentY = 0;
 	
 	/**
@@ -128,6 +129,8 @@ public class SpriteElement extends Element implements Control {
 	}
 	
 	public void setSprite(String imgPath, int rows, int cols, float framesPerSecond) {
+		this.spriteRows = rows;
+		this.spriteCols = cols;
 		sprite = screen.getApplication().getAssetManager().loadTexture(imgPath);
 		sprite.setMagFilter(Texture.MagFilter.Bilinear);
 		sprite.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
@@ -157,6 +160,10 @@ public class SpriteElement extends Element implements Control {
 		else			this.removeControl(this);
 	}
 	
+	public boolean getIsEnabled() {
+		return this.isEnabled;
+	}
+	
 	@Override
 	public Control cloneForSpatial(Spatial spatial) {
 		throw new UnsupportedOperationException("Not supported yet.");
@@ -174,7 +181,7 @@ public class SpriteElement extends Element implements Control {
 				currentTrack += tpf;
 				if (currentTrack >= trackInterval) {
 					updateSprite();
-					currentTrack = 0;
+					currentTrack -= trackInterval;
 				}
 			}
 		}
@@ -190,6 +197,12 @@ public class SpriteElement extends Element implements Control {
 			}
 		}
 		setTextureAtlasImage(sprite,"x=" + currentX + "|y=" + currentY + "|w=" + spriteWidth + "|h=" + spriteHeight);
+	}
+	
+	public void setCurrentFrame(int row, int col) {
+		currentX = row*spriteWidth;
+		currentY = col*spriteHeight;
+		this.setTextureAtlasImage(sprite, "x=" + currentX + "|y=" + currentY + "|w=" + spriteWidth + "|h=" + spriteHeight);
 	}
 	
 	@Override
