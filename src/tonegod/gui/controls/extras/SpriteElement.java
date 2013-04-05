@@ -192,7 +192,7 @@ public class SpriteElement extends Element implements Control {
 				currentY = 0;
 			}
 		}
-		setTextureAtlasImage(sprite,"x=" + currentX + "|y=" + currentY + "|w=" + spriteWidth + "|h=" + spriteHeight);
+		updateTextureAtlasImage("x=" + currentX + "|y=" + currentY + "|w=" + spriteWidth + "|h=" + spriteHeight);
 	}
 	
 	public void setCurrentFrame(int row, int col) {
