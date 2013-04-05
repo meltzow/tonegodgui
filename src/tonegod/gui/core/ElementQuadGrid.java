@@ -193,7 +193,42 @@ public class ElementQuadGrid extends Mesh {
 		}
 		setBuffers(true);
 	}
-	
+	public void updateTexCoords(float atlasX, float atlasY, float atlasW, float atlasH) {
+		float fX = pixelWidth*atlasX;
+		float fW = pixelWidth*(atlasX+atlasW);
+		float fY = pixelHeight*atlasY;
+		float fH = pixelHeight*(atlasY+atlasH);
+		this.atlasX = fX;
+		this.atlasY = fY;
+		this.atlasW = fW;
+		this.atlasH = fH;
+		
+		templateCoordX = new float[] {
+			fX, fX+(pixelWidth*borders.y), fW-(pixelWidth*borders.z), fW
+		};
+		templateCoordY = new float[] {
+			fY, fY+(pixelHeight*borders.x), fH-(pixelHeight*borders.w), fH
+		};
+		
+		// determine tex corrds based on resize border
+		int index = 0;
+		int indexX = 0;
+		int indexY = 0;
+		for (int y = 0; y < 4; y++) {
+			for (int x = 0; x < 4; x++) {
+				coords.put(index, templateCoordX[indexX]);
+				index++;
+				coords.put(index, templateCoordY[indexY]);
+				index++;
+				indexX++;
+				if (indexX == 4) { indexX = 0; }
+			}
+			indexY++;
+			if (indexY == 4) { indexY = 0; }
+		}
+		this.clearBuffer(Type.TexCoord);
+		this.setBuffer(Type.TexCoord, 2, coords);
+	}
 	public void resetColorBuffer() {
 		colors = null;
 		setBuffers(true);

@@ -303,6 +303,23 @@ public class Element extends Node {
 		geom.setMesh(model);
 	}
 	
+	public void updateTextureAtlasImage(String queryString) {
+		float[] coords = screen.parseAtlasCoords(queryString);
+		float textureAtlasX = coords[0];
+		float textureAtlasY = coords[1];
+		float textureAtlasW = coords[2];
+		float textureAtlasH = coords[3];
+
+		float imgWidth = defaultTex.getImage().getWidth();
+		float imgHeight = defaultTex.getImage().getHeight();
+		float pixelWidth = 1f/imgWidth;
+		float pixelHeight = 1f/imgHeight;
+
+		textureAtlasY = imgHeight-textureAtlasY-textureAtlasH;
+		
+		getModel().updateTexCoords(textureAtlasX, textureAtlasY, textureAtlasW, textureAtlasH);
+	}
+	
 	public boolean getUseLocalAtlas() { return this.useLocalAtlas; }
 	
 	public Vector2f getAtlasTextureOffset(float[] coords) {
