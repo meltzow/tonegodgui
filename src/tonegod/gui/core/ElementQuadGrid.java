@@ -11,7 +11,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.util.BufferUtils;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 /**
  *
@@ -20,7 +20,7 @@ import java.nio.IntBuffer;
 public class ElementQuadGrid extends Mesh {
 	private FloatBuffer verts = BufferUtils.createFloatBuffer(16*3);
 	private FloatBuffer coords = BufferUtils.createFloatBuffer(16*2);
-	private IntBuffer indexes = BufferUtils.createIntBuffer(3*3*6);
+	private ShortBuffer indexes = BufferUtils.createShortBuffer(3*3*6);
 	private FloatBuffer normals = BufferUtils.createFloatBuffer(16*3);
 	private FloatBuffer colors = null;
 	
@@ -32,7 +32,7 @@ public class ElementQuadGrid extends Mesh {
 	private float templateZ = 0;
 	private float imgWidth, imgHeight, pixelWidth, pixelHeight, atlasX, atlasY, atlasW, atlasH;
 	
-	private int[] templateIndexes = new int[] {
+	private short[] templateIndexes = new short[] {
 		0,1,5,5,4,0
 	};
 	
@@ -93,24 +93,24 @@ public class ElementQuadGrid extends Mesh {
 		// Populate indexes from temple
 		indexX = 0;
 		for (int x = 0; x < indexes.capacity(); x += 18) {
-			indexes.put(x, templateIndexes[0]+indexX);
-			indexes.put(x+1, templateIndexes[1]+indexX);
-			indexes.put(x+2, templateIndexes[2]+indexX);
-			indexes.put(x+3, templateIndexes[3]+indexX);
-			indexes.put(x+4, templateIndexes[4]+indexX);
-			indexes.put(x+5, templateIndexes[5]+indexX);
-			indexes.put(x+6, templateIndexes[0]+indexX+1);
-			indexes.put(x+7, templateIndexes[1]+indexX+1);
-			indexes.put(x+8, templateIndexes[2]+indexX+1);
-			indexes.put(x+9, templateIndexes[3]+indexX+1);
-			indexes.put(x+10, templateIndexes[4]+indexX+1);
-			indexes.put(x+11, templateIndexes[5]+indexX+1);
-			indexes.put(x+12, templateIndexes[0]+indexX+2);
-			indexes.put(x+13, templateIndexes[1]+indexX+2);
-			indexes.put(x+14, templateIndexes[2]+indexX+2);
-			indexes.put(x+15, templateIndexes[3]+indexX+2);
-			indexes.put(x+16, templateIndexes[4]+indexX+2);
-			indexes.put(x+17, templateIndexes[5]+indexX+2);
+			indexes.put(x, (short)(templateIndexes[0]+indexX));
+			indexes.put(x+1, (short)(templateIndexes[1]+indexX));
+			indexes.put(x+2, (short)(templateIndexes[2]+indexX));
+			indexes.put(x+3, (short)(templateIndexes[3]+indexX));
+			indexes.put(x+4, (short)(templateIndexes[4]+indexX));
+			indexes.put(x+5, (short)(templateIndexes[5]+indexX));
+			indexes.put(x+6, (short)(templateIndexes[0]+indexX+1));
+			indexes.put(x+7, (short)(templateIndexes[1]+indexX+1));
+			indexes.put(x+8, (short)(templateIndexes[2]+indexX+1));
+			indexes.put(x+9, (short)(templateIndexes[3]+indexX+1));
+			indexes.put(x+10, (short)(templateIndexes[4]+indexX+1));
+			indexes.put(x+11, (short)(templateIndexes[5]+indexX+1));
+			indexes.put(x+12, (short)(templateIndexes[0]+indexX+2));
+			indexes.put(x+13, (short)(templateIndexes[1]+indexX+2));
+			indexes.put(x+14, (short)(templateIndexes[2]+indexX+2));
+			indexes.put(x+15, (short)(templateIndexes[3]+indexX+2));
+			indexes.put(x+16, (short)(templateIndexes[4]+indexX+2));
+			indexes.put(x+17, (short)(templateIndexes[5]+indexX+2));
 			indexX += 4;
 		}
 		
