@@ -4,8 +4,6 @@
  */
 package tonegod.gui.controls.extras;
 
-import com.jme3.font.BitmapFont;
-import com.jme3.font.LineWrapMode;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
@@ -14,10 +12,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
-import tonegod.gui.controls.buttons.Button;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
-import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 
 /**
