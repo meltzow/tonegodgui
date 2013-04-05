@@ -48,6 +48,7 @@ public class RotationInfluencer implements Influencer {
 	@Override
 	public RotationInfluencer clone() {
 		RotationInfluencer clone = new RotationInfluencer();
+		clone.setMaxRotationSpeed(maxRotationSpeed);
 		return clone;
 	}
 }
