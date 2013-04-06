@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import tonegod.gui.controls.extras.SpriteElement;
+import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 
 /**
@@ -34,7 +35,9 @@ public class ElementEmitter implements Control {
 		Gravity,
 		Color,
 		Size,
-		Rotation
+		Rotation,
+		Impulse,
+		Alpha
 	}
 	
 	Screen screen;
@@ -57,6 +60,8 @@ public class ElementEmitter implements Control {
 	private float highLife = .5f;
 	private float lowLife = .1f;
 	
+	private Element targetElement = null;
+	
 	public ElementEmitter(Screen screen, Vector2f emitterPosition, float emitterWidth, float emitterHeight) {
 		this.screen = screen;
 		this.app = screen.getApplication();
@@ -72,7 +77,10 @@ public class ElementEmitter implements Control {
 		influencers.put("Size",s);
 		RotationInfluencer r = new RotationInfluencer();
 		influencers.put("Rotation",r);
-		
+		ImpulseInfluencer i = new ImpulseInfluencer();
+		influencers.put("Impulse",i);
+		AlphaInfluencer a = new AlphaInfluencer();
+		influencers.put("Alpha",a);
 	}
 	
 	public Influencer getInfluencer(String key) {
@@ -81,6 +89,14 @@ public class ElementEmitter implements Control {
 	
 	public Influencer getInfluencer(InfluencerType type) {
 		return influencers.get(type.toString());
+	}
+	
+	public void addInfluencer(String key, Influencer influencer) {
+		influencers.put(key, influencer);
+	}
+	
+	public void setPosition(Vector2f emitterPosition) {
+		this.emitterPosition.set(emitterPosition);
 	}
 	
 	public void setSprite(String spriteImagePath, int spriteRows, int spriteCols, int spriteFPS) {
@@ -92,6 +108,9 @@ public class ElementEmitter implements Control {
 	
 	@Override
 	public void update(float tpf) {
+		for (ElementParticle p : particles) {
+			if (p.active) p.update(tpf);
+		}
 		if (isEnabled) {
 			currentInterval += tpf;
 			if (currentInterval >= targetInterval) {
@@ -99,12 +118,14 @@ public class ElementEmitter implements Control {
 				currentInterval -= targetInterval;
 			}
 		}
-		for (ElementParticle p : particles) {
-			if (p.active) p.update(tpf);
-		}
 	}
 	
 	public void setMaxParticles(int maxParticles) {
+		setMaxParticles(maxParticles, null);
+	}
+	
+	public void setMaxParticles(int maxParticles, Element targetElement) {
+		this.targetElement = targetElement;
 		particles = new ElementParticle[maxParticles];
 		for (int i = 0; i < maxParticles; i++) {
 			ElementParticle p = new ElementParticle();
@@ -116,7 +137,10 @@ public class ElementEmitter implements Control {
 			);
 			p.particle.setSprite(spriteImagePath, spriteRows, spriteCols, spriteFPS);
 			p.particle.getGeometry().center();
-			screen.addElement(p.particle);
+			if (targetElement == null)
+				screen.addElement(p.particle);
+			else
+				this.targetElement.addChild(p.particle);
 			p.initialize(true);
 			particles[i] = p;
 		}
@@ -150,11 +174,11 @@ public class ElementEmitter implements Control {
 	}
 
 	public float getForce() {
-		return force;
+		return force/100f;
 	}
 
 	public void setForce(float force) {
-		this.force = force;
+		this.force = force*100f;
 	}
 
 	public float getHighLife() {
@@ -211,34 +235,26 @@ public class ElementEmitter implements Control {
 		public boolean rotateDir;
 		public boolean active = false;
 		public float blend;
+		private Map<String,Object> data = new HashMap();
 		
 		public void update(float tpf) {
-			final ElementParticle p = this;
+			life -= tpf;
+			blend = (startlife - life) / startlife;
 			
-			p.life -= tpf;
-			blend = (p.startlife - p.life) / p.startlife;
-			if (blend > 1) blend = 1;
-			if (blend < 0) blend = 0;
-			
-			if (life < 0) {
-				p.killParticle();
+			if (life <= 0) {
+				killParticle();
 				return;
 			}
 			
 			for (Influencer inf : influencers.values()) {
-				inf.update(p, tpf);
+				if (inf.getIsEnabled())
+					inf.update(this, tpf);
 			}
 			
-		//	app.enqueue(new Callable() {
-		//		@Override
-		//		public Object call() throws Exception {
-					p.particle.setPosition(p.position);
-					p.particle.setLocalScale(p.size);
-					p.particle.getElementMaterial().setColor("Color", p.color);
-					p.particle.setLocalRotation(p.particle.getLocalRotation().fromAngleAxis(p.angle, Vector3f.UNIT_Z));
-		//			return null;
-		//		}
-		//	});
+			particle.setPosition(position);
+			particle.setLocalScale(size);
+			particle.getElementMaterial().setColor("Color", color);
+			particle.setLocalRotation(particle.getLocalRotation().fromAngleAxis(angle, Vector3f.UNIT_Z));
 		};
 		
 		public void initialize(boolean hide) {
@@ -253,7 +269,7 @@ public class ElementEmitter implements Control {
 			if (FastMath.rand.nextBoolean()) velY = -velY;
 			velocity.set(new Vector2f(velX,velY));
 			life = highLife;
-			startlife = lowLife + FastMath.nextRandomFloat() * (highLife - lowLife);
+			startlife = (highLife - lowLife) * FastMath.nextRandomFloat() + lowLife ;
 			life = startlife;
 			rotateDir = FastMath.rand.nextBoolean();
 			rotateSpeed = FastMath.rand.nextFloat();
@@ -261,8 +277,8 @@ public class ElementEmitter implements Control {
 			for (Influencer inf : influencers.values()) {
 				inf.initialize(this);
 			}
+			
 			active = !hide;
-		//	if (screen.getElementById(particle.getUID()) == null)
 			if (hide)	particle.hide();
 			else		particle.show();
 			update(0);
@@ -271,6 +287,14 @@ public class ElementEmitter implements Control {
 		public void killParticle() {
 			active = false;
 			particle.hide();
+		}
+		
+		public void putData(String key, Object object) {
+			data.put(key, object);
+		}
+		
+		public Object getData(String key) {
+			return data.get(key);
 		}
 	}
 }

@@ -15,14 +15,24 @@ public class GravityInfluencer implements Influencer {
 	
 	private boolean isEnabled = true;
 	private Vector2f gravity = new Vector2f(0,1);
+	private Vector2f temp = new Vector2f();
 	
 	@Override
 	public void update(ElementParticle p, float tpf) {
 		if (isEnabled) {
-			// applying gravity
-			p.velocity.x -= gravity.x * tpf;
-			p.velocity.y -= gravity.y * tpf;
-			p.position.addLocal(new Vector2f(p.velocity.x,p.velocity.y));
+			
+		//	p.velocity.x -= gravity.x * tpf;
+		//	p.velocity.y -= gravity.y * tpf;
+		//	p.velocity.z -= gravity.z * tpf;
+		//	temp.set(p.velocity).multLocal(tpf);
+		//	p.position.addLocal(temp);
+		
+		//	p.velocity.x -= gravity.x * tpf;
+		//	p.velocity.y -= gravity.y * tpf;
+			temp.set(gravity.mult(tpf));
+			p.velocity.subtractLocal(temp);
+			temp.set(p.velocity).multLocal(tpf);
+			p.position.addLocal(temp);
 		}
 	}
 
@@ -42,11 +52,11 @@ public class GravityInfluencer implements Influencer {
 	}
 	
 	public void setGravity(Vector2f gravity) {
-		this.gravity.set(gravity);
+		this.gravity.set(gravity.mult(100));
 	}
 	
 	public Vector2f getGravity() {
-		return this.gravity;
+		return this.gravity.mult(0.001f);
 	}
 	
 	@Override
