@@ -578,6 +578,7 @@ public abstract class ComboBox extends TextField {
 	
 	@Override
 	public void controlCleanupHook() {
-		screen.removeElement(DDList);
+		if (DDList != null)
+			screen.removeElement(DDList);
 	}
 }
