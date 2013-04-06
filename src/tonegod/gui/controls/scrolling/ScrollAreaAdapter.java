@@ -115,7 +115,7 @@ public class ScrollAreaAdapter extends ScrollArea {
 	@Override
 	public void addScrollableChild(Element child) {
 		child.setDockS(true);
-		child.setClippingLayer(this);
+		child.setControlClippingLayer(this);
 		child.setClipPadding(15);
 		childInfo.put(child.getUID(), new ChildInfo(child, child.getPosition().x, child.getPosition().y, child.getDimensions().x, child.getDimensions().y));
 		scrollableChildren.add(child);
