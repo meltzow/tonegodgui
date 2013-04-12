@@ -160,6 +160,14 @@ public class SpriteElement extends Element implements Control {
 		return this.isEnabled;
 	}
 	
+	public int getSpriteRowCount() { return this.spriteRows; }
+	
+	public int getSpriteColCount() { return this.spriteCols; }
+	
+	public float getSpriteWidth() { return this.spriteWidth; }
+	
+	public float getSpriteHeight() { return this.spriteHeight; }
+	
 	@Override
 	public Control cloneForSpatial(Spatial spatial) {
 		throw new UnsupportedOperationException("Not supported yet.");
