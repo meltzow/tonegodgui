@@ -95,7 +95,7 @@ public class Element extends Node {
 	protected Screen screen;
 	private String UID;
 	private Vector2f position = new Vector2f();
-	private Vector2f orgPosition;
+	public Vector2f orgPosition;
 	private Vector2f dimensions = new Vector2f();
 	public Vector4f borders = new Vector4f(1,1,1,1);
 	public Vector4f borderHandles = new Vector4f(12,12,12,12);
@@ -167,6 +167,8 @@ public class Element extends Node {
 	private boolean isGlobalModal = false;
 	
 	private Object elementUserData;
+	
+	private boolean initialized = false;
 	
 	private boolean isDragElement = false, isDropElement = false;
 	/**
@@ -357,9 +359,12 @@ public class Element extends Node {
 	public void addChild(Element child) {
 		child.elementParent = this;
 		
-		child.setY(this.getHeight()-child.getHeight()-child.getY());
-		child.orgPosition = position.clone();
-		child.orgPosition.setY(child.getY());
+		if (!child.getInitialized()) {
+			child.setY(this.getHeight()-child.getHeight()-child.getY());
+			child.orgPosition = position.clone();
+			child.orgPosition.setY(child.getY());
+			child.setInitialized();
+		}
 		child.setQueueBucket(RenderQueue.Bucket.Gui);
 		
 		if (screen.getElementById(child.getUID()) != null) {
@@ -1101,6 +1106,12 @@ public class Element extends Node {
 			el.validateLayout();
 		}
 	}
+	
+	public void setInitialized() {
+		this.initialized = true;
+	}
+	
+	public boolean getInitialized() { return this.initialized; }
 	
 	/**
 	 * The preferred method for resizing Elements if the resize must effect nested

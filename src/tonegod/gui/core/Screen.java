@@ -270,7 +270,12 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 			}
 		} else {
 			elements.put(element.getUID(), element);
-			element.setY(getHeight()-element.getHeight()-element.getY());
+			if (!element.getInitialized()) {
+				element.setY(getHeight()-element.getHeight()-element.getY());
+				element.orgPosition = element.getPosition().clone();
+				element.orgPosition.setY(element.getY());
+				element.setInitialized();
+			}
 			t0neg0dGUI.attachChild(element);
 
 			// Set initla z-order
