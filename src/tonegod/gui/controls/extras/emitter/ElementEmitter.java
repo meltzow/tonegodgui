@@ -37,7 +37,8 @@ public class ElementEmitter implements Control {
 		Size,
 		Rotation,
 		Impulse,
-		Alpha
+		Alpha,
+		Sprite
 	}
 	
 	Screen screen;
@@ -81,6 +82,8 @@ public class ElementEmitter implements Control {
 		influencers.put("Impulse",i);
 		AlphaInfluencer a = new AlphaInfluencer();
 		influencers.put("Alpha",a);
+		SpriteInfluencer sp = new SpriteInfluencer();
+		influencers.put("Sprite",sp);
 	}
 	
 	public Influencer getInfluencer(String key) {
@@ -197,6 +200,46 @@ public class ElementEmitter implements Control {
 		this.lowLife = lowLife;
 	}
 
+	public ElementParticle[] getParticles() {
+		return this.particles;
+	}
+	
+	public ElementParticle getParticle(int index) {
+		if (index > -1 && index < particles.length)
+			return this.particles[index];
+		else
+			return null;
+	}
+	
+	public void removeParticle(int index) {
+		if (index > -1 && index < particles.length)
+			particles[index].killParticle();
+	}
+	
+	public void removeParticle(ElementParticle p) {
+		int index = 0;
+		for (ElementParticle particle : particles) {
+			if (particle == p) {
+				particles[index].killParticle();
+				break;
+			}
+			index++;
+		}
+	}
+	
+	public void removeAllParticles() {
+		for (ElementParticle p : particles) {
+			p.killParticle();
+		}
+	}
+	
+	public void emitAllParticles() {
+		for (ElementParticle p : particles) {
+			if (!p.active)
+				p.initialize(false);
+		}
+	}
+	
 	@Override
 	public Control cloneForSpatial(Spatial spatial) {
 		return this;
