@@ -340,7 +340,7 @@ public abstract class ColorWheel extends Window {
 		};
 	//	sH.getElementMaterial().setColor("Color", new ColorRGBA(1.0f, 1.0f, 1.0f, 0.0f));
 	//	sH.getElementMaterial().setBoolean("VertexColor", true);
-	//	sH.getModel().setGradientFillVertical(ColorRGBA.White, new ColorRGBA(red, green, blue, 1.0f));
+	//	sH.getModel().setGradientFillHorizontal(ColorRGBA.White, new ColorRGBA(red, green, blue, 1.0f));
 		addChild(sH);
 		
 		Label lH = new Label(screen, UID + ":lH", new Vector2f(lX, lY), new Vector2f(30, 15));
@@ -366,7 +366,7 @@ public abstract class ColorWheel extends Window {
 		};
 		sS.getElementMaterial().setColor("Color", new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
 		sS.getElementMaterial().setBoolean("VertexColor", true);
-		sS.getModel().setGradientFillVertical(ColorRGBA.Gray, new ColorRGBA(red, green, blue, 1.0f));
+		sS.getModel().setGradientFillHorizontal(ColorRGBA.Gray, new ColorRGBA(red, green, blue, 1.0f));
 		addChild(sS);
 		
 		Label lS = new Label(screen, UID + ":lS", new Vector2f(lX, lY), new Vector2f(30, 15));
@@ -393,7 +393,7 @@ public abstract class ColorWheel extends Window {
 		};
 		sL.getElementMaterial().setColor("Color", new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
 		sL.getElementMaterial().setBoolean("VertexColor", true);
-		sL.getModel().setGradientFillVertical(ColorRGBA.Black, new ColorRGBA(red, green, blue, 1.0f));
+		sL.getModel().setGradientFillHorizontal(ColorRGBA.Black, new ColorRGBA(red, green, blue, 1.0f));
 		addChild(sL);
 		
 		Label lL = new Label(screen, UID + ":lL", new Vector2f(lX, lY), new Vector2f(30, 15));
@@ -415,7 +415,7 @@ public abstract class ColorWheel extends Window {
 		};
 		sA.getElementMaterial().setColor("Color", new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
 		sA.getElementMaterial().setBoolean("VertexColor", true);
-		sA.getModel().setGradientFillVertical(new ColorRGBA(finalRed, finalGreen, finalBlue, 0.0f), new ColorRGBA(finalRed, finalGreen, finalBlue, 1.0f));
+		sA.getModel().setGradientFillHorizontal(new ColorRGBA(finalRed, finalGreen, finalBlue, 0.0f), new ColorRGBA(finalRed, finalGreen, finalBlue, 1.0f));
 		addChild(sA);
 		
 		Label lA = new Label(screen, UID + ":lA", new Vector2f(lX, lY), new Vector2f(30, 15));
@@ -450,37 +450,37 @@ public abstract class ColorWheel extends Window {
 	
 	private void addHueSliderBG(float x, float y ,float w, float h) {
 		Element bg1 = new Element(screen, getUID()+":HSBG1", new Vector2f(x,y), new Vector2f(w/6,h), Vector4f.ZERO,null);
-		bg1.getModel().setGradientFillVertical(new ColorRGBA(1,0,0,1), new ColorRGBA(1,0,1,1));
+		bg1.getModel().setGradientFillHorizontal(new ColorRGBA(1,0,0,1), new ColorRGBA(1,0,1,1));
 		bg1.getElementMaterial().setColor("Color", ColorRGBA.White);
 		bg1.getElementMaterial().setBoolean("VertexColor", true);
 		addChild(bg1);
 		
 		Element bg2 = new Element(screen, ":HSBG2", new Vector2f(x+(w/6),y), new Vector2f(w/6,h), Vector4f.ZERO,null);
-		bg2.getModel().setGradientFillVertical(new ColorRGBA(1,0,1,1), new ColorRGBA(0,0,1,1));
+		bg2.getModel().setGradientFillHorizontal(new ColorRGBA(1,0,1,1), new ColorRGBA(0,0,1,1));
 		bg2.getElementMaterial().setColor("Color", ColorRGBA.White);
 		bg2.getElementMaterial().setBoolean("VertexColor", true);
 		addChild(bg2);
 		
 		Element bg3 = new Element(screen, ":HSBG3", new Vector2f(x+(w/6*2),y), new Vector2f(w/6,h), Vector4f.ZERO,null);
-		bg3.getModel().setGradientFillVertical(new ColorRGBA(0,0,1,1), new ColorRGBA(0,1,1,1));
+		bg3.getModel().setGradientFillHorizontal(new ColorRGBA(0,0,1,1), new ColorRGBA(0,1,1,1));
 		bg3.getElementMaterial().setColor("Color", ColorRGBA.White);
 		bg3.getElementMaterial().setBoolean("VertexColor", true);
 		addChild(bg3);
 		
 		Element bg4 = new Element(screen, ":HSBG4", new Vector2f(x+(w/6*3),y), new Vector2f(w/6,h), Vector4f.ZERO,null);
-		bg4.getModel().setGradientFillVertical(new ColorRGBA(0,1,1,1), new ColorRGBA(0,1,0,1));
+		bg4.getModel().setGradientFillHorizontal(new ColorRGBA(0,1,1,1), new ColorRGBA(0,1,0,1));
 		bg4.getElementMaterial().setColor("Color", ColorRGBA.White);
 		bg4.getElementMaterial().setBoolean("VertexColor", true);
 		addChild(bg4);
 		
 		Element bg5 = new Element(screen, ":HSBG5", new Vector2f(x+(w/6*4),y), new Vector2f(w/6,h), Vector4f.ZERO,null);
-		bg5.getModel().setGradientFillVertical(new ColorRGBA(0,1,0,1), new ColorRGBA(1,1,0,1));
+		bg5.getModel().setGradientFillHorizontal(new ColorRGBA(0,1,0,1), new ColorRGBA(1,1,0,1));
 		bg5.getElementMaterial().setColor("Color", ColorRGBA.White);
 		bg5.getElementMaterial().setBoolean("VertexColor", true);
 		addChild(bg5);
 		
 		Element bg6 = new Element(screen, ":HSBG6", new Vector2f(x+(w/6*5),y), new Vector2f(w/6,h), Vector4f.ZERO,null);
-		bg6.getModel().setGradientFillVertical(new ColorRGBA(1,1,0,1), new ColorRGBA(1,0,0,1));
+		bg6.getModel().setGradientFillHorizontal(new ColorRGBA(1,1,0,1), new ColorRGBA(1,0,0,1));
 		bg6.getElementMaterial().setColor("Color", ColorRGBA.White);
 		bg6.getElementMaterial().setBoolean("VertexColor", true);
 		addChild(bg6);
@@ -488,13 +488,13 @@ public abstract class ColorWheel extends Window {
 	
 	private void addLightSliderBG(float x, float y ,float w, float h) {
 		blackToColor = new Element(screen, getUID()+":blackToColor", new Vector2f(x,y), new Vector2f(w/2,h), Vector4f.ZERO, null);
-		blackToColor.getModel().setGradientFillVertical(new ColorRGBA(0,0,0,1), new ColorRGBA(1,0,0,1));
+		blackToColor.getModel().setGradientFillHorizontal(new ColorRGBA(0,0,0,1), new ColorRGBA(1,0,0,1));
 		blackToColor.getElementMaterial().setColor("Color", ColorRGBA.White);
 		blackToColor.getElementMaterial().setBoolean("VertexColor", true);
 		addChild(blackToColor);
 		
 		colorToWhite = new Element(screen, ":colorToWhite", new Vector2f(x+(w/2),y), new Vector2f(w/2,h), Vector4f.ZERO, null);
-		colorToWhite.getModel().setGradientFillVertical(new ColorRGBA(1,0,0,1), new ColorRGBA(1,1,1,1));
+		colorToWhite.getModel().setGradientFillHorizontal(new ColorRGBA(1,0,0,1), new ColorRGBA(1,1,1,1));
 		colorToWhite.getElementMaterial().setColor("Color", ColorRGBA.White);
 		colorToWhite.getElementMaterial().setBoolean("VertexColor", true);
 		addChild(colorToWhite);
@@ -605,10 +605,10 @@ public abstract class ColorWheel extends Window {
 		tfHex.setText(hex);
 		colorSwatch.getElementMaterial().setColor("Color", new ColorRGBA(finalRed, finalGreen, finalBlue, finalAlpha));
 		float av = average();
-		sS.getModel().setGradientFillVertical(new ColorRGBA(av, av, av, 1.0f), new ColorRGBA(red, green, blue, 1.0f));
-		sL.getModel().setGradientFillVertical(ColorRGBA.Black, new ColorRGBA(red, green, blue, 1.0f));
-	//	colorToWhite.getModel().setGradientFillVertical(new ColorRGBA(red, green, blue, 1.0f), ColorRGBA.White);
-		sA.getModel().setGradientFillVertical(new ColorRGBA(finalRed, finalGreen, finalBlue, 0.0f), new ColorRGBA(finalRed, finalGreen, finalBlue, 1.0f));
+		sS.getModel().setGradientFillHorizontal(new ColorRGBA(av, av, av, 1.0f), new ColorRGBA(red, green, blue, 1.0f));
+		sL.getModel().setGradientFillHorizontal(ColorRGBA.Black, new ColorRGBA(red, green, blue, 1.0f));
+	//	colorToWhite.getModel().setGradientFillHorizontal(new ColorRGBA(red, green, blue, 1.0f), ColorRGBA.White);
+		sA.getModel().setGradientFillHorizontal(new ColorRGBA(finalRed, finalGreen, finalBlue, 0.0f), new ColorRGBA(finalRed, finalGreen, finalBlue, 1.0f));
 		finalColor.set(finalRed, finalGreen, finalBlue, finalAlpha);
 		onChange(finalColor);
 	}
