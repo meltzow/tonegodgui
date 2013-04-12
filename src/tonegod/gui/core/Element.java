@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import tonegod.gui.controls.extras.DragElement;
 import tonegod.gui.controls.form.Form;
+import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
 /**
@@ -186,7 +187,11 @@ public class Element extends Node {
 	public Element(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String texturePath) {
 		this.app = screen.getApplication();
 		this.screen = screen;
-		this.UID = UID;
+		if (UID == null) {
+			this.UID = UIDUtil.getUID();
+		} else {
+			this.UID = UID;
+		}
 		this.position.set(position);
 		this.dimensions.set(dimensions);
 	//	this.minDimensions = dimensions.clone();
