@@ -151,47 +151,32 @@ public class ElementQuadGrid extends Mesh {
 		updateMesh();
 		setBuffers(false);
 	}
+	
+	private void putColorRun(ColorRGBA color, int length) {
+		for (int i = 0; i < length; i++) {
+			colors.put(color.r);
+			colors.put(color.g);
+			colors.put(color.b);
+			colors.put(color.a);
+		}
+	}
 	public void setColorBuffer(FloatBuffer colors) {
 		this.colors = colors;
 		setBuffers(true);
 	}
-	public void setGradientFillVertical(ColorRGBA start, ColorRGBA end) {
+	public void setGradientFillHorizontal(ColorRGBA start, ColorRGBA end) {
 		colors = BufferUtils.createFloatBuffer(16*4);
 		for (int i = 0; i < 4; i++) {
-			colors.put(start.r);
-			colors.put(start.g);
-			colors.put(start.b);
-			colors.put(start.a);
-			colors.put(start.r);
-			colors.put(start.g);
-			colors.put(start.b);
-			colors.put(start.a);
-			colors.put(end.r);
-			colors.put(end.g);
-			colors.put(end.b);
-			colors.put(end.a);
-			colors.put(end.r);
-			colors.put(end.g);
-			colors.put(end.b);
-			colors.put(end.a);
+			putColorRun(start, 2);
+			putColorRun(end, 2);
 		}
 		setBuffers(true);
 	}
-	public void setGradientFillHorizontal(ColorRGBA start, ColorRGBA end) {
+	public void setGradientFillVertical(ColorRGBA start, ColorRGBA end) {
 		colors = BufferUtils.createFloatBuffer(16*4);
-		for (int i = 0; i < 8; i++) {
-			colors.put(start.r);
-			colors.put(start.g);
-			colors.put(start.b);
-			colors.put(start.a);
-		}
-		for (int i = 0; i < 8; i++) {
-			colors.put(end.r);
-			colors.put(end.g);
-			colors.put(end.b);
-			colors.put(end.a);
-		}
-		setBuffers(true);
+		putColorRun(start, 8 );
+		putColorRun(end, 8 );
+        setBuffers(true);
 	}
 	public void updateTexCoords(float atlasX, float atlasY, float atlasW, float atlasH) {
 		float fX = pixelWidth*atlasX;
