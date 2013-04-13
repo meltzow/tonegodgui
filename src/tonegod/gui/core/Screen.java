@@ -736,12 +736,12 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		//	System.out.println(testEl.getUID() + ": " + discard + ": " + testEl.getLocalTranslation().getZ() + ": " + z + ": " + result.getContactPoint().getZ());
 			if (!discard) {
 				
-				if (result.getContactPoint().getZ() > z) {
-					z = result.getContactPoint().getZ();
+			//	if (result.getContactPoint().getZ() > z) {
+			//		z = result.getContactPoint().getZ();
 					if (result.getGeometry().getParent() instanceof Element) {
 						el = testEl;//((Element)(result.getGeometry().getParent()));
 					}
-				}
+			//	}
 			}
 		}
 		if (el != null) {
