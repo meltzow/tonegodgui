@@ -97,9 +97,10 @@ public class Element extends Node {
 	private Vector2f position = new Vector2f();
 	public Vector2f orgPosition;
 	private Vector2f dimensions = new Vector2f();
+	public Vector2f orgDimensions, orgRelDimensions;
 	public Vector4f borders = new Vector4f(1,1,1,1);
 	public Vector4f borderHandles = new Vector4f(12,12,12,12);
-	private Vector2f minDimensions = null; //new Vector2f(100, 50);
+	private Vector2f minDimensions = new Vector2f(10, 10);
 	
 	private boolean ignoreMouse = false;
 	protected boolean isMovable = false;
@@ -196,6 +197,8 @@ public class Element extends Node {
 		}
 		this.position.set(position);
 		this.dimensions.set(dimensions);
+		this.orgDimensions = dimensions.clone();
+		this.orgRelDimensions = new Vector2f(1,1);
 	//	this.minDimensions = dimensions.clone();
 		this.borders.set(resizeBorders);
 		
@@ -365,6 +368,7 @@ public class Element extends Node {
 			child.orgPosition.setY(child.getY());
 			child.setInitialized();
 		}
+		child.orgRelDimensions.set(child.getWidth()/getWidth(),child.getHeight()/getHeight());
 		child.setQueueBucket(RenderQueue.Bucket.Gui);
 		
 		if (screen.getElementById(child.getUID()) != null) {
@@ -1056,6 +1060,8 @@ public class Element extends Node {
 		return dimensions;
 	}
 	
+	public Vector2f getOrgDimensions() { return this.orgDimensions; }
+	
 	/**
 	 * Returns the actual width of an Element
 	 * @return float
@@ -1241,6 +1247,8 @@ public class Element extends Node {
 			el.controlResizeHook();
 		}
 	}
+	
+	// Below are different ideas for implementing minimum dimensions.  This will be cleaned up once I decide on the best approach.
 	/*
 	private void childResize(float diffX, float diffY, Borders dir) {
 		if (dir == Borders.N) {
@@ -1283,7 +1291,43 @@ public class Element extends Node {
 		}
 	}
 	*/
-	
+	/*
+	private void childResize(float diffX, float diffY, Borders dir) {
+		if (getElementParent().getDimensions().y > getElementParent().getOrgDimensions().y) {
+			if (dir == Borders.NW || dir == Borders.N || dir == Borders.NE) {
+				if (getScaleNS()) { if (getHeight()-diffY > minDimensions.y) { setHeight(getHeight()-diffY); } }
+			//	if (getScaleNS()) setHeight(getHeight()-diffY);
+				if (getDockN() && !getScaleNS()) setY(getY()-diffY);
+			} else if (dir == Borders.SW || dir == Borders.S || dir == Borders.SE) {
+				if (getScaleNS()) { if (getHeight()-diffY > minDimensions.y) { setHeight(getHeight()-diffY); } }
+			//	if (getScaleNS()) setHeight(getHeight()-diffY);
+				if (getDockN() && !getScaleNS()) setY(getY()-diffY);
+			}
+		} else {
+			setHeight(getOrgDimensions().y);
+			if (getDockN() && !getScaleNS()) setY(getY()-diffY);
+		}
+		if (getElementParent().getDimensions().x > getElementParent().getOrgDimensions().x) {
+			if (dir == Borders.NW || dir == Borders.W || dir == Borders.SW) {
+				if (getScaleEW()) { if (getWidth()-diffX > minDimensions.x) { setWidth(getWidth()-diffX); } }
+			//	if (getScaleEW()) setWidth(getWidth()-diffX);
+				if (getDockE() && !getScaleEW()) setX(getX()-diffX);
+			} else if (dir == Borders.NE || dir == Borders.E || dir == Borders.SE) {
+				if (getScaleEW()) { if (getWidth()-diffX > minDimensions.x) { setWidth(getWidth()-diffX); }  }
+			//	if (getScaleEW()) setWidth(getWidth()-diffX);
+				if (getDockE() && !getScaleEW()) setX(getX()-diffX);
+			}
+		} else {
+			setWidth(getOrgDimensions().x);
+			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
+		}
+		for (Element el : elementChildren.values()) {
+			el.childResize(diffX,diffY,dir);
+			el.controlResizeHook();
+		}
+	}
+	*/
+	/*
 	private void childResize(float diffX, float diffY, Borders dir) {
 		if (dir == Borders.NW || dir == Borders.N || dir == Borders.NE) {
 			if (getScaleNS()) setHeight(getHeight()-diffY);
@@ -1297,6 +1341,43 @@ public class Element extends Node {
 			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
 		} else if (dir == Borders.NE || dir == Borders.E || dir == Borders.SE) {
 			if (getScaleEW()) setWidth(getWidth()-diffX);
+			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
+		}
+		for (Element el : elementChildren.values()) {
+			el.childResize(diffX,diffY,dir);
+			el.controlResizeHook();
+		}
+	}
+	*/
+	private void childResize(float diffX, float diffY, Borders dir) {
+		if (dir == Borders.NW || dir == Borders.N || dir == Borders.NE) {
+			if (getElementParent().getHeight()*orgRelDimensions.y > minDimensions.y) {
+				if (getScaleNS()) setHeight(getElementParent().getHeight()*orgRelDimensions.y);//getHeight()-diffY);
+			} else {
+				if (getScaleNS()) setHeight(orgDimensions.y);
+			}
+			if (getDockN() && !getScaleNS()) setY(getY()-diffY);
+		} else if (dir == Borders.SW || dir == Borders.S || dir == Borders.SE) {
+			if (getElementParent().getHeight()*orgRelDimensions.y > minDimensions.y) {
+				if (getScaleNS()) setHeight(getElementParent().getHeight()*orgRelDimensions.y);//getHeight()-diffY);
+			} else {
+				if (getScaleNS()) setHeight(orgDimensions.y);
+			}
+			if (getDockN() && !getScaleNS()) setY(getY()-diffY);
+		}
+		if (dir == Borders.NW || dir == Borders.W || dir == Borders.SW) {
+			if (getElementParent().getWidth()*orgRelDimensions.x > minDimensions.x) {
+				if (getScaleEW()) setWidth(getElementParent().getWidth()*orgRelDimensions.x);//getWidth()-diffX);
+			} else {
+				if (getScaleEW()) setWidth(orgDimensions.x);
+			}
+			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
+		} else if (dir == Borders.NE || dir == Borders.E || dir == Borders.SE) {
+			if (getElementParent().getWidth()*orgRelDimensions.x > minDimensions.x) {
+				if (getScaleEW()) setWidth(getElementParent().getWidth()*orgRelDimensions.x);//getWidth()-diffX);
+			} else {
+				if (getScaleEW()) setWidth(orgDimensions.x);
+			}
 			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
 		}
 		for (Element el : elementChildren.values()) {
@@ -1898,6 +1979,14 @@ public class Element extends Node {
 		controlHideHook();
 		for (Element el : elementChildren.values()) {
 			el.childHide();
+		}
+	}
+	
+	public void setIsVisible(boolean visibleState) {
+		if (visibleState) {
+			show();
+		} else {
+			hide();
 		}
 	}
 	
