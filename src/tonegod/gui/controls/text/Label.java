@@ -73,12 +73,6 @@ public class Label extends Element {
 	public Label(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
-		this.setIsResizable(false);
-		this.setScaleNS(false);
-		this.setScaleEW(false);
-		this.setDockN(true);
-		this.setDockW(true);
-		
 		// Load default font info
 		this.setFontColor(screen.getStyle("Label").getColorRGBA("fontColor"));
 		this.setFontSize(screen.getStyle("Label").getFloat("fontSize"));
@@ -87,6 +81,12 @@ public class Label extends Element {
 		this.setTextWrap(LineWrapMode.valueOf(screen.getStyle("Label").getString("textWrap")));
 		this.setTextPadding(screen.getStyle("Label").getFloat("textPadding"));
 		this.setTextClipPadding(screen.getStyle("Label").getFloat("textPadding"));
+		
+		this.setIsResizable(false);
+		this.setScaleNS(false);
+		this.setScaleEW(false);
+		this.setDockN(true);
+		this.setDockW(true);
 		
 		
 	}

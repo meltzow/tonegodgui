@@ -1327,7 +1327,6 @@ public class Element extends Node {
 		}
 	}
 	*/
-	/*
 	private void childResize(float diffX, float diffY, Borders dir) {
 		if (dir == Borders.NW || dir == Borders.N || dir == Borders.NE) {
 			if (getScaleNS()) setHeight(getHeight()-diffY);
@@ -1341,6 +1340,44 @@ public class Element extends Node {
 			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
 		} else if (dir == Borders.NE || dir == Borders.E || dir == Borders.SE) {
 			if (getScaleEW()) setWidth(getWidth()-diffX);
+			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
+		}
+		for (Element el : elementChildren.values()) {
+			el.childResize(diffX,diffY,dir);
+			el.controlResizeHook();
+		}
+	}
+	/*
+	private void childResize(float diffX, float diffY, Borders dir) {
+		if (getUID().equals("FirstName")) { System.out.println(orgRelDimensions); }
+		if (dir == Borders.NW || dir == Borders.N || dir == Borders.NE) {
+			if (getElementParent().getHeight()*orgRelDimensions.y > minDimensions.y) {
+				if (getScaleNS()) setHeight(getElementParent().getHeight()*orgRelDimensions.y);//getHeight()-diffY);
+			} else {
+				if (getScaleNS()) setHeight(orgDimensions.y);
+			}
+			if (getDockN() && !getScaleNS()) setY(getY()-diffY);
+		} else if (dir == Borders.SW || dir == Borders.S || dir == Borders.SE) {
+			if (getElementParent().getHeight()*orgRelDimensions.y > minDimensions.y) {
+				if (getScaleNS()) setHeight(getElementParent().getHeight()*orgRelDimensions.y);//getHeight()-diffY);
+			} else {
+				if (getScaleNS()) setHeight(orgDimensions.y);
+			}
+			if (getDockN() && !getScaleNS()) setY(getY()-diffY);
+		}
+		if (dir == Borders.NW || dir == Borders.W || dir == Borders.SW) {
+			if (getElementParent().getWidth()*orgRelDimensions.x > minDimensions.x) {
+				if (getScaleEW()) setWidth(getElementParent().getWidth()*orgRelDimensions.x);//getWidth()-diffX);
+			} else {
+				if (getScaleEW()) setWidth(orgDimensions.x);
+			}
+			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
+		} else if (dir == Borders.NE || dir == Borders.E || dir == Borders.SE) {
+			if (getElementParent().getWidth()*orgRelDimensions.x > minDimensions.x) {
+				if (getScaleEW()) setWidth(getElementParent().getWidth()*orgRelDimensions.x);//getWidth()-diffX);
+			} else {
+				if (getScaleEW()) setWidth(orgDimensions.x);
+			}
 			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
 		}
 		for (Element el : elementChildren.values()) {
@@ -1349,43 +1386,6 @@ public class Element extends Node {
 		}
 	}
 	*/
-	private void childResize(float diffX, float diffY, Borders dir) {
-		if (dir == Borders.NW || dir == Borders.N || dir == Borders.NE) {
-			if (getElementParent().getHeight()*orgRelDimensions.y > minDimensions.y) {
-				if (getScaleNS()) setHeight(getElementParent().getHeight()*orgRelDimensions.y);//getHeight()-diffY);
-			} else {
-				if (getScaleNS()) setHeight(orgDimensions.y);
-			}
-			if (getDockN() && !getScaleNS()) setY(getY()-diffY);
-		} else if (dir == Borders.SW || dir == Borders.S || dir == Borders.SE) {
-			if (getElementParent().getHeight()*orgRelDimensions.y > minDimensions.y) {
-				if (getScaleNS()) setHeight(getElementParent().getHeight()*orgRelDimensions.y);//getHeight()-diffY);
-			} else {
-				if (getScaleNS()) setHeight(orgDimensions.y);
-			}
-			if (getDockN() && !getScaleNS()) setY(getY()-diffY);
-		}
-		if (dir == Borders.NW || dir == Borders.W || dir == Borders.SW) {
-			if (getElementParent().getWidth()*orgRelDimensions.x > minDimensions.x) {
-				if (getScaleEW()) setWidth(getElementParent().getWidth()*orgRelDimensions.x);//getWidth()-diffX);
-			} else {
-				if (getScaleEW()) setWidth(orgDimensions.x);
-			}
-			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
-		} else if (dir == Borders.NE || dir == Borders.E || dir == Borders.SE) {
-			if (getElementParent().getWidth()*orgRelDimensions.x > minDimensions.x) {
-				if (getScaleEW()) setWidth(getElementParent().getWidth()*orgRelDimensions.x);//getWidth()-diffX);
-			} else {
-				if (getScaleEW()) setWidth(orgDimensions.x);
-			}
-			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
-		}
-		for (Element el : elementChildren.values()) {
-			el.childResize(diffX,diffY,dir);
-			el.controlResizeHook();
-		}
-	}
-	
 	/**
 	 * Overridable method for extending the resize event
 	 */
@@ -2134,9 +2134,9 @@ public class Element extends Node {
 				mat.setBoolean("UseClipping", false);
 			}
 		} else {
-			clippingBounds.set(0,0,0,0);
-			mat.setVector4("Clipping", clippingBounds);
-			mat.setBoolean("UseClipping", true);
+		//	clippingBounds.set(0,0,0,0);
+		//	mat.setVector4("Clipping", clippingBounds);
+		//	mat.setBoolean("UseClipping", true);
 		}
 		setFontPages();
 	}
