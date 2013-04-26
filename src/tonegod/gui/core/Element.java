@@ -2134,9 +2134,9 @@ public class Element extends Node {
 				mat.setBoolean("UseClipping", false);
 			}
 		} else {
-		//	clippingBounds.set(0,0,0,0);
-		//	mat.setVector4("Clipping", clippingBounds);
-		//	mat.setBoolean("UseClipping", true);
+			clippingBounds.set(0,0,0,0);
+			mat.setVector4("Clipping", clippingBounds);
+			mat.setBoolean("UseClipping", true);
 		}
 		setFontPages();
 	}
