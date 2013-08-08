@@ -360,6 +360,14 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		}
 	}
 	
+	public void removeAllMenuItems() {
+		this.getVScrollBar().hide();
+		if (!menuItems.isEmpty()) {
+			menuItems.clear();
+			validateSettings();
+			pack();
+		}
+	}
 	/**
 	 * Defines the number of pixels this Menu should overhang it's parent Menu when called as a Sub-Menu
 	 * @param menuOverhang 
