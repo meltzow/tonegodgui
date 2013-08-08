@@ -500,6 +500,35 @@ public abstract class Slider extends ButtonAdapter {
 	}
 	
 	/**
+	 * Attempts to set the selectedIndex to the index of the provided value Object and updates appropriately
+	 * @param value
+	 */
+	public void setSelectedByValue(Object value) {
+		String searchVal = value.toString();
+		int index = -1;
+		for (int i = 0; i < stepValues.size(); i++) {
+			String val = stepValues.get(i).toString();
+			if (val.indexOf(searchVal) != -1) {
+				index = i;
+			}
+		}
+		
+		if (index != -1) {
+			this.selectedIndex = index;
+
+			float step = (isStepped) ? stepSize : ((trackSurroundsThumb) ? (getWidth()-controlSize)/100 : getWidth()/100);
+			step *= selectedIndex;
+			if (orientation == Orientation.HORIZONTAL) {
+				if (trackSurroundsThumb)elThumbLock.setX(step+(controlSize/2));
+				else					elThumbLock.setX(step);
+			} else {
+				if (trackSurroundsThumb)elThumbLock.setY(step+(controlSize/2));
+				else					elThumbLock.setY(step);
+			}
+		}
+	}
+	
+	/**
 	 * Event called when the Slider's selectedIndex changes.
 	 * 
 	 * @param selectedIndex The Slider's current selectedIndex

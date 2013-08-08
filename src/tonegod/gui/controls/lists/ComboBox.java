@@ -246,6 +246,15 @@ public abstract class ComboBox extends TextField {
 		}
 	}
 	
+	/**
+	 * Removes all list items
+	 */
+	public void removeAllListItems() {
+		if (DDList != null) {
+			DDList.removeAllMenuItems();
+		}
+	}
+	
 	private void refreshSelectedIndex() {
 		if (DDList != null) {
 			if (selectedIndex > DDList.getMenuItems().size()-1)
@@ -289,6 +298,36 @@ public abstract class ComboBox extends TextField {
 			return false;
 		else
 			return true;
+	}
+	
+	public void setSelectedByCaption(String caption, boolean useCallback) {
+		MenuItem mItem = null;
+		for (MenuItem mi : DDList.getMenuItems()) {
+			if (mi.getCaption().equals(caption)) {
+				mItem = mi;
+				break;
+			}
+		}
+		
+		if (mItem != null) {
+			if (useCallback)	setSelectedIndexWithCallback(DDList.getMenuItems().indexOf(mItem));
+			else				setSelectedIndex(DDList.getMenuItems().indexOf(mItem));
+		}
+	}
+	
+	public void setSelectedByValue(Object value, boolean useCallback) {
+		MenuItem mItem = null;
+		for (MenuItem mi : DDList.getMenuItems()) {
+			if (mi.getValue().equals(value)) {
+				mItem = mi;
+				break;
+			}
+		}
+		
+		if (mItem != null) {
+			if (useCallback)	setSelectedIndexWithCallback(DDList.getMenuItems().indexOf(mItem));
+			else				setSelectedIndex(DDList.getMenuItems().indexOf(mItem));
+		}
 	}
 	
 	/**
