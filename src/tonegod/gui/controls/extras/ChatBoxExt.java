@@ -431,6 +431,10 @@ public abstract class ChatBoxExt extends Panel {
 		return l;
 	}
 	
+	public TextField getChatInput() {
+		return this.tfChatInput;
+	}
+	
 	/**
 	 * Sets the keyboard key code to send messages (in place of the send button)
 	 * @param sendKey 
