@@ -178,6 +178,8 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	
 	private LayoutParser layoutParser;
 	
+	private ElementQuadGrid mesh;
+	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
 	 * provided with the library.
@@ -202,10 +204,30 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		
 		this.styleMap = styleMap;
 		parseStyles(styleMap);
+		/*
+		float imgWidth = 100;
+		float imgHeight = 100;
+		float pixelWidth = 1f/imgWidth;
+		float pixelHeight = 1f/imgHeight;
+		float atlasX = 0, atlasY = 0, atlasW = imgWidth, atlasH = imgHeight;
 		
+		Texture defaultTex = getAtlasTexture();
+		imgWidth = defaultTex.getImage().getWidth();
+		imgHeight = defaultTex.getImage().getHeight();
+		pixelWidth = 1f/imgWidth;
+		pixelHeight = 1f/imgHeight;
+
+		atlasY = imgHeight-atlasY-atlasH;
+		
+		mesh = new ElementQuadGrid(new Vector2f(10,10), new Vector4f(2,2,2,2), imgWidth, imgHeight, pixelWidth, pixelHeight, atlasX, atlasY, atlasW, atlasH);
+		*/
 		effectManager = new EffectManager(this);
 		app.getInputManager().addRawInputListener(this);
 		layoutParser = new LayoutParser(this);
+	}
+	
+	public ElementQuadGrid getDefaultMesh() {
+		return mesh;
 	}
 	
 	/**
@@ -759,6 +781,50 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 			return el;
 		} else {
 			return null;
+		}
+	}
+	
+	public void forceEventElement(Element element) {
+		float x = element.getAbsoluteX()+1;
+		float y = element.getAbsoluteY()+1;
+		eventElement = getEventElement(x,y);
+		if (eventElement != null) {
+			updateZOrder(eventElement.getAbsoluteParent());
+			this.setTabFocusElement(eventElement);
+			if (eventElement.getIsDragDropDragElement())
+				targetElement = null;
+			if (eventElement.getIsResizable()) {
+				float offsetX = x;
+				float offsetY = y;
+				Element el = eventElement;
+				
+				if (keyboardElement != null) {
+					if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
+				}
+				keyboardElement = null;
+			} else if (eventElement.getIsMovable() && eventElementResizeDirection == null) {
+				eventElementResizeDirection = null;
+				if (keyboardElement != null) {
+					if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
+				}
+				keyboardElement = null;
+				eventElementOriginXY.set(eventElement.getPosition());
+			} else if (eventElement instanceof KeyboardListener) {
+				if (keyboardElement != null) {
+					if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
+				}
+				keyboardElement = eventElement;
+				if (keyboardElement instanceof TextField) {
+					((TextField)keyboardElement).setTabFocus();
+				}
+				// TODO: Update target element's font shader
+			} else {
+				eventElementResizeDirection = null;
+				if (keyboardElement != null) {
+					if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
+				}
+				keyboardElement = null;
+			}
 		}
 	}
 	

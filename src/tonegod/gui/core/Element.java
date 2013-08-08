@@ -14,12 +14,18 @@ import com.jme3.material.RenderState;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
+import com.jme3.scene.control.Control;
 import com.jme3.texture.Texture;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -2365,5 +2371,14 @@ public class Element extends Node {
 	 */
 	public Object getElementUserData() {
 		return this.elementUserData;
+	}
+	
+	Vector2f origin = new Vector2f(0,0);
+	public void setOrigin(float originX, float originY) {
+		origin.set(originX, originY);
+	}
+	
+	public Vector2f getOrigin() {
+		return this.origin;
 	}
 }
