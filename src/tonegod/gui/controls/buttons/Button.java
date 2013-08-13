@@ -183,14 +183,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		if (!isEnabled) {
 			runPressedEffect(false);
 		} else {
-			Effect effect = getEffect(Effect.EffectEvent.Press);
-			if (effect != null) {
-				effect.setBlendImage(getElementTexture());
-				screen.getEffectManager().applyEffect(effect);
-			}
-			if (originalFontColor != null) {
-				setFontColor(originalFontColor);
-			}
+			runLoseFocusEffect();
 		}
 	}
 	
