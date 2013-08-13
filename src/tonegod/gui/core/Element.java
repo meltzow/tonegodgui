@@ -1168,7 +1168,12 @@ public class Element extends Node {
 			}
 		} else if (dir == Borders.NE) {
 			nextX = oX-getAbsoluteX();
-			if (getLockToParentBounds()) { if (nextX >= getElementParent().getWidth()-getX()) { nextX = getElementParent().getWidth()-getX(); } }
+			if (getLockToParentBounds()) {
+				float checkWidth = (getElementParent() == null) ? screen.getWidth() : getElementParent().getWidth();
+				if (nextX >= checkWidth-getX()) {
+					nextX = checkWidth-getX();
+				}
+			}
 			if (minDimensions != null) {
 				if (nextX <= minDimensions.x) { nextX = minDimensions.x; }
 			}
@@ -1194,7 +1199,12 @@ public class Element extends Node {
 			}
 		} else if (dir == Borders.E) {
 			nextX = oX-getAbsoluteX();
-			if (getLockToParentBounds()) { if (nextX >= getElementParent().getWidth()-getX()) { nextX = getElementParent().getWidth()-getX(); } }
+			if (getLockToParentBounds()) {
+				float checkWidth = (getElementParent() == null) ? screen.getWidth() : getElementParent().getWidth();
+				if (nextX >= checkWidth-getX()) {
+					nextX = checkWidth-getX();
+				}
+			}
 			if (minDimensions != null) {
 				if (nextX <= minDimensions.x) { nextX = minDimensions.x; }
 			}
@@ -1211,7 +1221,12 @@ public class Element extends Node {
 				setX(x);
 			}
 			nextY = oY-getAbsoluteY();
-			if (getLockToParentBounds()) { if (nextY >= getElementParent().getHeight()-getY()) { nextY = getElementParent().getHeight()-getY(); } }
+			if (getLockToParentBounds()) {
+				float checkHeight = (getElementParent() == null) ? screen.getHeight() : getElementParent().getHeight();
+				if (nextY >= checkHeight-getY()) {
+					nextY = checkHeight-getY();
+				}
+			}
 			if (minDimensions != null) {
 				if (nextY <= minDimensions.y) { nextY = minDimensions.y; }
 			}
@@ -1220,7 +1235,12 @@ public class Element extends Node {
 			}
 		} else if (dir == Borders.S) {
 			nextY = oY-getAbsoluteY();
-			if (getLockToParentBounds()) { if (nextY >= getElementParent().getHeight()-getY()) { nextY = getElementParent().getHeight()-getY(); } }
+			if (getLockToParentBounds()) {
+				float checkHeight = (getElementParent() == null) ? screen.getHeight() : getElementParent().getHeight();
+				if (nextY >= checkHeight-getY()) {
+					nextY = checkHeight-getY();
+				}
+			}
 			if (minDimensions != null) {
 				if (nextY <= minDimensions.y) { nextY = minDimensions.y; }
 			}
@@ -1229,7 +1249,12 @@ public class Element extends Node {
 			}
 		} else if (dir == Borders.SE) {
 			nextX = oX-getAbsoluteX();
-			if (getLockToParentBounds()) { if (nextX >= getElementParent().getWidth()-getX()) { nextX = getElementParent().getWidth()-getX(); } }
+			if (getLockToParentBounds()) {
+				float checkWidth = (getElementParent() == null) ? screen.getWidth() : getElementParent().getWidth();
+				if (nextX >= checkWidth-getX()) {
+					nextX = checkWidth-getX();
+				}
+			}
 			if (minDimensions != null) {
 				if (nextX <= minDimensions.x) { nextX = minDimensions.x; }
 			}
@@ -1237,7 +1262,12 @@ public class Element extends Node {
 				setWidth(nextX);
 			}
 			nextY = oY-getAbsoluteY();
-			if (getLockToParentBounds()) { if (nextY >= getElementParent().getHeight()-getY()) { nextY = getElementParent().getHeight()-getY(); } }
+			if (getLockToParentBounds()) {
+				float checkHeight = (getElementParent() == null) ? screen.getHeight() : getElementParent().getHeight();
+				if (nextY >= checkHeight-getY()) {
+					nextY = checkHeight-getY();
+				}
+			}
 			if (minDimensions != null) {
 				if (nextY <= minDimensions.y) { nextY = minDimensions.y; }
 			}
