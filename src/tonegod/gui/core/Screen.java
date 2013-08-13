@@ -371,6 +371,14 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	
 	public Texture getAtlasTexture() { return atlasTexture; }
 	
+	public Texture createNewTexture(String texturePath) {
+		Texture newTex = app.getAssetManager().loadTexture(texturePath);
+		newTex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
+		newTex.setMagFilter(Texture.MagFilter.Bilinear);
+		newTex.setWrap(Texture.WrapMode.Repeat);
+		return newTex;
+	}
+	
 	public float[] parseAtlasCoords(String texturePath) {
 		float[] coords = new float[4];
 		
