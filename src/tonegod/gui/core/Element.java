@@ -1408,11 +1408,20 @@ public class Element extends Node {
 		if (getLockToParentBounds()) {
 			if (x < 0) { x = 0; }
 			if (y < 0) { y = 0; }
-			if (x > getElementParent().getWidth()-getWidth()) {
-				x = getElementParent().getWidth()-getWidth();
-			}
-			if (y > getElementParent().getHeight()-getHeight()) {
-				y = getElementParent().getHeight()-getHeight();
+			if (getElementParent() != null) {
+				if (x > getElementParent().getWidth()-getWidth()) {
+					x = getElementParent().getWidth()-getWidth();
+				}
+				if (y > getElementParent().getHeight()-getHeight()) {
+					y = getElementParent().getHeight()-getHeight();
+				}
+			} else {
+				if (x > screen.getWidth()-getWidth()) {
+					x = screen.getWidth()-getWidth();
+				}
+				if (y > screen.getHeight()-getHeight()) {
+					y = screen.getHeight()-getHeight();
+				}
 			}
 		}
 		setX(x);
