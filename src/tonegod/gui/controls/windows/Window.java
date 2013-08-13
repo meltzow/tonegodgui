@@ -18,10 +18,10 @@ import tonegod.gui.effects.Effect;
  * @author t0neg0d
  */
 public class Window extends Element {
-	Element dragBar;
-	boolean useShowSound, useHideSound;
-	String showSound, hideSound;
-	float showSoundVolume, hideSoundVolume;
+	protected Element dragBar;
+	private boolean useShowSound, useHideSound;
+	private String showSound, hideSound;
+	private float showSoundVolume, hideSoundVolume;
 	
 	/**
 	 * Creates a new instance of the Window control
