@@ -243,6 +243,8 @@ public class ElementQuadGrid extends Mesh {
 			this.setBuffer(Type.TexCoord, 2, coords);
 			this.clearBuffer(Type.Index);
 			this.setBuffer(Type.Index, 3, indexes);
+		//	this.clearBuffer(Type.Normal);
+		//	this.setBuffer(Type.Normal, 3, normals);
 			this.clearBuffer(Type.Color);
 			if (colors != null) {
 				this.setBuffer(Type.Color, 4, colors);
