@@ -132,6 +132,7 @@ public class Element extends Node {
 	private Material mat;
 	private Texture defaultTex;
 	private boolean useLocalAtlas = false;
+	private String atlasCoords = "";
 	private Texture alphaMap = null;
 	
 	protected BitmapText textElement;
@@ -233,7 +234,9 @@ public class Element extends Node {
 				textureAtlasY = coords[1];
 				textureAtlasW = coords[2];
 				textureAtlasH = coords[3];
-
+				
+				this.atlasCoords = "x=" + coords[0] + "|y=" + coords[1] + "|w=" + coords[2] + "|h=" + coords[3];
+				
 				defaultTex = screen.getAtlasTexture();
 
 				imgWidth = defaultTex.getImage().getWidth();
@@ -294,6 +297,11 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * Sets the texture to use as an atlas image as well as the atlas image coords.
+	 * @param tex The texture to use as a local atlas image
+	 * @param queryString The position of the desire atlas image (e.g. "x=0|y=0|w=50|h=50")
+	 */
 	public void setTextureAtlasImage(Texture tex, String queryString) {
 		this.defaultTex = tex;
 		mat.setTexture("ColorMap", tex);
@@ -301,6 +309,7 @@ public class Element extends Node {
 		mat.setBoolean("UseEffectTexCoords", true);
 		
 		this.useLocalAtlas = true;
+		this.atlasCoords = queryString;
 		
 		float[] coords = screen.parseAtlasCoords(queryString);
 		float textureAtlasX = coords[0];
@@ -319,6 +328,16 @@ public class Element extends Node {
 		geom.setMesh(model);
 	}
 	
+	/**
+	 * Returns the current unparsed string representing the Element's atlas image
+	 * @return 
+	 */
+	public String getAtlasCoords() { return this.atlasCoords; }
+	
+	/**
+	 * Sets the element image to the specified x/y/width/height
+	 * @param queryString (e.g. "x=0|y=0|w=50|h=50")
+	 */
 	public void updateTextureAtlasImage(String queryString) {
 		float[] coords = screen.parseAtlasCoords(queryString);
 		float textureAtlasX = coords[0];
@@ -336,8 +355,17 @@ public class Element extends Node {
 		getModel().updateTexCoords(textureAtlasX, textureAtlasY, textureAtlasW, textureAtlasH);
 	}
 	
+	/**
+	 * Returns if the element is using a local texture atlas of the screen defined texture atlas
+	 * @return 
+	 */
 	public boolean getUseLocalAtlas() { return this.useLocalAtlas; }
 	
+	/**
+	 * Returns the difference between the placement of the elements current image and the given texture coords.
+	 * @param coords The x/y coords of the new image
+	 * @return Vector2f containing The difference between the given coords and the original image
+	 */
 	public Vector2f getAtlasTextureOffset(float[] coords) {
 		Texture tex;
 		if (defaultTex != null) tex = defaultTex;
@@ -350,6 +378,11 @@ public class Element extends Node {
 		return new Vector2f( getModel().getEffectOffset( pixelWidth*coords[0], pixelHeight*(imgHeight-coords[1]-coords[3]) ));
 	}
 	
+	/**
+	 * Converts the the inputed percentage (0.0f-1.0f) into pixels of the elements image
+	 * @param in Vector2f containing the x and y percentage
+	 * @return Vector2f containing the actual width/height in pixels
+	 */
 	public final Vector2f getV2fPercentToPixels(Vector2f in) {
 		if (getElementParent() == null) {
 			if (in.x < 1) in.setX(screen.getWidth()*in.x);
@@ -412,6 +445,10 @@ public class Element extends Node {
 		elementChildren.clear();
 	}
 	
+	/**
+	 * Returns the one and only Element's screen
+	 * @return 
+	 */
 	public Screen getScreen() {
 		return this.screen;
 	}
@@ -1025,6 +1062,10 @@ public class Element extends Node {
 		updateClipping();
 	}
 	
+	/**
+	 * Stubbed for future use.  This should limit resizing to the minimum dimensions defined
+	 * @param minDimensions The absolute minimum dimensions for this Element.
+	 */
 	public void setMinDimensions(Vector2f minDimensions) {
 		if (this.minDimensions == null) this.minDimensions = new Vector2f();
 		this.minDimensions.set(minDimensions);
@@ -1066,6 +1107,10 @@ public class Element extends Node {
 		return dimensions;
 	}
 	
+	/**
+	 * Returns the dimensions defined at the time of the Element's creation.
+	 * @return 
+	 */
 	public Vector2f getOrgDimensions() { return this.orgDimensions; }
 	
 	/**
@@ -1100,6 +1145,9 @@ public class Element extends Node {
 		return getAbsoluteY() + getHeight();
 	}
 	
+	/**
+	 * Stubbed for future use.
+	 */
 	public void validateLayout() {
 		if (getDimensions().x < 1 || getDimensions().y < 1) {
 			Vector2f dim = getV2fPercentToPixels(getDimensions());
@@ -1119,10 +1167,16 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * Stubbed for future use.
+	 */
 	public void setInitialized() {
 		this.initialized = true;
 	}
 	
+	/**
+	 * Stubbed for future use.
+	 */
 	public boolean getInitialized() { return this.initialized; }
 	
 	/**
@@ -1466,6 +1520,9 @@ public class Element extends Node {
 		
 	}
 	
+	/**
+	 * Centers the Element to it's parent Element.  If the parent element is null, it will use the screen's width/height.
+	 */
 	public void centerToParent() {
 		if (elementParent == null) {
 			setPosition(screen.getWidth()/2-(getWidth()/2),screen.getHeight()/2-(getHeight()/2));
@@ -1599,6 +1656,10 @@ public class Element extends Node {
 		return this.model;
 	}
 	
+	/**
+	 * Returns the Element's Geometry.
+	 * @return 
+	 */
 	public Geometry getGeometry() {
 		return this.geom;
 	}
@@ -1921,6 +1982,9 @@ public class Element extends Node {
 		this.wasVisible = wasVisible;
 	}
 	
+	/**
+	 * Shows the current Element with the defined Show effect.  If no Show effect is defined, the Element will show as normal.
+	 */
 	public void showWithEffect() {
 		Effect effect = getEffect(Effect.EffectEvent.Show);
 		if (effect != null) {
@@ -1981,6 +2045,9 @@ public class Element extends Node {
 	 */
 	public void controlShowHook() {  }
 	
+	/**
+	 * Hides the element using the current defined Hide effect.  If no Hide effect is defined, the Element will hide as usual.
+	 */
 	public void hideWithEffect() {
 		Effect effect = getEffect(Effect.EffectEvent.Hide);
 		if (effect != null) {
@@ -2014,6 +2081,9 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * For internal use.  This method should never be called directly.
+	 */
 	public void childHide() {
 		if (isVisible) {
 			this.wasVisible = isVisible;
@@ -2027,12 +2097,24 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * Hides or shows the element (true = show, false = hide)
+	 * @param visibleState 
+	 */
 	public void setIsVisible(boolean visibleState) {
 		if (visibleState) {
 			show();
 		} else {
 			hide();
 		}
+	}
+	
+	/**
+	 * Toggles the Element's visibility based on the current state.
+	 */
+	public void setIsVisible() {
+		if (getIsVisible())	hide();
+		else				show();
 	}
 	
 	/**
@@ -2285,6 +2367,10 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * Overrides the screen global alpha with the specified value. setIngoreGlobalAlpha must be enabled prior to calling this method.
+	 * @param globalAlpha 
+	 */
 	public void setGlobalAlpha(float globalAlpha) {
 		if (!ignoreGlobalAlpha) {
 			getElementMaterial().setFloat("GlobalAlpha", globalAlpha);
@@ -2296,6 +2382,10 @@ public class Element extends Node {
 		}
 	}
 	
+	/**
+	 * Will enable or disable the use of the screen defined global alpha setting.
+	 * @param ignoreGlobalAlpha 
+	 */
 	public void setIgnoreGlobalAlpha(boolean ignoreGlobalAlpha) {
 		this.ignoreGlobalAlpha = ignoreGlobalAlpha;
 	}
@@ -2366,15 +2456,27 @@ public class Element extends Node {
 		this.hasFocus = hasFocus;
 	}
 	
+	/**
+	 * Returns if the Element currently has input focus
+	 * @return 
+	 */
 	public boolean getHasFocus() {
 		return this.hasFocus;
 	}
 	
 	// Modal
+	/**
+	 * Enables standard modal mode for the Element.
+	 * @param isModal 
+	 */
 	public void setIsModal(boolean isModal) {
 		this.isModal = isModal;
 	}
 	
+	/**
+	 * Returns if the Element is currently modal
+	 * @return Ret
+	 */
 	public boolean getIsModal() {
 		return this.isModal;
 	}
@@ -2413,10 +2515,19 @@ public class Element extends Node {
 	}
 	
 	Vector2f origin = new Vector2f(0,0);
+	/**
+	 * Stubbed for future use
+	 * @param originX
+	 * @param originY 
+	 */
 	public void setOrigin(float originX, float originY) {
 		origin.set(originX, originY);
 	}
 	
+	/**
+	 * Stubbed for future use.
+	 * @return 
+	 */
 	public Vector2f getOrigin() {
 		return this.origin;
 	}
