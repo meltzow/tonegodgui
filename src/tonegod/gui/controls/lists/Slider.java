@@ -584,7 +584,7 @@ public abstract class Slider extends ButtonAdapter {
 	// Tab focus
 	@Override
 	public void setTabFocus() {
-		screen.setKeyboardElemeent(this);
+		screen.setKeyboardElement(this);
 		Effect effect = elThumb.getEffect(Effect.EffectEvent.TabFocus);
 		if (effect != null) {
 			effect.setColor(ColorRGBA.DarkGray);
@@ -594,7 +594,7 @@ public abstract class Slider extends ButtonAdapter {
 	
 	@Override
 	public void resetTabFocus() {
-		screen.setKeyboardElemeent(null);
+		screen.setKeyboardElement(null);
 		Effect effect = elThumb.getEffect(Effect.EffectEvent.LoseTabFocus);
 		if (effect != null) {
 			effect.setColor(ColorRGBA.White);

@@ -936,7 +936,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		setTextRangeStart(caretIndex);
 		if (isEnabled)
 			caret.getMaterial().setBoolean("HasTabFocus", true);
-		screen.setKeyboardElemeent(this);
+		screen.setKeyboardElement(this);
 		controlTextFieldSetTabFocusHook();
 		Effect effect = getEffect(Effect.EffectEvent.TabFocus);
 		if (effect != null) {
@@ -956,7 +956,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		ctrl = false;
 		alt = false;
 		caret.getMaterial().setBoolean("HasTabFocus", false);
-		screen.setKeyboardElemeent(null);
+		screen.setKeyboardElement(null);
 		controlTextFieldResetTabFocusHook();
 		Effect effect = getEffect(Effect.EffectEvent.LoseTabFocus);
 		if (effect != null) {

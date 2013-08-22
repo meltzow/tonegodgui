@@ -1681,7 +1681,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	 * Sets the current Keyboard focus Element
 	 * @param element The Element to set keyboard focus to
 	 */
-	public void setKeyboardElemeent(Element element) {
+	public void setKeyboardElement(Element element) {
 		keyboardElement = element;
 	}
 	

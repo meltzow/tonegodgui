@@ -33,17 +33,17 @@ import tonegod.gui.listeners.TabFocusListener;
  * @author t0neg0d
  */
 public abstract class SelectList extends ScrollArea implements MouseMovementListener, MouseWheelListener, MouseButtonListener, TabFocusListener, KeyboardListener {
-	List<ListItem> listItems = new ArrayList();
-	List<Integer> selectedIndexes = new ArrayList();
-	List<Element> highlights = new ArrayList();
+	private List<ListItem> listItems = new ArrayList();
+	private List<Integer> selectedIndexes = new ArrayList();
+	private List<Element> highlights = new ArrayList();
 	
-	boolean isMultiselect = false;
-	float initWidth;
-	float listItemHeight;
-	float listPadding = 1;
-	ColorRGBA highlightColor;
-	int currentListItemIndex = -1;
-	boolean shift = false, ctrl = false;
+	private boolean isMultiselect = false;
+	private float initWidth;
+	private float listItemHeight;
+	private float listPadding = 1;
+	private ColorRGBA highlightColor;
+	protected int currentListItemIndex = -1;
+	private boolean shift = false, ctrl = false;
 	
 	/**
 	 * Creates a new instance of the SelectList control
@@ -534,12 +534,12 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 
 	@Override
 	public void setTabFocus() {
-		screen.setKeyboardElemeent(this);
+		screen.setKeyboardElement(this);
 	}
 
 	@Override
 	public void resetTabFocus() {
-		screen.setKeyboardElemeent(null);
+		screen.setKeyboardElement(null);
 	}
 	
 	public abstract void onChange();

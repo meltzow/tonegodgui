@@ -672,7 +672,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	// Tab focus
 	@Override
 	public void setTabFocus() {
-		screen.setKeyboardElemeent(this);
+		screen.setKeyboardElement(this);
 		Effect effect = getEffect(Effect.EffectEvent.TabFocus);
 		if (effect != null) {
 		//	System.out.println(getUID() + ": Effect Found");
@@ -683,7 +683,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	
 	@Override
 	public void resetTabFocus() {
-		screen.setKeyboardElemeent(null);
+		screen.setKeyboardElement(null);
 		Effect effect = getEffect(Effect.EffectEvent.LoseTabFocus);
 		if (effect != null) {
 			effect.setColor(ColorRGBA.White);
