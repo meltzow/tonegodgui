@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="Keyboard">
+		<font></font>
+		<attributes>
+			<property name="R0K0KeyType" type="String" value="NUMERIC" />
+			<property name="R0K0DefaultLabel" type="String" value="1" />
+			<property name="R0K0ShiftLabel" type="String" value="1" />
+			<property name="R0K0SymbolLabel" type="String" value="@" />
+			
+			<property name="R0K1KeyType" type="String" value="NUMERIC" />
+			<property name="R0K1DefaultLabel" type="String" value="2" />
+			<property name="R0K1ShiftLabel" type="String" value="2" />
+			<property name="R0K1SymbolLabel" type="String" value="#" />
+			
+			<property name="R0K2KeyType" type="String" value="NUMERIC" />
+			<property name="R0K2DefaultLabel" type="String" value="3" />
+			<property name="R0K2ShiftLabel" type="String" value="3" />
+			<property name="R0K2SymbolLabel" type="String" value="amp" />
+			
+			<property name="R0K3KeyType" type="String" value="NUMERIC" />
+			<property name="R0K3DefaultLabel" type="String" value="4" />
+			<property name="R0K3ShiftLabel" type="String" value="4" />
+			<property name="R0K3SymbolLabel" type="String" value="%" />
+			
+			<property name="R0K4KeyType" type="String" value="NUMERIC" />
+			<property name="R0K4DefaultLabel" type="String" value="5" />
+			<property name="R0K4ShiftLabel" type="String" value="5" />
+			<property name="R0K4SymbolLabel" type="String" value="*" />
+			
+			<property name="R0K5KeyType" type="String" value="NUMERIC" />
+			<property name="R0K5DefaultLabel" type="String" value="6" />
+			<property name="R0K5ShiftLabel" type="String" value="6" />
+			<property name="R0K5SymbolLabel" type="String" value="+" />
+			
+			<property name="R0K6KeyType" type="String" value="NUMERIC" />
+			<property name="R0K6DefaultLabel" type="String" value="7" />
+			<property name="R0K6ShiftLabel" type="String" value="7" />
+			<property name="R0K6SymbolLabel" type="String" value="-" />
+			
+			<property name="R0K7KeyType" type="String" value="NUMERIC" />
+			<property name="R0K7DefaultLabel" type="String" value="8" />
+			<property name="R0K7ShiftLabel" type="String" value="8" />
+			<property name="R0K7SymbolLabel" type="String" value="=" />
+			
+			<property name="R0K8KeyType" type="String" value="NUMERIC" />
+			<property name="R0K8DefaultLabel" type="String" value="9" />
+			<property name="R0K8ShiftLabel" type="String" value="9" />
+			<property name="R0K8SymbolLabel" type="String" value="lt" />
+			
+			<property name="R0K9KeyType" type="String" value="NUMERIC" />
+			<property name="R0K9DefaultLabel" type="String" value="0" />
+			<property name="R0K9ShiftLabel" type="String" value="0" />
+			<property name="R0K9SymbolLabel" type="String" value="gt" />
+			
+			<property name="R1K0KeyType" type="String" value="ALPHA" />
+			<property name="R1K0DefaultLabel" type="String" value="q" />
+			<property name="R1K0ShiftLabel" type="String" value="Q" />
+			<property name="R1K0SymbolLabel" type="String" value="~" />
+			
+			<property name="R1K1KeyType" type="String" value="ALPHA" />
+			<property name="R1K1DefaultLabel" type="String" value="w" />
+			<property name="R1K1ShiftLabel" type="String" value="W" />
+			<property name="R1K1SymbolLabel" type="String" value="^" />
+			
+			<property name="R1K2KeyType" type="String" value="ALPHA" />
+			<property name="R1K2DefaultLabel" type="String" value="e" />
+			<property name="R1K2ShiftLabel" type="String" value="E" />
+			<property name="R1K2SymbolLabel" type="String" value="(" />
+			
+			<property name="R1K3KeyType" type="String" value="ALPHA" />
+			<property name="R1K3DefaultLabel" type="String" value="r" />
+			<property name="R1K3ShiftLabel" type="String" value="R" />
+			<property name="R1K3SymbolLabel" type="String" value=")" />
+			
+			<property name="R1K4KeyType" type="String" value="ALPHA" />
+			<property name="R1K4DefaultLabel" type="String" value="t" />
+			<property name="R1K4ShiftLabel" type="String" value="T" />
+			<property name="R1K4SymbolLabel" type="String" value="{" />
+			
+			<property name="R1K5KeyType" type="String" value="ALPHA" />
+			<property name="R1K5DefaultLabel" type="String" value="y" />
+			<property name="R1K5ShiftLabel" type="String" value="Y" />
+			<property name="R1K5SymbolLabel" type="String" value="}" />
+			
+			<property name="R1K6KeyType" type="String" value="ALPHA" />
+			<property name="R1K6DefaultLabel" type="String" value="u" />
+			<property name="R1K6ShiftLabel" type="String" value="U" />
+			<property name="R1K6SymbolLabel" type="String" value="[" />
+			
+			<property name="R1K7KeyType" type="String" value="ALPHA" />
+			<property name="R1K7DefaultLabel" type="String" value="i" />
+			<property name="R1K7ShiftLabel" type="String" value="I" />
+			<property name="R1K7SymbolLabel" type="String" value="]" />
+			
+			<property name="R1K8KeyType" type="String" value="ALPHA" />
+			<property name="R1K8DefaultLabel" type="String" value="o" />
+			<property name="R1K8ShiftLabel" type="String" value="O" />
+			<property name="R1K8SymbolLabel" type="String" value="`" />
+			
+			<property name="R1K9KeyType" type="String" value="ALPHA" />
+			<property name="R1K9DefaultLabel" type="String" value="p" />
+			<property name="R1K9ShiftLabel" type="String" value="P" />
+			<property name="R1K9SymbolLabel" type="String" value="$" />
+			
+			<property name="R2K0KeyType" type="String" value="ALPHA" />
+			<property name="R2K0DefaultLabel" type="String" value="a" />
+			<property name="R2K0ShiftLabel" type="String" value="A" />
+			<property name="R2K0SymbolLabel" type="String" value="/" />
+			
+			<property name="R2K1KeyType" type="String" value="ALPHA" />
+			<property name="R2K1DefaultLabel" type="String" value="s" />
+			<property name="R2K1ShiftLabel" type="String" value="S" />
+			<property name="R2K1SymbolLabel" type="String" value="|" />
+			
+			<property name="R2K2KeyType" type="String" value="ALPHA" />
+			<property name="R2K2DefaultLabel" type="String" value="d" />
+			<property name="R2K2ShiftLabel" type="String" value="D" />
+			<property name="R2K2SymbolLabel" type="String" value="bslash" />
+			
+			<property name="R2K3KeyType" type="String" value="ALPHA" />
+			<property name="R2K3DefaultLabel" type="String" value="f" />
+			<property name="R2K3ShiftLabel" type="String" value="F" />
+			<property name="R2K3SymbolLabel" type="String" value="_" />
+			
+			<property name="R2K4KeyType" type="String" value="ALPHA" />
+			<property name="R2K4DefaultLabel" type="String" value="g" />
+			<property name="R2K4ShiftLabel" type="String" value="G" />
+			<property name="R2K4SymbolLabel" type="String" value=":" />
+			
+			<property name="R2K5KeyType" type="String" value="ALPHA" />
+			<property name="R2K5DefaultLabel" type="String" value="h" />
+			<property name="R2K5ShiftLabel" type="String" value="H" />
+			<property name="R2K5SymbolLabel" type="String" value=";" />
+			
+			<property name="R2K6KeyType" type="String" value="ALPHA" />
+			<property name="R2K6DefaultLabel" type="String" value="j" />
+			<property name="R2K6ShiftLabel" type="String" value="J" />
+			<property name="R2K6SymbolLabel" type="String" value="quot" />
+			
+			<property name="R2K7KeyType" type="String" value="ALPHA" />
+			<property name="R2K7DefaultLabel" type="String" value="k" />
+			<property name="R2K7ShiftLabel" type="String" value="K" />
+			<property name="R2K7SymbolLabel" type="String" value="'" />
+			
+			<property name="R2K8KeyType" type="String" value="ALPHA" />
+			<property name="R2K8DefaultLabel" type="String" value="l" />
+			<property name="R2K8ShiftLabel" type="String" value="L" />
+			<property name="R2K8SymbolLabel" type="String" value="!" />
+			
+			<property name="R3K0KeyType" type="String" value="ALPHA" />
+			<property name="R3K0DefaultLabel" type="String" value="z" />
+			<property name="R3K0ShiftLabel" type="String" value="Z" />
+			<property name="R3K0SymbolLabel" type="String" value="?" />
+			
+			<property name="R3K1KeyType" type="String" value="ALPHA" />
+			<property name="R3K1DefaultLabel" type="String" value="x" />
+			<property name="R3K1ShiftLabel" type="String" value="X" />
+			<property name="R3K1SymbolLabel" type="String" value="?" />
+			
+			<property name="R3K2KeyType" type="String" value="ALPHA" />
+			<property name="R3K2DefaultLabel" type="String" value="c" />
+			<property name="R3K2ShiftLabel" type="String" value="C" />
+			<property name="R3K2SymbolLabel" type="String" value="?" />
+			
+			<property name="R3K3KeyType" type="String" value="ALPHA" />
+			<property name="R3K3DefaultLabel" type="String" value="v" />
+			<property name="R3K3ShiftLabel" type="String" value="V" />
+			<property name="R3K3SymbolLabel" type="String" value="?" />
+			
+			<property name="R3K4KeyType" type="String" value="ALPHA" />
+			<property name="R3K4DefaultLabel" type="String" value="b" />
+			<property name="R3K4ShiftLabel" type="String" value="B" />
+			<property name="R3K4SymbolLabel" type="String" value="?" />
+			
+			<property name="R3K5KeyType" type="String" value="ALPHA" />
+			<property name="R3K5DefaultLabel" type="String" value="n" />
+			<property name="R3K5ShiftLabel" type="String" value="N" />
+			<property name="R3K5SymbolLabel" type="String" value="?" />
+			
+			<property name="R3K6KeyType" type="String" value="ALPHA" />
+			<property name="R3K6DefaultLabel" type="String" value="m" />
+			<property name="R3K6ShiftLabel" type="String" value="M" />
+			<property name="R3K6SymbolLabel" type="String" value="?" />
+			
+			<property name="ShiftLabel" type="String" value="SHIFT" />
+			<property name="BackspaceLabel" type="String" value="BACK" />
+			<property name="SymbolLabel" type="String" value="@#_" />
+			<property name="SpacebarLabel" type="String" value="SPACE" />
+			<property name="EnterLabel" type="String" value="DONE" />
+		</attributes>
+		<images></images>
+		<effects></effects>
+	</element>
+</root>

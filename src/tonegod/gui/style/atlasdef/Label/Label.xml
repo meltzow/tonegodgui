@@ -51,10 +51,10 @@
 				<a value="1.0" />
 			</property>
 			<property name="resizeBorders" type="Vector4f">
-				<x value="14" />
-				<y value="14" />
-				<z value="14" />
-				<w value="14" />
+				<x value="15" />
+				<y value="15" />
+				<z value="15" />
+				<w value="15" />
 			</property>
 			<property name="defaultSize" type="Vector2f">
 				<x value="250" />
@@ -62,7 +62,7 @@
 			</property>
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=0|y=0|w=78|h=78" />
+			<property name="defaultImg" type="String" value="x=0|y=0|w=32|h=32" />
 		</images>
 		<effects></effects>
 	</element>

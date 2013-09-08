@@ -4,10 +4,10 @@
 		<font></font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">
-				<x value="14" />
-				<y value="14" />
-				<z value="14" />
-				<w value="14" />
+				<x value="15" />
+				<y value="15" />
+				<z value="15" />
+				<w value="15" />
 			</property>
 			<property name="minSize" type="Vector2f">
 				<x value="150" />
@@ -33,7 +33,7 @@
 			<property name="hideSoundVolume" type="float" value="1" />
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=0|y=0|w=78|h=78" />
+			<property name="defaultImg" type="String" value="x=0|y=0|w=32|h=32" />
 		</images>
 		<effects>
 			<property name="event0" type="Effect">
@@ -79,7 +79,7 @@
 			<property name="defaultControlSize" type="float" value="25" />
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=156|y=0|w=25|h=25" />
+			<property name="defaultImg" type="String" value="x=64|y=0|w=16|h=16" />
 		</images>
 		<effects></effects>
 	</element>

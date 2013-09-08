@@ -44,9 +44,9 @@
 			<property name="hoverSoundVolume" type="float" value=".5" />
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=0|y=78|w=23|h=22" />
-			<property name="hoverImg" type="String" value="x=23|y=78|w=23|h=22" />
-			<property name="pressedImg" type="String" value="x=46|y=78|w=23|h=22" />
+			<property name="defaultImg" type="String" value="x=0|y=32|w=16|h=16" />
+			<property name="hoverImg" type="String" value="x=16|y=32|w=16|h=16" />
+			<property name="pressedImg" type="String" value="x=32|y=32|w=16|h=16" />
 		</images>
 		<effects>
 			<property name="event0" type="Effect">
@@ -114,9 +114,9 @@
 			</property>
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=69|y=78|w=22|h=22" />
-			<property name="hoverImg" type="String" value="x=91|y=78|w=22|h=22" />
-			<property name="pressedImg" type="String" value="x=113|y=78|w=22|h=22" />
+			<property name="defaultImg" type="String" value="x=0|y=48|w=16|h=16" />
+			<property name="hoverImg" type="String" value="x=16|y=48|w=16|h=16" />
+			<property name="pressedImg" type="String" value="x=32|y=48|w=16|h=16" />
 		</images>
 		<effects>
 			<property name="event0" type="Effect">
@@ -184,9 +184,9 @@
 			</property>
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=135|y=78|w=23|h=22" />
-			<property name="hoverImg" type="String" value="x=158|y=78|w=23|h=22" />
-			<property name="pressedImg" type="String" value="x=158|y=78|w=23|h=22" />
+			<property name="defaultImg" type="String" value="x=48|y=32|w=16|h=16" />
+			<property name="hoverImg" type="String" value="x=48|y=48|w=16|h=16" />
+			<property name="pressedImg" type="String" value="x=48|y=48|w=16|h=16" />
 		</images>
 		<effects>
 			<property name="event0" type="Effect">

@@ -28,7 +28,7 @@
 			<property name="scrollAreaPadding" type="float" value="0" />
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=78|y=0|w=78|h=78" />
+			<property name="defaultImg" type="String" value="x=32|y=0|w=32|h=32" />
 		</images>
 		<effects></effects>
 	</element>
@@ -64,16 +64,16 @@
 			<property name="useBtnDownArrowIcon" type="boolean" value="true" />
 		</attributes>
 		<images>
-			<property name="trackImg" type="String" value="x=156|y=25|w=22|h=22" />
-			<property name="thumbImg" type="String" value="x=0|y=78|w=23|h=22" />
-			<property name="thumbHoverImg" type="String" value="x=23|y=78|w=23|h=22" />
-			<property name="thumbPressedImg" type="String" value="x=46|y=78|w=23|h=22" />
-			<property name="btnUpImg" type="String" value="x=0|y=78|w=23|h=22" />
-			<property name="btnUpHoverImg" type="String" value="x=23|y=78|w=23|h=22" />
-			<property name="btnUpPressedImg" type="String" value="x=46|y=78|w=23|h=22" />
-			<property name="btnDownImg" type="String" value="x=0|y=78|w=23|h=22" />
-			<property name="btnDownHoverImg" type="String" value="x=23|y=78|w=23|h=22" />
-			<property name="btnDownPressedImg" type="String" value="x=46|y=78|w=23|h=22" />
+			<property name="trackImg" type="String" value="x=64|y=16|w=16|h=16" />
+			<property name="thumbImg" type="String" value="x=0|y=32|w=16|h=16" />
+			<property name="thumbHoverImg" type="String" value="x=16|y=32|w=16|h=16" />
+			<property name="thumbPressedImg" type="String" value="x=32|y=32|w=16|h=16" />
+			<property name="btnUpImg" type="String" value="x=0|y=32|w=16|h=16" />
+			<property name="btnUpHoverImg" type="String" value="x=16|y=32|w=16|h=16" />
+			<property name="btnUpPressedImg" type="String" value="x=32|y=32|w=16|h=16" />
+			<property name="btnDownImg" type="String" value="x=0|y=32|w=16|h=16" />
+			<property name="btnDownHoverImg" type="String" value="x=16|y=32|w=16|h=16" />
+			<property name="btnDownPressedImg" type="String" value="x=32|y=32|w=16|h=16" />
 		</images>
 		<effects></effects>
 	</element>
