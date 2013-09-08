@@ -9,11 +9,12 @@ import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.windows.Panel;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.Style;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
@@ -32,7 +33,7 @@ public class Keyboard extends Panel {
 	private boolean Shift = false;
 	private boolean Symbol = false;
 	
-	private Map<Integer,KeyboardKey> keys = new HashMap();
+	private List<KeyboardKey> keys = new ArrayList();
 	
 	/**
 	 * Creates a new instance of the Panel control
@@ -77,430 +78,131 @@ public class Keyboard extends Panel {
 		float nY = nHeight+10;
 		float xGap = 10;
 		
-		// Row 1 - Numeric
-		KeyboardKey key = new KeyboardKey(KeyType.NUMERIC, KeyInput.KEY_1, '1', "1");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_2, '@', "@");
-		key.setPosition(xGap,10);
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_1, key);
-		addChild(key.getButton());
+		KeyboardKey key = null;
+		Style keyboard = screen.getStyle("Keyboard");
 		
-		key = new KeyboardKey(KeyType.NUMERIC, KeyInput.KEY_2, '2', "2");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_3, '#', "#");
-		key.setPosition(xGap+(nX),10);
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_2, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.NUMERIC, KeyInput.KEY_3, '3', "3");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_7, '&', "&");
-		key.setPosition(xGap+(nX*2),10);
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_3, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.NUMERIC, KeyInput.KEY_4, '4', "4");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_5, '%', "%");
-		key.setPosition(xGap+(nX*3),10);
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_4, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.NUMERIC, KeyInput.KEY_5, '5', "5");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_8, '*', "*");
-		key.setPosition(xGap+(nX*4),10);
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_5, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.NUMERIC, KeyInput.KEY_6, '6', "6");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_EQUALS, '+', "+");
-		key.setPosition(xGap+(nX*5),10);
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_6, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.NUMERIC, KeyInput.KEY_7, '7', "7");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_MINUS, '-', "-");
-		key.setPosition(xGap+(nX*6),10);
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_7, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.NUMERIC, KeyInput.KEY_8, '8', "8");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_EQUALS, '=', "=");
-		key.setPosition(xGap+(nX*7),10);
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_8, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.NUMERIC, KeyInput.KEY_9, '9', "9");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_COMMA, '<', "<");
-		key.setPosition(xGap+(nX*8),10);
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_9, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.NUMERIC, KeyInput.KEY_0, '0', "0");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_PERIOD, '>', ">");
-		key.setPosition(xGap+(nX*9),10);
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_0, key);
-		addChild(key.getButton());
-		
-		// Row 2 - Alpha
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_Q, 'q', "q");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_Q, 'Q', "Q");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_GRAVE, '~', "~");
-		key.setPosition(xGap,10+(nY));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_Q, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_W, 'w', "w");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_W, 'W', "W");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_6, '^', "^");
-		key.setPosition(xGap+(nX),10+(nY));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_W, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_E, 'e', "e");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_E, 'E', "E");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_9, '(', "(");
-		key.setPosition(xGap+(nX*2),10+(nY));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_E, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_R, 'r', "r");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_R, 'R', "R");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_0, ')', ")");
-		key.setPosition(xGap+(nX*3),10+(nY));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_R, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_T, 't', "t");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_T, 'T', "T");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_LBRACKET, '{', "{");
-		key.setPosition(xGap+(nX*4),10+(nY));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_T, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_Y, 'y', "y");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_Y, 'Y', "Y");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_RBRACKET, '}', "}");
-		key.setPosition(xGap+(nX*5),10+(nY));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_Y, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_U, 'u', "u");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_U, 'U', "U");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_LBRACKET, '[', "[");
-		key.setPosition(xGap+(nX*6),10+(nY));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_U, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_I, 'i', "i");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_I, 'I', "I");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_RBRACKET, ']', "]");
-		key.setPosition(xGap+(nX*7),10+(nY));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_I, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_O, 'o', "o");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_O, 'O', "O");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_GRAVE, '`', "`");
-		key.setPosition(xGap+(nX*8),10+(nY));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_O, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_P, 'p', "p");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_P, 'P', "P");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_4, '$', "$");
-		key.setPosition(xGap+(nX*9),10+(nY));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_P, key);
-		addChild(key.getButton());
+		for (int r = 0; r < 2; r++) {
+			for (int i = 0; i < 10; i++) {
+				KeyType type = KeyType.valueOf(keyboard.getString("R" + r + "K" + i + "KeyType"));
+				String label = keyboard.getString("R" + r + "K" + i + "DefaultLabel");
+				String shiftlabel = keyboard.getString("R" + r + "K" + i + "ShiftLabel");
+				String symbollabel = keyboard.getString("R" + r + "K" + i + "SymbolLabel");
+				symbollabel = validateSymbol(symbollabel);
+				
+				key = new KeyboardKey(type, KeyInput.KEY_UNLABELED, label.charAt(0), label);
+				key.setShift(type, KeyInput.KEY_UNLABELED, shiftlabel.charAt(0), shiftlabel);
+				key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_UNLABELED, symbollabel.charAt(0), symbollabel);
+				key.setPosition(xGap+(nX*i),10+(nY*r));
+				key.setDimensions(nWidth,nHeight);
+				key.createButton();
+				keys.add(key);
+				addChild(key.getButton());
+			}
+		}
 		
 		// Row 3 - Alpha
 		xGap = 10+(nWidth*0.5f);
 		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_A, 'a', "a");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_A, 'A', "A");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_SLASH, '/', "/");
-		key.setPosition(xGap,10+(nY*2));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_A, key);
-		addChild(key.getButton());
+		int r = 2;
+		for (int i = 0; i < 9; i++) {
+			KeyType type = KeyType.valueOf(keyboard.getString("R" + r + "K" + i + "KeyType"));
+			String label = keyboard.getString("R" + r + "K" + i + "DefaultLabel");
+			String shiftlabel = keyboard.getString("R" + r + "K" + i + "ShiftLabel");
+			String symbollabel = keyboard.getString("R" + r + "K" + i + "SymbolLabel");
+			symbollabel = validateSymbol(symbollabel);
+			
+			key = new KeyboardKey(type, KeyInput.KEY_UNLABELED, label.charAt(0), label);
+			key.setShift(type, KeyInput.KEY_UNLABELED, shiftlabel.charAt(0), shiftlabel);
+			key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_UNLABELED, symbollabel.charAt(0), symbollabel);
+			key.setPosition(xGap+(nX*i),10+(nY*r));
+			key.setDimensions(nWidth,nHeight);
+			key.createButton();
+			keys.add(key);
+			addChild(key.getButton());
+		}
 		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_S, 's', "s");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_S, 'S', "S");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_BACKSLASH, '|', "|");
-		key.setPosition(xGap+(nX),10+(nY*2));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_S, key);
-		addChild(key.getButton());
+		r = 3;
+		for (int i = 0; i < 7; i++) {
+			KeyType type = KeyType.valueOf(keyboard.getString("R" + r + "K" + i + "KeyType"));
+			String label = keyboard.getString("R" + r + "K" + i + "DefaultLabel");
+			String shiftlabel = keyboard.getString("R" + r + "K" + i + "ShiftLabel");
+			String symbollabel = keyboard.getString("R" + r + "K" + i + "SymbolLabel");
+			symbollabel = validateSymbol(symbollabel);
+			
+			key = new KeyboardKey(type, KeyInput.KEY_UNLABELED, label.charAt(0), label);
+			key.setShift(type, KeyInput.KEY_UNLABELED, shiftlabel.charAt(0), shiftlabel);
+			key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_UNLABELED, symbollabel.charAt(0), symbollabel);
+			key.setPosition(xGap+(nX*(i+1)),10+(nY*r));
+			key.setDimensions(nWidth,nHeight);
+			key.createButton();
+			keys.add(key);
+			addChild(key.getButton());
+		}
 		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_D, 'd', "d");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_D, 'D', "D");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_BACKSLASH, '\\', "\\");
-		key.setPosition(xGap+(nX*2),10+(nY*2));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_D, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_F, 'f', "f");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_F, 'F', "F");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_UNDERLINE, '_', "_");
-		key.setPosition(xGap+(nX*3),10+(nY*2));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_F, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_G, 'g', "g");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_G, 'G', "G");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_COLON, ':', ":");
-		key.setPosition(xGap+(nX*4),10+(nY*2));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_G, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_H, 'h', "h");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_H, 'H', "H");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_SEMICOLON, ';', ";");
-		key.setPosition(xGap+(nX*5),10+(nY*2));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_H, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_J, 'j', "j");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_J, 'J', "J");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_APOSTROPHE, '"', "\"");
-		key.setPosition(xGap+(nX*6),10+(nY*2));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_J, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_K, 'k', "k");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_K, 'K', "K");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_APOSTROPHE, '\'', "'");
-		key.setPosition(xGap+(nX*7),10+(nY*2));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_K, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_L, 'l', "l");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_L, 'L', "L");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_GRAVE, '!', "!");
-		key.setPosition(xGap+(nX*8),10+(nY*2));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_L, key);
-		addChild(key.getButton());
-		
-		// Row 3 - Alpha
-		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_LSHIFT, '^', "SHIFT");
+		// Fixed Function Keys
+		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_LSHIFT, '^', keyboard.getString("ShiftLabel"));
 		key.setPosition(10,10+(nY*3));
 		key.setDimensions(nWidth+(nWidth*0.5f),nHeight);
 		key.createShiftButton();
-		keys.put(KeyInput.KEY_LSHIFT, key);
+		keys.add(key);
 		addChild(key.getButton());
 		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_Z, 'z', "z");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_Z, 'Z', "Z");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_UNLABELED, '?', "?");
-		key.setPosition(xGap+(nX),10+(nY*3));
-		key.setDimensions(nWidth,nHeight);
-		key.createButton();
-		keys.put(KeyInput.KEY_Z, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_X, 'x', "x");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_X, 'X', "X");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_UNLABELED, ':', ":-(");
-		key.setPosition(xGap+(nX*2),10+(nY*3));
-		key.setDimensions(nWidth,nHeight);
-		key.createEmoteButton('(');
-		keys.put(KeyInput.KEY_X, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_C, 'c', "c");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_C, 'C', "C");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_UNLABELED, ':', ":-)");
-		key.setPosition(xGap+(nX*3),10+(nY*3));
-		key.setDimensions(nWidth,nHeight);
-		key.createEmoteButton(')');
-		keys.put(KeyInput.KEY_C, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_V, 'v', "v");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_V, 'V', "V");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_UNLABELED, ':', ":-D");
-		key.setPosition(xGap+(nX*4),10+(nY*3));
-		key.setDimensions(nWidth,nHeight);
-		key.createEmoteButton('D');
-		keys.put(KeyInput.KEY_V, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_B, 'b', "b");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_B, 'B', "B");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_UNLABELED, ':', ":-P");
-		key.setPosition(xGap+(nX*5),10+(nY*3));
-		key.setDimensions(nWidth,nHeight);
-		key.createEmoteButton('P');
-		keys.put(KeyInput.KEY_B, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_N, 'n', "n");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_N, 'N', "N");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_UNLABELED, ':', ">:|");
-		key.setPosition(xGap+(nX*6),10+(nY*3));
-		key.setDimensions(nWidth,nHeight);
-		key.createEmoteButton('|');
-		keys.put(KeyInput.KEY_N, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.ALPHA, KeyInput.KEY_M, 'm', "m");
-		key.setShift(KeyType.ALPHA, KeyInput.KEY_M, 'M', "M");
-		key.setSymbol(KeyType.SYMBOL, KeyInput.KEY_UNLABELED, ':', ";-)");
-		key.setPosition(xGap+(nX*7),10+(nY*3));
-		key.setDimensions(nWidth,nHeight);
-		key.createEmoteButton(';');
-		keys.put(KeyInput.KEY_J, key);
-		addChild(key.getButton());
-		
-		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_BACK, '^', "BACK");
+		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_BACK, '^', keyboard.getString("BackspaceLabel"));
 		key.setPosition(xGap+(nX*8),10+(nY*3));
 		key.setDimensions(nWidth+(nWidth*0.5f),nHeight);
 		key.createBackButton();
-		keys.put(KeyInput.KEY_BACK, key);
+		keys.add(key);
 		addChild(key.getButton());
 		
-		
-		// Row 5 - Alpha
-		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_LCONTROL, '^', "@#_");
+		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_UNLABELED, '^', keyboard.getString("SymbolLabel"));
 		key.setPosition(10,10+(nY*4));
 		key.setDimensions(nWidth+(nWidth*0.5f),nHeight);
 		key.createSymbolButton();
-		keys.put(KeyInput.KEY_LCONTROL, key);
+		keys.add(key);
 		addChild(key.getButton());
 		
-		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_SPACE, ' ', "SPACE");
+		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_SPACE, ' ', keyboard.getString("SpacebarLabel"));
 		key.setPosition(xGap+(nX),10+(nY*4));
 		key.setDimensions(nWidth+(nX*4),nHeight);
 		key.createSpaceButton();
-		keys.put(KeyInput.KEY_SPACE, key);
+		keys.add(key);
 		addChild(key.getButton());
 		
-		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_COMMA, ',', ",");
+		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_UNLABELED, ',', ",");
 		key.setPosition(xGap+(nX*6),10+(nY*4));
 		key.setDimensions(nWidth,nHeight);
 		key.createButton();
-		keys.put(KeyInput.KEY_COMMA, key);
+		keys.add(key);
 		addChild(key.getButton());
 		
-		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_PERIOD, '.', ".");
+		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_UNLABELED, '.', ".");
 		key.setPosition(xGap+(nX*7),10+(nY*4));
 		key.setDimensions(nWidth,nHeight);
-		key.createEmoteButton(';');
-		keys.put(KeyInput.KEY_PERIOD, key);
+		key.createButton();
+		keys.add(key);
 		addChild(key.getButton());
 		
-		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_RETURN, '^', "ENTER");
+		key = new KeyboardKey(KeyType.OTHER, KeyInput.KEY_RETURN, '^', keyboard.getString("EnterLabel"));
 		key.setPosition(xGap+(nX*8),10+(nY*4));
 		key.setDimensions(nWidth+(nWidth*0.5f),nHeight);
 		key.createEnterButton();
-		keys.put(KeyInput.KEY_RETURN, key);
+		keys.add(key);
 		addChild(key.getButton());
-		/*
-		createSingleCharKey(xGap,10,nWidth,nHeight,KeyInput.KEY_1, '1', KeyType.NUMERIC);
-		createSingleCharKey(xGap+(nX),10,nWidth,nHeight,KeyInput.KEY_2, '2', KeyType.NUMERIC);
-		createSingleCharKey(xGap+(nX*2),10,nWidth,nHeight,KeyInput.KEY_3, '3', KeyType.NUMERIC);
-		createSingleCharKey(xGap+(nX*3),10,nWidth,nHeight,KeyInput.KEY_4, '4', KeyType.NUMERIC);
-		createSingleCharKey(xGap+(nX*4),10,nWidth,nHeight,KeyInput.KEY_5, '5', KeyType.NUMERIC);
-		createSingleCharKey(xGap+(nX*5),10,nWidth,nHeight,KeyInput.KEY_6, '6', KeyType.NUMERIC);
-		createSingleCharKey(xGap+(nX*6),10,nWidth,nHeight,KeyInput.KEY_7, '7', KeyType.NUMERIC);
-		createSingleCharKey(xGap+(nX*7),10,nWidth,nHeight,KeyInput.KEY_8, '8', KeyType.NUMERIC);
-		createSingleCharKey(xGap+(nX*8),10,nWidth,nHeight,KeyInput.KEY_9, '9', KeyType.NUMERIC);
-		createSingleCharKey(xGap+(nX*9),10,nWidth,nHeight,KeyInput.KEY_0, '0', KeyType.NUMERIC);
-		
-		// Row 2
-		createSingleCharKey(xGap,10+(nY),nWidth,nHeight,KeyInput.KEY_Q, 'q', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX),10+(nY),nWidth,nHeight,KeyInput.KEY_W, 'w', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*2),10+(nY),nWidth,nHeight,KeyInput.KEY_E, 'e', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*3),10+(nY),nWidth,nHeight,KeyInput.KEY_R, 'r', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*4),10+(nY),nWidth,nHeight,KeyInput.KEY_T, 't', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*5),10+(nY),nWidth,nHeight,KeyInput.KEY_Y, 'y', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*5),10+(nY),nWidth,nHeight,KeyInput.KEY_Y, 'y', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*6),10+(nY),nWidth,nHeight,KeyInput.KEY_U, 'u', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*7),10+(nY),nWidth,nHeight,KeyInput.KEY_I, 'i', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*8),10+(nY),nWidth,nHeight,KeyInput.KEY_O, 'o', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*9),10+(nY),nWidth,nHeight,KeyInput.KEY_P, 'p', KeyType.ALPHA);
-		
-		xGap = 15+(nWidth*0.5f);
-		// Row 3
-		createSingleCharKey(xGap,10+(nY*2),nWidth,nHeight,KeyInput.KEY_A, 'a', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX),10+(nY*2),nWidth,nHeight,KeyInput.KEY_S, 's', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*2),10+(nY*2),nWidth,nHeight,KeyInput.KEY_D, 'd', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*3),10+(nY*2),nWidth,nHeight,KeyInput.KEY_F, 'f', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*4),10+(nY*2),nWidth,nHeight,KeyInput.KEY_G, 'g', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*5),10+(nY*2),nWidth,nHeight,KeyInput.KEY_H, 'h', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*6),10+(nY*2),nWidth,nHeight,KeyInput.KEY_J, 'j', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*7),10+(nY*2),nWidth,nHeight,KeyInput.KEY_K, 'k', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*8),10+(nY*2),nWidth,nHeight,KeyInput.KEY_L, 'l', KeyType.ALPHA);
-		
-		// Row 4
-		createLabeledCharKey(10,10+(nY*3),nWidth+(nWidth*0.5f),nHeight,KeyInput.KEY_LSHIFT, '^', "SHIFT", KeyType.OTHER);
-		createSingleCharKey(xGap+(nX),10+(nY*3),nWidth,nHeight,KeyInput.KEY_Z, 'z', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*2),10+(nY*3),nWidth,nHeight,KeyInput.KEY_X, 'x', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*3),10+(nY*3),nWidth,nHeight,KeyInput.KEY_C, 'c', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*4),10+(nY*3),nWidth,nHeight,KeyInput.KEY_V, 'v', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*5),10+(nY*3),nWidth,nHeight,KeyInput.KEY_B, 'b', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*6),10+(nY*3),nWidth,nHeight,KeyInput.KEY_N, 'n', KeyType.ALPHA);
-		createSingleCharKey(xGap+(nX*7),10+(nY*3),nWidth,nHeight,KeyInput.KEY_M, 'm', KeyType.ALPHA);
-		createLabeledCharKey(xGap+(nX*8),10+(nY*3),nWidth+(nWidth*0.5f),nHeight,KeyInput.KEY_BACK, '^', "BACK", KeyType.OTHER);
-		*/
+	}
+	
+	private String validateSymbol(String symbol) {
+		if (symbol.equals("amp")) symbol= "&";
+		else if (symbol.equals("lt")) symbol= "<";
+		else if (symbol.equals("gt")) symbol= ">";
+		else if (symbol.equals("bslash")) symbol= "\\";
+		else if (symbol.equals("quot")) symbol= "\"";
+		return symbol;
 	}
 	
 	public void setGlobalShift(boolean shift) {
 		this.Shift = shift;
 		if (!Symbol) {
-			for (KeyboardKey key : keys.values()) {
+			for (KeyboardKey key : keys) {
 				if (key.getKeyType() == KeyType.ALPHA)
 					key.setShift(shift);
 			}
@@ -509,7 +211,7 @@ public class Keyboard extends Panel {
 	
 	public void setGlobalSymbol(boolean symbol) {
 		this.Symbol = symbol;
-		for (KeyboardKey key : keys.values()) {
+		for (KeyboardKey key : keys) {
 			if (key.getKeyType() == KeyType.ALPHA || key.getKeyType() == KeyType.NUMERIC)
 				key.setSymbol(symbol);
 		}
@@ -608,121 +310,6 @@ public class Keyboard extends Panel {
 			};
 			button.setText(label);
 			button.setResetKeyboardFocus(false);
-		//	button.setInterval(15);
-			button.removeEffect(Effect.EffectEvent.Hover);
-			return button;
-		}
-		
-		public ButtonAdapter createEmoteButton(final char emote) {
-			button = new ButtonAdapter(screen,
-				new Vector2f(x,y),
-				new Vector2f(w,h)
-			) {
-				@Override
-				public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean isToggled) {
-					KeyInputEvent nEvt = null;
-					if (symbol) {
-						if (emote == ')') {
-							nEvt = new KeyInputEvent(symbolKeyCode, ':', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-							nEvt = new KeyInputEvent(symbolKeyCode, '-', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-							nEvt = new KeyInputEvent(symbolKeyCode, ')', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-						} else if (emote == '(') {
-							nEvt = new KeyInputEvent(symbolKeyCode, ':', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-							nEvt = new KeyInputEvent(symbolKeyCode, '-', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-							nEvt = new KeyInputEvent(symbolKeyCode, '(', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-						} else if (emote == 'D') {
-							nEvt = new KeyInputEvent(symbolKeyCode, ':', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-							nEvt = new KeyInputEvent(symbolKeyCode, '-', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-							nEvt = new KeyInputEvent(symbolKeyCode, 'D', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-						} else if (emote == 'P') {
-							nEvt = new KeyInputEvent(symbolKeyCode, ':', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-							nEvt = new KeyInputEvent(symbolKeyCode, '-', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-							nEvt = new KeyInputEvent(symbolKeyCode, 'P', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-						} else if (emote == ';') {
-							nEvt = new KeyInputEvent(symbolKeyCode, ';', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-							nEvt = new KeyInputEvent(symbolKeyCode, '-', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-							nEvt = new KeyInputEvent(symbolKeyCode, ')', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-						} else if (emote == '|') {
-							nEvt = new KeyInputEvent(symbolKeyCode, '>', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-							nEvt = new KeyInputEvent(symbolKeyCode, ':', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-							nEvt = new KeyInputEvent(symbolKeyCode, '|', true, false);
-							nEvt.setTime(System.currentTimeMillis());
-							screen.onKeyEvent(nEvt);
-						}
-					} else if (shift) {
-						nEvt = new KeyInputEvent(shiftKeyCode, shiftCharacter, true, false);
-						nEvt.setTime(System.currentTimeMillis());
-						screen.onKeyEvent(nEvt);
-					} else {
-						nEvt = new KeyInputEvent(keyCode, character, true, false);
-						nEvt.setTime(System.currentTimeMillis());
-						screen.onKeyEvent(nEvt);
-					}
-				}
-				@Override
-				public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean isToggled) {
-					KeyInputEvent nEvt = null;
-					if (symbol) {
-						nEvt = new KeyInputEvent(symbolKeyCode, symbolCharacter, false, false);
-					} else if (shift) {
-						nEvt = new KeyInputEvent(shiftKeyCode, shiftCharacter, false, false);
-					} else {
-						nEvt = new KeyInputEvent(keyCode, character, false, false);
-					}
-					nEvt.setTime(System.currentTimeMillis());
-					screen.onKeyEvent(nEvt);
-				}
-				@Override
-				public void onButtonStillPressedInterval() {
-					KeyInputEvent nEvt = null;
-					if (symbol) {
-						nEvt = new KeyInputEvent(symbolKeyCode, symbolCharacter, true, false);
-					} else if (shift) {
-						nEvt = new KeyInputEvent(shiftKeyCode, shiftCharacter, true, false);
-					} else {
-						nEvt = new KeyInputEvent(keyCode, character, true, false);
-					}
-					nEvt.setTime(System.currentTimeMillis());
-					screen.onKeyEvent(nEvt);
-				}
-			};
-			button.setText(label);
-			button.setResetKeyboardFocus(false);
-		//	button.setInterval(15);
 			button.removeEffect(Effect.EffectEvent.Hover);
 			return button;
 		}
@@ -835,30 +422,12 @@ public class Keyboard extends Panel {
 				new Vector2f(w,h)
 			) {
 				@Override
-				public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean isToggled) {
-					KeyInputEvent nEvt = null;
-					nEvt = new KeyInputEvent(KeyInput.KEY_RETURN, symbolCharacter, true, false);
-					nEvt.setTime(System.currentTimeMillis());
-					screen.onKeyEvent(nEvt);
-				}
-				@Override
 				public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean isToggled) {
-					KeyInputEvent nEvt = null;
-					nEvt = new KeyInputEvent(KeyInput.KEY_RETURN, symbolCharacter, false, false);
-					nEvt.setTime(System.currentTimeMillis());
-					screen.onKeyEvent(nEvt);
-				}
-				@Override
-				public void onButtonStillPressedInterval() {
-					KeyInputEvent nEvt = null;
-					nEvt = new KeyInputEvent(KeyInput.KEY_RETURN, symbolCharacter, true, false);
-					nEvt.setTime(System.currentTimeMillis());
-					screen.onKeyEvent(nEvt);
+					screen.hideVirtualKeyboard();
 				}
 			};
 			button.setText(label);
 			button.setResetKeyboardFocus(false);
-			button.setInterval(15);
 			return button;
 		}
 		
