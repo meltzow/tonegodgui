@@ -76,7 +76,7 @@ import tonegod.gui.listeners.*;
  *
  * @author t0neg0d
  */
-public class Screen implements Control, RawInputListener, ClipboardOwner {
+public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 
 	public static enum CursorType {
 		POINTER,
@@ -117,6 +117,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	private float targetElementOffsetY = 0;
 	private Borders eventElementResizeDirection = null;
 	private Element mouseFocusElement = null;
+	private Element contactElement = null;
 	private Element previousMouseFocusElement = null;
 	private boolean focusElementIsMovable = false;
 	private boolean mousePressed = false;
@@ -521,7 +522,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 			}
 			if (mouseFocusElement != null) {
 				focusElementIsMovable = mouseFocusElement.getIsMovable();
-
+				
 				if (mouseFocusElement instanceof MouseWheelListener) {
 					if (evt.getDeltaWheel() > 0) {
 						((MouseWheelListener)mouseFocusElement).onMouseWheelDown(evt);
@@ -536,6 +537,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		} else {
 			if (eventElement != null) {
 				if (mouseLeftPressed) {
+					focusElementIsMovable = contactElement.getIsMovable();
 					if (eventElementResizeDirection != null) {
 						eventElement.resize(evt.getX(), evt.getY(), eventElementResizeDirection);
 					} else if (focusElementIsMovable) {
@@ -554,17 +556,23 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	public void onMouseButtonEvent(MouseButtonEvent evt) {
 		if (evt.isPressed()) {
 			mousePressed = true;
-			resetTabFocusElement();
+			eventElement = getEventElement(evt.getX(), evt.getY());
+			if (eventElement != null) {
+				if (eventElement.getResetKeyboardFocus())
+					resetTabFocusElement();
+			} else
+				resetTabFocusElement();
 			if (this.useCursorEffects) {
 				this.configEmiterClick(evt.getButtonIndex());
 			}
 			switch (evt.getButtonIndex()) {
 				case 0:
 					mouseLeftPressed = true;
-					eventElement = getEventElement(evt.getX(), evt.getY());
+				//	eventElement = getEventElement(evt.getX(), evt.getY());
 					if (eventElement != null) {
 						updateZOrder(eventElement.getAbsoluteParent());
-						this.setTabFocusElement(eventElement);
+						if (eventElement.getResetKeyboardFocus())
+							this.setTabFocusElement(eventElement);
 						if (eventElement.getIsDragDropDragElement())
 							targetElement = null;
 						if (eventElement.getIsResizable()) {
@@ -594,22 +602,25 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 									eventElementResizeDirection = Borders.S;
 								}
 							}
-							if (keyboardElement != null) {
+							if (keyboardElement != null && eventElement.getResetKeyboardFocus()) {
 								if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
 							}
-							keyboardElement = null;
+							if (eventElement.getResetKeyboardFocus())
+								keyboardElement = null;
 						} else if (eventElement.getIsMovable() && eventElementResizeDirection == null) {
 							eventElementResizeDirection = null;
-							if (keyboardElement != null) {
+							if (keyboardElement != null && eventElement.getResetKeyboardFocus()) {
 								if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
 							}
-							keyboardElement = null;
+							if (eventElement.getResetKeyboardFocus())
+								keyboardElement = null;
 							eventElementOriginXY.set(eventElement.getPosition());
 						} else if (eventElement instanceof KeyboardListener) {
-							if (keyboardElement != null) {
+							if (keyboardElement != null && eventElement.getResetKeyboardFocus()) {
 								if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
 							}
-							keyboardElement = eventElement;
+							if (eventElement.getResetKeyboardFocus())
+								keyboardElement = eventElement;
 							if (keyboardElement instanceof TextField) {
 								((TextField)keyboardElement).setTabFocus();
 							//	((TextField)keyboardElement).setCaretPositionByX(evt.getX());
@@ -617,10 +628,11 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 							// TODO: Update target element's font shader
 						} else {
 							eventElementResizeDirection = null;
-							if (keyboardElement != null) {
+							if (keyboardElement != null && eventElement.getResetKeyboardFocus()) {
 								if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
 							}
-							keyboardElement = null;
+							if (eventElement.getResetKeyboardFocus())
+								keyboardElement = null;
 						}
 						if (eventElement instanceof MouseButtonListener) {
 							((MouseButtonListener)eventElement).onMouseLeftPressed(evt);
@@ -630,7 +642,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 					break;
 				case 1:
 					mouseRightPressed = true;
-					eventElement = getEventElement(evt.getX(), evt.getY());
+				//	eventElement = getEventElement(evt.getX(), evt.getY());
 					if (eventElement != null) {
 						updateZOrder(eventElement.getAbsoluteParent());
 						if (eventElement instanceof MouseButtonListener) {
@@ -641,7 +653,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 					break;
 				case 2:
 					mouseWheelPressed = true;
-					eventElement = getEventElement(evt.getX(), evt.getY());
+				//	eventElement = getEventElement(evt.getX(), evt.getY());
 					if (eventElement != null) {
 						if (eventElement instanceof MouseWheelListener) {
 							((MouseWheelListener)eventElement).onMouseWheelPressed(evt);
@@ -688,6 +700,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	
 	@Override
 	public void onKeyEvent(KeyInputEvent evt) {
+		System.out.println("Recieved key event: Kayboard element: " + keyboardElement);
 		if (evt.getKeyCode() == KeyInput.KEY_LSHIFT || evt.getKeyCode() == KeyInput.KEY_RSHIFT) {
 			if (evt.isPressed()) SHIFT = true;
 			else SHIFT = false;
@@ -766,6 +779,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 			}
 		}
 		if (el != null) {
+			contactElement = el;
 			Element parent = null;
 			if (el.getEffectParent() && mousePressed) {
 				parent = el.getElementParent();
@@ -797,32 +811,36 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 				float offsetY = y;
 				Element el = eventElement;
 				
-				if (keyboardElement != null) {
+				if (keyboardElement != null && eventElement.getResetKeyboardFocus()) {
 					if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
 				}
-				keyboardElement = null;
+				if (eventElement.getResetKeyboardFocus())
+					keyboardElement = null;
 			} else if (eventElement.getIsMovable() && eventElementResizeDirection == null) {
 				eventElementResizeDirection = null;
-				if (keyboardElement != null) {
+				if (keyboardElement != null && eventElement.getResetKeyboardFocus()) {
 					if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
 				}
-				keyboardElement = null;
+				if (eventElement.getResetKeyboardFocus())
+					keyboardElement = null;
 				eventElementOriginXY.set(eventElement.getPosition());
 			} else if (eventElement instanceof KeyboardListener) {
-				if (keyboardElement != null) {
+				if (keyboardElement != null && eventElement.getResetKeyboardFocus()) {
 					if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
 				}
-				keyboardElement = eventElement;
+				if (eventElement.getResetKeyboardFocus())
+					keyboardElement = eventElement;
 				if (keyboardElement instanceof TextField) {
 					((TextField)keyboardElement).setTabFocus();
 				}
 				// TODO: Update target element's font shader
 			} else {
 				eventElementResizeDirection = null;
-				if (keyboardElement != null) {
+				if (keyboardElement != null && eventElement.getResetKeyboardFocus()) {
 					if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
 				}
-				keyboardElement = null;
+				if (eventElement.getResetKeyboardFocus())
+					keyboardElement = null;
 			}
 		}
 	}
@@ -912,7 +930,7 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 		try {
 			clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 			StringSelection stringSelection = new StringSelection( text );
-			clipboard.setContents(stringSelection, this);
+		//	clipboard.setContents(stringSelection, this);
 		} catch (Exception ex) {
 			this.clipboardText = text;
 		}
@@ -923,20 +941,24 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	 * @return String text
 	 */
 	public String getClipboardText() {
-		String ret = "";
-		clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		Transferable text = clipboard.getContents(null);
-		boolean isText = (text != null && text.isDataFlavorSupported(DataFlavor.stringFlavor));
-		if (isText) {
-			try {
-				ret = (String)text.getTransferData(DataFlavor.stringFlavor);
-			} catch (Exception ex) {
-				ret = this.clipboardText;
-				if (ret == null)
-					ret = "";
+		try {
+			String ret = "";
+			clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			Transferable text = clipboard.getContents(null);
+			boolean isText = (text != null && text.isDataFlavorSupported(DataFlavor.stringFlavor));
+			if (isText) {
+				try {
+					ret = (String)text.getTransferData(DataFlavor.stringFlavor);
+				} catch (Exception ex) {
+					ret = this.clipboardText;
+					if (ret == null)
+						ret = "";
+				}
 			}
+			return ret;
+		} catch (Exception ex) {
+			return "";
 		}
-		return ret;
 	}
 	
 	/**
@@ -1647,11 +1669,13 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	public void setTabFocusElement(Element element) {
 		resetFocusElement();
 		focusForm = element.getForm();
-		if (focusForm != null) {
-			tabFocusElement = element;
-			focusForm.setSelectedTabIndex(element);
-			if (tabFocusElement instanceof TabFocusListener) {
-				((TabFocusListener)element).setTabFocus();
+		if (element.getResetKeyboardFocus()) {
+			if (focusForm != null) {
+				tabFocusElement = element;
+				focusForm.setSelectedTabIndex(element);
+				if (tabFocusElement instanceof TabFocusListener) {
+					((TabFocusListener)element).setTabFocus();
+				}
 			}
 		}
 	}
@@ -1671,8 +1695,10 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	 */
 	private void resetFocusElement() {
 		if (tabFocusElement != null) {
-			if (tabFocusElement instanceof TabFocusListener) {
-				((TabFocusListener)tabFocusElement).resetTabFocus();
+			if (tabFocusElement.getResetKeyboardFocus()) {
+				if (tabFocusElement instanceof TabFocusListener) {
+					((TabFocusListener)tabFocusElement).resetTabFocus();
+				}
 			}
 		}
 	}
@@ -1682,10 +1708,14 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	 * @param element The Element to set keyboard focus to
 	 */
 	public void setKeyboardElement(Element element) {
-		keyboardElement = element;
+		if (element != null) {
+			if (element.getResetKeyboardFocus())
+				keyboardElement = element;
+		} else
+			keyboardElement = null;
 	}
 	
-	@Override
+//	@Override
 	public void lostOwnership(Clipboard clipboard, Transferable contents) {
 	//	System.out.println("Clipboard failed, switching to internal clipboard.");
 	//	this.clipboardActive = false;
@@ -1717,5 +1747,9 @@ public class Screen implements Control, RawInputListener, ClipboardOwner {
 	public static boolean isSolaris() {
 		String OS = System.getProperty("os.name").toLowerCase();
 		return (OS.indexOf("sunos") >= 0);
+	}
+	public static boolean isAndroid() {
+		String OS = System.getProperty("os.name").toLowerCase();
+		return (OS.indexOf("android") >= 0);
 	}
 }
