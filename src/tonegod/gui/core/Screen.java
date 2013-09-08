@@ -59,6 +59,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import tonegod.gui.controls.extras.OSRViewPort;
+import tonegod.gui.controls.extras.android.Keyboard;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.lists.ComboBox;
 import tonegod.gui.controls.menuing.Menu;
@@ -171,6 +172,8 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	private LayoutParser layoutParser;
 	
 	private ElementQuadGrid mesh;
+	
+	private Keyboard virtualKeys;
 	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
@@ -623,6 +626,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 								keyboardElement = eventElement;
 							if (keyboardElement instanceof TextField) {
 								((TextField)keyboardElement).setTabFocus();
+								if (Screen.isAndroid()) showVirtualKeyboard();
 							//	((TextField)keyboardElement).setCaretPositionByX(evt.getX());
 							}
 							// TODO: Update target element's font shader
@@ -637,7 +641,12 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 						if (eventElement instanceof MouseButtonListener) {
 							((MouseButtonListener)eventElement).onMouseLeftPressed(evt);
 						}
+						if (keyboardElement == null)
+							if (Screen.isAndroid()) hideVirtualKeyboard();
 						evt.setConsumed();
+					} else {
+						if (keyboardElement == null)
+							if (Screen.isAndroid()) hideVirtualKeyboard();
 					}
 					break;
 				case 1:
@@ -700,7 +709,6 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	
 	@Override
 	public void onKeyEvent(KeyInputEvent evt) {
-		System.out.println("Recieved key event: Kayboard element: " + keyboardElement);
 		if (evt.getKeyCode() == KeyInput.KEY_LSHIFT || evt.getKeyCode() == KeyInput.KEY_RSHIFT) {
 			if (evt.isPressed()) SHIFT = true;
 			else SHIFT = false;
@@ -991,6 +999,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		if (spatial != null) {
 			((Node)spatial).attachChild(t0neg0dGUI);
 			t0neg0dGUI.addControl(effectManager);
+			if (isAndroid()) initVirtualKeys();
 		}
 	}
 	
@@ -1726,6 +1735,28 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		layoutParser.parseLayout(path, state);
 	}
 	
+	// Android Keyboard Control
+	private void initVirtualKeys() {
+		virtualKeys = new Keyboard(this);
+		virtualKeys.setIsModal(true);
+		virtualKeys.setIsGlobalModal(true);
+		addElement(virtualKeys);
+		virtualKeys.hide();
+	}
+	
+	public Keyboard getVirtualKeyboard() {
+		if (isAndroid())	return virtualKeys;
+		else				return null;
+	}
+	
+	public void showVirtualKeyboard() {
+		if (isAndroid()) virtualKeys.show();
+	}
+	
+	public void hideVirtualKeyboard() {
+		if (isAndroid()) virtualKeys.hide();
+	}
+	
 	// Key states
 	public boolean getCtrl() { return this.CTRL; }
 	public boolean getShift() { return this.SHIFT; }
@@ -1749,7 +1780,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		return (OS.indexOf("sunos") >= 0);
 	}
 	public static boolean isAndroid() {
-		String OS = System.getProperty("os.name").toLowerCase();
+		String OS = System.getProperty("java.vendor").toLowerCase();
 		return (OS.indexOf("android") >= 0);
 	}
 }
