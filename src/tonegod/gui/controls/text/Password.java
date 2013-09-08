@@ -4,9 +4,7 @@
  */
 package tonegod.gui.controls.text;
 
-import com.jme3.app.Application;
 import com.jme3.font.BitmapText;
-import com.jme3.input.event.KeyInputEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.core.Screen;
