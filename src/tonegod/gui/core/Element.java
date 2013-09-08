@@ -161,6 +161,7 @@ public class Element extends Node {
 	protected boolean isVisible = true;
 	protected boolean wasVisible = true;
 	private boolean hasFocus = false;
+	private boolean resetKeyboardFocus = true;
 	
 	private Form form;
 	private int tabIndex = 0;
@@ -2463,6 +2464,12 @@ public class Element extends Node {
 	public boolean getHasFocus() {
 		return this.hasFocus;
 	}
+	
+	public void setResetKeyboardFocus(boolean resetKeyboardFocus) {
+		this.resetKeyboardFocus = resetKeyboardFocus;
+	}
+	
+	public boolean getResetKeyboardFocus() { return this.resetKeyboardFocus; }
 	
 	// Modal
 	/**
