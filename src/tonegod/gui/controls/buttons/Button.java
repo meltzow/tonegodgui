@@ -172,6 +172,11 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		pressedSoundVolume = screen.getStyle("Button").getFloat("pressedSoundVolume");
 		
 		populateEffects("Button");
+		if (Screen.isAndroid()) {
+			removeEffect(Effect.EffectEvent.Hover);
+			removeEffect(Effect.EffectEvent.TabFocus);
+			removeEffect(Effect.EffectEvent.LoseTabFocus);
+		}
 	}
 	
 	/**

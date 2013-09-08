@@ -121,5 +121,10 @@ public class RadioButton extends CheckBox {
 		}
 		
 		populateEffects("RadioButton");
+		if (Screen.isAndroid()) {
+			removeEffect(Effect.EffectEvent.Hover);
+			removeEffect(Effect.EffectEvent.TabFocus);
+			removeEffect(Effect.EffectEvent.LoseTabFocus);
+		}
 	}
 }

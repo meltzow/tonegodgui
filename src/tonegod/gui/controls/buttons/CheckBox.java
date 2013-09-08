@@ -153,6 +153,11 @@ public class CheckBox extends ButtonAdapter {
 		}
 		
 		populateEffects("CheckBox");
+		if (Screen.isAndroid()) {
+			removeEffect(Effect.EffectEvent.Hover);
+			removeEffect(Effect.EffectEvent.TabFocus);
+			removeEffect(Effect.EffectEvent.LoseTabFocus);
+		}
 	}
 	
 	/**
