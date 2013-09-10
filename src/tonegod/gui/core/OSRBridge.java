@@ -39,15 +39,18 @@ public class OSRBridge extends AbstractControl {
 		cam = new Camera(width, height);
 		
 		vp = rm.createPreView("Offscreen View", cam);
-		vp.setClearFlags(true, true, true);
+		if (!Screen.isAndroid())	vp.setClearFlags(true, true, true);
+		else						vp.setClearFlags(true, false, false);
 		
 		FrameBuffer offBuffer = new FrameBuffer(width, height, 1);
 		
 		tex = new Texture2D(width, height, Image.Format.RGBA8);
-		tex.setMinFilter(Texture.MinFilter.Trilinear);
+		tex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
 		tex.setMagFilter(Texture.MagFilter.Bilinear);
 
-		offBuffer.setDepthBuffer(Image.Format.Depth);
+		if (!Screen.isAndroid())
+			offBuffer.setDepthBuffer(Image.Format.Depth);
+		
 		offBuffer.setColorTexture(tex);
 
 		vp.setOutputFrameBuffer(offBuffer);

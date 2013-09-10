@@ -6,6 +6,7 @@ package tonegod.gui.controls.extras;
 
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
+import com.jme3.input.event.TouchEvent;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
@@ -19,6 +20,7 @@ import tonegod.gui.listeners.MouseButtonListener;
 import tonegod.gui.listeners.MouseFocusListener;
 import tonegod.gui.listeners.MouseMovementListener;
 import tonegod.gui.listeners.MouseWheelListener;
+import tonegod.gui.listeners.TouchListener;
 
 /**
  *
@@ -258,25 +260,22 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 	
 	@Override
 	public void onMouseLeftPressed(MouseButtonEvent evt) {
+		if (Screen.isAndroid()) {
+			this.enabled = true;
+			setHasFocus(true);
+		}
 		if (rotateEnabled && useLeftMouseRotate) {
 			mouseLook = true;
-			screen.getApplication().getInputManager().setCursorVisible(false);
+			if (!Screen.isAndroid()) screen.getApplication().getInputManager().setCursorVisible(false);
 			bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
 		}
-		/*
-		if (screen.getUseToolTips()) {
-			if (getToolTipText() !=  null) {
-				screen.setToolTip(null);
-			}
-		}
-		*/
 		evt.setConsumed();
 	}
 	@Override
 	public void onMouseLeftReleased(MouseButtonEvent evt) {
 		if (rotateEnabled && useLeftMouseRotate) {
 			mouseLook = false;
-			screen.getApplication().getInputManager().setCursorVisible(true);
+			if (!Screen.isAndroid()) screen.getApplication().getInputManager().setCursorVisible(true);
 			bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
 		}
 		evt.setConsumed();
@@ -285,23 +284,21 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 	public void onMouseRightPressed(MouseButtonEvent evt) {
 		if (rotateEnabled && !useLeftMouseRotate) {
 			mouseLook = true;
-			screen.getApplication().getInputManager().setCursorVisible(false);
+			if (!Screen.isAndroid()) screen.getApplication().getInputManager().setCursorVisible(false);
 			bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
 		}
-		/*
-		if (screen.getUseToolTips()) {
-			if (getToolTipText() !=  null) {
-				screen.setToolTip(null);
-			}
-		}
-		*/
 		evt.setConsumed();
 	}
 	@Override
 	public void onMouseRightReleased(MouseButtonEvent evt) {
+		if (Screen.isAndroid()) {
+			if (!mouseLook)
+				this.enabled = false;
+			setHasFocus(false);
+		}
 		if (rotateEnabled && !useLeftMouseRotate) {
 			mouseLook = false;
-			screen.getApplication().getInputManager().setCursorVisible(true);
+			if (!Screen.isAndroid()) screen.getApplication().getInputManager().setCursorVisible(true);
 			bridge.getChaseCamera().onAction("ChaseCamToggleRotate", evt.isPressed(), bridge.getCurrentTPF());
 		}
 		evt.setConsumed();
@@ -357,5 +354,4 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 			this.enabled = false;
 		setHasFocus(false);
 	}
-	
 }
