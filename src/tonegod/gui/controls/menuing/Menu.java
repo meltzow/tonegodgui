@@ -720,6 +720,24 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	}
 	@Override
 	public void onMouseLeftReleased(MouseButtonEvent evt) {
+		if (Screen.isAndroid()) {
+			float x = evt.getX()-getX();
+			float y = scrollableArea.getAbsoluteHeight()-menuPadding-evt.getY();
+
+			if (currentMenuItemIndex != (int)Math.floor(y/menuItemHeight)) {
+				currentMenuItemIndex = (int)Math.floor(y/menuItemHeight);
+
+				if (currentMenuItemIndex > -1 && currentMenuItemIndex < menuItems.size()) {
+					setHighlight(currentMenuItemIndex);
+					this.hideAllSubmenus(false);
+					Menu subMenu = menuItems.get(currentMenuItemIndex).getSubMenu();
+					if (subMenu != null) {
+						subMenu.showMenu(this, getAbsoluteWidth()-this.menuOverhang, scrollableArea.getAbsoluteHeight()-(menuItemHeight+(currentMenuItemIndex*menuItemHeight))-(subMenu.getHeight()-menuItemHeight));
+					}
+				}
+			}
+		}
+		
 		if (currentMenuItemIndex > -1 && currentMenuItemIndex < menuItems.size())
 			this.handleMenuItemClick(menuItems.get(currentMenuItemIndex), currentMenuItemIndex, menuItems.get(currentMenuItemIndex).getValue());
 		evt.setConsumed();
