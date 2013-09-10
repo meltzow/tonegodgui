@@ -106,6 +106,13 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	private Ray elementZOrderRay = new Ray();
 	private Vector3f guiRayOrigin = new Vector3f();
 	
+	private boolean useMultiTouch = false;
+	private Vector2f tempElementOffset = new Vector2f();
+	private Map<Integer,Vector2f> elementOffsets = new HashMap();
+	private Map<Integer,Element> contactElements = new HashMap();
+	private Map<Integer,Element> eventElements = new HashMap();
+	private Map<Integer,Borders> eventElementResizeDirections = new HashMap();
+	
 	private Element eventElement = null;
 	private Element targetElement = null;
 	private Element keyboardElement = null;
@@ -219,6 +226,12 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		effectManager = new EffectManager(this);
 		app.getInputManager().addRawInputListener(this);
 		layoutParser = new LayoutParser(this);
+	}
+	
+	public void setUseMultiTouch(boolean useMultiTouch) {
+		this.useMultiTouch = useMultiTouch;
+		app.getInputManager().setSimulateMouse(!useMultiTouch);
+		app.getInputManager().setSimulateKeyboard(!useMultiTouch);
 	}
 	
 	public ElementQuadGrid getDefaultMesh() {
@@ -741,7 +754,155 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 
 	@Override
 	public void onTouchEvent(TouchEvent evt) {
-	//	throw new UnsupportedOperationException("Not supported yet.");
+		if (useMultiTouch) {
+			switch (evt.getType()) {
+				case DOWN:
+					androidTouchDownEvent(evt);
+					break;
+				case MOVE:
+					androidTouchMoveEvent(evt);
+					break;
+				case UP:
+					androidTouchUpEvent(evt);
+					break;
+			}
+		}
+	}
+	
+	private void androidTouchDownEvent(TouchEvent evt) {
+		mousePressed = true;
+		Element contact = getContactElement(evt.getX(), evt.getY());
+		Vector2f offset = tempElementOffset.clone();
+		Element target = getEventElement(evt.getX(), evt.getY());
+		
+		Borders dir = null;
+		if (target != null) {
+			if (target.getResetKeyboardFocus())
+				resetTabFocusElement();
+
+			updateZOrder(target.getAbsoluteParent());
+			if (target.getResetKeyboardFocus())
+				this.setTabFocusElement(target);
+			if (target.getIsDragDropDragElement())
+				targetElement = null;
+			if (target.getIsResizable()) {
+				float offsetX = evt.getX();
+				float offsetY = evt.getY();
+				Element el = target;
+				
+				if (offsetX > el.getAbsoluteX() && offsetX < el.getAbsoluteX()+el.getResizeBorderWestSize()) {
+					if (offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
+						dir = Borders.NW;
+					} else if (offsetY > (el.getAbsoluteHeight()-el.getResizeBorderSouthSize()) && offsetY < el.getAbsoluteHeight()) {
+						dir = Borders.SW;
+					} else {
+						dir = Borders.W;
+					}
+				} else if (offsetX > (el.getAbsoluteWidth()-el.getResizeBorderEastSize()) && offsetX < el.getAbsoluteWidth()) {
+					if (offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
+						dir = Borders.NE;
+					} else if (offsetY > (el.getAbsoluteHeight()-el.getResizeBorderSouthSize()) && offsetY < el.getAbsoluteHeight()) {
+						dir = Borders.SE;
+					} else {
+						dir = Borders.E;
+					}
+				} else {
+					if (offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
+						dir = Borders.N;
+					} else if (offsetY > (el.getAbsoluteHeight()-el.getResizeBorderSouthSize()) && offsetY < el.getAbsoluteHeight()) {
+						dir = Borders.S;
+					}
+				}
+				if (keyboardElement != null && target.getResetKeyboardFocus()) {
+					if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
+				}
+				if (target.getResetKeyboardFocus())
+					keyboardElement = null;
+			} else if (target.getIsMovable() && dir == null) {
+				dir = null;
+				if (keyboardElement != null && target.getResetKeyboardFocus()) {
+					if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
+				}
+				if (target.getResetKeyboardFocus())
+					keyboardElement = null;
+				eventElementOriginXY.set(target.getPosition());
+			} else if (target instanceof KeyboardListener) {
+				if (keyboardElement != null && target.getResetKeyboardFocus()) {
+					if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
+				}
+				if (target.getResetKeyboardFocus())
+					keyboardElement = target;
+				if (keyboardElement instanceof TextField) {
+					((TextField)keyboardElement).setTabFocus();
+					showVirtualKeyboard();
+				}
+			} else {
+				dir = null;
+				if (keyboardElement != null && target.getResetKeyboardFocus()) {
+					if (keyboardElement instanceof TextField) ((TextField)keyboardElement).resetTabFocus();
+				}
+				if (target.getResetKeyboardFocus())
+					keyboardElement = null;
+			}
+			if (target instanceof MouseButtonListener) {
+				MouseButtonEvent mbEvt = new MouseButtonEvent(0,true,(int)evt.getX(),(int)evt.getY());
+				((MouseButtonListener)target).onMouseLeftPressed(mbEvt);
+			}
+			if (keyboardElement == null)
+				hideVirtualKeyboard();
+			evt.setConsumed();
+			contactElements.put(evt.getPointerId(),contact);
+			elementOffsets.put(evt.getPointerId(),offset);
+			eventElements.put(evt.getPointerId(),target);
+			eventElementResizeDirections.put(evt.getPointerId(), dir);
+		} else {
+			if (keyboardElement == null)
+				hideVirtualKeyboard();
+			resetTabFocusElement();
+		}
+	}
+	
+	private void androidTouchMoveEvent(TouchEvent evt) {
+		for (Integer key : eventElements.keySet()) {
+			if (key == evt.getPointerId()) {
+				Element target = eventElements.get(key);
+				if (target != null) {
+					Element contact = contactElements.get(key);
+					Vector2f offset = elementOffsets.get(key);
+					Borders dir = eventElementResizeDirections.get(key);
+					
+					boolean movable = contact.getIsMovable();
+					if (dir != null) {
+						target.resize(evt.getX(), evt.getY(), dir);
+					} else if (movable) {
+						target.moveTo(evt.getX()-offset.x, evt.getY()-offset.y);
+					}
+
+					if (target instanceof MouseMovementListener) {
+						MouseMotionEvent mbEvt = new MouseMotionEvent((int)evt.getX(),(int)evt.getY(),(int)evt.getDeltaX(),(int)evt.getDeltaY(),0,0);
+						((MouseMovementListener)target).onMouseMove(mbEvt);
+					}
+				}
+			}
+		}
+	}
+	
+	private void androidTouchUpEvent(TouchEvent evt) {
+		Element target = eventElements.get(evt.getPointerId());
+		if (target != null) {
+			if (target instanceof MouseButtonListener) {
+				MouseButtonEvent mbEvt = new MouseButtonEvent(0, true, (int)evt.getX(), (int)evt.getY());
+				((MouseButtonListener)target).onMouseLeftReleased(mbEvt);
+			}
+			if (target != null)
+				evt.setConsumed();
+			eventElements.remove(evt.getPointerId());
+			contactElements.remove(evt.getPointerId());
+			elementOffsets.remove(evt.getPointerId());
+			eventElementResizeDirections.remove(evt.getPointerId());
+		}
+		mousePressed = false;
+		handleMenuState();
 	}
 	
 	/**
@@ -775,15 +936,10 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 					}
 				}
 			}
-		//	System.out.println(testEl.getUID() + ": " + discard + ": " + testEl.getLocalTranslation().getZ() + ": " + z + ": " + result.getContactPoint().getZ());
 			if (!discard) {
-				
-			//	if (result.getContactPoint().getZ() > z) {
-			//		z = result.getContactPoint().getZ();
-					if (result.getGeometry().getParent() instanceof Element) {
-						el = testEl;//((Element)(result.getGeometry().getParent()));
-					}
-			//	}
+				if (result.getGeometry().getParent() instanceof Element) {
+					el = testEl;
+				}
 			}
 		}
 		if (el != null) {
@@ -799,6 +955,54 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 			}
 			eventElementOffsetX = x-el.getX();
 			eventElementOffsetY = y-el.getY();
+			return el;
+		} else {
+			return null;
+		}
+	}
+	
+	private Element getContactElement(float x, float y) {
+		guiRayOrigin.set(x, y, 0f);
+		
+		elementZOrderRay.setOrigin(guiRayOrigin);
+		CollisionResults results = new CollisionResults();
+
+		t0neg0dGUI.collideWith(elementZOrderRay, results);
+
+		float z = 0;
+		Element testEl = null, el = null;
+		for (CollisionResult result : results) {
+			boolean discard = false;
+			if (result.getGeometry().getParent() instanceof Element) {
+				testEl = ((Element)(result.getGeometry().getParent()));
+				if (testEl.getIgnoreMouse()) {
+					discard = true;
+				} else if (testEl.getIsClipped()) {
+					if (result.getContactPoint().getX() < testEl.getClippingBounds().getX() ||
+						result.getContactPoint().getX() > testEl.getClippingBounds().getZ() ||
+						result.getContactPoint().getY() < testEl.getClippingBounds().getY() ||
+						result.getContactPoint().getY() > testEl.getClippingBounds().getW()) {
+						discard = true;
+					}
+				}
+			}
+			if (!discard) {
+				if (result.getGeometry().getParent() instanceof Element) {
+					el = testEl;
+				}
+			}
+		}
+		if (el != null) {
+			Element parent = null;
+			if (el.getEffectParent() && mousePressed) {
+				parent = el.getElementParent();
+			} else if (el.getEffectAbsoluteParent() && mousePressed) {
+				parent = el.getAbsoluteParent();
+			}
+			if (parent != null)
+				tempElementOffset.set(x-parent.getX(),y-parent.getY());
+			else
+				tempElementOffset.set(x-el.getX(),y-el.getY());
 			return el;
 		} else {
 			return null;
