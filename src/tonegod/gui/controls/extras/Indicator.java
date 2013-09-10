@@ -360,7 +360,7 @@ public abstract class Indicator extends Element {
 	@Override
 	public void setAlphaMap(String alphaMapPath) {
 		this.alphaMapPath = alphaMapPath;
-	//	elIndicator.setAlphaMap(this.alphaMapPath);
+		elIndicator.setAlphaMap(this.alphaMapPath);
 	}
 	
 	public Element getIndicatorElement() {
