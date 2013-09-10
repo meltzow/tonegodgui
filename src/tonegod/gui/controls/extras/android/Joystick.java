@@ -5,7 +5,6 @@
 package tonegod.gui.controls.extras.android;
 
 import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
