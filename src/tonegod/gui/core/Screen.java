@@ -848,6 +848,9 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 				MouseButtonEvent mbEvt = new MouseButtonEvent(0,true,(int)evt.getX(),(int)evt.getY());
 				((MouseButtonListener)target).onMouseLeftPressed(mbEvt);
 			}
+			if (target instanceof TouchListener) {
+				((TouchListener)target).onTouchDown(evt);
+			}
 			if (keyboardElement == null)
 				hideVirtualKeyboard();
 			evt.setConsumed();
@@ -882,6 +885,9 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 						MouseMotionEvent mbEvt = new MouseMotionEvent((int)evt.getX(),(int)evt.getY(),(int)evt.getDeltaX(),(int)evt.getDeltaY(),0,0);
 						((MouseMovementListener)target).onMouseMove(mbEvt);
 					}
+					if (target instanceof TouchListener) {
+						((TouchListener)target).onTouchMove(evt);
+					}
 				}
 			}
 		}
@@ -893,6 +899,9 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 			if (target instanceof MouseButtonListener) {
 				MouseButtonEvent mbEvt = new MouseButtonEvent(0, true, (int)evt.getX(), (int)evt.getY());
 				((MouseButtonListener)target).onMouseLeftReleased(mbEvt);
+			}
+			if (target instanceof TouchListener) {
+				((TouchListener)target).onTouchUp(evt);
 			}
 			if (target != null)
 				evt.setConsumed();
