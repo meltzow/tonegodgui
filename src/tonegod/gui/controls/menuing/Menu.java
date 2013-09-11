@@ -665,7 +665,11 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		if (menuItem.getIsToggleItem())
 			menuItem.setIsToggled(!menuItem.getIsToggled());
 		onMenuItemClicked(menuItemIndex, value, menuItem.getIsToggled());
-		hide();
+	//	if (Screen.isAndroid()) {
+	//		if (menuItem.getSubMenu() == null)
+	//			hide();
+	//	} else
+	//		hide();
 	}
 	
 	/**
@@ -678,22 +682,23 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	
 	@Override
 	public void onMouseMove(MouseMotionEvent evt) {
-		float x = evt.getX()-getX();
-		float y = scrollableArea.getAbsoluteHeight()-menuPadding-evt.getY();
-		
-		if (currentMenuItemIndex != (int)Math.floor(y/menuItemHeight)) {
-			currentMenuItemIndex = (int)Math.floor(y/menuItemHeight);
-			
-			if (currentMenuItemIndex > -1 && currentMenuItemIndex < menuItems.size()) {
-				setHighlight(currentMenuItemIndex);
-				this.hideAllSubmenus(false);
-				Menu subMenu = menuItems.get(currentMenuItemIndex).getSubMenu();
-				if (subMenu != null) {
-					subMenu.showMenu(this, getAbsoluteWidth()-this.menuOverhang, scrollableArea.getAbsoluteHeight()-(menuItemHeight+(currentMenuItemIndex*menuItemHeight))-(subMenu.getHeight()-menuItemHeight));
+		if (!Screen.isAndroid()) {
+			float x = evt.getX()-getX();
+			float y = scrollableArea.getAbsoluteHeight()-menuPadding-evt.getY();
+
+			if (currentMenuItemIndex != (int)Math.floor(y/menuItemHeight)) {
+				currentMenuItemIndex = (int)Math.floor(y/menuItemHeight);
+
+				if (currentMenuItemIndex > -1 && currentMenuItemIndex < menuItems.size()) {
+					setHighlight(currentMenuItemIndex);
+					this.hideAllSubmenus(false);
+					Menu subMenu = menuItems.get(currentMenuItemIndex).getSubMenu();
+					if (subMenu != null) {
+						subMenu.showMenu(this, getAbsoluteWidth()-this.menuOverhang, scrollableArea.getAbsoluteHeight()-(menuItemHeight+(currentMenuItemIndex*menuItemHeight))-(subMenu.getHeight()-menuItemHeight));
+					}
 				}
 			}
 		}
-		
 	}
 	
 	/**
@@ -720,6 +725,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	}
 	@Override
 	public void onMouseLeftReleased(MouseButtonEvent evt) {
+		boolean hasSubMenu = false;
 		if (Screen.isAndroid()) {
 			float x = evt.getX()-getX();
 			float y = scrollableArea.getAbsoluteHeight()-menuPadding-evt.getY();
@@ -733,6 +739,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 					Menu subMenu = menuItems.get(currentMenuItemIndex).getSubMenu();
 					if (subMenu != null) {
 						subMenu.showMenu(this, getAbsoluteWidth()-this.menuOverhang, scrollableArea.getAbsoluteHeight()-(menuItemHeight+(currentMenuItemIndex*menuItemHeight))-(subMenu.getHeight()-menuItemHeight));
+						hasSubMenu = true;
 					}
 				}
 			}
@@ -740,6 +747,12 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		
 		if (currentMenuItemIndex > -1 && currentMenuItemIndex < menuItems.size())
 			this.handleMenuItemClick(menuItems.get(currentMenuItemIndex), currentMenuItemIndex, menuItems.get(currentMenuItemIndex).getValue());
+		
+		if (!hasSubMenu) {
+			this.hideAllSubmenus(true);
+			if (Screen.isAndroid()) screen.handleAndroidMenuState(this);
+		}
+		
 		evt.setConsumed();
 	}
 	@Override

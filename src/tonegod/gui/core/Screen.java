@@ -903,15 +903,18 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 			if (target instanceof TouchListener) {
 				((TouchListener)target).onTouchUp(evt);
 			}
+			if (!(target.getAbsoluteParent() instanceof Menu)) {
+				handleAndroidMenuState(target);
+			}
 			if (target != null)
 				evt.setConsumed();
 			eventElements.remove(evt.getPointerId());
 			contactElements.remove(evt.getPointerId());
 			elementOffsets.remove(evt.getPointerId());
 			eventElementResizeDirections.remove(evt.getPointerId());
-		}
+		} else
+			handleMenuState();
 		mousePressed = false;
-		handleMenuState();
 	}
 	
 	/**
@@ -1646,6 +1649,36 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 			} else if (eventElement.getParent() instanceof ComboBox) {
 				for (Element el : elements.values()) {
 					if (el instanceof Menu && el != ((ComboBox)eventElement.getParent()).getMenu()) {
+						el.hide();
+					}
+				}
+			}
+		}
+	}
+	
+	public void handleAndroidMenuState(Element target) {
+		if (target == null) {
+			for (Element el : elements.values()) {
+				if (el instanceof Menu) {
+					el.hide();
+				}
+			}
+		} else {
+			if (!(target.getAbsoluteParent() instanceof Menu) && !(target.getParent() instanceof ComboBox)) {
+				for (Element el : elements.values()) {
+					if (el instanceof Menu) {
+						el.hide();
+					}
+				}
+			} else if (target.getAbsoluteParent() instanceof Menu) {
+				for (Element el : elements.values()) {
+					if (el instanceof Menu && el != target.getAbsoluteParent()) {
+						el.hide();
+					}
+				}
+			} else if (target.getParent() instanceof ComboBox) {
+				for (Element el : elements.values()) {
+					if (el instanceof Menu && el != ((ComboBox)target.getParent()).getMenu()) {
 						el.hide();
 					}
 				}
