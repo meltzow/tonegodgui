@@ -234,6 +234,11 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		app.getInputManager().setSimulateKeyboard(!useMultiTouch);
 	}
 	
+	public void setUseKeyboardIcons(boolean useIcons) {
+		if (Screen.isAndroid())
+			virtualKeys.setUseIcons(useIcons);
+	}
+	
 	public ElementQuadGrid getDefaultMesh() {
 		return mesh;
 	}
@@ -367,9 +372,9 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		
 		if (texturePath != null) {
 			atlasTexture = app.getAssetManager().loadTexture(texturePath);
-			atlasTexture.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
+			atlasTexture.setMinFilter(Texture.MinFilter.BilinearNearestMipMap);
 			atlasTexture.setMagFilter(Texture.MagFilter.Bilinear);
-			atlasTexture.setWrap(Texture.WrapMode.Repeat);
+			atlasTexture.setWrap(Texture.WrapMode.BorderClamp);
 		} else {
 			atlasTexture = null;
 		}
