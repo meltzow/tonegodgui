@@ -28,10 +28,10 @@
 		</font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">
-				<x value="12" />
-				<y value="12" />
-				<z value="12" />
-				<w value="12" />
+				<x value="15" />
+				<y value="15" />
+				<z value="15" />
+				<w value="15" />
 			</property>
 			<property name="defaultSize" type="Vector2f">
 				<x value="100" />
@@ -45,9 +45,9 @@
 			<property name="hoverSoundVolume" type="float" value=".5" />
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=0|y=0|w=78|h=78" />
-			<property name="hoverImg" type="String" value="x=397|y=0|w=78|h=78" />
-			<property name="pressedImg" type="String" value="x=397|y=0|w=78|h=78" />
+			<property name="defaultImg" type="String" value="x=32|y=80|w=32|h=32" />
+			<property name="hoverImg" type="String" value="x=0|y=0|w=32|h=32" />
+			<property name="pressedImg" type="String" value="x=0|y=0|w=32|h=32" />
 		</images>
 		<effects>
 			<property name="event0" type="Effect">

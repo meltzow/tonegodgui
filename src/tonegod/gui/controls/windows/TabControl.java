@@ -136,15 +136,18 @@ public class TabControl extends Element {
 			@Override
 			public void onSelect(int index, Button value) {
 				Set<Integer> keys = tabPanels.keySet();
+				TabPanel selectedPanel = tabPanels.get(index);
+				Button selectedTab = tabs.get(index);
 				for (Integer key : keys) {
-					if (key == index) {
-						tabPanels.get(key).show();
-						tabs.get(key).removeFromParent();
-						tabs.get(key).getElementParent().attachChild(tabs.get(key));
-					} else {
+					if (key != index) {
 						tabPanels.get(key).hide();
 					}
 				}
+				selectedPanel.show();
+				selectedTab.removeFromParent();
+				selectedTab.getElementParent().attachChild(selectedTab);
+				selectedPanel.hide();
+				selectedPanel.show();
 			}
 		};
 		
