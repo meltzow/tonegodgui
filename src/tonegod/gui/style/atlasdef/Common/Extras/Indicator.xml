@@ -31,8 +31,8 @@
 			</property>
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=96|y=16|w=11|h=11" />
-			<property name="alphaImg" type="String" value="x=96|y=0|w=11|h=11" />
+			<property name="defaultImg" type="String" value="x=103|y=18|w=11|h=11" />
+			<property name="alphaImg" type="String" value="x=103|y=1|w=11|h=11" />
 		</images>
 		<effects></effects>
 	</element>

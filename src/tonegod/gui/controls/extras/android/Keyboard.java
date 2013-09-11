@@ -190,6 +190,47 @@ public class Keyboard extends Panel {
 		addChild(key.getButton());
 	}
 	
+	public void setUseIcons(boolean useIcons) {
+		if (useIcons) {
+			KeyboardKey shift = getFunctionKey(KeyInput.KEY_LSHIFT);
+			shift.getButton().setButtonIcon(16, 16, screen.getStyle("Keyboard").getString("shiftImg"));
+			shift.getButton().setText("");
+			KeyboardKey ret = getFunctionKey(KeyInput.KEY_RETURN);
+			ret.getButton().setButtonIcon(16, 16, screen.getStyle("Keyboard").getString("returnImg"));
+			ret.getButton().setText("");
+			KeyboardKey bs = getFunctionKey(KeyInput.KEY_BACK);
+			bs.getButton().setButtonIcon(32, 16, screen.getStyle("Keyboard").getString("backspaceImg"));
+			bs.getButton().setText("");
+			KeyboardKey space = getFunctionKey(KeyInput.KEY_SPACE);
+			space.getButton().setButtonIcon(32, 8, screen.getStyle("Keyboard").getString("spaceImg"));
+			space.getButton().setText("");
+		} else {
+			KeyboardKey shift = getFunctionKey(KeyInput.KEY_LSHIFT);
+			shift.getButton().setButtonIcon(16, 16, screen.getStyle("Common").getString("blankImg"));
+			shift.getButton().setText(shift.label);
+			KeyboardKey ret = getFunctionKey(KeyInput.KEY_RETURN);
+			ret.getButton().setButtonIcon(16, 16, screen.getStyle("Common").getString("blankImg"));
+			ret.getButton().setText(ret.label);
+			KeyboardKey bs = getFunctionKey(KeyInput.KEY_BACK);
+			bs.getButton().setButtonIcon(32, 16, screen.getStyle("Common").getString("blankImg"));
+			bs.getButton().setText(bs.label);
+			KeyboardKey space = getFunctionKey(KeyInput.KEY_SPACE);
+			space.getButton().setButtonIcon(32, 8, screen.getStyle("Common").getString("blankImg"));
+			space.getButton().setText(space.label);
+		}
+	}
+	
+	private KeyboardKey getFunctionKey(int keyCode) {
+		KeyboardKey ret = null;
+		for (KeyboardKey xKey : keys) {
+			if (xKey.getKeyCode() == keyCode) {
+				ret = xKey;
+				break;
+			}
+		}
+		return ret;
+	}
+	
 	private String validateSymbol(String symbol) {
 		if (symbol.equals("amp")) symbol= "&";
 		else if (symbol.equals("lt")) symbol= "<";

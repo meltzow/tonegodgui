@@ -20,10 +20,10 @@
 		</attributes>
 		<images>
 			<property name="blankImg" type="String" value="x=0|y=0|w=1|h=1" />
-			<property name="arrowUp" type="String" value="x=80|y=0|w=16|h=16" />
-			<property name="arrowDown" type="String" value="x=80|y=16|w=16|h=16" />
-			<property name="arrowLeft" type="String" value="x=80|y=32|w=16|h=16" />
-			<property name="arrowRight" type="String" value="x=80|y=48|w=16|h=16" />
+			<property name="arrowUp" type="String" value="x=86|y=1|w=16|h=16" />
+			<property name="arrowDown" type="String" value="x=86|y=18|w=16|h=16" />
+			<property name="arrowLeft" type="String" value="x=86|y=35|w=16|h=16" />
+			<property name="arrowRight" type="String" value="x=86|y=52|w=16|h=16" />
 		</images>
 		<effects></effects>
 	</element>

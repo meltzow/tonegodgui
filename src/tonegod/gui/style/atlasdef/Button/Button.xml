@@ -27,10 +27,10 @@
 		</font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">
-				<x value="5" />
-				<y value="5" />
-				<z value="5" />
-				<w value="5" />
+				<x value="4" />
+				<y value="4" />
+				<z value="4" />
+				<w value="4" />
 			</property>
 			<property name="defaultSize" type="Vector2f">
 				<x value="100" />
@@ -44,9 +44,9 @@
 			<property name="hoverSoundVolume" type="float" value=".5" />
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=0|y=32|w=16|h=16" />
-			<property name="hoverImg" type="String" value="x=16|y=32|w=16|h=16" />
-			<property name="pressedImg" type="String" value="x=32|y=32|w=16|h=16" />
+			<property name="defaultImg" type="String" value="x=1|y=35|w=16|h=16" />
+			<property name="hoverImg" type="String" value="x=18|y=35|w=16|h=16" />
+			<property name="pressedImg" type="String" value="x=35|y=35|w=16|h=16" />
 		</images>
 		<effects>
 			<property name="event0" type="Effect">
@@ -114,9 +114,9 @@
 			</property>
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=0|y=48|w=16|h=16" />
-			<property name="hoverImg" type="String" value="x=16|y=48|w=16|h=16" />
-			<property name="pressedImg" type="String" value="x=32|y=48|w=16|h=16" />
+			<property name="defaultImg" type="String" value="x=1|y=52|w=16|h=16" />
+			<property name="hoverImg" type="String" value="x=18|y=52|w=16|h=16" />
+			<property name="pressedImg" type="String" value="x=35|y=52|w=16|h=16" />
 		</images>
 		<effects>
 			<property name="event0" type="Effect">
@@ -184,9 +184,9 @@
 			</property>
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=48|y=32|w=16|h=16" />
-			<property name="hoverImg" type="String" value="x=48|y=48|w=16|h=16" />
-			<property name="pressedImg" type="String" value="x=48|y=48|w=16|h=16" />
+			<property name="defaultImg" type="String" value="x=52|y=35|w=16|h=16" />
+			<property name="hoverImg" type="String" value="x=52|y=52|w=16|h=16" />
+			<property name="pressedImg" type="String" value="x=52|y=52|w=16|h=16" />
 		</images>
 		<effects>
 			<property name="event0" type="Effect">

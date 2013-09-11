@@ -45,9 +45,10 @@
 			<property name="hoverSoundVolume" type="float" value=".5" />
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=32|y=80|w=32|h=32" />
-			<property name="hoverImg" type="String" value="x=0|y=0|w=32|h=32" />
-			<property name="pressedImg" type="String" value="x=0|y=0|w=32|h=32" />
+			<property name="defaultImg" type="String" value="x=35|y=86|w=32|h=32" />
+			<property name="hoverImg" type="String" value="x=1|y=1|w=32|h=32" />
+			<property name="pressedImg" type="String" value="x=1|y=1|w=32|h=32" />
+			<property name="panelImg" type="String" value="x=34|y=1|w=32|h=32" />
 		</images>
 		<effects>
 			<property name="event0" type="Effect">
