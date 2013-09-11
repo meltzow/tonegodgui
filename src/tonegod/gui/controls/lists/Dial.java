@@ -25,7 +25,7 @@ import tonegod.gui.effects.Effect;
  * @author t0neg0d
  */
 public abstract class Dial extends ButtonAdapter {
-	Element elCenter, elPosition;
+	Element elCenter, elPosition, elIndicator;
 	protected List<Object> stepValues = new ArrayList();
 	
 	int selectedIndex = 0;
@@ -138,7 +138,7 @@ public abstract class Dial extends ButtonAdapter {
 			new Vector2f((getWidth()/2), -(getHeight()/2)),
 			new Vector2f(dimensions.x, dimensions.y),
 			new Vector4f(0,0,0,0),
-			screen.getStyle("Dial").getString("radialImg")
+			screen.getStyle("Common").getString("blankImg")
 		);
 		((Geometry)elCenter.getChild(0)).center();
 		elCenter.setScaleNS(false);
@@ -147,6 +147,22 @@ public abstract class Dial extends ButtonAdapter {
 		elCenter.setDockW(true);
 		elCenter.setIgnoreMouse(true);
 		addChild(elCenter);
+		
+		elIndicator = new Element(
+			screen,
+			UID + ":Indicator",
+			new Vector2f(-1,getHeight()/2),
+			new Vector2f(5, 5),
+			new Vector4f(0,0,0,0),
+			screen.getStyle("Dial").getString("radialImg")
+		);
+		((Geometry)elIndicator.getChild(0)).center();
+		elIndicator.setScaleNS(false);
+		elIndicator.setScaleEW(false);
+		elIndicator.setDockS(true);
+		elIndicator.setDockW(true);
+		elIndicator.setIgnoreMouse(true);
+		elCenter.addChild(elIndicator);
 		
 		setStepSize();
 		setInterval(100);

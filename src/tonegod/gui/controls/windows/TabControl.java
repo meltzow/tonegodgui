@@ -246,6 +246,7 @@ public class TabControl extends Element {
 	public void addTabChild(int index, Element element) {
 		if (index > -1 && index < tabs.size()) {
 			tabPanels.get(index).addChild(element);
+			element.setClippingLayer(tabPanels.get(index));
 		}
 	}
 	
@@ -262,7 +263,7 @@ public class TabControl extends Element {
 			this(screen, UID, position,
 				screen.getStyle("Window").getVector2f("defaultSize"),
 				screen.getStyle("Window").getVector4f("resizeBorders"),
-				screen.getStyle("Window").getString("defaultImg")
+				screen.getStyle("Tab").getString("panelImg")
 			);
 		}
 		
@@ -277,7 +278,7 @@ public class TabControl extends Element {
 		public TabPanel(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
 			this(screen, UID, position, dimensions,
 				screen.getStyle("Window").getVector4f("resizeBorders"),
-				screen.getStyle("Window").getString("defaultImg")
+				screen.getStyle("Tab").getString("panelImg")
 			);
 		}
 		
