@@ -665,11 +665,8 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		if (menuItem.getIsToggleItem())
 			menuItem.setIsToggled(!menuItem.getIsToggled());
 		onMenuItemClicked(menuItemIndex, value, menuItem.getIsToggled());
-	//	if (Screen.isAndroid()) {
-	//		if (menuItem.getSubMenu() == null)
-	//			hide();
-	//	} else
-	//		hide();
+		if (!Screen.isAndroid())
+			hide();
 	}
 	
 	/**
