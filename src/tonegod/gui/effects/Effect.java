@@ -9,6 +9,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.texture.Texture;
 import tonegod.gui.core.Element;
+import tonegod.gui.framework.animation.Interpolation;
 
 /**
  *
@@ -56,6 +57,7 @@ public class Effect implements Cloneable {
 	private EffectType type;
 	private EffectEvent event;
 	private float pass = 0.0f;
+	private float time = 0.0f;
 	private boolean direction = true;
 	private float duration;
 	private Vector2f destination;
@@ -73,6 +75,7 @@ public class Effect implements Cloneable {
 	private String audioFile = null;
 	private float audioVolume = 1;
 	private boolean callHide = true;
+	private Interpolation interpolation;
 	
 	public Effect(EffectType type, EffectEvent event, float duration) {
 		this(type, event, duration, null, 1);
@@ -87,6 +90,7 @@ public class Effect implements Cloneable {
 		this.duration = duration;
 		this.audioFile = audioFile;
 		this.audioVolume = audioVolume;
+		this.interpolation = Interpolation.linear;
 	}
 	
 	public void setElement(Element element) {
@@ -169,6 +173,15 @@ public class Effect implements Cloneable {
 		return this.audioVolume;
 	}
 	
+	public void setInterpolation(Interpolation interpolation) {
+		this.interpolation = null;
+		this.interpolation = interpolation;
+	}
+	
+	public Interpolation getInterpolation() {
+		return this.interpolation;
+	}
+	
 	public void update(float tpf) {
 		switch(type) {
 			case ZoomIn:
@@ -214,7 +227,8 @@ public class Effect implements Cloneable {
 
 		if (isActive) {
 			if (type != EffectType.Pulse && type != EffectType.PulseColor) {
-				pass += tpf/duration;
+				time += tpf;
+				pass = interpolation.apply(time/duration);
 				if (pass >= 1.0) {
 					pass = 1.0f;
 					localActive = false;
@@ -228,8 +242,9 @@ public class Effect implements Cloneable {
 						pass = 0.0f;
 						direction = true;
 					}
-					if (direction) pass += tpf/duration;
-					else pass -= tpf/duration;
+					if (direction)	time += tpf;
+					else			time -= tpf;
+					pass = interpolation.apply(time/duration);
 					if (!init) {
 						element.getElementMaterial().setBoolean("UseEffect", true);
 						element.getElementMaterial().setBoolean("EffectFade", false);
@@ -250,8 +265,9 @@ public class Effect implements Cloneable {
 						pass = 0.0f;
 						direction = true;
 					}
-					if (direction) pass += tpf/duration;
-					else pass -= tpf/duration;
+					if (direction)	time += tpf;
+					else			time -= tpf;
+					pass = interpolation.apply(time/duration);
 					if (!init) {
 						element.getElementMaterial().setBoolean("UseEffect", true);
 						element.getElementMaterial().setBoolean("EffectFade", false);
@@ -294,6 +310,7 @@ public class Effect implements Cloneable {
 		effect.setElement(this.element);
 		effect.setEffectDirection(this.effectDir);
 		effect.setDestroyOnHide(this.destroyOnHide);
+		effect.setInterpolation(interpolation);
 		return effect;
 	}
 	
