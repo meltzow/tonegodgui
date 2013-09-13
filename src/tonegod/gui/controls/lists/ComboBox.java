@@ -151,6 +151,8 @@ public abstract class ComboBox extends TextField {
 			@Override
 			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
 				if (validateListSize()) {
+					if (screen.getElementById(DDList.getUID()) == null)
+						screen.addElement(DDList);
 					if (!DDList.getIsVisible()) {
 						DDList.showMenu(
 							(Menu)null,
@@ -433,7 +435,10 @@ public abstract class ComboBox extends TextField {
 				}
 				if (miIndexOf > -1 && miIndexOf < DDList.getMenuItems().size()-1)
 					handleHightlight(miIndexOf);
-				if (!DDList.getIsVisible() && evt.getKeyCode() != KeyInput.KEY_LSHIFT && evt.getKeyCode() != KeyInput.KEY_RSHIFT) DDList.showMenu((Menu)null, getAbsoluteX(), getAbsoluteY()-DDList.getHeight());
+				if (screen.getElementById(DDList.getUID()) == null)
+						screen.addElement(DDList);
+				if (!DDList.getIsVisible() && evt.getKeyCode() != KeyInput.KEY_LSHIFT && evt.getKeyCode() != KeyInput.KEY_RSHIFT)
+					DDList.showMenu((Menu)null, getAbsoluteX(), getAbsoluteY()-DDList.getHeight());
 			} else {
 				if (evt.getKeyCode() == KeyInput.KEY_UP) {
 					if (hlIndex > 0) {
