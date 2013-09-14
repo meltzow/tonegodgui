@@ -186,7 +186,6 @@ public class AnimElementMesh extends Mesh {
 			this.clearBuffer(VertexBuffer.Type.Color);
 			this.setBuffer(VertexBuffer.Type.Color, 4, cb);
 			buildIndices = false;
-			System.out.println("Mesh was rebuilt");
 		}
 		createCollisionData();
 		updateBound();

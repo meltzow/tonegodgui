@@ -447,11 +447,9 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		float shiftZ = topMost.getLocalTranslation().getZ();
 		
 		for (Element el : elements.values()) {
-			if (topMost.getIsGlobalModal()) {
-				
-			} else if (topMost.getIsModal()) {
-			
-			} else {
+			if (topMost.getIsGlobalModal()) {  }
+			else if (topMost.getIsModal()) {  }
+			else {
 				if (!el.getIsGlobalModal() && !el.getIsModal()) {
 					if (el.getLocalTranslation().getZ() > shiftZ) {
 						el.move(0,0,-zOrderStepMajor);
@@ -591,7 +589,8 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 					mouseLeftPressed = true;
 				//	eventElement = getEventElement(evt.getX(), evt.getY());
 					if (eventElement != null) {
-						updateZOrder(eventElement.getAbsoluteParent());
+						if (eventElement.getEffectZOrder())
+							updateZOrder(eventElement.getAbsoluteParent());
 						if (eventElement.getResetKeyboardFocus())
 							this.setTabFocusElement(eventElement);
 						if (eventElement.getIsDragDropDragElement())
@@ -671,7 +670,8 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 					mouseRightPressed = true;
 				//	eventElement = getEventElement(evt.getX(), evt.getY());
 					if (eventElement != null) {
-						updateZOrder(eventElement.getAbsoluteParent());
+						if (eventElement.getEffectZOrder())
+							updateZOrder(eventElement.getAbsoluteParent());
 						if (eventElement instanceof MouseButtonListener) {
 							((MouseButtonListener)eventElement).onMouseRightPressed(evt);
 						}
@@ -785,7 +785,8 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 			if (target.getResetKeyboardFocus())
 				resetTabFocusElement();
 
-			updateZOrder(target.getAbsoluteParent());
+			if (target.getEffectZOrder())
+				updateZOrder(target.getAbsoluteParent());
 			if (target.getResetKeyboardFocus())
 				this.setTabFocusElement(target);
 			if (target.getIsDragDropDragElement())
@@ -1031,7 +1032,8 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		float y = element.getAbsoluteY()+1;
 		eventElement = getEventElement(x,y);
 		if (eventElement != null) {
-			updateZOrder(eventElement.getAbsoluteParent());
+			if (eventElement.getEffectZOrder())
+				updateZOrder(eventElement.getAbsoluteParent());
 			this.setTabFocusElement(eventElement);
 			if (eventElement.getIsDragDropDragElement())
 				targetElement = null;

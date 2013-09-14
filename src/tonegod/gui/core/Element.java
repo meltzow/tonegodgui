@@ -123,7 +123,6 @@ public class Element extends Node {
 	private boolean scaleNS = true;
 	private boolean scaleEW = true;
 	
-	
 	private boolean effectParent = false;
 	private boolean effectAbsoluteParent = false;
 	
@@ -167,6 +166,7 @@ public class Element extends Node {
 	private int tabIndex = 0;
 	
 	private float zOrder;
+	private boolean effectZOrder = true;
 	private Map<Effect.EffectEvent, Effect> effects = new HashMap();
 	
 	private OSRBridge bridge;
@@ -489,6 +489,12 @@ public class Element extends Node {
 		this.zOrder = zOrder;
 		initZOrder(zOrder);
 	}
+	
+	public void setEffectZOrder(boolean effectZOrder) {
+		this.effectZOrder = effectZOrder;
+	}
+	
+	public boolean getEffectZOrder() { return this.effectZOrder; }
 	
 	public void setGlobalUIScale(float widthPercent, float heightPercent) {
 		for (Element el : elementChildren.values()) {
