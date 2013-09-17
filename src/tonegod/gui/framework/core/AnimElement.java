@@ -12,8 +12,10 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.texture.Texture;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import tonegod.gui.framework.animation.TemporalAction;
 
@@ -22,6 +24,7 @@ import tonegod.gui.framework.animation.TemporalAction;
  * @author t0neg0d
  */
 public abstract class AnimElement extends Node implements Transformable {
+	List<TemporalAction> actions = new ArrayList();
 	Map<String, QuadData> quads = new LinkedHashMap();
 	Texture tex;
 	Map<String, TextureRegion> uvs = new HashMap();
@@ -129,6 +132,15 @@ public abstract class AnimElement extends Node implements Transformable {
 	
 	public void update(float tpf) {
 		mesh.update(tpf);
+		for (TemporalAction a : actions) {
+			a.act(tpf);
+		}
+		for (TemporalAction a : actions) {
+			if (a.getTime() >= a.getDuration()) {
+				actions.remove(a);
+				break;
+			}
+		}
 		animElementUpdate(tpf);
 	}
 	
