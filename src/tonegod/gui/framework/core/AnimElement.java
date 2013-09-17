@@ -21,7 +21,7 @@ import tonegod.gui.framework.animation.TemporalAction;
  *
  * @author t0neg0d
  */
-public abstract class AnimElement extends Node {
+public abstract class AnimElement extends Node implements Transformable {
 	Map<String, QuadData> quads = new LinkedHashMap();
 	Texture tex;
 	Map<String, TextureRegion> uvs = new HashMap();
@@ -87,6 +87,13 @@ public abstract class AnimElement extends Node {
 		quads.put(quadKey, qd);
 	}
 	
+	public void setQuadParent(String key, String parentKey) {
+		QuadData qd = getQuads().get(key);
+		qd.parent = quads.get(parentKey);
+		qd.x -= qd.parent.x;
+		qd.y -= qd.parent.y;
+	}
+	
 	public void rotateQuad(String quadKey, int rotation) {
 		quads.get(quadKey).rotation = rotation;
 	}
@@ -139,16 +146,22 @@ public abstract class AnimElement extends Node {
 	public float getOriginX() { return this.origin.x; }
 	public float getOriginY() { return this.origin.y; }
 	
+	@Override
 	public void setPosition(float x, float y) {
 		this.position.set(x,y);
 	}
+	@Override
 	public void setPosition(Vector2f position) {
 		this.position.set(position);
 	}
+	@Override
 	public void setPositionX(float x) { this.position.setX(x); }
+	@Override
 	public void setPositionY(float y) { this.position.setY(y); }
 	public Vector2f getPosition() { return this.position; }
+	@Override
 	public float getPositionX() { return this.position.x; }
+	@Override
 	public float getPositionY() { return this.position.y; }
 	
 	public void setScale(float x, float y) {
@@ -157,15 +170,21 @@ public abstract class AnimElement extends Node {
 	public void setScale(Vector2f scale) {
 		this.scale.set(scale);
 	}
+	@Override
 	public void setScaleX(float x) { this.scale.setX(x); }
+	@Override
 	public void setScaleY(float y) { this.scale.setY(y); }
 	public Vector2f getScale() { return this.scale; }
+	@Override
 	public float getScaleX() { return this.scale.x; }
+	@Override
 	public float getScaleY() { return this.scale.y; }
 	
+	@Override
 	public void setRotation(float rotation) {
 		this.rotation = rotation;
 	}
+	@Override
 	public float getRotation() { return this.rotation; }
 	
 }

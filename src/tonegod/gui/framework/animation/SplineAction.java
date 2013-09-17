@@ -25,8 +25,8 @@ public class SplineAction extends TemporalAction {
 	protected void update(float percent) {
 		tempV.set(0,0);
 		P(percent,path);
-		quad.x = tempV.x;
-		quad.y = tempV.y;
+		quad.setPositionX(tempV.x);
+		quad.setPositionY(tempV.y);
 	}
 	
 	private float fact (float k) {

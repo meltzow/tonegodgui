@@ -14,7 +14,7 @@ import tonegod.gui.framework.animation.TemporalAction;
  *
  * @author t0neg0d
  */
-public class QuadData {
+public class QuadData implements Transformable {
 	public List<TemporalAction> actions = new ArrayList();
 	public QuadData parent;
 	public String key;
@@ -45,7 +45,7 @@ public class QuadData {
 	}
 	
 	public void addAction(TemporalAction action) {
-		action.setQuad(this);
+		action.setTransformable(this);
 		actions.add(action);
 	}
 	
@@ -78,5 +78,67 @@ public class QuadData {
 			height = initHeight;
 			visible = true;
 		}
+	}
+
+	@Override
+	public void setPositionX(float x) {
+		this.x = x;
+	}
+
+	@Override
+	public void setPositionY(float y) {
+		this.y = y;
+	}
+
+	@Override
+	public void setPosition(float x, float y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	@Override
+	public void setPosition(Vector2f pos) {
+		this.x = pos.x;
+		this.y = pos.y;
+	}
+
+	@Override
+	public void setRotation(float rotation) {
+		this.rotation = rotation;
+	}
+
+	@Override
+	public void setScaleX(float scaleX) {
+		this.scaleX = scaleX;
+	}
+
+	@Override
+	public void setScaleY(float scaleY) {
+		this.scaleY = scaleY;
+	}
+
+	@Override
+	public float getPositionX() {
+		return x;
+	}
+
+	@Override
+	public float getPositionY() {
+		return y;
+	}
+
+	@Override
+	public float getRotation() {
+		return rotation;
+	}
+
+	@Override
+	public float getScaleX() {
+		return scaleX;
+	}
+
+	@Override
+	public float getScaleY() {
+		return scaleY;
 	}
 }

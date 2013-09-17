@@ -8,7 +8,7 @@ package tonegod.gui.framework.animation;
  *
  * @author t0neg0d
  */
-public class ScaleByAction extends TemporalAction {
+public class MoveByAction extends TemporalAction {
 
 	private float initX, initY;
 	private float amountX, amountY;
@@ -22,8 +22,8 @@ public class ScaleByAction extends TemporalAction {
 		lastPercent = 0;
 		nextPercent = 0;
 		if (autoReverse) {
-			initX = quad.getScaleX();
-			initY = quad.getScaleY();
+			initX = quad.getPositionX();
+			initY = quad.getPositionY();
 			setDuration(getDuration()*.5f);
 		}
 	}
@@ -33,8 +33,8 @@ public class ScaleByAction extends TemporalAction {
 		nextPercent = percent - lastPercent;
 		lastPercent = percent;
 		
-		quad.setScaleX(quad.getScaleX()+(amountX * nextPercent));
-		quad.setScaleY(quad.getScaleY()+(amountY * nextPercent));
+		quad.setPositionX(quad.getPositionX()+(amountX * nextPercent));
+		quad.setPositionY(quad.getPositionY()+(amountY * nextPercent));
 	}
 	
 	@Override
@@ -46,8 +46,8 @@ public class ScaleByAction extends TemporalAction {
 			restart();
 			cycles = 1;
 		} else if (cycles == 1) {
-			quad.setScaleX(initX);
-			quad.setScaleY(initY);
+			quad.setPositionX(initX);
+			quad.setPositionY(initY);
 		}
 	}
 

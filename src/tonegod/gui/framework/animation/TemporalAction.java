@@ -6,6 +6,7 @@ package tonegod.gui.framework.animation;
 
 import tonegod.gui.framework.core.AnimElement;
 import tonegod.gui.framework.core.QuadData;
+import tonegod.gui.framework.core.Transformable;
 
 /**
  * Based on LibGdx TemporalAction.  This has been altered to work with QuadData representing
@@ -17,7 +18,7 @@ public abstract class TemporalAction {
 	private Interpolation interpolation;
 	private boolean reverse, complete;
 	protected AnimElement batch;
-	protected QuadData quad;
+	protected Transformable quad;
 	
 	public TemporalAction () {
 	}
@@ -31,8 +32,8 @@ public abstract class TemporalAction {
 		this.interpolation = interpolation;
 	}
 	
-	public void setQuad(QuadData quad) { this.quad = quad; }
-	public QuadData getQuad() { return this.quad; }
+	public void setTransformable(Transformable quad) { this.quad = quad; }
+	public Transformable getTransformable() { return this.quad; }
 	
 	public boolean act (float delta) {
 		if (complete) return true;

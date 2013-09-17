@@ -21,7 +21,7 @@ public class RotateByAction extends TemporalAction {
 		lastPercent = 0;
 		nextPercent = 0;
 		if (autoReverse) {
-			initRot = quad.rotation;
+			initRot = quad.getRotation();
 			setDuration(getDuration()*.5f);
 		}
 	}
@@ -31,7 +31,7 @@ public class RotateByAction extends TemporalAction {
 		nextPercent = percent - lastPercent;
 		lastPercent = percent;
 		
-		quad.rotation += amount*nextPercent;
+		quad.setRotation(quad.getRotation()+(amount*nextPercent));
 	//	if (!isReverse())	quad.rotation += amount*nextPercent;
 	//	else				quad.rotation -= amount*nextPercent;
 	}
@@ -44,7 +44,7 @@ public class RotateByAction extends TemporalAction {
 			restart();
 			cycles = 1;
 		} else if (cycles == 1) {
-			quad.rotation = initRot;
+			quad.setRotation(initRot);
 		}
 	}
 	
