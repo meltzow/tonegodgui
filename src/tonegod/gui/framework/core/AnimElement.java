@@ -24,7 +24,7 @@ import tonegod.gui.framework.animation.TemporalAction;
  * @author t0neg0d
  */
 public abstract class AnimElement extends Node implements Transformable {
-	List<TemporalAction> actions = new ArrayList();
+	protected List<TemporalAction> actions = new ArrayList();
 	Map<String, QuadData> quads = new LinkedHashMap();
 	Texture tex;
 	Map<String, TextureRegion> uvs = new HashMap();
@@ -47,7 +47,6 @@ public abstract class AnimElement extends Node implements Transformable {
 		
 		mat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
 		mat.setTexture("ColorMap", tex);
-	//	mat.setColor("Color", ColorRGBA.White);
 		mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
 		
 		Geometry geom = new Geometry();
@@ -82,8 +81,6 @@ public abstract class AnimElement extends Node implements Transformable {
 	
 	public void addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin, String parentKey) {
 		QuadData qd = new QuadData(quadKey, uvs.get(regionKey), position.x, position.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
-	//	qd.z = currentZOrder;
-	//	currentZOrder -= zOrderInc;
 		qd.parent = quads.get(parentKey);
 		qd.x -= qd.parent.x;
 		qd.y -= qd.parent.y;
