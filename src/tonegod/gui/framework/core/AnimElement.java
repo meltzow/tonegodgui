@@ -119,6 +119,11 @@ public abstract class AnimElement extends Node implements Transformable {
 		quads.get(quadKey).addAction(action);
 	}
 	
+	@Override
+	public void addAction(TemporalAction action) {
+		actions.add(action);
+	}
+	
 	public Map<String, QuadData> getQuads() {
 		return this.quads;
 	}

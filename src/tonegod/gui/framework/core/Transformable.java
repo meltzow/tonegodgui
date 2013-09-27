@@ -5,6 +5,7 @@
 package tonegod.gui.framework.core;
 
 import com.jme3.math.Vector2f;
+import tonegod.gui.framework.animation.TemporalAction;
 
 /**
  *
@@ -24,4 +25,6 @@ public interface Transformable {
 	public float getRotation();
 	public float getScaleX();
 	public float getScaleY();
+	
+	public void addAction(TemporalAction action);
 }

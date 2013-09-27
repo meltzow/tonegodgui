@@ -71,6 +71,7 @@ import tonegod.gui.core.utils.XMLHelper;
 import tonegod.gui.effects.Effect;
 import tonegod.gui.effects.EffectManager;
 import tonegod.gui.fonts.BitmapFontLoaderX;
+import tonegod.gui.framework.core.AnimManager;
 import tonegod.gui.listeners.*;
 
 /**
@@ -145,6 +146,8 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	protected EffectManager effectManager;
 	protected Node t0neg0dGUI = new Node("t0neg0dGUI");
 	
+	protected AnimManager animManager;
+	
 	private Vector2f mouseXY = new Vector2f(0,0);
 	private boolean SHIFT = false;
 	private boolean CTRL = false;
@@ -201,29 +204,15 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	public Screen(Application app, String styleMap) {
 		this.app = app;
 		this.elementZOrderRay.setDirection(Vector3f.UNIT_Z);
-		app.getAssetManager().unregisterLoader(BitmapFontLoader.class);
-		app.getAssetManager().registerLoader(BitmapFontLoaderX.class, "fnt");
+		try {
+			app.getAssetManager().unregisterLoader(BitmapFontLoader.class);
+			app.getAssetManager().registerLoader(BitmapFontLoaderX.class, "fnt");
+		} catch (Exception ex) {  }
 		
 		this.styleMap = styleMap;
 		parseStyles(styleMap);
-		/*
-		float imgWidth = 100;
-		float imgHeight = 100;
-		float pixelWidth = 1f/imgWidth;
-		float pixelHeight = 1f/imgHeight;
-		float atlasX = 0, atlasY = 0, atlasW = imgWidth, atlasH = imgHeight;
-		
-		Texture defaultTex = getAtlasTexture();
-		imgWidth = defaultTex.getImage().getWidth();
-		imgHeight = defaultTex.getImage().getHeight();
-		pixelWidth = 1f/imgWidth;
-		pixelHeight = 1f/imgHeight;
-
-		atlasY = imgHeight-atlasY-atlasH;
-		
-		mesh = new ElementQuadGrid(new Vector2f(10,10), new Vector4f(2,2,2,2), imgWidth, imgHeight, pixelWidth, pixelHeight, atlasX, atlasY, atlasW, atlasH);
-		*/
 		effectManager = new EffectManager(this);
+		animManager = new AnimManager(this);
 		app.getInputManager().addRawInputListener(this);
 		layoutParser = new LayoutParser(this);
 	}
@@ -1200,6 +1189,15 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		return this.effectManager;
 	}
 	
+	/**
+	 * Returns a pointer to the AnimManager.  The AnimManager is a time based queuing
+	 * for TemporalActions used with @Transformable ( See @AnimElement @QuadData )
+	 * @return AnimManager animManager
+	 */
+	public AnimManager getAnimManager() {
+		return this.animManager;
+	}
+	
 	public void setGlobalUIScale(float widthPercent, float heightPercent) {
 		for (Element el : elements.values()) {
 			el.setPosition(el.getPosition().x*widthPercent, el.getPosition().y*heightPercent);
@@ -1222,6 +1220,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		if (spatial != null) {
 			((Node)spatial).attachChild(t0neg0dGUI);
 			t0neg0dGUI.addControl(effectManager);
+			t0neg0dGUI.addControl(animManager);
 			if (isAndroid()) initVirtualKeys();
 		}
 	}
