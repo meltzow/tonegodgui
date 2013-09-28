@@ -5,6 +5,7 @@
 package tonegod.gui.controls.extras.emitter;
 
 import tonegod.gui.controls.extras.emitter.ElementEmitter.ElementParticle;
+import tonegod.gui.framework.animation.Interpolation;
 
 /**
  *
@@ -14,6 +15,7 @@ public class AlphaInfluencer implements Influencer {
 	private boolean isEnabled = true;
 	private float startAlpha = 1.0f;
 	private float endAlpha = 0.0f;
+	private Interpolation interpolation = Interpolation.linear;
 	
 	@Override
 	public void update(ElementParticle particle, float tpf) {
@@ -21,14 +23,24 @@ public class AlphaInfluencer implements Influencer {
 			float alpha = (startAlpha-endAlpha);
 			alpha *= (1-(1/particle.life));
 			alpha += endAlpha;
-			particle.particle.getElementMaterial().setFloat("GlobalAlpha",alpha);
+			
+			particle.color.set(
+				particle.color.r,
+				particle.color.g,
+				particle.color.b,
+				interpolation.apply(alpha)
+			);
 		}
 	}
 
 	@Override
 	public void initialize(ElementParticle particle) {
-		particle.particle.setGlobalAlpha(startAlpha);
-		particle.particle.getElementMaterial().setFloat("GlobalAlpha",startAlpha);
+		particle.color.set(
+				particle.color.r,
+				particle.color.g,
+				particle.color.b,
+				startAlpha
+			);
 	}
 
 	@Override
@@ -47,5 +59,9 @@ public class AlphaInfluencer implements Influencer {
 	
 	public void setEndAlpha(float endAlpha) {
 		this.endAlpha = endAlpha;
+	}
+	
+	public void setInterpolation(Interpolation interpolation) {
+		this.interpolation = interpolation;
 	}
 }

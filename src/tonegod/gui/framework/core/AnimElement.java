@@ -47,6 +47,7 @@ public abstract class AnimElement extends Node implements Transformable {
 		
 		mat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
 		mat.setTexture("ColorMap", tex);
+		mat.setBoolean("VertexColor", true);
 		mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
 		
 		Geometry geom = new Geometry();
@@ -72,6 +73,10 @@ public abstract class AnimElement extends Node implements Transformable {
 	
 	public TextureRegion getTextureRegion(String regionKey) {
 		return uvs.get(regionKey);
+	}
+	
+	public Map<String,TextureRegion> getTextureRegions() {
+		return this.uvs;
 	}
 	
 	public void addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin) {

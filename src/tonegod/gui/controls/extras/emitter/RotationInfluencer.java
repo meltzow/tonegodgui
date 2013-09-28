@@ -19,9 +19,9 @@ public class RotationInfluencer implements Influencer {
 	public void update(ElementParticle particle, float tpf) {
 		if (isEnabled) {
 			if (particle.rotateDir)
-				particle.angle += particle.rotateSpeed * tpf;
+				particle.angle += particle.rotateSpeed * tpf * FastMath.RAD_TO_DEG;
 			else
-				particle.angle -= particle.rotateSpeed * tpf;
+				particle.angle -= particle.rotateSpeed * tpf * FastMath.RAD_TO_DEG;
 		}
 	}
 

@@ -6,6 +6,7 @@ package tonegod.gui.controls.extras.emitter;
 
 import com.jme3.math.ColorRGBA;
 import tonegod.gui.controls.extras.emitter.ElementEmitter.ElementParticle;
+import tonegod.gui.framework.animation.Interpolation;
 
 /**
  *
@@ -14,12 +15,13 @@ import tonegod.gui.controls.extras.emitter.ElementEmitter.ElementParticle;
 public class ColorInfluencer implements Influencer {
 	private boolean isEnabled = true;
 	private ColorRGBA startColor = new ColorRGBA(ColorRGBA.Red);
-	private ColorRGBA endColor = new ColorRGBA(ColorRGBA.White);
+	private ColorRGBA endColor = new ColorRGBA(ColorRGBA.Yellow);
+	private Interpolation interpolation = Interpolation.linear;
 	
 	@Override
 	public void update(ElementParticle particle, float tpf) {
 		if (isEnabled) {
-			particle.color.interpolate(startColor, endColor, particle.blend);
+			particle.color.interpolate(startColor, endColor, interpolation.apply(particle.blend));
 		}
 	}
 
@@ -44,6 +46,10 @@ public class ColorInfluencer implements Influencer {
 	
 	public void setEndColor(ColorRGBA endColor) {
 		this.endColor = endColor;
+	}
+	
+	public void setInterpolation(Interpolation interpolation) {
+		this.interpolation = interpolation;
 	}
 	
 	@Override

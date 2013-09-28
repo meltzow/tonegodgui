@@ -23,12 +23,12 @@ public class SpriteInfluencer implements Influencer {
 
 	@Override
 	public void initialize(ElementParticle particle) {
-		if (!autoUpdate) particle.particle.setIsEnabled(false);
-		if (randomStartImage) {
-			int nextRow = FastMath.rand.nextInt(particle.particle.getSpriteRowCount());
-			int nextCol = FastMath.rand.nextInt(particle.particle.getSpriteColCount());
-			particle.particle.updateTextureAtlasImage("x=" + (nextRow*particle.particle.getSpriteWidth()) + "|y=" + (nextCol*particle.particle.getSpriteHeight()) + "|w=" + particle.particle.getSpriteWidth() + "|h=" + particle.particle.getSpriteHeight());
-		}
+	//	if (!autoUpdate) particle.particle.setIsEnabled(false);
+	//	if (randomStartImage) {
+	//		int nextRow = FastMath.rand.nextInt(particle.particle.getSpriteRowCount());
+	//		int nextCol = FastMath.rand.nextInt(particle.particle.getSpriteColCount());
+	//		particle.particle.updateTextureAtlasImage("x=" + (nextRow*particle.particle.getSpriteWidth()) + "|y=" + (nextCol*particle.particle.getSpriteHeight()) + "|w=" + particle.particle.getSpriteWidth() + "|h=" + particle.particle.getSpriteHeight());
+	//	}
 	}
 
 	@Override

@@ -81,6 +81,10 @@ public class QuadData implements Transformable {
 		}
 	}
 
+	public boolean getIsVisible() {
+		return visible;
+	}
+	
 	@Override
 	public void setPositionX(float x) {
 		this.x = x;

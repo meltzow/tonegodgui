@@ -51,10 +51,10 @@ public class AnimElementMesh extends Mesh {
 	public void update(float tpf) {
 		if (init) {
 			vb.rewind();
+			cb.rewind();
 			if (batch.getQuads().size() != quadCount) {
 				buildIndices = true;
 				tcb.rewind();
-				cb.rewind();
 				ib.rewind();
 				quadCount = batch.getQuads().size();
 			}
@@ -105,13 +105,15 @@ public class AnimElementMesh extends Mesh {
 			.put(tempV.y)
 			.put(0);
 		
+		for (int i = 0; i < 4; i++) {
+			cb	.put(qd.color.r)
+				.put(qd.color.g)
+				.put(qd.color.b)
+				.put(qd.color.a);
+		}
+		
 		if (buildIndices) {
-			for (int i = 0; i < 4; i++) {
-				cb	.put(qd.color.r)
-					.put(qd.color.g)
-					.put(qd.color.b)
-					.put(qd.color.a);
-			}
+			
 			tcb	.put(qd.region.getU())
 				.put(qd.region.getV());
 			tcb	.put(qd.region.getU2())
@@ -175,6 +177,8 @@ public class AnimElementMesh extends Mesh {
 	//	vb.flip();
 		this.clearBuffer(VertexBuffer.Type.Position);
 		this.setBuffer(VertexBuffer.Type.Position, 3, vb);
+		this.clearBuffer(VertexBuffer.Type.Color);
+		this.setBuffer(VertexBuffer.Type.Color, 4, cb);
 		if (buildIndices) {
 	//		tcb.flip();
 			this.clearBuffer(VertexBuffer.Type.TexCoord);
@@ -183,8 +187,6 @@ public class AnimElementMesh extends Mesh {
 			this.clearBuffer(VertexBuffer.Type.Index);
 			this.setBuffer(VertexBuffer.Type.Index, 3, ib);
 	//		cb.flip();
-			this.clearBuffer(VertexBuffer.Type.Color);
-			this.setBuffer(VertexBuffer.Type.Color, 4, cb);
 			buildIndices = false;
 		}
 		createCollisionData();

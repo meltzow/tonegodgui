@@ -17,51 +17,64 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import com.jme3.texture.Texture;
+import com.jme3.texture.image.ImageRaster;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import tonegod.gui.controls.extras.SpriteElement;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
+import tonegod.gui.framework.animation.Interpolation;
+import tonegod.gui.framework.core.AnimElement;
+import tonegod.gui.framework.core.QuadData;
 
 /**
  *
  * @author t0neg0d
  */
 public class ElementEmitter implements Control {
-	public static enum InfluencerType {
-		Gravity,
-		Color,
-		Size,
-		Rotation,
-		Impulse,
-		Alpha,
-		Sprite
+	public static enum EmitterAction {
+		EmitAllParticles,
+		AttachEmitter,
+		DetachEmitter
 	}
 	
-	Screen screen;
-	Application app;
+	private Screen screen;
+	private Application app;
 	private float targetInterval = 1f;
 	private float currentInterval = 0f;
 	private boolean isEnabled = false;
-	Map<String, Influencer> influencers = new HashMap();
-	ElementParticle[] particles;
-	float emitterWidth, emitterHeight;
-	Vector2f emitterPosition = new Vector2f();
+	private boolean isActive = true;
+	private boolean centerVelocity = true;
+	protected Map<String, Influencer> influencers = new LinkedHashMap();
+	protected ElementParticle[] quads;
+	protected AnimElement particles;
+	private float emitterWidth, emitterHeight;
+	private Vector2f emitterPosition = new Vector2f();
+	private Texture tex, emitterShape;
+	private ImageRaster ir;
+	private ColorRGBA tempColor = new ColorRGBA();
+	private Vector2f shapeRatio = new Vector2f(1,1);
+	private Interpolation interpolation = Interpolation.linear;
 	
 	// Sprite Info
 	private String spriteImagePath;
 	private int spriteRows, spriteCols, spriteFPS;
+	private int spriteWidth, spriteHeight;
 	private float spriteSize = 30;
 	
 	// Globals
-	private float force = .25f;
+	private float minforce = .25f;
+	private float maxforce = .25f;
 	private float highLife = .5f;
 	private float lowLife = .1f;
 	
 	private Element targetElement = null;
+	private Node rootNode = null;
 	
 	public ElementEmitter(Screen screen, Vector2f emitterPosition, float emitterWidth, float emitterHeight) {
 		this.screen = screen;
@@ -70,28 +83,56 @@ public class ElementEmitter implements Control {
 		this.emitterHeight = emitterHeight;
 		this.emitterPosition.set(emitterPosition);
 		
+		particles = new AnimElement(app.getAssetManager()) {
+			@Override
+			public void animElementUpdate(float tpf) {  }
+		};
+		particles.setOrigin(new Vector2f(0,0));
+		particles.setPosition(emitterPosition);
+		particles.setRotation(0);
+		particles.setScale(1,1);
+		
 		GravityInfluencer g = new GravityInfluencer();
-		influencers.put("Gravity",g);
+		addInfluencer(g);
+		DirectionInfluencer pd = new DirectionInfluencer();
+		addInfluencer(pd);
 		ColorInfluencer c = new ColorInfluencer();
-		influencers.put("Color",c);
+		addInfluencer(c);
 		SizeInfluencer s = new SizeInfluencer();
-		influencers.put("Size",s);
+		addInfluencer(s);
 		RotationInfluencer r = new RotationInfluencer();
-		influencers.put("Rotation",r);
+		addInfluencer(r);
 		ImpulseInfluencer i = new ImpulseInfluencer();
-		influencers.put("Impulse",i);
+		addInfluencer(i);
 		AlphaInfluencer a = new AlphaInfluencer();
-		influencers.put("Alpha",a);
+		addInfluencer(a);
 		SpriteInfluencer sp = new SpriteInfluencer();
-		influencers.put("Sprite",sp);
+		addInfluencer(sp);
 	}
 	
-	public Influencer getInfluencer(String key) {
-		return influencers.get(key);
+	/**
+	 * Adds the provided influencer to the emitter's influencer chain
+	 * @param influencer 
+	 */
+	public final void addInfluencer(Influencer influencer) {
+		influencers.put(influencer.getClass().getName(), influencer);
 	}
 	
-	public Influencer getInfluencer(InfluencerType type) {
-		return influencers.get(type.toString());
+	/**
+	 * Returns the first instance of the provided Influencer class
+	 * @param c The Influencer class
+	 * @return 
+	 */
+	public <T extends Influencer> T getInfluencer(Class<T> c) {
+		return (T) influencers.get(c.getName());
+	}
+	
+	/**
+	 * Removes the first instance of the provided Influencer class
+	 * @param c Influencer class to remove
+	 */
+	public void removeInfluencer(Class c) {
+		influencers.remove(c.getName());
 	}
 	
 	public void addInfluencer(String key, Influencer influencer) {
@@ -107,81 +148,149 @@ public class ElementEmitter implements Control {
 		this.spriteRows = spriteRows;
 		this.spriteCols = spriteCols;
 		this.spriteFPS = spriteFPS;
-	}
-	
-	@Override
-	public void update(float tpf) {
-		for (ElementParticle p : particles) {
-			if (p.active) p.update(tpf);
-		}
-		if (isEnabled) {
-			currentInterval += tpf;
-			if (currentInterval >= targetInterval) {
-				emitNextParticle();
-				currentInterval -= targetInterval;
+		
+		tex = app.getAssetManager().loadTexture(spriteImagePath);
+		particles.setTexture(tex);
+		
+		spriteWidth = tex.getImage().getWidth()/spriteCols;
+		spriteHeight = tex.getImage().getHeight()/spriteRows;
+		
+		for (int x = 0; x < spriteCols; x++) {
+			for (int y = 0; y < spriteRows; y++) {
+				particles.addTextureRegion("sprite" + (x+y), (int)(spriteWidth*x), (int)(spriteHeight*y), (int)spriteWidth, (int)spriteHeight);
 			}
 		}
 	}
 	
-	public void setMaxParticles(int maxParticles) {
-		setMaxParticles(maxParticles, null);
+	public void setInterpolation(Interpolation interpolation) {
+		this.interpolation = interpolation;
 	}
 	
-	public void setMaxParticles(int maxParticles, Element targetElement) {
-		this.targetElement = targetElement;
-		particles = new ElementParticle[maxParticles];
+	public Interpolation getInterpolation() {
+		return this.interpolation;
+	}
+	
+	public void setEmitterShape(String texturePath) {
+		emitterShape = app.getAssetManager().loadTexture(texturePath);
+		ir = ImageRaster.create(emitterShape.getImage());
+	}
+	
+	public void clearEmitterShape() {
+		this.emitterShape = null;
+	}
+	
+	@Override
+	public void update(float tpf) {
+		for (ElementParticle p : quads) {
+			if (p.active) {
+				p.update(tpf);
+			}
+		}
+		particles.update(tpf);
+		if (isEnabled) {
+			if (isActive) {
+				currentInterval += tpf;
+				if (currentInterval >= targetInterval) {
+					emitNextParticle();
+					currentInterval -= targetInterval;
+				}
+			}
+		}
+	}
+	
+	public Element getTargetElement() {
+		return this.targetElement;
+	}
+	
+	public Node getRootNode() {
+		return this.rootNode;
+	}
+	
+	public void setMaxParticles(int maxParticles) {
+		quads = new ElementParticle[maxParticles];
 		for (int i = 0; i < maxParticles; i++) {
 			ElementParticle p = new ElementParticle();
-			p.particle = new SpriteElement(screen,
-				Vector2f.ZERO,
-				new Vector2f(spriteSize, spriteSize),
-				Vector4f.ZERO,
-				null
-			);
-			p.particle.setSprite(spriteImagePath, spriteRows, spriteCols, spriteFPS);
-			p.particle.getGeometry().center();
-			if (targetElement == null)
-				screen.addElement(p.particle);
-			else
-				this.targetElement.addChild(p.particle);
+			particles.addQuad(String.valueOf(i), "sprite" + (FastMath.nextRandomInt(0, particles.getTextureRegions().size()-1)), new Vector2f(0,0), new Vector2f(100,100));
+			p.particle = particles.getQuads().get(String.valueOf(i)); 
+		//	p.particle.setSprite(spriteImagePath, spriteRows, spriteCols, spriteFPS);
+		//	p.particle.getGeometry().center();
 			p.initialize(true);
-			particles[i] = p;
+			quads[i] = p;
 		}
+		particles.initialize();
 	}
 	
 	public void setParticlesPerSecond(int particlesPerSecond) {
 		this.targetInterval = 1f/(float)particlesPerSecond;
 	}
 	
-	public void startEmitter(Node root) {
+	public void startEmitter() {
+		startEmitter(null);
+	}
+	
+	public void startEmitter(Element targetElement) {
 		this.isEnabled = true;
-		root.addControl(this);
+		this.targetElement = targetElement;
+		if (targetElement == null)	screen.getGUINode().attachChild(particles);
+		else						this.targetElement.attachChild(particles);
+		rootNode = screen.getGUINode();
+		rootNode.addControl(this);
 	}
 	
 	public void stopEmitter() {
-		this.isEnabled = false;
+		destroyEmitter();
 	}
 	
 	public void destroyEmitter() {
 		this.isEnabled = false;
+		if (this.targetElement != null) {
+			this.targetElement.detachChild(particles);
+			this.targetElement = null;
+		} else {
+			screen.getGUINode().detachChild(particles);
+		}
+		try { screen.getGUINode().removeControl(this); }
+		catch (Exception ex) { System.out.println("Hi.. I suck"); }
+	}
+	
+	public void setIsActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 	
 	private void emitNextParticle() {
 		boolean particleEmitted = false;
-		for (ElementParticle p : particles) {
-			if (!p.active && !particleEmitted) {
+		for (ElementParticle p : quads) {
+			if (!p.particle.getIsVisible() && !particleEmitted) {
 				p.initialize(false);
 				particleEmitted = true;
 			}
 		}
 	}
 
-	public float getForce() {
-		return force/100f;
+	public float getMinForce() {
+		return minforce/100f;
+	}
+
+	public float getMaxForce() {
+		return maxforce/100f;
 	}
 
 	public void setForce(float force) {
-		this.force = force*100f;
+		this.minforce = force*100f;
+		this.maxforce = force*100f;
+	}
+
+	public void setMinForce(float minforce) {
+		this.minforce = minforce*100f;
+	}
+
+	public void setMaxForce(float maxforce) {
+		this.maxforce = maxforce*100f;
+	}
+
+	public void setMinMaxForce(float minforce, float maxforce) {
+		this.minforce = minforce*100f;
+		this.maxforce = maxforce*100f;
 	}
 
 	public float getHighLife() {
@@ -200,27 +309,37 @@ public class ElementEmitter implements Control {
 		this.lowLife = lowLife;
 	}
 
-	public ElementParticle[] getParticles() {
+	public void setLife(float life) {
+		this.lowLife = life;
+		this.highLife = life;
+	}
+
+	public void setLowHighLife(float lowlife, float highlife) {
+		this.lowLife = lowlife;
+		this.highLife = highlife;
+	}
+
+	public AnimElement getParticles() {
 		return this.particles;
 	}
 	
 	public ElementParticle getParticle(int index) {
-		if (index > -1 && index < particles.length)
-			return this.particles[index];
+		if (index > -1 && index < quads.length)
+			return quads[index];
 		else
 			return null;
 	}
 	
 	public void removeParticle(int index) {
-		if (index > -1 && index < particles.length)
-			particles[index].killParticle();
+		if (index > -1 && index < quads.length)
+			quads[index].killParticle();
 	}
 	
 	public void removeParticle(ElementParticle p) {
 		int index = 0;
-		for (ElementParticle particle : particles) {
+		for (ElementParticle particle : quads) {
 			if (particle == p) {
-				particles[index].killParticle();
+				quads[index].killParticle();
 				break;
 			}
 			index++;
@@ -228,16 +347,20 @@ public class ElementEmitter implements Control {
 	}
 	
 	public void removeAllParticles() {
-		for (ElementParticle p : particles) {
+		for (ElementParticle p : quads) {
 			p.killParticle();
 		}
 	}
 	
 	public void emitAllParticles() {
-		for (ElementParticle p : particles) {
+		for (ElementParticle p : quads) {
 			if (!p.active)
 				p.initialize(false);
 		}
+	}
+	
+	public void setCenterVelocity(boolean center) {
+		this.centerVelocity = center;
 	}
 	
 	@Override
@@ -266,11 +389,12 @@ public class ElementEmitter implements Control {
 	}
 	
 	public class ElementParticle {
-		public SpriteElement particle;
+		public QuadData particle;
 		public Vector2f position = new Vector2f();
 		public Vector2f velocity = new Vector2f();
+		public float randforce;
 		public ColorRGBA color = new ColorRGBA();
-		public float size;
+		public float size = 1;
 		public float life;
 		public float startlife;
 		public float angle;
@@ -283,7 +407,7 @@ public class ElementEmitter implements Control {
 		public void update(float tpf) {
 			life -= tpf;
 			blend = (startlife - life) / startlife;
-			
+			if (interpolation != null) blend = interpolation.apply(blend);
 			if (life <= 0) {
 				killParticle();
 				return;
@@ -295,27 +419,51 @@ public class ElementEmitter implements Control {
 			}
 			
 			particle.setPosition(position);
-			particle.setLocalScale(size);
-			particle.getElementMaterial().setColor("Color", color);
-			particle.setLocalRotation(particle.getLocalRotation().fromAngleAxis(angle, Vector3f.UNIT_Z));
+			particle.setScaleX(size);
+			particle.setScaleY(size);
+			particle.origin.set(spriteWidth*0.5f,spriteHeight*0.5f);
+			particle.color.set(color);
+			particle.setRotation(angle);
 		};
 		
 		public void initialize(boolean hide) {
-			float diffX = FastMath.rand.nextFloat()*emitterWidth;
-			if (FastMath.rand.nextBoolean()) diffX = -diffX;
-			float diffY = FastMath.rand.nextFloat()*emitterHeight;
-			if (FastMath.rand.nextBoolean()) diffY = -diffY;
-			position.set(emitterPosition.add(new Vector2f(diffX,diffY)));
-			float velX = FastMath.rand.nextFloat()*force;
-			if (FastMath.rand.nextBoolean()) velX = -velX;
-			float velY = FastMath.rand.nextFloat()*force;
-			if (FastMath.rand.nextBoolean()) velY = -velY;
-			velocity.set(new Vector2f(velX,velY));
+			float diffX = FastMath.rand.nextFloat();
+		//	if (FastMath.rand.nextBoolean()) diffX = -diffX;
+			float diffY = FastMath.rand.nextFloat();
+		//	if (FastMath.rand.nextBoolean()) diffY = -diffY;
+			
+			if (emitterShape != null) {
+				ir.getPixel((int)(diffX*(emitterShape.getImage().getWidth())),(int)(diffY*(emitterShape.getImage().getWidth())), tempColor);
+				while (tempColor.r < 0.2f) {
+					diffX = FastMath.rand.nextFloat();
+					diffY = FastMath.rand.nextFloat();
+					ir.getPixel((int)(diffX*(emitterShape.getImage().getWidth())),(int)(diffY*(emitterShape.getImage().getWidth())), tempColor);
+				}
+			}
+			
+			diffX *= emitterWidth;
+			diffY *= emitterHeight;
+			
+			position.set(diffX,diffY);
+			
+			randforce = (FastMath.nextRandomFloat()*(maxforce-minforce))+minforce;
+			if (!centerVelocity) {
+				float velX = FastMath.rand.nextFloat()*randforce;
+				if (FastMath.rand.nextBoolean()) velX = -velX;
+				float velY = FastMath.rand.nextFloat()*randforce;
+				if (FastMath.rand.nextBoolean()) velY = -velY;
+				velocity.set(velX,velY);
+			} else {
+				velocity.set(1/emitterWidth*position.x, 1/emitterHeight*position.y);
+				velocity.subtractLocal(0.5f,0.5f);
+				velocity.multLocal(randforce);
+			}
 			life = highLife;
 			startlife = (highLife - lowLife) * FastMath.nextRandomFloat() + lowLife ;
 			life = startlife;
 			rotateDir = FastMath.rand.nextBoolean();
 			rotateSpeed = FastMath.rand.nextFloat();
+			size = 1;
 			
 			for (Influencer inf : influencers.values()) {
 				inf.initialize(this);

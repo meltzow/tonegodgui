@@ -6,6 +6,7 @@ package tonegod.gui.controls.extras.emitter;
 
 import com.jme3.math.FastMath;
 import tonegod.gui.controls.extras.emitter.ElementEmitter.ElementParticle;
+import tonegod.gui.framework.animation.Interpolation;
 
 /**
  *
@@ -15,11 +16,12 @@ public class SizeInfluencer implements Influencer {
 	private boolean isEnabled = true;
 	private float startSize = 1f;
 	private float endSize = 0.01f;
+	private Interpolation interpolation = Interpolation.linear;
 	
 	@Override
 	public void update(ElementParticle particle, float tpf) {
 		if (isEnabled) {
-			particle.size = FastMath.interpolateLinear(particle.blend, startSize, endSize);
+			particle.size = FastMath.interpolateLinear(interpolation.apply(particle.blend), startSize, endSize);
 		}
 	}
 
@@ -44,6 +46,10 @@ public class SizeInfluencer implements Influencer {
 	
 	public void setEndSize(float endSize) {
 		this.endSize = endSize;
+	}
+	
+	public void setInterpolation(Interpolation interpolation) {
+		this.interpolation = interpolation;
 	}
 	
 	@Override
