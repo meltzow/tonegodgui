@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.listeners.MouseFocusListener;
@@ -40,7 +41,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
 	 */
-	public ScrollArea(Screen screen, Vector2f position, boolean isTextOnly) {
+	public ScrollArea(ElementManager screen, Vector2f position, boolean isTextOnly) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("ScrollArea").getVector2f("defaultSize"),
 			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
@@ -57,7 +58,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
 	 */
-	public ScrollArea(Screen screen, Vector2f position, Vector2f dimensions, boolean isTextOnly) {
+	public ScrollArea(ElementManager screen, Vector2f position, Vector2f dimensions, boolean isTextOnly) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
 			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
 			screen.getStyle("ScrollArea").getString("defaultImg"),
@@ -75,7 +76,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	 * @param defaultImg The default image to use for the Slider's track
 	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
 	 */
-	public ScrollArea(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isTextOnly) {
+	public ScrollArea(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isTextOnly) {
 		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg, isTextOnly);
 	}
 	
@@ -87,7 +88,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
 	 */
-	public ScrollArea(Screen screen, String UID, Vector2f position, boolean isTextOnly) {
+	public ScrollArea(ElementManager screen, String UID, Vector2f position, boolean isTextOnly) {
 		this(screen, UID, position,
 			screen.getStyle("ScrollArea").getVector2f("defaultSize"),
 			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
@@ -105,7 +106,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
 	 */
-	public ScrollArea(Screen screen, String UID, Vector2f position, Vector2f dimensions, boolean isTextOnly) {
+	public ScrollArea(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, boolean isTextOnly) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
 			screen.getStyle("ScrollArea").getString("defaultImg"),
@@ -124,7 +125,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	 * @param defaultImg The default image to use for the Slider's track
 	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
 	 */
-	public ScrollArea (Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isTextOnly) {
+	public ScrollArea (ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isTextOnly) {
 		super (screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 		this.isTextOnly = isTextOnly;

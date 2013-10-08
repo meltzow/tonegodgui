@@ -31,6 +31,7 @@ import tonegod.gui.core.Screen;
 import tonegod.gui.framework.animation.Interpolation;
 import tonegod.gui.framework.core.AnimElement;
 import tonegod.gui.framework.core.QuadData;
+import tonegod.gui.framework.core.TextureRegion;
 
 /**
  *
@@ -191,7 +192,8 @@ public class ElementEmitter implements Control {
 			if (isActive) {
 				currentInterval += tpf;
 				if (currentInterval >= targetInterval) {
-					emitNextParticle();
+					int numParticles = (int)(currentInterval/targetInterval);
+					emitNextParticle(numParticles);
 					currentInterval -= targetInterval;
 				}
 			}
@@ -210,10 +212,10 @@ public class ElementEmitter implements Control {
 		quads = new ElementParticle[maxParticles];
 		for (int i = 0; i < maxParticles; i++) {
 			ElementParticle p = new ElementParticle();
-			particles.addQuad(String.valueOf(i), "sprite" + (FastMath.nextRandomInt(0, particles.getTextureRegions().size()-1)), new Vector2f(0,0), new Vector2f(100,100));
+			String key = "sprite" + (FastMath.nextRandomInt(0, particles.getTextureRegions().size()-1));
+			TextureRegion region = particles.getTextureRegion(key);
+			particles.addQuad(String.valueOf(i), key, new Vector2f(0,0), new Vector2f(region.getRegionWidth()/2,region.getRegionHeight()/2));
 			p.particle = particles.getQuads().get(String.valueOf(i)); 
-		//	p.particle.setSprite(spriteImagePath, spriteRows, spriteCols, spriteFPS);
-		//	p.particle.getGeometry().center();
 			p.initialize(true);
 			quads[i] = p;
 		}
@@ -257,12 +259,16 @@ public class ElementEmitter implements Control {
 		this.isActive = isActive;
 	}
 	
-	private void emitNextParticle() {
+	private void emitNextParticle(int numParticles) {
 		boolean particleEmitted = false;
 		for (ElementParticle p : quads) {
 			if (!p.particle.getIsVisible() && !particleEmitted) {
 				p.initialize(false);
-				particleEmitted = true;
+				numParticles--;
+				if (numParticles == 0) {
+					particleEmitted = true;
+					break;
+				}
 			}
 		}
 	}
@@ -433,11 +439,11 @@ public class ElementEmitter implements Control {
 		//	if (FastMath.rand.nextBoolean()) diffY = -diffY;
 			
 			if (emitterShape != null) {
-				ir.getPixel((int)(diffX*(emitterShape.getImage().getWidth())),(int)(diffY*(emitterShape.getImage().getWidth())), tempColor);
+				ir.getPixel((int)(diffX*(emitterShape.getImage().getWidth())),(int)(diffY*(emitterShape.getImage().getHeight())), tempColor);
 				while (tempColor.r < 0.2f) {
 					diffX = FastMath.rand.nextFloat();
 					diffY = FastMath.rand.nextFloat();
-					ir.getPixel((int)(diffX*(emitterShape.getImage().getWidth())),(int)(diffY*(emitterShape.getImage().getWidth())), tempColor);
+					ir.getPixel((int)(diffX*(emitterShape.getImage().getWidth())),(int)(diffY*(emitterShape.getImage().getHeight())), tempColor);
 				}
 			}
 			

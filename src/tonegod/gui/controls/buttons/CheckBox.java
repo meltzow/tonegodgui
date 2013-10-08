@@ -11,6 +11,7 @@ import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.controls.text.Label;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
@@ -32,7 +33,7 @@ public class CheckBox extends ButtonAdapter {
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public CheckBox(Screen screen, Vector2f position) {
+	public CheckBox(ElementManager screen, Vector2f position) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("CheckBox").getVector2f("defaultSize"),
 			screen.getStyle("CheckBox").getVector4f("resizeBorders"),
@@ -48,7 +49,7 @@ public class CheckBox extends ButtonAdapter {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public CheckBox(Screen screen, Vector2f position, Vector2f dimensions) {
+	public CheckBox(ElementManager screen, Vector2f position, Vector2f dimensions) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
 			screen.getStyle("CheckBox").getVector4f("resizeBorders"),
 			screen.getStyle("CheckBox").getString("defaultImg")
@@ -65,7 +66,7 @@ public class CheckBox extends ButtonAdapter {
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Slider's track
 	 */
-	public CheckBox(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public CheckBox(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		this(screen, UIDUtil.getUID(), position, dimensions,resizeBorders,defaultImg);
 	}
 	
@@ -76,7 +77,7 @@ public class CheckBox extends ButtonAdapter {
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public CheckBox(Screen screen, String UID, Vector2f position) {
+	public CheckBox(ElementManager screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("CheckBox").getVector2f("defaultSize"),
 			screen.getStyle("CheckBox").getVector4f("resizeBorders"),
@@ -92,7 +93,7 @@ public class CheckBox extends ButtonAdapter {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public CheckBox(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
+	public CheckBox(ElementManager screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("CheckBox").getVector4f("resizeBorders"),
 			screen.getStyle("CheckBox").getString("defaultImg")
@@ -109,7 +110,7 @@ public class CheckBox extends ButtonAdapter {
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Slider's track
 	 */
-	public CheckBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public CheckBox(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 		this.clearAltImages();

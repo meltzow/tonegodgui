@@ -5,7 +5,6 @@
 package tonegod.gui.controls.menuing;
 
 import com.jme3.font.BitmapFont;
-import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
@@ -15,9 +14,9 @@ import com.jme3.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.buttons.CheckBox;
-import tonegod.gui.controls.lists.ComboBox;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
@@ -54,7 +53,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param isScrollable Boolean defining if the menu is a scrollable list
 	 */
-	public Menu(Screen screen, Vector2f position, boolean isScrollable) {
+	public Menu(ElementManager screen, Vector2f position, boolean isScrollable) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("Menu").getVector2f("defaultSize"),
 			screen.getStyle("Menu").getVector4f("resizeBorders"),
@@ -71,7 +70,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 * @param isScrollable Boolean defining if the menu is a scrollable list
 	 */
-	public Menu(Screen screen, Vector2f position, Vector2f dimensions, boolean isScrollable) {
+	public Menu(ElementManager screen, Vector2f position, Vector2f dimensions, boolean isScrollable) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
 			screen.getStyle("Menu").getVector4f("resizeBorders"),
 			screen.getStyle("Menu").getString("defaultImg"),
@@ -89,7 +88,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	 * @param defaultImg The default image to use for the Slider's track
 	 * @param isScrollable Boolean defining if the menu is a scrollable list
 	 */
-	public Menu(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isScrollable) {
+	public Menu(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isScrollable) {
 		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg, isScrollable);
 	}
 	
@@ -101,7 +100,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param isScrollable Boolean defining if the menu is a scrollable list
 	 */
-	public Menu(Screen screen, String UID, Vector2f position, boolean isScrollable) {
+	public Menu(ElementManager screen, String UID, Vector2f position, boolean isScrollable) {
 		this(screen, UID, position,
 			screen.getStyle("Menu").getVector2f("defaultSize"),
 			screen.getStyle("Menu").getVector4f("resizeBorders"),
@@ -119,7 +118,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 * @param isScrollable Boolean defining if the menu is a scrollable list
 	 */
-	public Menu(Screen screen, String UID, Vector2f position, Vector2f dimensions, boolean isScrollable) {
+	public Menu(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, boolean isScrollable) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Menu").getVector4f("resizeBorders"),
 			screen.getStyle("Menu").getString("defaultImg"),
@@ -138,7 +137,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	 * @param defaultImg The default image to use for the Slider's track
 	 * @param isScrollable Boolean defining if the menu is a scrollable list
 	 */
-	public Menu(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isScrollable) {
+	public Menu(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isScrollable) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg, false);
 		
 	//	setFontSize(20);

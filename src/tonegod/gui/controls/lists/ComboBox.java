@@ -19,6 +19,7 @@ import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.menuing.MenuItem;
 import tonegod.gui.controls.text.TextField;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 
@@ -51,7 +52,7 @@ public abstract class ComboBox extends TextField {
 	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public ComboBox(Screen screen, Vector2f position) {
+	public ComboBox(ElementManager screen, Vector2f position) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("TextField").getVector2f("defaultSize"),
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
@@ -66,7 +67,7 @@ public abstract class ComboBox extends TextField {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public ComboBox(Screen screen, Vector2f position, Vector2f dimensions) {
+	public ComboBox(ElementManager screen, Vector2f position, Vector2f dimensions) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
 			screen.getStyle("TextField").getString("defaultImg")
@@ -82,7 +83,7 @@ public abstract class ComboBox extends TextField {
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Element
 	 */
-	public ComboBox(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public ComboBox(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg);
 	}
 	
@@ -93,7 +94,7 @@ public abstract class ComboBox extends TextField {
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public ComboBox(Screen screen, String UID, Vector2f position) {
+	public ComboBox(ElementManager screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("TextField").getVector2f("defaultSize"),
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
@@ -109,7 +110,7 @@ public abstract class ComboBox extends TextField {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public ComboBox(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
+	public ComboBox(ElementManager screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
 			screen.getStyle("TextField").getString("defaultImg")
@@ -126,7 +127,7 @@ public abstract class ComboBox extends TextField {
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Slider's track
 	 */
-	public ComboBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public ComboBox(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 		setScaleNS(false);

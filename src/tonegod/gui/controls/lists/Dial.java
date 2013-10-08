@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.ElementQuadGrid;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
@@ -45,7 +45,7 @@ public abstract class Dial extends ButtonAdapter {
 	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public Dial(Screen screen, Vector2f position) {
+	public Dial(ElementManager screen, Vector2f position) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("Dial").getVector2f("defaultSize"),
 			screen.getStyle("Dial").getVector4f("resizeBorders"),
@@ -60,7 +60,7 @@ public abstract class Dial extends ButtonAdapter {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public Dial(Screen screen, Vector2f position, Vector2f dimensions) {
+	public Dial(ElementManager screen, Vector2f position, Vector2f dimensions) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
 			screen.getStyle("Dial").getVector4f("resizeBorders"),
 			screen.getStyle("Dial").getString("defaultImg")
@@ -76,7 +76,7 @@ public abstract class Dial extends ButtonAdapter {
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Dial's background image
 	 */
-	public Dial(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public Dial(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg);
 	}
 	
@@ -87,7 +87,7 @@ public abstract class Dial extends ButtonAdapter {
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public Dial(Screen screen, String UID, Vector2f position) {
+	public Dial(ElementManager screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("Dial").getVector2f("defaultSize"),
 			screen.getStyle("Dial").getVector4f("resizeBorders"),
@@ -103,7 +103,7 @@ public abstract class Dial extends ButtonAdapter {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public Dial(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
+	public Dial(ElementManager screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Dial").getVector4f("resizeBorders"),
 			screen.getStyle("Dial").getString("defaultImg")
@@ -120,7 +120,7 @@ public abstract class Dial extends ButtonAdapter {
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Dial's background image
 	 */
-	public Dial(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public Dial(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 		removeEffect(Effect.EffectEvent.Hover);

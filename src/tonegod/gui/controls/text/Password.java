@@ -7,6 +7,7 @@ package tonegod.gui.controls.text;
 import com.jme3.font.BitmapText;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 
@@ -18,7 +19,7 @@ public class Password extends TextField {
 	char mask = '*';
 	String maskedText = "";
 	
-	public Password(Screen screen, Vector2f position) {
+	public Password(ElementManager screen, Vector2f position) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("TextField").getVector2f("defaultSize"),
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
@@ -26,18 +27,18 @@ public class Password extends TextField {
 		);
 	}
 	
-	public Password(Screen screen, Vector2f position, Vector2f dimensions) {
+	public Password(ElementManager screen, Vector2f position, Vector2f dimensions) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
 			screen.getStyle("TextField").getString("defaultImg")
 		);
 	}
 	
-	public Password (Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public Password (ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg);
 	}
 	
-	public Password(Screen screen, String UID, Vector2f position) {
+	public Password(ElementManager screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("TextField").getVector2f("defaultSize"),
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
@@ -45,14 +46,14 @@ public class Password extends TextField {
 		);
 	}
 	
-	public Password(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
+	public Password(ElementManager screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
 			screen.getStyle("TextField").getString("defaultImg")
 		);
 	}
 	
-	public Password (Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public Password (ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 	}

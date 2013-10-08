@@ -10,6 +10,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.controls.text.Label;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 
 /**
@@ -25,7 +26,7 @@ public class ToolTip extends Label {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public ToolTip(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
+	public ToolTip(ElementManager screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("ToolTip").getVector4f("resizeBorders"),
 			screen.getStyle("ToolTip").getString("defaultImg")
@@ -42,7 +43,7 @@ public class ToolTip extends Label {
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Slider's track
 	 */
-	public ToolTip(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public ToolTip(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 		this.setIsResizable(true);

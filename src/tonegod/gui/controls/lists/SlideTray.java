@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.BatchEffect;
@@ -48,7 +49,7 @@ public class SlideTray extends Element {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param orientation The orientation of the SlideTray
 	 */
-	public SlideTray(Screen screen, Vector2f position, Orientation orientation) {
+	public SlideTray(ElementManager screen, Vector2f position, Orientation orientation) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("Menu").getVector2f("defaultSize"),
 			screen.getStyle("Menu").getVector4f("resizeBorders"),
@@ -65,7 +66,7 @@ public class SlideTray extends Element {
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 * @param orientation The orientation of the SlideTray
 	 */
-	public SlideTray(Screen screen, Vector2f position, Vector2f dimensions, Orientation orientation) {
+	public SlideTray(ElementManager screen, Vector2f position, Vector2f dimensions, Orientation orientation) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
 			screen.getStyle("Menu").getVector4f("resizeBorders"),
 			screen.getStyle("Menu").getString("defaultImg"),
@@ -83,7 +84,7 @@ public class SlideTray extends Element {
 	 * @param defaultImg The default image to use for the SlideTray's track
 	 * @param orientation The orientation of the SlideTray
 	 */
-	public SlideTray(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
+	public SlideTray(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
 		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg, orientation);
 	}
 	
@@ -95,7 +96,7 @@ public class SlideTray extends Element {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param orientation The orientation of the SlideTray
 	 */
-	public SlideTray(Screen screen, String UID, Vector2f position, Orientation orientation) {
+	public SlideTray(ElementManager screen, String UID, Vector2f position, Orientation orientation) {
 		this(screen, UID, position,
 			screen.getStyle("Menu").getVector2f("defaultSize"),
 			screen.getStyle("Menu").getVector4f("resizeBorders"),
@@ -113,7 +114,7 @@ public class SlideTray extends Element {
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 * @param orientation The orientation of the SlideTray
 	 */
-	public SlideTray(Screen screen, String UID, Vector2f position, Vector2f dimensions, Orientation orientation) {
+	public SlideTray(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Orientation orientation) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Menu").getVector4f("resizeBorders"),
 			screen.getStyle("Menu").getString("defaultImg"),
@@ -132,7 +133,7 @@ public class SlideTray extends Element {
 	 * @param defaultImg The default image to use for the SlideTray's track
 	 * @param orientation The orientation of the SlideTray
 	 */
-	public SlideTray(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
+	public SlideTray(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
 		super(screen, UID, position, dimensions, resizeBorders, null);
 		this.orientation = orientation;
 		

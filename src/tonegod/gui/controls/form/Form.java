@@ -6,8 +6,8 @@ package tonegod.gui.controls.form;
 
 import java.util.ArrayList;
 import java.util.List;
-import tonegod.gui.controls.text.TextField;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 
 /**
@@ -15,7 +15,7 @@ import tonegod.gui.core.Screen;
  * @author t0neg0d
  */
 public class Form {
-	private Screen screen;
+	private ElementManager screen;
 	private List<Element> elements = new ArrayList();
 	private int nextIndex = 0;
 	private int currentTabIndex = 0;
@@ -24,7 +24,7 @@ public class Form {
 	List<Character> gbNumeric;
 	List<Character> gbAlpha;
 	
-	public Form(Screen screen) {
+	public Form(ElementManager screen) {
 		this.screen = screen;
 	}
 	

@@ -15,6 +15,7 @@ import tonegod.gui.controls.text.Label;
 import tonegod.gui.controls.text.Password;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 
@@ -30,7 +31,7 @@ public abstract class LoginBox extends Window {
 	private Password password;
 	private Form form;
 	
-	public LoginBox(Screen screen, Vector2f position) {
+	public LoginBox(ElementManager screen, Vector2f position) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("Window").getVector2f("defaultSize"),
 			screen.getStyle("Window").getVector4f("resizeBorders"),
@@ -38,18 +39,18 @@ public abstract class LoginBox extends Window {
 		);
 	}
 	
-	public LoginBox(Screen screen, Vector2f position, Vector2f dimensions) {
+	public LoginBox(ElementManager screen, Vector2f position, Vector2f dimensions) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
 			screen.getStyle("Window").getVector4f("resizeBorders"),
 			screen.getStyle("Window").getString("defaultImg")
 		);
 	}
 	
-	public LoginBox(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public LoginBox(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg);
 	}
 	
-	public LoginBox(Screen screen, String UID, Vector2f position) {
+	public LoginBox(ElementManager screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("Window").getVector2f("defaultSize"),
 			screen.getStyle("Window").getVector4f("resizeBorders"),
@@ -57,14 +58,14 @@ public abstract class LoginBox extends Window {
 		);
 	}
 	
-	public LoginBox(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
+	public LoginBox(ElementManager screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Window").getVector4f("resizeBorders"),
 			screen.getStyle("Window").getString("defaultImg")
 		);
 	}
 	
-	public LoginBox(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public LoginBox(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 		form = new Form(screen);

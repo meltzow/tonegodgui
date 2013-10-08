@@ -21,6 +21,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.texture.Texture;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
@@ -62,7 +63,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public Button(Screen screen, Vector2f position) {
+	public Button(ElementManager screen, Vector2f position) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("Button").getVector2f("defaultSize"),
 			screen.getStyle("Button").getVector4f("resizeBorders"),
@@ -77,7 +78,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public Button(Screen screen, Vector2f position, Vector2f dimensions) {
+	public Button(ElementManager screen, Vector2f position, Vector2f dimensions) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
 			screen.getStyle("Button").getVector4f("resizeBorders"),
 			screen.getStyle("Button").getString("defaultImg")
@@ -93,7 +94,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Slider's track
 	 */
-	public Button(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public Button(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		this(screen, UIDUtil.getUID(), position, dimensions,resizeBorders,defaultImg);
 	}
 	
@@ -104,7 +105,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public Button(Screen screen, String UID, Vector2f position) {
+	public Button(ElementManager screen, String UID, Vector2f position) {
 		this(screen, UID, position,
 			screen.getStyle("Button").getVector2f("defaultSize"),
 			screen.getStyle("Button").getVector4f("resizeBorders"),
@@ -120,7 +121,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public Button(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
+	public Button(ElementManager screen, String UID, Vector2f position, Vector2f dimensions) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Button").getVector4f("resizeBorders"),
 			screen.getStyle("Button").getString("defaultImg")
@@ -137,7 +138,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Slider's track
 	 */
-	public Button(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public Button(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 		this.setScaleNS(false);

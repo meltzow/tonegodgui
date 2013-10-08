@@ -14,7 +14,7 @@ import com.jme3.scene.control.Control;
 import com.jme3.texture.Texture;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
-import tonegod.gui.core.Screen;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
@@ -31,7 +31,7 @@ public abstract class Joystick extends Element implements Control {
 	private float deltaX, deltaY;
 	private Spatial spatial;
 	
-	public Joystick(Screen screen, Vector2f position, int size) {
+	public Joystick(ElementManager screen, Vector2f position, int size) {
 		super(screen, UIDUtil.getUID(),
 			position, new Vector2f(size, size), new Vector4f(0,0,0,0),
 			screen.getStyle("Common").getString("blankImg")

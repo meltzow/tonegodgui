@@ -14,6 +14,7 @@ import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import java.util.Set;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
@@ -44,7 +45,7 @@ public abstract class Indicator extends Element {
 	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public Indicator(Screen screen, Vector2f position, Orientation orientation) {
+	public Indicator(ElementManager screen, Vector2f position, Orientation orientation) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("Indicator").getVector2f("defaultSize"),
 			screen.getStyle("Indicator").getVector4f("resizeBorders"),
@@ -60,7 +61,7 @@ public abstract class Indicator extends Element {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public Indicator(Screen screen, Vector2f position, Vector2f dimensions, Orientation orientation) {
+	public Indicator(ElementManager screen, Vector2f position, Vector2f dimensions, Orientation orientation) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
 			screen.getStyle("Indicator").getVector4f("resizeBorders"),
 			screen.getStyle("Indicator").getString("defaultImg"),
@@ -77,7 +78,7 @@ public abstract class Indicator extends Element {
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Element
 	 */
-	public Indicator(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
+	public Indicator(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
 		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg, orientation);
 	}
 	
@@ -88,7 +89,7 @@ public abstract class Indicator extends Element {
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public Indicator(Screen screen, String UID, Vector2f position, Orientation orientation) {
+	public Indicator(ElementManager screen, String UID, Vector2f position, Orientation orientation) {
 		this(screen, UID, position,
 			screen.getStyle("Indicator").getVector2f("defaultSize"),
 			screen.getStyle("Indicator").getVector4f("resizeBorders"),
@@ -105,7 +106,7 @@ public abstract class Indicator extends Element {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public Indicator(Screen screen, String UID, Vector2f position, Vector2f dimensions, Orientation orientation) {
+	public Indicator(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Orientation orientation) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Indicator").getVector4f("resizeBorders"),
 			screen.getStyle("Indicator").getString("defaultImg"),
@@ -123,7 +124,7 @@ public abstract class Indicator extends Element {
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Slider's track
 	 */
-	public Indicator(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
+	public Indicator(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
 		super(screen, UID, position, dimensions, resizeBorders, null);
 		
 		indDimensions.set(dimensions);

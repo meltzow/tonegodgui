@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 
@@ -16,18 +17,18 @@ import tonegod.gui.core.utils.UIDUtil;
  * @author t0neg0d
  */
 public abstract class RadioButtonGroup {
-	private Screen screen;
+	private ElementManager screen;
 	private String UID;
 	private List<Button> radioButtons = new ArrayList();
 	private int selectedIndex = -1;
 	private Button selected = null;
 	
-	public RadioButtonGroup(Screen screen) {
+	public RadioButtonGroup(ElementManager screen) {
 		this.screen = screen;
 		this.UID = UIDUtil.getUID();
 	}
 	
-	public RadioButtonGroup(Screen screen, String UID) {
+	public RadioButtonGroup(ElementManager screen, String UID) {
 		this.screen = screen;
 		this.UID = UID;
 	}

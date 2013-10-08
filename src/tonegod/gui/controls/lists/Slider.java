@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
@@ -54,7 +55,7 @@ public abstract class Slider extends ButtonAdapter {
 	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param trackSurroundsThumb Boolean used to determine thumb placement when control is configured
 	 */
-	public Slider(Screen screen, Vector2f position, Orientation orientation, boolean trackSurroundsThumb) {
+	public Slider(ElementManager screen, Vector2f position, Orientation orientation, boolean trackSurroundsThumb) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("Slider").getVector2f("defaultSize"),
 			screen.getStyle("Slider").getVector4f("resizeBorders"),
@@ -73,7 +74,7 @@ public abstract class Slider extends ButtonAdapter {
 	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param trackSurroundsThumb  Boolean used to determine thumb placement when control is configured
 	 */
-	public Slider(Screen screen, Vector2f position, Vector2f dimensions, Orientation orientation, boolean trackSurroundsThumb) {
+	public Slider(ElementManager screen, Vector2f position, Vector2f dimensions, Orientation orientation, boolean trackSurroundsThumb) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
 			screen.getStyle("Slider").getVector4f("resizeBorders"),
 			screen.getStyle("Slider").getString("defaultImg"),
@@ -93,7 +94,7 @@ public abstract class Slider extends ButtonAdapter {
 	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param trackSurroundsThumb  Boolean used to determine thumb placement when control is configured
 	 */
-	public Slider(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation, boolean trackSurroundsThumb) {
+	public Slider(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation, boolean trackSurroundsThumb) {
 		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg, orientation, trackSurroundsThumb);
 	}
 	
@@ -106,7 +107,7 @@ public abstract class Slider extends ButtonAdapter {
 	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param trackSurroundsThumb Boolean used to determine thumb placement when control is configured
 	 */
-	public Slider(Screen screen, String UID, Vector2f position, Orientation orientation, boolean trackSurroundsThumb) {
+	public Slider(ElementManager screen, String UID, Vector2f position, Orientation orientation, boolean trackSurroundsThumb) {
 		this(screen, UID, position,
 			screen.getStyle("Slider").getVector2f("defaultSize"),
 			screen.getStyle("Slider").getVector4f("resizeBorders"),
@@ -126,7 +127,7 @@ public abstract class Slider extends ButtonAdapter {
 	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param trackSurroundsThumb  Boolean used to determine thumb placement when control is configured
 	 */
-	public Slider(Screen screen, String UID, Vector2f position, Vector2f dimensions, Orientation orientation, boolean trackSurroundsThumb) {
+	public Slider(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Orientation orientation, boolean trackSurroundsThumb) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("Slider").getVector4f("resizeBorders"),
 			screen.getStyle("Slider").getString("defaultImg"),
@@ -147,7 +148,7 @@ public abstract class Slider extends ButtonAdapter {
 	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param trackSurroundsThumb  Boolean used to determine thumb placement when control is configured
 	 */
-	public Slider(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation, boolean trackSurroundsThumb) {
+	public Slider(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation, boolean trackSurroundsThumb) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 		this.orientation = orientation;

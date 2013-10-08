@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.text.TextField;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 
@@ -46,7 +47,7 @@ public abstract class Spinner extends TextField {
 	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param cycle Boolean used to determine if the spinner should cycle back through values
 	 */
-	public Spinner(Screen screen, Vector2f position, Spinner.Orientation orientation, boolean cycle) {
+	public Spinner(ElementManager screen, Vector2f position, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("TextField").getVector2f("defaultSize"),
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
@@ -65,7 +66,7 @@ public abstract class Spinner extends TextField {
 	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param cycle Boolean used to determine if the spinner should cycle back through values
 	 */
-	public Spinner(Screen screen, Vector2f position, Vector2f dimensions, Spinner.Orientation orientation, boolean cycle) {
+	public Spinner(ElementManager screen, Vector2f position, Vector2f dimensions, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
 			screen.getStyle("TextField").getString("defaultImg"),
@@ -85,7 +86,7 @@ public abstract class Spinner extends TextField {
 	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param cycle Boolean used to determine if the spinner should cycle back through values
 	 */
-	public Spinner(Screen screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Spinner.Orientation orientation, boolean cycle) {
+	public Spinner(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg, orientation, cycle);
 	}
 	
@@ -98,7 +99,7 @@ public abstract class Spinner extends TextField {
 	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param cycle Boolean used to determine if the spinner should cycle back through values
 	 */
-	public Spinner(Screen screen, String UID, Vector2f position, Spinner.Orientation orientation, boolean cycle) {
+	public Spinner(ElementManager screen, String UID, Vector2f position, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UID, position,
 			screen.getStyle("TextField").getVector2f("defaultSize"),
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
@@ -118,7 +119,7 @@ public abstract class Spinner extends TextField {
 	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param cycle Boolean used to determine if the spinner should cycle back through values
 	 */
-	public Spinner(Screen screen, String UID, Vector2f position, Vector2f dimensions, Spinner.Orientation orientation, boolean cycle) {
+	public Spinner(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UID, position, dimensions,
 			screen.getStyle("TextField").getVector4f("resizeBorders"),
 			screen.getStyle("TextField").getString("defaultImg"),
@@ -139,7 +140,7 @@ public abstract class Spinner extends TextField {
 	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param cycle Boolean used to determine if the spinner should cycle back through values
 	 */
-	public Spinner(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Spinner.Orientation orientation, boolean cycle) {
+	public Spinner(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Spinner.Orientation orientation, boolean cycle) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg
 		);
 		

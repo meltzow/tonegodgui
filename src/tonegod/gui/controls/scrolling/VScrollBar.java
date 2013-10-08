@@ -12,6 +12,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
@@ -32,7 +33,7 @@ public class VScrollBar extends Element {
 	 * @param position The initial position of the scrollbar
 	 * @param dimensions The initial dimentions of the scrollbar
 	 */
-	public VScrollBar(Screen screen, Vector2f position, Vector2f dimensions) {
+	public VScrollBar(ElementManager screen, Vector2f position, Vector2f dimensions) {
 		this(screen, UIDUtil.getUID(), position, dimensions);
 	}
 	
@@ -43,7 +44,7 @@ public class VScrollBar extends Element {
 	 * @param position The initial position of the scrollbar
 	 * @param dimensions The initial dimentions of the scrollbar
 	 */
-	public VScrollBar(Screen screen, String UID, Vector2f position, Vector2f dimensions) {
+	public VScrollBar(ElementManager screen, String UID, Vector2f position, Vector2f dimensions) {
 		super(screen, UID, position, dimensions, new Vector4f(0,0,0,0), null);
 		
 		this.setScaleNS(true);

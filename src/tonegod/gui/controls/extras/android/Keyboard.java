@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.windows.Panel;
-import tonegod.gui.core.Screen;
+import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Style;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
@@ -41,7 +41,7 @@ public class Keyboard extends Panel {
 	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public Keyboard(Screen screen) {
+	public Keyboard(ElementManager screen) {
 		this(screen, UIDUtil.getUID(),
 			new Vector2f(0,screen.getHeight()-(screen.getHeight()*0.45f)),
 			new Vector2f(screen.getWidth(),(screen.getHeight()*0.45f)),
@@ -60,7 +60,7 @@ public class Keyboard extends Panel {
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Panel
 	 */
-	private Keyboard(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	private Keyboard(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 		this.setIsMovable(false);
