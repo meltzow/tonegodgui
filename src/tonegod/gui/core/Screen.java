@@ -15,6 +15,7 @@ import com.jme3.font.Rectangle;
 import com.jme3.font.plugins.BitmapFontLoader;
 import com.jme3.input.KeyInput;
 import com.jme3.input.RawInputListener;
+import com.jme3.input.event.InputEvent;
 import com.jme3.input.event.JoyAxisEvent;
 import com.jme3.input.event.JoyButtonEvent;
 import com.jme3.input.event.KeyInputEvent;
@@ -25,6 +26,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
+import com.jme3.math.Triangle;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
@@ -35,17 +37,18 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Texture;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.FloatBuffer;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,7 +81,7 @@ import tonegod.gui.listeners.*;
  *
  * @author t0neg0d
  */
-public class Screen implements Control, RawInputListener { //, ClipboardOwner {
+public class Screen implements ElementManager, Control, RawInputListener {
 
 	public static enum CursorType {
 		POINTER,
@@ -104,6 +107,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	private Application app;
 	protected Spatial spatial;
 	private Map<String, Element> elements = new HashMap();
+	private Map<String, SubScreen> subscreens = new HashMap();
 	private Ray elementZOrderRay = new Ray();
 	private Vector3f guiRayOrigin = new Vector3f();
 	
@@ -133,6 +137,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	private boolean mouseLeftPressed = false;
 	private boolean mouseRightPressed = false;
 	private boolean mouseWheelPressed = false;
+	private CollisionResult lastCollision;
 	
 	private float zOrderCurrent = .5f;
 	private float zOrderStepMajor = .01f;
@@ -185,6 +190,21 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	
 	private Keyboard virtualKeys;
 	
+	// SubScreen collisions
+	private Vector2f click2d = new Vector2f(), tempV2 = new Vector2f();
+	private Vector3f click3d = new Vector3f(), pickOrigin = new Vector3f(), pickDir = new Vector3f();
+	private Ray pickRay = new Ray();
+	private int[] indices = new int[3];
+	private Vector3f cp = new Vector3f(),
+			v1 = new Vector3f(),
+			v2 = new Vector3f(),
+			v3 = new Vector3f(),
+			weights = new Vector3f();
+	private Vector2f uv = new Vector2f(),
+			uv1 = new Vector2f(),
+			uv2 = new Vector2f(),
+			uv3 = new Vector2f();
+	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
 	 * provided with the library.
@@ -236,6 +256,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Returns the JME application associated with the Screen
 	 * @return Application app
 	 */
+	@Override
 	public Application getApplication() {
 		return this.app;
 	}
@@ -245,6 +266,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * 
 	 * @return float width
 	 */
+	@Override
 	public float getWidth() {
 		return app.getViewPort().getCamera().getWidth();
 	}
@@ -254,6 +276,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * 
 	 * @return  float height
 	 */
+	@Override
 	public float getHeight() {
 		return app.getViewPort().getCamera().getHeight();
 	}
@@ -281,6 +304,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 *  Adds an Element to the Screen and scene graph
 	 * @param element The Element to add
 	 */
+	@Override
 	public void addElement(Element element) {
 		if (element instanceof Menu)
 			element.hide();
@@ -313,6 +337,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Removes an Element from the Screen and scene graph
 	 * @param element The Element to remove
 	 */
+	@Override
 	public void removeElement(Element element) {
 		elements.remove(element.getUID());
 		float shiftZ = element.getLocalTranslation().getZ();
@@ -333,6 +358,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * @param UID The String ID of Element to find
 	 * @return Element element
 	 */
+	@Override
 	public Element getElementById(String UID) {
 		Element ret = null;
 		if (elements.containsKey(UID)) {
@@ -349,9 +375,48 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	}
 	
 	/**
+	 *  Adds an Element to the Screen and scene graph
+	 * @param element The Element to add
+	 */
+	public void addSubScreen(SubScreen subscreen) {
+		if (getSubScreenById(subscreen.getUID()) != null) {
+			try {
+				throw new ConflictingIDException();
+			} catch (ConflictingIDException ex) {
+				Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The SubScreen '" + subscreen.getUID() + "' (" + subscreen.getClass() + ") conflicts with a previously added subscreen in parent Screen.", ex);
+				System.exit(0);
+			}
+		} else {
+			subscreens.put(subscreen.getUID(), subscreen);
+		}
+	}
+	
+	/**
+	 * Removes an Element from the Screen and scene graph
+	 * @param element The Element to remove
+	 */
+	public void removeSubScreen(SubScreen subscreen) {
+		subscreens.remove(subscreen.getUID());
+	}
+	
+	/**
+	 * Returns the Element with the associated ID.  If not found, returns null
+	 * @param UID The String ID of Element to find
+	 * @return Element element
+	 */
+	public SubScreen getSubScreenById(String UID) {
+		SubScreen ret = null;
+		if (subscreens.containsKey(UID)) {
+			ret = subscreens.get(UID);
+		}
+		return ret;
+	}
+	
+	/**
 	 * Returns the guiNode used by the Screen
 	 * @return Node
 	 */
+	@Override
 	public Node getGUINode() {
 		return t0neg0dGUI;
 	}
@@ -369,10 +434,13 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		}
 	}
 	
+	@Override
 	public boolean getUseTextureAtlas() { return this.useTextureAtlas; }
 	
+	@Override
 	public Texture getAtlasTexture() { return atlasTexture; }
 	
+	@Override
 	public Texture createNewTexture(String texturePath) {
 		Texture newTex = app.getAssetManager().loadTexture(texturePath);
 		newTex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
@@ -381,6 +449,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		return newTex;
 	}
 	
+	@Override
 	public float[] parseAtlasCoords(String texturePath) {
 		float[] coords = new float[4];
 		
@@ -430,6 +499,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * 
 	 * @param topMost The Element to bring to the front
 	 */
+	@Override
 	public void updateZOrder(Element topMost) {
 	//	zOrderCurrent = zOrderInit;
 		String topMostUID = topMost.getUID();
@@ -453,6 +523,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Returns the zOrder major step value
 	 * @return float
 	 */
+	@Override
 	public float getZOrderStepMajor() {
 		return this.zOrderStepMajor;
 	}
@@ -461,6 +532,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Returns the zOrder minor step value
 	 * @return float
 	 */
+	@Override
 	public float getZOrderStepMinor() {
 		return this.zOrderStepMinor;
 	}
@@ -478,6 +550,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Returns a Vector2f containing the last stored mouse X/Y coords
 	 * @return Vector2f mouseXY
 	 */
+	@Override
 	public Vector2f getMouseXY() {
 		return this.mouseXY;
 	}
@@ -555,6 +628,17 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 
 				if (eventElement instanceof MouseMovementListener) {
 					((MouseMovementListener)eventElement).onMouseMove(evt);
+				}
+			}
+		}
+		if (!subscreens.isEmpty() && !evt.isConsumed()) {
+			setLastCollision();
+			if (lastCollision != null) {
+				// TODO: Add ray casting to subscreen
+				for (SubScreen s : subscreens.values()) {
+					if (s.getGeometry() == lastCollision.getGeometry()) {
+						s.onMouseMotionEvent(evt, (MouseMotionEvent)getORSTCEvent(s,evt,0));
+					}
 				}
 			}
 		}
@@ -711,6 +795,17 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 			}
 			mousePressed = false;
 			eventElement = null;
+		}
+		if (!subscreens.isEmpty()) {
+			setLastCollision();
+			if (lastCollision != null) {
+				// TODO: Add ray casting to subscreen
+				for (SubScreen s : subscreens.values()) {
+					if (s.getGeometry() == lastCollision.getGeometry()) {
+						s.onMouseButtonEvent(evt, (MouseButtonEvent)getORSTCEvent(s,evt,1));
+					}
+				}
+			}
 		}
 	}
 	
@@ -912,6 +1007,88 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		mousePressed = false;
 	}
 	
+	// OSR Collision
+	private void setLastCollision() {
+		click2d.set(app.getInputManager().getCursorPosition());
+		tempV2.set(click2d);
+		click3d.set(app.getCamera().getWorldCoordinates(tempV2, 0f));
+		pickDir.set(app.getCamera().getWorldCoordinates(tempV2, 1f).subtractLocal(click3d).normalizeLocal());
+		pickRay.setOrigin(click3d);
+		pickRay.setDirection(pickDir);
+		CollisionResults results = new CollisionResults();
+		app.getViewPort().getScenes().get(0).collideWith(pickRay, results);
+		lastCollision = results.getClosestCollision();
+	}
+	private Vector3f getBarycentricCoords(Vector3f origin, Vector3f direction, Vector3f v0, Vector3f v1, Vector3f v2, Vector3f store) {
+		Vector3f diff = origin.subtract(v0);
+		Vector3f edge1 = v1.subtract(v0);
+		Vector3f edge2 = v2.subtract(v0);
+		Vector3f norm = edge1.cross(edge2);
+		
+		float dirDotNorm = direction.dot(norm);
+		float sign;
+		if (dirDotNorm > FastMath.FLT_EPSILON) {
+			sign = 1;
+		} else if (dirDotNorm < -FastMath.FLT_EPSILON) {
+			sign = -1f;
+			dirDotNorm = -dirDotNorm;
+		} else {
+			return store;
+		}
+		
+		float dirDotEdge1xDiff = sign * direction.dot(edge1.crossLocal(diff));
+		float dirDotDiffxEdge2 = sign * direction.dot(diff.cross(edge2, edge2));
+		float inv = 1f / dirDotNorm;
+		float w1 = dirDotDiffxEdge2 * inv;
+		float w2 = dirDotEdge1xDiff * inv;
+		float w0 = 1.0f - w1 - w2;
+		return store.set(w0,w1,w2);
+    }
+	private InputEvent getORSTCEvent(SubScreen s, InputEvent oldEvt, int type) {
+		Geometry geom = lastCollision.getGeometry();
+		int triIndex = lastCollision.getTriangleIndex();
+		Triangle tri = lastCollision.getTriangle(null);
+		geom.getMesh().getTriangle(triIndex, indices);
+		cp.set(lastCollision.getContactPoint());
+
+		FloatBuffer tc = geom.getMesh().getFloatBuffer(VertexBuffer.Type.TexCoord);
+		uv1.set(tc.get(indices[0]*2), tc.get(indices[0]*2+1));
+		uv2.set(tc.get(indices[1]*2), tc.get(indices[1]*2+1));
+		uv3.set(tc.get(indices[2]*2), tc.get(indices[2]*2+1));
+
+		geom.getWorldTransform().transformVector(tri.get1(), v1);
+		geom.getWorldTransform().transformVector(tri.get2(), v2);
+		geom.getWorldTransform().transformVector(tri.get3(), v3);
+		weights.set(getBarycentricCoords(pickRay.getOrigin(),
+				pickRay.getDirection(),
+				v1, v2, v3, weights));
+
+		uv.set(
+			uv1.x * weights.x + uv2.x * weights.y + uv3.x * weights.z,
+			uv1.y * weights.x + uv2.y * weights.y + uv3.y * weights.z
+		);
+		uv.x *= s.getWidth();
+		uv.y *= s.getHeight();
+		
+		InputEvent evt = null;
+		switch (type) {
+			case 0:
+				evt = new MouseMotionEvent((int)(uv.x),(int)(uv.y),
+					((MouseMotionEvent)oldEvt).getDX(),
+					((MouseMotionEvent)oldEvt).getDY(),
+					((MouseMotionEvent)oldEvt).getWheel(),
+					((MouseMotionEvent)oldEvt).getDeltaWheel());
+				break;
+			case 1:
+				evt = new MouseButtonEvent(((MouseButtonEvent)oldEvt).getButtonIndex(), 
+					((MouseButtonEvent)oldEvt).isPressed(),
+					(int)(uv.x),(int)(uv.y));
+				break;
+		}
+		
+		return evt;
+	}
+	
 	/**
 	 * Determines and returns the current mouse focus Element
 	 * @param x The current mouse X coord
@@ -925,7 +1102,9 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		CollisionResults results = new CollisionResults();
 
 		t0neg0dGUI.collideWith(elementZOrderRay, results);
-
+		
+		lastCollision = results.getClosestCollision();
+		
 		float z = 0;
 		Element testEl = null, el = null;
 		for (CollisionResult result : results) {
@@ -1137,6 +1316,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Returns the current Drop enabled Element
 	 * @return Element
 	 */
+	@Override
 	public Element getDropElement() {
 		return this.targetElement;
 	}
@@ -1146,6 +1326,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * to vanish quickly.
 	 * @param text The text to store
 	 */
+	@Override
 	public void setClipboardText(String text) {
 		try {
 			clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -1160,6 +1341,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Returns the internal clipboard's current stored text
 	 * @return String text
 	 */
+	@Override
 	public String getClipboardText() {
 		try {
 			String ret = "";
@@ -1185,6 +1367,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Returns a pointer to the EffectManager
 	 * @return EffectManager effectManager
 	 */
+	@Override
 	public EffectManager getEffectManager() {
 		return this.effectManager;
 	}
@@ -1194,6 +1377,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * for TemporalActions used with @Transformable ( See @AnimElement @QuadData )
 	 * @return AnimManager animManager
 	 */
+	@Override
 	public AnimManager getAnimManager() {
 		return this.animManager;
 	}
@@ -1546,6 +1730,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * @param key The String key of the Style
 	 * @return Style style
 	 */
+	@Override
 	public Style getStyle(String key) {
 		return styles.get(key);
 	}
@@ -1554,6 +1739,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Enables the use of Style defined custom cursors.  Initally set prior to initializing screen
 	 * @param useCustomCursors boolean
 	 */
+	@Override
 	public void setUseCustomCursors(boolean useCustomCursors) {
 		this.useCustomCursors = useCustomCursors;
 		if (!useCustomCursors) {
@@ -1567,6 +1753,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Returns true if custom cursors are currently enabled
 	 * @return boolean
 	 */
+	@Override
 	public boolean getUseCustomCursors() {
 		return this.useCustomCursors;
 	}
@@ -1575,6 +1762,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * For internal use - Use setForcedCursor instead
 	 * @param cur 
 	 */
+	@Override
 	public void setCursor(CursorType cur) {
 		if (getUseCustomCursors()) {
 			if (!forceCursor) {
@@ -1616,6 +1804,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Sets the overall opacity of all elements that have not been flagged as ignoreGlobalAlpha(true)
 	 * @param globalAlpha float
 	 */
+	@Override
 	public void setGlobalAlpha(float globalAlpha) {
 		this.globalAlpha = globalAlpha;
 		for (Element el : elements.values()) {
@@ -1627,6 +1816,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Returns the current value of global alpha
 	 * @return float
 	 */
+	@Override
 	public float getGlobalAlpha() {
 		return this.globalAlpha;
 	}
@@ -1662,6 +1852,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		}
 	}
 	
+	@Override
 	public void handleAndroidMenuState(Element target) {
 		if (target == null) {
 			for (Element el : elements.values()) {
@@ -1697,6 +1888,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Enables/disables the use of ToolTips
 	 * @param useToolTips boolean
 	 */
+	@Override
 	public void setUseToolTips(boolean useToolTips) {
 		this.useToolTips = useToolTips;
 		if (useToolTips) {
@@ -1727,6 +1919,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Returns if ToolTips are enabled/disabled
 	 * @return boolean
 	 */
+	@Override
 	public boolean getUseToolTips() {
 		return useToolTips;
 	}
@@ -1734,6 +1927,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	/**
 	 * For internal use only - DO NOT CALL THIS METHOD
 	 */
+	@Override
 	public void updateToolTipLocation() {
 		if (useToolTips) {
 			if (this.mouseFocusElement != null && getApplication().getInputManager().isCursorVisible()) {
@@ -1772,6 +1966,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Enables/disables UI Audio
 	 * @param useUIAudio boolean
 	 */
+	@Override
 	public void setUseUIAudio(boolean useUIAudio) {
 		this.useUIAudio = useUIAudio;
 	}
@@ -1780,6 +1975,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Returns if the UI Audio option is enabled/disabled
 	 * @return boolean
 	 */
+	@Override
 	public boolean getUseUIAudio() {
 		return this.useUIAudio;
 	}
@@ -1788,6 +1984,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Sets the global UI Audio volume
 	 * @param uiAudioVolume float
 	 */
+	@Override
 	public void setUIAudioVolume(float uiAudioVolume) {
 		this.uiAudioVolume = uiAudioVolume;
 	}
@@ -1818,6 +2015,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Enables/disables the use of Cursor effects
 	 * @param useCursorEffects boolean
 	 */
+	@Override
 	public void setUseCursorEffects(boolean useCursorEffects) {
 		if (useCursorEffects) {
 			if (cursorEmitterVP == null) {
@@ -1927,6 +2125,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Method for setting the tab focus element
 	 * @param element The Element to set tab focus to
 	 */
+	@Override
 	public void setTabFocusElement(Element element) {
 		resetFocusElement();
 		focusForm = element.getForm();
@@ -1945,6 +2144,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Resets the tab focus element to null after calling the TabFocusListener's
 	 * resetTabFocus method.
 	 */
+	@Override
 	public void resetTabFocusElement() {
 		resetFocusElement();
 		this.tabFocusElement = null;
@@ -1968,6 +2168,7 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 	 * Sets the current Keyboard focus Element
 	 * @param element The Element to set keyboard focus to
 	 */
+	@Override
 	public void setKeyboardElement(Element element) {
 		if (element != null) {
 			if (element.getResetKeyboardFocus())
@@ -2001,10 +2202,12 @@ public class Screen implements Control, RawInputListener { //, ClipboardOwner {
 		else				return null;
 	}
 	
+	@Override
 	public void showVirtualKeyboard() {
 		if (isAndroid()) virtualKeys.show();
 	}
 	
+	@Override
 	public void hideVirtualKeyboard() {
 		if (isAndroid()) virtualKeys.hide();
 	}

@@ -98,7 +98,7 @@ public class Element extends Node {
 	}
 	
 	protected Application app;
-	protected Screen screen;
+	protected ElementManager screen;
 	private String UID;
 	private Vector2f position = new Vector2f();
 	public Vector2f orgPosition;
@@ -195,7 +195,7 @@ public class Element extends Node {
 	 * @param resizeBorders A Vector4f containing the size of each border used for scaling images without distorting them (x = N, y = W, x = E, w = S)
 	 * @param texturePath A String path to the default image to be rendered on the element's mesh
 	 */
-	public Element(Screen screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String texturePath) {
+	public Element(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String texturePath) {
 		this.app = screen.getApplication();
 		this.screen = screen;
 		if (UID == null) {
@@ -450,7 +450,7 @@ public class Element extends Node {
 	 * Returns the one and only Element's screen
 	 * @return 
 	 */
-	public Screen getScreen() {
+	public ElementManager getScreen() {
 		return this.screen;
 	}
 	
