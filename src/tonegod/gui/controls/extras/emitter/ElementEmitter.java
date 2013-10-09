@@ -231,12 +231,13 @@ public class ElementEmitter implements Control {
 	}
 	
 	public void startEmitter(Element targetElement) {
-		this.isEnabled = true;
 		this.targetElement = targetElement;
 		if (targetElement == null)	screen.getGUINode().attachChild(particles);
 		else						this.targetElement.attachChild(particles);
 		rootNode = screen.getGUINode();
 		rootNode.addControl(this);
+		this.isEnabled = true;
+		update(0);
 	}
 	
 	public void stopEmitter() {
