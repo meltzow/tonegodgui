@@ -20,6 +20,7 @@ import com.jme3.scene.control.Control;
 import com.jme3.texture.Texture;
 import com.jme3.texture.image.ImageRaster;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,21 +30,18 @@ import tonegod.gui.controls.extras.SpriteElement;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.framework.animation.Interpolation;
+import tonegod.gui.framework.animation.TemporalAction;
 import tonegod.gui.framework.core.AnimElement;
 import tonegod.gui.framework.core.QuadData;
 import tonegod.gui.framework.core.TextureRegion;
+import tonegod.gui.framework.core.Transformable;
 
 /**
  *
  * @author t0neg0d
  */
-public class ElementEmitter implements Control {
-	public static enum EmitterAction {
-		EmitAllParticles,
-		AttachEmitter,
-		DetachEmitter
-	}
-	
+public class ElementEmitter implements Control, Transformable {
+	private List<TemporalAction> actions = new ArrayList();
 	private Screen screen;
 	private Application app;
 	private float targetInterval = 1f;
@@ -61,6 +59,7 @@ public class ElementEmitter implements Control {
 	private ColorRGBA tempColor = new ColorRGBA();
 	private Vector2f shapeRatio = new Vector2f(1,1);
 	private Interpolation interpolation = Interpolation.linear;
+	protected int activeParticleCount = 0;
 	
 	// Sprite Info
 	private String spriteImagePath;
@@ -77,19 +76,19 @@ public class ElementEmitter implements Control {
 	private Element targetElement = null;
 	private Node rootNode = null;
 	
-	public ElementEmitter(Screen screen, Vector2f emitterPosition, float emitterWidth, float emitterHeight) {
+	public ElementEmitter(Screen screen, Vector2f position, float emitterWidth, float emitterHeight) {
 		this.screen = screen;
 		this.app = screen.getApplication();
 		this.emitterWidth = emitterWidth;
 		this.emitterHeight = emitterHeight;
-		this.emitterPosition.set(emitterPosition);
+		this.emitterPosition.set(position);
 		
 		particles = new AnimElement(app.getAssetManager()) {
 			@Override
 			public void animElementUpdate(float tpf) {  }
 		};
 		particles.setOrigin(new Vector2f(0,0));
-		particles.setPosition(emitterPosition);
+	//	particles.setPosition(position);
 		particles.setRotation(0);
 		particles.setScale(1,1);
 		
@@ -140,10 +139,6 @@ public class ElementEmitter implements Control {
 		influencers.put(key, influencer);
 	}
 	
-	public void setPosition(Vector2f emitterPosition) {
-		this.emitterPosition.set(emitterPosition);
-	}
-	
 	public void setSprite(String spriteImagePath, int spriteRows, int spriteCols, int spriteFPS) {
 		this.spriteImagePath = spriteImagePath;
 		this.spriteRows = spriteRows;
@@ -182,6 +177,15 @@ public class ElementEmitter implements Control {
 	
 	@Override
 	public void update(float tpf) {
+		for (TemporalAction a : actions) {
+			a.act(tpf);
+		}
+		for (TemporalAction a : actions) {
+			if (a.getTime() >= a.getDuration()) {
+				actions.remove(a);
+				break;
+			}
+		}
 		for (ElementParticle p : quads) {
 			if (p.active) {
 				p.update(tpf);
@@ -237,7 +241,7 @@ public class ElementEmitter implements Control {
 		rootNode = screen.getGUINode();
 		rootNode.addControl(this);
 		this.isEnabled = true;
-		update(0);
+		update(0.001f);
 	}
 	
 	public void stopEmitter() {
@@ -253,7 +257,7 @@ public class ElementEmitter implements Control {
 			screen.getGUINode().detachChild(particles);
 		}
 		try { screen.getGUINode().removeControl(this); }
-		catch (Exception ex) { System.out.println("Hi.. I suck"); }
+		catch (Exception ex) {  }
 	}
 	
 	public void setIsActive(boolean isActive) {
@@ -265,6 +269,7 @@ public class ElementEmitter implements Control {
 		for (ElementParticle p : quads) {
 			if (!p.particle.getIsVisible() && !particleEmitted) {
 				p.initialize(false);
+				activeParticleCount++;
 				numParticles--;
 				if (numParticles == 0) {
 					particleEmitted = true;
@@ -361,14 +366,31 @@ public class ElementEmitter implements Control {
 	
 	public void emitAllParticles() {
 		for (ElementParticle p : quads) {
-			if (!p.active)
+			if (!p.active) {
 				p.initialize(false);
+				activeParticleCount++;
+			}
+		}
+	}
+	
+	public void emitNumParticles(int count) {
+		for (ElementParticle p : quads) {
+			if (count > 0) {
+				if (!p.active) {
+					p.initialize(false);
+					activeParticleCount++;
+					count--;
+				}
+			} else
+				break;
 		}
 	}
 	
 	public void setCenterVelocity(boolean center) {
 		this.centerVelocity = center;
 	}
+	
+	public int getActiveParticleCount() { return activeParticleCount; }
 	
 	@Override
 	public Control cloneForSpatial(Spatial spatial) {
@@ -395,6 +417,48 @@ public class ElementEmitter implements Control {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 	
+	@Override
+	public void setPositionX(float x) { emitterPosition.setX(x); }
+
+	@Override
+	public void setPositionY(float y) { emitterPosition.setY(y); }
+
+	@Override
+	public void setPosition(float x, float y) { emitterPosition.set(x,y); }
+	
+	@Override
+	public void setPosition(Vector2f position) { this.emitterPosition.set(position); }
+	
+	@Override
+	public void setRotation(float rotation) {  }
+
+	@Override
+	public void setScaleX(float scaleX) { particles.setScaleX(scaleX); }
+
+	@Override
+	public void setScaleY(float scaleY) { particles.setScaleY(scaleY); }
+
+	@Override
+	public float getPositionX() { return emitterPosition.x; }
+
+	@Override
+	public float getPositionY() { return emitterPosition.y; }
+
+	@Override
+	public float getRotation() { return particles.getRotation(); }
+
+	@Override
+	public float getScaleX() { return particles.getScaleX(); }
+
+	@Override
+	public float getScaleY() { return particles.getScaleY(); }
+
+	@Override
+	public void addAction(TemporalAction action) {
+		action.setTransformable(this);
+		this.actions.add(action);
+	}
+	
 	public class ElementParticle {
 		public QuadData particle;
 		public Vector2f position = new Vector2f();
@@ -410,6 +474,7 @@ public class ElementEmitter implements Control {
 		public boolean active = false;
 		public float blend;
 		private Map<String,Object> data = new HashMap();
+		private float diffX, diffY;
 		
 		public void update(float tpf) {
 			life -= tpf;
@@ -434,9 +499,9 @@ public class ElementEmitter implements Control {
 		};
 		
 		public void initialize(boolean hide) {
-			float diffX = FastMath.rand.nextFloat();
+			diffX = FastMath.rand.nextFloat();
 		//	if (FastMath.rand.nextBoolean()) diffX = -diffX;
-			float diffY = FastMath.rand.nextFloat();
+			diffY = FastMath.rand.nextFloat();
 		//	if (FastMath.rand.nextBoolean()) diffY = -diffY;
 			
 			if (emitterShape != null) {
@@ -451,7 +516,10 @@ public class ElementEmitter implements Control {
 			diffX *= emitterWidth;
 			diffY *= emitterHeight;
 			
-			position.set(diffX,diffY);
+			position.set(emitterPosition);
+		//	position.x *= emitterWidth;
+		//	position.y *= emitterHeight;
+			position.addLocal(diffX,diffY);
 			
 			randforce = (FastMath.nextRandomFloat()*(maxforce-minforce))+minforce;
 			if (!centerVelocity) {
@@ -461,7 +529,7 @@ public class ElementEmitter implements Control {
 				if (FastMath.rand.nextBoolean()) velY = -velY;
 				velocity.set(velX,velY);
 			} else {
-				velocity.set(1/emitterWidth*position.x, 1/emitterHeight*position.y);
+				velocity.set(1/emitterWidth*diffX, 1/emitterHeight*diffY);
 				velocity.subtractLocal(0.5f,0.5f);
 				velocity.multLocal(randforce);
 			}
@@ -484,6 +552,7 @@ public class ElementEmitter implements Control {
 		
 		public void killParticle() {
 			active = false;
+			activeParticleCount--;
 			particle.hide();
 		}
 		
