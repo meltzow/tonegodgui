@@ -4,8 +4,6 @@
  */
 package tonegod.gui.framework.animation;
 
-import tonegod.gui.framework.core.AnimElement;
-import tonegod.gui.framework.core.QuadData;
 import tonegod.gui.framework.core.Transformable;
 
 /**
@@ -14,10 +12,10 @@ import tonegod.gui.framework.core.Transformable;
  * @author t0neg0d
  */
 public abstract class TemporalAction {
-	private float duration, time;
+	private float duration, time = 0;
 	private Interpolation interpolation;
 	private boolean reverse, complete;
-	protected AnimElement batch;
+//	protected AnimElement batch;
 	protected Transformable quad;
 	
 	public TemporalAction () {
