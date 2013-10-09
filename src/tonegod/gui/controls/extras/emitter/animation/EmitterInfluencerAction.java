@@ -30,6 +30,14 @@ public class EmitterInfluencerAction extends TemporalAction {
 	@Override
 	protected void end() {  }
 	
+	@Override
+	public void restart() {
+		setTime(0);
+		setComplete(false);
+		setDuration(1);
+		reset();
+	}
+	
 	public void setInfluencer(Influencer influencer) {
 		this.influencer = influencer;
 		setDuration(1);

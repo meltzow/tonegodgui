@@ -30,6 +30,14 @@ public class EmitterEnableAction extends TemporalAction {
 	@Override
 	protected void end() {  }
 	
+	@Override
+	public void restart() {
+		setTime(0);
+		setComplete(false);
+		setDuration(1);
+		reset();
+	}
+	
 	public void setEnableEmitter() {
 		enable = true;
 		setDuration(1);

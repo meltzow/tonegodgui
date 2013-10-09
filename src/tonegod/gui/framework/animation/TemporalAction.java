@@ -66,6 +66,10 @@ public abstract class TemporalAction {
 		interpolation = null;
 	}
 	
+	protected void setComplete(boolean complete) {
+		this.complete = complete;
+	}
+	
 	/** Gets the transition time so far. */
 	public float getTime () { return time; }
 
