@@ -9,11 +9,13 @@ package tonegod.gui.framework.animation;
  * @author t0neg0d
  */
 public class RotateByAction extends TemporalAction {
-	private float initRot;
+	private float initRot = -1;
+	private float initDuration = -1;
 	private float amount;
 	private float nextPercent = 0;
 	private float lastPercent = 0;
 	private boolean autoReverse = false;
+	private boolean initAutoReverse = false;
 	private int cycles = 0;
 	
 	@Override
@@ -21,8 +23,11 @@ public class RotateByAction extends TemporalAction {
 		lastPercent = 0;
 		nextPercent = 0;
 		if (autoReverse) {
-			initRot = quad.getRotation();
-			setDuration(getDuration()*.5f);
+			if (initRot == -1) initRot = quad.getRotation();
+			if (initDuration == -1)	{
+				initDuration = getDuration();
+				setDuration(initDuration*.5f);
+			}
 		}
 	}
 	
@@ -45,6 +50,9 @@ public class RotateByAction extends TemporalAction {
 			cycles = 1;
 		} else if (cycles == 1) {
 			quad.setRotation(initRot);
+			amount = -amount;
+			autoReverse = initAutoReverse;
+			cycles = 0;
 		}
 	}
 	
@@ -54,5 +62,6 @@ public class RotateByAction extends TemporalAction {
 	
 	public void setAutoReverse(boolean autoReverse) {
 		this.autoReverse = autoReverse;
+		initAutoReverse = autoReverse;
 	}
 }

@@ -63,7 +63,7 @@ public abstract class TemporalAction {
 	
 	public void reset () {
 		reverse = false;
-		interpolation = null;
+	//	interpolation = null;
 	}
 	
 	protected void setComplete(boolean complete) {
