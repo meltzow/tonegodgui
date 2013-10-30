@@ -11,11 +11,15 @@ import tonegod.gui.framework.animation.Interpolation;
  *
  * @author t0neg0d
  */
-public class AlphaInfluencer implements Influencer {
+public class AlphaInfluencer extends InfluencerBase {
 	private boolean isEnabled = true;
 	private float startAlpha = 1.0f;
 	private float endAlpha = 0.0f;
 	private Interpolation interpolation = Interpolation.linear;
+	
+	public AlphaInfluencer(ElementEmitter emitter) {
+		super(emitter);
+	}
 	
 	@Override
 	public void update(ElementParticle particle, float tpf) {

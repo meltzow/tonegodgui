@@ -12,11 +12,15 @@ import tonegod.gui.framework.animation.Interpolation;
  *
  * @author t0neg0d
  */
-public class SizeInfluencer implements Influencer {
+public class SizeInfluencer extends InfluencerBase {
 	private boolean isEnabled = true;
 	private float startSize = 1f;
 	private float endSize = 0.01f;
 	private Interpolation interpolation = Interpolation.linear;
+	
+	public SizeInfluencer(ElementEmitter emitter) {
+		super(emitter);
+	}
 	
 	@Override
 	public void update(ElementParticle particle, float tpf) {
@@ -54,7 +58,7 @@ public class SizeInfluencer implements Influencer {
 	
 	@Override
 	public SizeInfluencer clone() {
-		SizeInfluencer clone = new SizeInfluencer();
+		SizeInfluencer clone = new SizeInfluencer(emitter);
 		clone.setStartSize(startSize);
 		clone.setEndSize(endSize);
 		return clone;

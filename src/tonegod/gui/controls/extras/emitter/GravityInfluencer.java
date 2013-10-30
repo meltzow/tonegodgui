@@ -11,11 +11,15 @@ import tonegod.gui.controls.extras.emitter.ElementEmitter.ElementParticle;
  *
  * @author t0neg0d
  */
-public class GravityInfluencer implements Influencer {
+public class GravityInfluencer extends InfluencerBase {
 	
 	private boolean isEnabled = true;
 	private Vector2f gravity = new Vector2f(0,1);
 	private Vector2f temp = new Vector2f();
+	
+	public GravityInfluencer(ElementEmitter emitter) {
+		super(emitter);
+	}
 	
 	@Override
 	public void update(ElementParticle p, float tpf) {
@@ -52,7 +56,7 @@ public class GravityInfluencer implements Influencer {
 	
 	@Override
 	public GravityInfluencer clone() {
-		GravityInfluencer clone = new GravityInfluencer();
+		GravityInfluencer clone = new GravityInfluencer(emitter);
 		clone.setGravity(gravity);
 		return clone;
 	}

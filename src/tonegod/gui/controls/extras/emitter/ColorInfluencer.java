@@ -12,11 +12,15 @@ import tonegod.gui.framework.animation.Interpolation;
  *
  * @author t0neg0d
  */
-public class ColorInfluencer implements Influencer {
+public class ColorInfluencer extends InfluencerBase {
 	private boolean isEnabled = true;
 	private ColorRGBA startColor = new ColorRGBA(ColorRGBA.Red);
 	private ColorRGBA endColor = new ColorRGBA(ColorRGBA.Yellow);
 	private Interpolation interpolation = Interpolation.linear;
+	
+	public ColorInfluencer(ElementEmitter emitter) {
+		super(emitter);
+	}
 	
 	@Override
 	public void update(ElementParticle particle, float tpf) {
@@ -54,7 +58,7 @@ public class ColorInfluencer implements Influencer {
 	
 	@Override
 	public ColorInfluencer clone() {
-		ColorInfluencer clone = new ColorInfluencer();
+		ColorInfluencer clone = new ColorInfluencer(emitter);
 		clone.setStartColor(startColor);
 		clone.setEndColor(endColor);
 		return clone;

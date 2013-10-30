@@ -11,12 +11,16 @@ import tonegod.gui.controls.extras.emitter.ElementEmitter.ElementParticle;
  *
  * @author t0neg0d
  */
-public class DirectionInfluencer implements Influencer {
+public class DirectionInfluencer extends InfluencerBase {
 	
 	private boolean isEnabled = true;
 	private Vector2f direction = Vector2f.ZERO.clone();
 	private Vector2f temp = new Vector2f();
 	private float strength = 1;
+	
+	public DirectionInfluencer(ElementEmitter emitter) {
+		super(emitter);
+	}
 	
 	@Override
 	public void update(ElementParticle p, float tpf) {
@@ -47,7 +51,7 @@ public class DirectionInfluencer implements Influencer {
 		this.direction.set(direction);
 	}
 	
-	public Vector2f getGravity() {
+	public Vector2f getDirection() {
 		return this.direction;
 	}
 	
@@ -61,7 +65,7 @@ public class DirectionInfluencer implements Influencer {
 	
 	@Override
 	public DirectionInfluencer clone() {
-		DirectionInfluencer clone = new DirectionInfluencer();
+		DirectionInfluencer clone = new DirectionInfluencer(emitter);
 		clone.setDirection(direction);
 		return clone;
 	}

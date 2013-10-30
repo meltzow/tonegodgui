@@ -5,6 +5,7 @@
 package tonegod.gui.controls.extras.emitter;
 
 import com.jme3.app.Application;
+import com.jme3.app.SimpleApplication;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.ColorRGBA;
@@ -68,12 +69,16 @@ public class ElementEmitter implements Control, Transformable {
 	private float spriteSize = 30;
 	
 	// Globals
+	private boolean useFixedForce = false;
 	private float minforce = .25f;
 	private float maxforce = .25f;
+	private boolean useFixedLife = false;
 	private float highLife = .5f;
 	private float lowLife = .1f;
+	private boolean useFixedDirection = false;
+	private Vector2f fixedDirection = new Vector2f(0,1);
 	
-	private Element targetElement = null;
+	private Node targetElement = null;
 	private Node rootNode = null;
 	
 	public ElementEmitter(Screen screen, Vector2f position, float emitterWidth, float emitterHeight) {
@@ -88,25 +93,25 @@ public class ElementEmitter implements Control, Transformable {
 			public void animElementUpdate(float tpf) {  }
 		};
 		particles.setOrigin(new Vector2f(0,0));
-	//	particles.setPosition(position);
+		particles.setPosition(0,0);
 		particles.setRotation(0);
 		particles.setScale(1,1);
 		
-		GravityInfluencer g = new GravityInfluencer();
+		GravityInfluencer g = new GravityInfluencer(this);
 		addInfluencer(g);
-		DirectionInfluencer pd = new DirectionInfluencer();
+		DirectionInfluencer pd = new DirectionInfluencer(this);
 		addInfluencer(pd);
-		ColorInfluencer c = new ColorInfluencer();
+		ColorInfluencer c = new ColorInfluencer(this);
 		addInfluencer(c);
-		SizeInfluencer s = new SizeInfluencer();
+		SizeInfluencer s = new SizeInfluencer(this);
 		addInfluencer(s);
-		RotationInfluencer r = new RotationInfluencer();
+		RotationInfluencer r = new RotationInfluencer(this);
 		addInfluencer(r);
-		ImpulseInfluencer i = new ImpulseInfluencer();
+		ImpulseInfluencer i = new ImpulseInfluencer(this);
 		addInfluencer(i);
-		AlphaInfluencer a = new AlphaInfluencer();
+		AlphaInfluencer a = new AlphaInfluencer(this);
 		addInfluencer(a);
-		SpriteInfluencer sp = new SpriteInfluencer();
+		SpriteInfluencer sp = new SpriteInfluencer(this);
 		addInfluencer(sp);
 	}
 	
@@ -151,12 +156,40 @@ public class ElementEmitter implements Control, Transformable {
 		spriteWidth = tex.getImage().getWidth()/spriteCols;
 		spriteHeight = tex.getImage().getHeight()/spriteRows;
 		
-		for (int x = 0; x < spriteCols; x++) {
-			for (int y = 0; y < spriteRows; y++) {
-				particles.addTextureRegion("sprite" + (x+y), (int)(spriteWidth*x), (int)(spriteHeight*y), (int)spriteWidth, (int)spriteHeight);
+		int index = 0;
+		for (int y = spriteRows-1; y > -1; y--) {
+			for (int x = 0; x < spriteCols; x++) {
+				particles.addTextureRegion("sprite" + index, (int)(spriteWidth*x), (int)(spriteHeight*y), (int)spriteWidth, (int)spriteHeight);
+				index++;
 			}
 		}
 	}
+	
+	public void setSprite(Texture texSprite, int spriteRows, int spriteCols, int spriteFPS) {
+		this.tex = texSprite;
+		this.spriteRows = spriteRows;
+		this.spriteCols = spriteCols;
+		this.spriteFPS = spriteFPS;
+		
+		particles.setTexture(tex);
+		
+		spriteWidth = tex.getImage().getWidth()/spriteCols;
+		spriteHeight = tex.getImage().getHeight()/spriteRows;
+		
+		int index = 0;
+		for (int y = spriteRows-1; y > -1; y--) {
+			for (int x = 0; x < spriteCols; x++) {
+				particles.addTextureRegion("sprite" + index, (int)(spriteWidth*x), (int)(spriteHeight*y), (int)spriteWidth, (int)spriteHeight);
+				index++;
+			}
+		}
+	}
+	
+	public int getSpriteRowCount() { return this.spriteRows; }
+	
+	public int getSpriteColCount() { return this.spriteCols; }
+	
+	public int getSpritesPerSecond() { return this.spriteFPS; }
 	
 	public void setInterpolation(Interpolation interpolation) {
 		this.interpolation = interpolation;
@@ -204,7 +237,13 @@ public class ElementEmitter implements Control, Transformable {
 		}
 	}
 	
-	public Element getTargetElement() {
+	public void resetCurrentInterval() { currentInterval = 0; }
+	
+	public void setCurrentIntervalToTarget() {
+		currentInterval = targetInterval;
+	}
+	
+	public Node getTargetElement() {
 		return this.targetElement;
 	}
 	
@@ -216,13 +255,18 @@ public class ElementEmitter implements Control, Transformable {
 		quads = new ElementParticle[maxParticles];
 		for (int i = 0; i < maxParticles; i++) {
 			ElementParticle p = new ElementParticle();
-			String key = "sprite" + (FastMath.nextRandomInt(0, particles.getTextureRegions().size()-1));
+			String key = "sprite0";// + (FastMath.nextRandomInt(0, particles.getTextureRegions().size()-1));
 			TextureRegion region = particles.getTextureRegion(key);
-			particles.addQuad(String.valueOf(i), key, new Vector2f(0,0), new Vector2f(region.getRegionWidth()/2,region.getRegionHeight()/2));
+			particles.addQuad(String.valueOf(i), key,
+				new Vector2f(-region.getRegionWidth(),-region.getRegionHeight()),
+				new Vector2f(region.getRegionWidth()/2,region.getRegionHeight()/2)
+			);
 			p.particle = particles.getQuads().get(String.valueOf(i)); 
+			p.particle.userIndex = i;
 			p.initialize(true);
 			quads[i] = p;
 		}
+	//	particles.centerQuads();
 		particles.initialize();
 	}
 	
@@ -234,7 +278,7 @@ public class ElementEmitter implements Control, Transformable {
 		startEmitter(null);
 	}
 	
-	public void startEmitter(Element targetElement) {
+	public void startEmitter(Node targetElement) {
 		this.targetElement = targetElement;
 		if (targetElement == null)	screen.getGUINode().attachChild(particles);
 		else						this.targetElement.attachChild(particles);
@@ -250,12 +294,7 @@ public class ElementEmitter implements Control, Transformable {
 	
 	public void destroyEmitter() {
 		this.isEnabled = false;
-		if (this.targetElement != null) {
-			this.targetElement.detachChild(particles);
-			this.targetElement = null;
-		} else {
-			screen.getGUINode().detachChild(particles);
-		}
+		particles.removeFromParent();
 		try { screen.getGUINode().removeControl(this); }
 		catch (Exception ex) {  }
 	}
@@ -279,6 +318,14 @@ public class ElementEmitter implements Control, Transformable {
 		}
 	}
 
+	public void setUseFixedForce(boolean useFixedForce) {
+		this.useFixedForce = useFixedForce;
+	}
+	
+	public boolean getUseFixedForce() {
+		return this.useFixedForce;
+	}
+	
 	public float getMinForce() {
 		return minforce/100f;
 	}
@@ -305,6 +352,14 @@ public class ElementEmitter implements Control, Transformable {
 		this.maxforce = maxforce*100f;
 	}
 
+	public void setUseFixedLife(boolean useFixedLife) {
+		this.useFixedLife = useFixedLife;
+	}
+	
+	public boolean getUseFixedLife() {
+		return this.useFixedLife;
+	}
+	
 	public float getHighLife() {
 		return highLife;
 	}
@@ -331,6 +386,23 @@ public class ElementEmitter implements Control, Transformable {
 		this.highLife = highlife;
 	}
 
+	public void setUseFixedDirection(boolean useFixedDirection) {
+		this.useFixedDirection = useFixedDirection;
+	}
+	
+	public void setUseFixedDirection(boolean useFixedDirection, Vector2f fixedDirection) {
+		this.useFixedDirection = useFixedDirection;
+		this.fixedDirection.set(fixedDirection).normalizeLocal();
+	}
+	
+	public void setFixedDirection(Vector2f fixedDirection) {
+		this.fixedDirection.set(fixedDirection).normalizeLocal();
+	}
+	
+	public boolean getUseFixedDirection() { return this.useFixedDirection; }
+	
+	public Vector2f getFixedDirection() { return this.fixedDirection; }
+	
 	public AnimElement getParticles() {
 		return this.particles;
 	}
@@ -459,6 +531,11 @@ public class ElementEmitter implements Control, Transformable {
 		this.actions.add(action);
 	}
 	
+	@Override
+	public boolean getContainsAction(TemporalAction action) {
+		return actions.contains(action);
+	}
+	
 	public class ElementParticle {
 		public QuadData particle;
 		public Vector2f position = new Vector2f();
@@ -500,9 +577,7 @@ public class ElementEmitter implements Control, Transformable {
 		
 		public void initialize(boolean hide) {
 			diffX = FastMath.rand.nextFloat();
-		//	if (FastMath.rand.nextBoolean()) diffX = -diffX;
 			diffY = FastMath.rand.nextFloat();
-		//	if (FastMath.rand.nextBoolean()) diffY = -diffY;
 			
 			if (emitterShape != null) {
 				ir.getPixel((int)(diffX*(emitterShape.getImage().getWidth())),(int)(diffY*(emitterShape.getImage().getHeight())), tempColor);
@@ -517,25 +592,36 @@ public class ElementEmitter implements Control, Transformable {
 			diffY *= emitterHeight;
 			
 			position.set(emitterPosition);
-		//	position.x *= emitterWidth;
-		//	position.y *= emitterHeight;
+			position.subtractLocal(spriteWidth*0.5f,spriteHeight*0.5f);
 			position.addLocal(diffX,diffY);
 			
-			randforce = (FastMath.nextRandomFloat()*(maxforce-minforce))+minforce;
-			if (!centerVelocity) {
-				float velX = FastMath.rand.nextFloat()*randforce;
-				if (FastMath.rand.nextBoolean()) velX = -velX;
-				float velY = FastMath.rand.nextFloat()*randforce;
-				if (FastMath.rand.nextBoolean()) velY = -velY;
-				velocity.set(velX,velY);
+			if (!useFixedForce)
+				randforce = (FastMath.nextRandomFloat()*(maxforce-minforce))+minforce;
+			else
+				randforce = maxforce;
+			
+			if (!useFixedDirection) {
+				if (!centerVelocity) {
+					float velX = FastMath.rand.nextFloat();
+					if (FastMath.rand.nextBoolean()) velX = -velX;
+					float velY = FastMath.rand.nextFloat();
+					if (FastMath.rand.nextBoolean()) velY = -velY;
+					velocity.set(velX,velY);
+				} else {
+					velocity.set(1/emitterWidth*diffX, 1/emitterHeight*diffY);
+					velocity.subtractLocal(0.5f,0.5f);
+				}
 			} else {
-				velocity.set(1/emitterWidth*diffX, 1/emitterHeight*diffY);
-				velocity.subtractLocal(0.5f,0.5f);
-				velocity.multLocal(randforce);
+				velocity.set(fixedDirection);
 			}
-			life = highLife;
-			startlife = (highLife - lowLife) * FastMath.nextRandomFloat() + lowLife ;
-			life = startlife;
+			velocity.multLocal(randforce);
+			
+			if (useFixedLife)
+				life = highLife;
+			else {
+				startlife = (highLife - lowLife) * FastMath.nextRandomFloat() + lowLife ;
+				life = startlife;
+			}
 			rotateDir = FastMath.rand.nextBoolean();
 			rotateSpeed = FastMath.rand.nextFloat();
 			size = 1;

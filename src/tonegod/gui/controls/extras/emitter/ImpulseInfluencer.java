@@ -12,11 +12,15 @@ import tonegod.gui.controls.extras.emitter.ElementEmitter.ElementParticle;
  *
  * @author t0neg0d
  */
-public class ImpulseInfluencer implements Influencer {
+public class ImpulseInfluencer extends InfluencerBase {
 	private boolean isEnabled = true;
 	private Vector2f temp = new Vector2f();
 	private Vector2f temp2 = new Vector2f();
 	private float variationStrength = 0.35f;
+	
+	public ImpulseInfluencer(ElementEmitter emitter) {
+		super(emitter);
+	}
 	
 	@Override
 	public void update(ElementParticle particle, float tpf) {
