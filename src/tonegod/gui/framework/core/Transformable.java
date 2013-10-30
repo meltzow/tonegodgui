@@ -27,4 +27,6 @@ public interface Transformable {
 	public float getScaleY();
 	
 	public void addAction(TemporalAction action);
+	
+	public boolean getContainsAction(TemporalAction action);
 }

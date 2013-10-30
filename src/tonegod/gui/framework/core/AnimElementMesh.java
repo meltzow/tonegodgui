@@ -52,9 +52,9 @@ public class AnimElementMesh extends Mesh {
 		if (init) {
 			vb.rewind();
 			cb.rewind();
+			tcb.rewind();
 			if (batch.getQuads().size() != quadCount) {
 				buildIndices = true;
-				tcb.rewind();
 				ib.rewind();
 				quadCount = batch.getQuads().size();
 			}
@@ -112,17 +112,16 @@ public class AnimElementMesh extends Mesh {
 				.put(qd.color.a);
 		}
 		
+		tcb	.put(qd.region.getU()+qd.tcOffsetX)
+			.put(qd.region.getV()+qd.tcOffsetY);
+		tcb	.put(qd.region.getU2()+qd.tcOffsetX)
+			.put(qd.region.getV()+qd.tcOffsetY);
+		tcb	.put(qd.region.getU()+qd.tcOffsetX)
+			.put(qd.region.getV2()+qd.tcOffsetY);
+		tcb	.put(qd.region.getU2()+qd.tcOffsetX)
+			.put(qd.region.getV2()+qd.tcOffsetY);
+		
 		if (buildIndices) {
-			
-			tcb	.put(qd.region.getU())
-				.put(qd.region.getV());
-			tcb	.put(qd.region.getU2())
-				.put(qd.region.getV());
-			tcb	.put(qd.region.getU())
-				.put(qd.region.getV2());
-			tcb	.put(qd.region.getU2())
-				.put(qd.region.getV2());
-			
 			ib.put((short)(vCount+2));	iIndex++;
 			ib.put((short)(vCount));	iIndex++;
 			ib.put((short)(vCount+1));	iIndex++;
@@ -179,10 +178,10 @@ public class AnimElementMesh extends Mesh {
 		this.setBuffer(VertexBuffer.Type.Position, 3, vb);
 		this.clearBuffer(VertexBuffer.Type.Color);
 		this.setBuffer(VertexBuffer.Type.Color, 4, cb);
+		this.clearBuffer(VertexBuffer.Type.TexCoord);
+		this.setBuffer(VertexBuffer.Type.TexCoord, 2, tcb);
 		if (buildIndices) {
 	//		tcb.flip();
-			this.clearBuffer(VertexBuffer.Type.TexCoord);
-			this.setBuffer(VertexBuffer.Type.TexCoord, 2, tcb);
 	//		ib.flip();
 			this.clearBuffer(VertexBuffer.Type.Index);
 			this.setBuffer(VertexBuffer.Type.Index, 3, ib);

@@ -16,9 +16,11 @@ import tonegod.gui.framework.animation.TemporalAction;
  */
 public class QuadData implements Transformable {
 	public List<TemporalAction> actions = new ArrayList();
+	public AnimElement element;
 	public QuadData parent;
 	public String key;
 	public TextureRegion region;
+	public int userIndex;
 	public int index;
 	public float x = 0f;
 	public float y = 0f;
@@ -30,11 +32,14 @@ public class QuadData implements Transformable {
 	public float scaleX = 1f;
 	public float scaleY = 1f;
 	public float rotation = 0f;
+	public float tcOffsetX = 0f;
+	public float tcOffsetY = 0f;
 	public ColorRGBA color = new ColorRGBA(1,1,1,1);
 	public Vector2f origin = new Vector2f(0,0);
 	private boolean visible = true;
 	
-	public QuadData(String quadKey, TextureRegion region, float x, float y, float width, float height, Vector2f origin) {
+	public QuadData(AnimElement element, String quadKey, TextureRegion region, float x, float y, float width, float height, Vector2f origin) {
+		this.element = element;
 		this.key = quadKey;
 		this.x = x;
 		this.y = y;
@@ -145,5 +150,10 @@ public class QuadData implements Transformable {
 	@Override
 	public float getScaleY() {
 		return scaleY;
+	}
+
+	@Override
+	public boolean getContainsAction(TemporalAction action) {
+		return actions.contains(action);
 	}
 }

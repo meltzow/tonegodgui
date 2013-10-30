@@ -24,11 +24,11 @@ import tonegod.gui.framework.animation.TemporalAction;
  * @author t0neg0d
  */
 public abstract class AnimElement extends Node implements Transformable {
-	protected List<TemporalAction> actions = new ArrayList();
-	Map<String, QuadData> quads = new LinkedHashMap();
+	public List<TemporalAction> actions = new ArrayList();
+	protected Map<String, QuadData> quads = new LinkedHashMap();
 	Texture tex;
-	Map<String, TextureRegion> uvs = new HashMap();
-	AnimElementMesh mesh;
+	protected Map<String, TextureRegion> uvs = new HashMap();
+	protected AnimElementMesh mesh;
 	Vector2f origin = new Vector2f();
 	float rotation;
 	Vector2f position = new Vector2f();
@@ -80,12 +80,12 @@ public abstract class AnimElement extends Node implements Transformable {
 	}
 	
 	public void addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin) {
-		QuadData qd = new QuadData(quadKey, uvs.get(regionKey), position.x, position.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
+		QuadData qd = new QuadData(this, quadKey, uvs.get(regionKey), position.x, position.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
 		quads.put(quadKey, qd);
 	}
 	
 	public void addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin, String parentKey) {
-		QuadData qd = new QuadData(quadKey, uvs.get(regionKey), position.x, position.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
+		QuadData qd = new QuadData(this, quadKey, uvs.get(regionKey), position.x, position.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
 		qd.parent = quads.get(parentKey);
 		qd.x -= qd.parent.x;
 		qd.y -= qd.parent.y;
@@ -126,11 +126,25 @@ public abstract class AnimElement extends Node implements Transformable {
 	
 	@Override
 	public void addAction(TemporalAction action) {
+		action.setTransformable(this);
 		actions.add(action);
 	}
 	
 	public Map<String, QuadData> getQuads() {
 		return this.quads;
+	}
+	
+	public QuadData getQuad(String key) {
+		return this.quads.get(key);
+	}
+	
+	public void centerQuads() {
+		for (QuadData q : quads.values()) {
+			if (q.parent == null) {
+				q.x -= 128;
+				q.y -= 128;
+			}
+		}
 	}
 	
 	public Map<String, TextureRegion> getUVs() {
@@ -205,5 +219,10 @@ public abstract class AnimElement extends Node implements Transformable {
 	}
 	@Override
 	public float getRotation() { return this.rotation; }
+
+	@Override
+	public boolean getContainsAction(TemporalAction action) {
+		return actions.contains(action);
+	}
 	
 }

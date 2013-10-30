@@ -8,7 +8,9 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import tonegod.gui.core.Screen;
 import tonegod.gui.framework.animation.TemporalAction;
 
@@ -20,6 +22,8 @@ public class AnimManager extends AbstractControl {
 	Screen screen;
 	List<ActionItem> queue = new ArrayList();
 	List<ActionItem> remove = new ArrayList();
+	List<ActionItem> active = new ArrayList();
+	
 	float time;
 	
 	public AnimManager(Screen screen) {
@@ -42,6 +46,7 @@ public class AnimManager extends AbstractControl {
 					if (item.item instanceof QuadData)
 						((QuadData)item.item).show();
 				}
+				active.add(item);
 				remove.add(item);
 			}
 		}
@@ -49,10 +54,29 @@ public class AnimManager extends AbstractControl {
 			queue.removeAll(remove);
 			remove.clear();
 		}
+		if (!active.isEmpty()) {
+			for (ActionItem item : active) {
+				if (!item.item.getContainsAction(item.action)) {
+					remove.add(item);
+				}
+			}
+		}
+		if (!remove.isEmpty()) {
+			active.removeAll(remove);
+			remove.clear();
+		}
 	}
 
 	@Override
 	protected void controlRender(RenderManager rm, ViewPort vp) {  }
+	
+	public int getQueueCount() {
+		return this.queue.size();
+	}
+	
+	public void getIsQueueIdle() {
+		
+	}
 	
 	public class ActionItem {
 		TemporalAction action;
