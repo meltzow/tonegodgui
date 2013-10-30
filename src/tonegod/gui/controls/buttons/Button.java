@@ -681,7 +681,6 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		screen.setKeyboardElement(this);
 		Effect effect = getEffect(Effect.EffectEvent.TabFocus);
 		if (effect != null) {
-		//	System.out.println(getUID() + ": Effect Found");
 			effect.setColor(ColorRGBA.DarkGray);
 			screen.getEffectManager().applyEffect(effect);
 		}
