@@ -164,6 +164,12 @@ public abstract class AlertBox extends Window {
 	}
 	
 	/**
+	 * Returns the ScrollArea containing the window message text.
+	 * @return 
+	 */
+	public ScrollArea getTextArea() { return this.dlg; }
+	
+	/**
 	 * Sets the text of the Ok button
 	 * @param text String
 	 */
