@@ -191,4 +191,11 @@ public class AnimElementMesh extends Mesh {
 		createCollisionData();
 		updateBound();
 	}
+	
+	protected void deallocateBuffers() {
+		BufferUtils.destroyDirectBuffer(vb);
+		BufferUtils.destroyDirectBuffer(ib);
+		BufferUtils.destroyDirectBuffer(tcb);
+		BufferUtils.destroyDirectBuffer(cb);
+	}
 }

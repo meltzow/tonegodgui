@@ -151,6 +151,10 @@ public abstract class AnimElement extends Node implements Transformable {
 		return this.uvs;
 	}
 	
+	public void deallocateBuffers() {
+		mesh.deallocateBuffers();
+	}
+	
 	public void update(float tpf) {
 		mesh.update(tpf);
 		for (TemporalAction a : actions) {
