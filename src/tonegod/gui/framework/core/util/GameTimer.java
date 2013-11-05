@@ -12,7 +12,7 @@ import tonegod.gui.framework.animation.Interpolation;
  */
 public class GameTimer {
 	private float time = 0;
-	private float targetTime = 1;
+	private float duration = 1;
 	private boolean active = false;
 	private boolean complete = false;
 	private long runCount = 0;
@@ -29,8 +29,8 @@ public class GameTimer {
 	 * Creates a new instance of the GameTimer class
 	 * @param targetTime The duration the timer should run in seconds
 	 */
-	public GameTimer(float targetTime) {
-		this(targetTime,false);
+	public GameTimer(float duration) {
+		this(duration,false);
 	}
 	
 	/**
@@ -38,8 +38,8 @@ public class GameTimer {
 	 * @param targetTime The duration the timer should run in seconds
 	 * @param autoStart Sets the GameTimer to active if true
 	 */
-	public GameTimer(float targetTime, boolean autoStart) {
-		this.targetTime = targetTime;
+	public GameTimer(float duration, boolean autoStart) {
+		this.duration = duration;
 		this.active = autoStart;
 	}
 	
@@ -48,8 +48,8 @@ public class GameTimer {
 	 * GameTimer is complete.
 	 * @param targetTime The duration of the timer
 	 */
-	public void setTargetTime(float targetTime) {
-		this.targetTime = targetTime;
+	public void setDuration(float duration) {
+		this.duration = duration;
 	}
 	
 	/**
@@ -57,8 +57,8 @@ public class GameTimer {
 	 * before completing.
 	 * @return targetTime
 	 */
-	public float getTargetTime() {
-		return this.targetTime;
+	public float getDuration() {
+		return this.duration;
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class GameTimer {
 	 */
 	public void reset(boolean resetFromLastEndTime) {
 		if (resetFromLastEndTime)
-			time -= targetTime;
+			time -= duration;
 		else
 			time = 0;
 		active = false;
@@ -112,7 +112,7 @@ public class GameTimer {
 	 * @return 
 	 */
 	public float getPercentComplete() {
-		return interpolation.apply(time/targetTime);
+		return interpolation.apply(time/duration);
 	}
 	
 	/**
@@ -138,7 +138,7 @@ public class GameTimer {
 	public void update(float tpf) {
 		if (active && !complete) {
 			time += tpf;
-			if (time >= targetTime) {
+			if (time >= duration) {
 				complete = true;
 				active = false;
 			}
