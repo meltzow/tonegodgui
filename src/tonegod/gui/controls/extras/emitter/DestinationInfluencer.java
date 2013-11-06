@@ -16,7 +16,8 @@ public class DestinationInfluencer extends InfluencerBase {
 	private boolean isEnabled = true;
 	private Vector2f destination = Vector2f.ZERO.clone();
 	private Vector2f temp = new Vector2f();
-	private float strength = 1;
+	private Vector2f temp2 = new Vector2f();
+	private float strength = .25f;
 	
 	public DestinationInfluencer(ElementEmitter emitter) {
 		super(emitter);
@@ -27,8 +28,9 @@ public class DestinationInfluencer extends InfluencerBase {
 		if (isEnabled) {
 			if (destination != Vector2f.ZERO) {
 				temp.set(p.initialPosition);
-				temp.interpolate(destination, p.blend);
-				p.position.interpolate(temp, strength);
+				temp2.set(destination).subtractLocal(p.particle.origin);
+				temp.interpolateLocal(temp2, p.blend);
+				p.position.interpolateLocal(temp, strength);
 			}
 		}
 	}

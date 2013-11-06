@@ -280,6 +280,7 @@ public class ElementEmitter implements Control, Transformable {
 	
 	public void setParticlesPerSecond(int particlesPerSecond) {
 		this.targetInterval = 1f/(float)particlesPerSecond;
+		currentInterval = 0;
 	}
 	
 	public void startEmitter() {
@@ -293,6 +294,7 @@ public class ElementEmitter implements Control, Transformable {
 		rootNode = screen.getGUINode();
 		rootNode.addControl(this);
 		this.isEnabled = true;
+		currentInterval = 0;
 		update(0.001f);
 	}
 	
