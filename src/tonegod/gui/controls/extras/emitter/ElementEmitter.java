@@ -208,6 +208,14 @@ public class ElementEmitter implements Control, Transformable {
 		this.emitterShape = null;
 	}
 	
+	public float getEmitterWidth() {
+		return this.emitterWidth;
+	}
+	
+	public float getEmitterHeight() {
+		return this.emitterHeight;
+	}
+	
 	@Override
 	public void update(float tpf) {
 		for (TemporalAction a : actions) {
@@ -538,6 +546,7 @@ public class ElementEmitter implements Control, Transformable {
 	
 	public class ElementParticle {
 		public QuadData particle;
+		public Vector2f initialPosition = new Vector2f();
 		public Vector2f position = new Vector2f();
 		public Vector2f velocity = new Vector2f();
 		public float randforce;
@@ -594,6 +603,7 @@ public class ElementEmitter implements Control, Transformable {
 			position.set(emitterPosition);
 			position.subtractLocal(spriteWidth*0.5f,spriteHeight*0.5f);
 			position.addLocal(diffX,diffY);
+			initialPosition.set(position);
 			
 			if (!useFixedForce)
 				randforce = (FastMath.nextRandomFloat()*(maxforce-minforce))+minforce;

@@ -26,11 +26,9 @@ public class DestinationInfluencer extends InfluencerBase {
 	public void update(ElementParticle p, float tpf) {
 		if (isEnabled) {
 			if (destination != Vector2f.ZERO) {
-				temp.set(destination.mult(tpf));
-				temp.mult(strength);
-				p.velocity.subtractLocal(temp);
-				temp.set(p.velocity).multLocal(tpf);
-				p.position.addLocal(temp);
+				temp.set(p.initialPosition);
+				temp.interpolate(destination, p.blend);
+				p.position.interpolate(temp, strength);
 			}
 		}
 	}
