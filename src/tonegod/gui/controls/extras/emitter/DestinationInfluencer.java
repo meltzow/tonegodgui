@@ -28,7 +28,7 @@ public class DestinationInfluencer extends InfluencerBase {
 		if (isEnabled) {
 			if (destination != Vector2f.ZERO) {
 				temp.set(p.initialPosition);
-				temp2.set(destination).subtractLocal(p.particle.origin);
+				temp2.set(destination).subtractLocal(p.particle.getOrigin());
 				temp.interpolate(temp2, p.blend);
 				p.position.interpolate(temp, strength);
 			}

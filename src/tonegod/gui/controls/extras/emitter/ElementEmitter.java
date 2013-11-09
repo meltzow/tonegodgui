@@ -82,6 +82,7 @@ public class ElementEmitter implements Control, Transformable {
 	private Node rootNode = null;
 	
 	public ElementEmitter(Screen screen, Vector2f position, float emitterWidth, float emitterHeight) {
+		
 		this.screen = screen;
 		this.app = screen.getApplication();
 		this.emitterWidth = emitterWidth;
@@ -499,52 +500,184 @@ public class ElementEmitter implements Control, Transformable {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 	
+	//<editor-fold desc="TRANSFORMABLE">
 	@Override
-	public void setPositionX(float x) { emitterPosition.setX(x); }
-
+	public void setPositionX(float x) {
+		this.emitterPosition.x = x;
+	}
 	@Override
-	public void setPositionY(float y) { emitterPosition.setY(y); }
-
+	public void setPositionY(float y) {
+		this.emitterPosition.y = y;
+	}
 	@Override
-	public void setPosition(float x, float y) { emitterPosition.set(x,y); }
-	
+	public void setPosition(float x, float y) {
+		this.emitterPosition.set(x,y);
+	}
 	@Override
-	public void setPosition(Vector2f position) { this.emitterPosition.set(position); }
-	
+	public void setPosition(Vector2f pos) {
+		this.emitterPosition.set(pos);
+	}
 	@Override
-	public void setRotation(float rotation) {  }
-
+	public void setRotation(float rotation) {
+		this.particles.setRotation(rotation);
+	}
 	@Override
-	public void setScaleX(float scaleX) { particles.setScaleX(scaleX); }
-
+	public void setScaleX(float scaleX) {
+		this.particles.setScaleX(scaleX);
+	}
 	@Override
-	public void setScaleY(float scaleY) { particles.setScaleY(scaleY); }
-
+	public void setScaleY(float scaleY) {
+		this.particles.setScaleY(scaleY);
+	}
 	@Override
-	public float getPositionX() { return emitterPosition.x; }
-
+	public void setScale(float x, float y) {
+		this.particles.setScale(x,y);
+		
+	}
 	@Override
-	public float getPositionY() { return emitterPosition.y; }
-
+	public void setScale(Vector2f scale) {
+		this.particles.setScale(scale);
+	}
 	@Override
-	public float getRotation() { return particles.getRotation(); }
-
+	public void setOrigin(float x, float y) {
+		this.particles.setOrigin(x,y);
+	}
 	@Override
-	public float getScaleX() { return particles.getScaleX(); }
-
+	public void setOrigin(Vector2f origin) {
+		this.particles.setOrigin(origin);
+	}
 	@Override
-	public float getScaleY() { return particles.getScaleY(); }
-
+	public void setOriginX(float originX) {
+		this.particles.setOriginX(originX);
+	}
+	@Override
+	public void setOriginY(float originY) {
+		this.particles.setOriginY(originY);
+	}
+	@Override
+	public void setColor(ColorRGBA color) {
+		this.particles.setColor(color);
+	}
+	@Override
+	public void setColorR(float r) {
+		this.particles.setColorR(r);
+	}
+	@Override
+	public void setColorG(float g) {
+		this.particles.setColorG(g);
+	}
+	@Override
+	public void setColorB(float b) {
+		this.particles.setColorB(b);
+	}
+	@Override
+	public void setColorA(float a) {
+		this.particles.setColorA(a);
+	}
+	@Override
+	public void setTCOffsetX(float x) {
+		
+	}
+	@Override
+	public void setTCOffsetY(float y) {
+		
+	}
+	@Override
+	public float getPositionX() {
+		return emitterPosition.x;
+	}
+	@Override
+	public float getPositionY() {
+		return emitterPosition.y;
+	}
+	@Override
+	public float getRotation() {
+		return particles.getRotation();
+	}
+	@Override
+	public float getScaleX() {
+		return particles.getScaleX();
+	}
+	@Override
+	public float getScaleY() {
+		return particles.getScaleY();
+	}
+	@Override
+	public Vector2f getOrigin() {
+		return this.particles.getOrigin();
+	}
+	@Override
+	public float getOriginX() {
+		return this.particles.getOriginX();
+	}
+	@Override
+	public float getOriginY() {
+		return this.particles.getOriginY();
+	}
+	@Override
+	public ColorRGBA getColor() {
+		return this.particles.getColor();
+	}
+	@Override
+	public float getColorR() {
+		return this.particles.getColorR();
+	}
+	@Override
+	public float getColorG() {
+		return this.particles.getColorG();
+	}
+	@Override
+	public float getColorB() {
+		return this.particles.getColorB();
+	}
+	@Override
+	public float getColorA() {
+		return this.particles.getColorA();
+	}
+	@Override
+	public float getWidth() {
+		return this.particles.getWidth();
+	}
+	@Override
+	public float getHeight() {
+		return this.particles.getHeight();
+	}
+	@Override
+	public float getTCOffsetX() {
+		return this.particles.getTCOffsetX();
+	}
+	@Override
+	public float getTCOffsetY() {
+		return this.particles.getTCOffsetY();
+	}
+	@Override
+	public void setPositionZ(float z) { this.particles.setPositionZ(z); }
+	@Override
+	public float getPositionZ() {
+		return this.particles.getPositionZ();
+	}
+	@Override
+	public Vector2f getPosition() { return this.particles.getPosition(); }
+	@Override
+	public Vector2f getScale() { return this.particles.getScale(); }
+	@Override
+	public Vector2f getDimensions() {
+		return this.particles.getDimensions();
+	}
+	@Override
+	public Vector2f getTCOffset() {
+		return this.particles.getTCOffset();
+	}
 	@Override
 	public void addAction(TemporalAction action) {
 		action.setTransformable(this);
-		this.actions.add(action);
+		actions.add(action);
 	}
-	
 	@Override
 	public boolean getContainsAction(TemporalAction action) {
 		return actions.contains(action);
 	}
+	//</editor-fold>
 	
 	public class ElementParticle {
 		public QuadData particle;
@@ -581,8 +714,8 @@ public class ElementEmitter implements Control, Transformable {
 			particle.setPosition(position);
 			particle.setScaleX(size);
 			particle.setScaleY(size);
-			particle.origin.set(spriteWidth*0.5f,spriteHeight*0.5f);
-			particle.color.set(color);
+			particle.getOrigin().set(spriteWidth*0.5f,spriteHeight*0.5f);
+			particle.setColor(color);
 			particle.setRotation(angle);
 		};
 		
