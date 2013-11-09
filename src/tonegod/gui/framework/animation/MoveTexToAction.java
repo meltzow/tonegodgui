@@ -16,8 +16,8 @@ public class MoveTexToAction extends TemporalAction {
 	
 	@Override
 	protected void begin() {
-		((QuadData)quad).tcOffsetX = x;
-		((QuadData)quad).tcOffsetY = y;
+		((QuadData)quad).setTCOffsetX(x);
+		((QuadData)quad).setTCOffsetY(y);
 		setDuration(0);
 	}
 	
