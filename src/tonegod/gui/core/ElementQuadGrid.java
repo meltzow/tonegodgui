@@ -32,6 +32,8 @@ public class ElementQuadGrid extends Mesh {
 	private float templateZ = 0;
 	private float imgWidth, imgHeight, pixelWidth, pixelHeight, atlasX, atlasY, atlasW, atlasH;
 	
+	boolean updatePosition = true;
+	
 	private short[] templateIndexes = new short[] {
 		0,1,5,5,4,0
 	};
@@ -234,10 +236,14 @@ public class ElementQuadGrid extends Mesh {
 			}
 			indexY++;
 		}
+		updatePosition = true;
 	}
 	private void setBuffers(boolean updateAll) {
-		this.clearBuffer(Type.Position);
-		this.setBuffer(Type.Position, 3, verts);
+		if (updatePosition) {
+			this.clearBuffer(Type.Position);
+			this.setBuffer(Type.Position, 3, verts);
+			updatePosition = false;
+		}
 		if (updateAll) {
 			this.clearBuffer(Type.TexCoord);
 			this.setBuffer(Type.TexCoord, 2, coords);

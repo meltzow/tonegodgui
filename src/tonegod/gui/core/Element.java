@@ -277,17 +277,23 @@ public class Element extends Node {
 		
 		this.model = new ElementQuadGrid(this.dimensions, borders, imgWidth, imgHeight, pixelWidth, pixelHeight, textureAtlasX, textureAtlasY, textureAtlasW, textureAtlasH);
 		
-		this.setName(UID + ":Node");
+        this.setName(UID + ":Node");
+                
 		geom = new Geometry(UID + ":Geometry");
 		geom.setMesh(model);
 		geom.setCullHint(CullHint.Never);
         geom.setQueueBucket(Bucket.Gui);
 		geom.setMaterial(mat);
+                
 		this.attachChild(geom);
 		
 		this.setQueueBucket(Bucket.Gui);
 		
 		this.setLocalTranslation(position.x, position.y, 0);
+	}
+	
+	public void setAsContainerOnly() {
+		detachChildAt(0);
 	}
 	
 	private void throwParserException() {
