@@ -79,6 +79,7 @@ public abstract class Joystick extends Element implements Control {
 		thumb.setDockS(true);
 		thumb.setDockW(true);
 		thumb.setIsMovable(true);
+		thumb.clearAltImages();
 		thumb.removeEffect(Effect.EffectEvent.Hover);
 		thumb.removeEffect(Effect.EffectEvent.Press);
 		thumb.removeEffect(Effect.EffectEvent.GetFocus);
