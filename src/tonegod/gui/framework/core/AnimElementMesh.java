@@ -22,12 +22,17 @@ public class AnimElementMesh extends Mesh {
 	private int vCount = 0;
 	private int vIndex = 0;
 	private int iIndex = 0;
-	private boolean init = false;
+	public boolean init = false;
 	private Vector2f pos = new Vector2f(0,0);
 	private Vector2f dim = new Vector2f(0,0);
 	private Vector2f tempV = new Vector2f(0,0);
 	private Vector2f tempV2 = new Vector2f(0,0);
-	private boolean buildIndices = true;
+	
+	public boolean buildPosition = true;
+	public boolean buildTexCoords = true;
+	public boolean buildColor = true;
+	public boolean buildIndices = true;
+	
 	private FloatBuffer vb;
 	private ShortBuffer ib;
 	private FloatBuffer tcb;
@@ -36,28 +41,28 @@ public class AnimElementMesh extends Mesh {
 	float[] verts;
 	short[] indices;
 	
+	int bufferSetCount = 0;
+	
 	public AnimElementMesh(AnimElement batch) {
 		this.batch = batch;
 	}
 	
 	public void initialize() {
-		init = true;
 		vb = BufferUtils.createFloatBuffer(batch.getQuads().size()*3*4);
 		cb = BufferUtils.createFloatBuffer(batch.getQuads().size()*4*4);
 		tcb = BufferUtils.createFloatBuffer(batch.getQuads().size()*2*4);
 		ib = BufferUtils.createShortBuffer(batch.getQuads().size()*6);
+		init = true;
 	}
 	
 	public void update(float tpf) {
 		if (init) {
-			vb.rewind();
-			cb.rewind();
-			tcb.rewind();
-			if (batch.getQuads().size() != quadCount) {
-				buildIndices = true;
-				ib.rewind();
-				quadCount = batch.getQuads().size();
-			}
+		//	if (buildPosition)
+				vb.rewind();
+			if (buildColor) cb.rewind();
+			if (buildTexCoords) tcb.rewind();
+			if (buildIndices) ib.rewind();
+			
 			updateMeshData(tpf);
 		}
 	}
@@ -69,57 +74,63 @@ public class AnimElementMesh extends Mesh {
 		
 		for (QuadData qd : batch.getQuads().values()) {
 			qd.update(tpf);
-			addQuad(vb, qd);
+			addQuad(qd);
+			vIndex++;
 		}
 		
 		setBuffers();
 	}
 	
-	private void addQuad(FloatBuffer fb, QuadData qd) {
+	private void addQuad(QuadData qd) {
 		qd.index = vIndex;
 		
-		pos.set(0, 0);
-		dim.set(qd.width, qd.height);
+		dim.set(qd.getWidth(), qd.getHeight());
 		
 		/** VERT 1 **/
-		applyTransforms(qd, pos.x, pos.y);
-		vb	.put(tempV.x)
-			.put(tempV.y)
-			.put(0);
+	//	if (buildPosition) {
+			applyTransforms(qd, 0, 0);
+			vb	.put(tempV.x)
+				.put(tempV.y)
+				.put(0);
+
+			/** VERT 2 **/
+			applyTransforms(qd, dim.x, 0);
+			vb	.put(tempV.x)
+				.put(tempV.y)
+				.put(0);
+
+			/** VERT 3 **/
+			applyTransforms(qd, 0, dim.y);
+			vb	.put(tempV.x)
+				.put(tempV.y)
+				.put(0);
+
+			/** VERT 4 **/
+			applyTransforms(qd, dim.x, dim.y);
+			vb	.put(tempV.x)
+				.put(tempV.y)
+				.put(0);
+	//	}
 		
-		/** VERT 2 **/
-		applyTransforms(qd, pos.x+dim.x, pos.y);
-		vb	.put(tempV.x)
-			.put(tempV.y)
-			.put(0);
-		
-		/** VERT 3 **/
-		applyTransforms(qd, pos.x, pos.y+dim.y);
-		vb	.put(tempV.x)
-			.put(tempV.y)
-			.put(0);
-		
-		/** VERT 4 **/
-		applyTransforms(qd, pos.x+dim.x, pos.y+dim.y);
-		vb	.put(tempV.x)
-			.put(tempV.y)
-			.put(0);
-		
-		for (int i = 0; i < 4; i++) {
-			cb	.put(qd.color.r)
-				.put(qd.color.g)
-				.put(qd.color.b)
-				.put(qd.color.a);
+		if (buildColor) {
+			for (int i = 0; i < 4; i++) {
+				cb	.put(qd.getColorR())
+					.put(qd.getColorG())
+					.put(qd.getColorB())
+					.put(qd.getColorA());
+			}
 		}
 		
-		tcb	.put(qd.region.getU()+qd.tcOffsetX)
-			.put(qd.region.getV()+qd.tcOffsetY);
-		tcb	.put(qd.region.getU2()+qd.tcOffsetX)
-			.put(qd.region.getV()+qd.tcOffsetY);
-		tcb	.put(qd.region.getU()+qd.tcOffsetX)
-			.put(qd.region.getV2()+qd.tcOffsetY);
-		tcb	.put(qd.region.getU2()+qd.tcOffsetX)
-			.put(qd.region.getV2()+qd.tcOffsetY);
+		if (buildTexCoords) {
+			tcb	.put(qd.getTextureRegion().getU()+qd.getTCOffsetX())
+				.put(qd.getTextureRegion().getV()+qd.getTCOffsetY());
+			tcb	.put(qd.getTextureRegion().getU2()+qd.getTCOffsetX())
+				.put(qd.getTextureRegion().getV()+qd.getTCOffsetY());
+			tcb	.put(qd.getTextureRegion().getU()+qd.getTCOffsetX())
+				.put(qd.getTextureRegion().getV2()+qd.getTCOffsetY());
+			tcb	.put(qd.getTextureRegion().getU2()+qd.getTCOffsetX())
+				.put(qd.getTextureRegion().getV2()+qd.getTCOffsetY());
+		}
 		
 		if (buildIndices) {
 			ib.put((short)(vCount+2));	iIndex++;
@@ -137,17 +148,17 @@ public class AnimElementMesh extends Mesh {
 		AnimElement a = batch;
 		QuadData p = qd.parent;
 		tempV.set(x,y);
-		tempV.subtractLocal(qd.origin);
-		tempV.set(rot(tempV, qd.rotation));
-		tempV.multLocal(tempV2.set(qd.scaleX, qd.scaleY));
-		tempV.addLocal(qd.origin);
-		tempV.addLocal(qd.x,qd.y);
+		tempV.subtractLocal(qd.getOrigin());
+		tempV.set(rot(tempV, qd.getRotation()));
+		tempV.multLocal(tempV2.set(qd.getScaleX(), qd.getScaleY()));
+		tempV.addLocal(qd.getOrigin());
+		tempV.addLocal(qd.getPositionX(),qd.getPositionY());
 		while (p != null) {
-			tempV.subtractLocal(p.origin.x, p.origin.y);
-			tempV.set(rot(tempV, p.rotation));
-			tempV.multLocal(tempV2.set(p.scaleX, p.scaleY));
-			tempV.addLocal(p.origin.x, p.origin.y);
-			tempV.addLocal(p.x,p.y);
+			tempV.subtractLocal(p.getOriginX(), p.getOriginY());
+			tempV.set(rot(tempV, p.getRotation()));
+			tempV.multLocal(tempV2.set(p.getScaleX(), p.getScaleY()));
+			tempV.addLocal(p.getOriginX(), p.getOriginY());
+			tempV.addLocal(p.getPositionX(),p.getPositionY());
 			p = p.parent;
 		}
 		while (a != null) {
@@ -173,23 +184,40 @@ public class AnimElementMesh extends Mesh {
 	}
 	
 	private void setBuffers() {
-	//	vb.flip();
-		this.clearBuffer(VertexBuffer.Type.Position);
-		this.setBuffer(VertexBuffer.Type.Position, 3, vb);
-		this.clearBuffer(VertexBuffer.Type.Color);
-		this.setBuffer(VertexBuffer.Type.Color, 4, cb);
-		this.clearBuffer(VertexBuffer.Type.TexCoord);
-		this.setBuffer(VertexBuffer.Type.TexCoord, 2, tcb);
+		boolean updateCol = false;
+		
+		if (buildPosition) {
+			this.clearBuffer(VertexBuffer.Type.Position);
+			this.setBuffer(VertexBuffer.Type.Position, 3, vb);
+			buildPosition = false;
+			updateCol = true;
+		}
+		
+		if (buildColor) {
+			this.clearBuffer(VertexBuffer.Type.Color);
+			this.setBuffer(VertexBuffer.Type.Color, 4, cb);
+			buildColor = false;
+			updateCol = true;
+		}
+		
+		if (buildTexCoords) {
+			this.clearBuffer(VertexBuffer.Type.TexCoord);
+			this.setBuffer(VertexBuffer.Type.TexCoord, 2, tcb);
+			buildTexCoords = false;
+			updateCol = true;
+		}
+			
 		if (buildIndices) {
-	//		tcb.flip();
-	//		ib.flip();
 			this.clearBuffer(VertexBuffer.Type.Index);
 			this.setBuffer(VertexBuffer.Type.Index, 3, ib);
-	//		cb.flip();
 			buildIndices = false;
+			updateCol = true;
 		}
-		createCollisionData();
-		updateBound();
+		
+		if (updateCol) {
+			createCollisionData();
+			updateBound();
+		}
 	}
 	
 	protected void deallocateBuffers() {

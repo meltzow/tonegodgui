@@ -5,8 +5,10 @@
 package tonegod.gui.framework.core;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -29,10 +31,13 @@ public abstract class AnimElement extends Node implements Transformable {
 	Texture tex;
 	protected Map<String, TextureRegion> uvs = new HashMap();
 	protected AnimElementMesh mesh;
-	Vector2f origin = new Vector2f();
+	Vector2f position = new Vector2f(0,0);
+	float z = 1;
+	Vector2f scale = new Vector2f(1,1);
+	Vector2f origin = new Vector2f(0,0);
+	Vector2f dimensions = new Vector2f(0,0);
+	ColorRGBA color = new ColorRGBA();
 	float rotation;
-	Vector2f position = new Vector2f();
-	Vector2f scale = new Vector2f();
 	Spatial spatial;
 	Material mat;
 	AssetManager am;
@@ -43,6 +48,7 @@ public abstract class AnimElement extends Node implements Transformable {
 	}
 	
 	public void initialize() {
+		flagForUpdate();
 		mesh.initialize();
 		
 		mat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -82,52 +88,55 @@ public abstract class AnimElement extends Node implements Transformable {
 	public void addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin) {
 		QuadData qd = new QuadData(this, quadKey, uvs.get(regionKey), position.x, position.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
 		quads.put(quadKey, qd);
+		flagForUpdate();
 	}
 	
 	public void addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin, String parentKey) {
 		QuadData qd = new QuadData(this, quadKey, uvs.get(regionKey), position.x, position.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
 		qd.parent = quads.get(parentKey);
-		qd.x -= qd.parent.x;
-		qd.y -= qd.parent.y;
+		qd.setPositionX(qd.getPositionX()-qd.parent.getPositionX());
+		qd.setPositionY(qd.getPositionY()-qd.parent.getPositionY());
 		quads.put(quadKey, qd);
+		flagForUpdate();
+	}
+	
+	public void flagForUpdate() {
+		mesh.buildPosition = true;
+		mesh.buildTexCoords = true;
+		mesh.buildColor = true;
+		mesh.buildIndices = true;
 	}
 	
 	public void setQuadParent(String key, String parentKey) {
 		QuadData qd = getQuads().get(key);
 		qd.parent = quads.get(parentKey);
-		qd.x -= qd.parent.x;
-		qd.y -= qd.parent.y;
+		qd.setPositionX(qd.getPositionX()-qd.parent.getPositionX());
+		qd.setPositionY(qd.getPositionY()-qd.parent.getPositionY());
 	}
 	
 	public void rotateQuad(String quadKey, int rotation) {
-		quads.get(quadKey).rotation = rotation;
+		quads.get(quadKey).setRotation(rotation);
 	}
 	
 	public void moveQuad(String quadKey, float x, float y) {
 		QuadData q = quads.get(quadKey);
-		q.x = x;
-		q.y = y;
+		q.setPositionX(x);
+		q.setPositionY(y);
 	}
 	
 	public void moveQuad(String quadKey, float z) {
 		QuadData q = quads.get(quadKey);
-		q.z = z;
+		q.setPositionZ(z);
 	}
 	
 	public void scaleQuad(String quadKey, float scaleX, float scaleY) {
 		QuadData q = quads.get(quadKey);
-		q.scaleX = scaleX;
-		q.scaleY = scaleY;
+		q.setScaleX(scaleX);
+		q.setScaleY(scaleY);
 	}
 	
 	public void addQuadAction(String quadKey, TemporalAction action) {
 		quads.get(quadKey).addAction(action);
-	}
-	
-	@Override
-	public void addAction(TemporalAction action) {
-		action.setTransformable(this);
-		actions.add(action);
 	}
 	
 	public Map<String, QuadData> getQuads() {
@@ -139,10 +148,17 @@ public abstract class AnimElement extends Node implements Transformable {
 	}
 	
 	public void centerQuads() {
+		float totalWidth = 0, totalHeight = 0;
+		for (QuadData q : quads.values()) {
+			if (q.getPositionX()+q.getTextureRegion().regionWidth > totalWidth)
+				totalWidth = q.getPositionX()+q.getTextureRegion().regionWidth;
+			if (q.getPositionY()+q.getTextureRegion().regionHeight > totalHeight)
+				totalHeight = q.getPositionY()+q.getTextureRegion().regionHeight;
+		}
 		for (QuadData q : quads.values()) {
 			if (q.parent == null) {
-				q.x -= 128;
-				q.y -= 128;
+				q.setPositionX(q.getPositionX()-(totalWidth/2));
+				q.setPositionY(q.getPositionY()-(totalHeight/2));
 			}
 		}
 	}
@@ -171,62 +187,192 @@ public abstract class AnimElement extends Node implements Transformable {
 	
 	public abstract void animElementUpdate(float tpf);
 	
-	public void setOrigin(float x, float y) {
-		this.origin.set(x,y);
+	//<editor-fold desc="TRANSFORMABLE">
+	@Override
+	public void setPositionX(float x) {
+		this.position.x = x;
+		mesh.buildPosition = true;
 	}
-	public void setOrigin(Vector2f origin) {
-		this.origin.set(origin);
+	@Override
+	public void setPositionY(float y) {
+		this.position.y = y;
+		mesh.buildPosition = true;
 	}
-	public void setOriginX(float x) { this.origin.setX(x); }
-	public void setOriginY(float y) { this.origin.setY(y); }
-	public Vector2f getOrigin() { return this.origin; }
-	public float getOriginX() { return this.origin.x; }
-	public float getOriginY() { return this.origin.y; }
-	
 	@Override
 	public void setPosition(float x, float y) {
 		this.position.set(x,y);
+		mesh.buildPosition = true;
 	}
 	@Override
-	public void setPosition(Vector2f position) {
-		this.position.set(position);
+	public void setPosition(Vector2f pos) {
+		this.position.set(pos);
+		mesh.buildPosition = true;
 	}
-	@Override
-	public void setPositionX(float x) { this.position.setX(x); }
-	@Override
-	public void setPositionY(float y) { this.position.setY(y); }
-	public Vector2f getPosition() { return this.position; }
-	@Override
-	public float getPositionX() { return this.position.x; }
-	@Override
-	public float getPositionY() { return this.position.y; }
-	
-	public void setScale(float x, float y) {
-		this.scale.set(x,y);
-	}
-	public void setScale(Vector2f scale) {
-		this.scale.set(scale);
-	}
-	@Override
-	public void setScaleX(float x) { this.scale.setX(x); }
-	@Override
-	public void setScaleY(float y) { this.scale.setY(y); }
-	public Vector2f getScale() { return this.scale; }
-	@Override
-	public float getScaleX() { return this.scale.x; }
-	@Override
-	public float getScaleY() { return this.scale.y; }
-	
 	@Override
 	public void setRotation(float rotation) {
 		this.rotation = rotation;
+		mesh.buildPosition = true;
 	}
 	@Override
-	public float getRotation() { return this.rotation; }
-
+	public void setScaleX(float scaleX) {
+		this.scale.x = scaleX;
+		mesh.buildPosition = true;
+	}
+	@Override
+	public void setScaleY(float scaleY) {
+		this.scale.y = scaleY;
+		mesh.buildPosition = true;
+	}
+	@Override
+	public void setScale(float x, float y) {
+		this.scale.set(x,y);
+		mesh.buildPosition = true;
+		
+	}
+	@Override
+	public void setScale(Vector2f scale) {
+		this.scale.set(scale);
+		mesh.buildPosition = true;
+	}
+	@Override
+	public void setOrigin(float x, float y) {
+		this.origin.set(x,y);
+		mesh.buildPosition = true;
+	}
+	@Override
+	public void setOrigin(Vector2f origin) {
+		this.origin.set(origin);
+		mesh.buildPosition = true;
+	}
+	@Override
+	public void setOriginX(float originX) {
+		this.origin.setX(originX);
+		mesh.buildPosition = true;
+	}
+	@Override
+	public void setOriginY(float originY) {
+		this.origin.setY(originY);
+		mesh.buildPosition = true;
+	}
+	@Override
+	public void setColor(ColorRGBA color) {
+		this.color.set(color);
+	}
+	@Override
+	public void setColorR(float r) {
+		this.color.r = r;
+	}
+	@Override
+	public void setColorG(float g) {
+		this.color.g = g;
+	}
+	@Override
+	public void setColorB(float b) {
+		this.color.b = b;
+	}
+	@Override
+	public void setColorA(float a) {
+		this.color.a = a;
+	}
+	@Override
+	public void setTCOffsetX(float x) {
+		
+	}
+	@Override
+	public void setTCOffsetY(float y) {
+		
+	}
+	@Override
+	public float getPositionX() {
+		return position.x;
+	}
+	@Override
+	public float getPositionY() {
+		return position.y;
+	}
+	@Override
+	public float getRotation() {
+		return rotation;
+	}
+	@Override
+	public float getScaleX() {
+		return scale.x;
+	}
+	@Override
+	public float getScaleY() {
+		return scale.y;
+	}
+	@Override
+	public Vector2f getOrigin() {
+		return this.origin;
+	}
+	@Override
+	public float getOriginX() {
+		return this.origin.x;
+	}
+	@Override
+	public float getOriginY() {
+		return this.origin.y;
+	}
+	@Override
+	public ColorRGBA getColor() {
+		return color;
+	}
+	@Override
+	public float getColorR() {
+		return color.r;
+	}
+	@Override
+	public float getColorG() {
+		return color.g;
+	}
+	@Override
+	public float getColorB() {
+		return color.b;
+	}
+	@Override
+	public float getColorA() {
+		return color.g;
+	}
+	@Override
+	public float getWidth() {
+		return dimensions.x;
+	}
+	@Override
+	public float getHeight() {
+		return dimensions.y;
+	}
+	@Override
+	public float getTCOffsetX() { return 0; }
+	@Override
+	public float getTCOffsetY() { return 0; }
+	@Override
+	public void setPositionZ(float z) {
+		this.z = z;
+		mesh.buildPosition = true;
+	}
+	@Override
+	public float getPositionZ() { return z; }
+	@Override
+	public Vector2f getPosition() { return this.position; }
+	@Override
+	public Vector2f getScale() { return scale; }
+	@Override
+	public Vector2f getDimensions() {
+		return this.dimensions;
+	}
+	@Override
+	public Vector2f getTCOffset() {
+		return null;
+	}
+	@Override
+	public void addAction(TemporalAction action) {
+		action.setTransformable(this);
+		actions.add(action);
+	}
 	@Override
 	public boolean getContainsAction(TemporalAction action) {
 		return actions.contains(action);
 	}
-	
+	//</editor-fold>
 }

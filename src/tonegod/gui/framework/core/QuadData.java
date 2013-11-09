@@ -19,35 +19,39 @@ public class QuadData implements Transformable {
 	public AnimElement element;
 	public QuadData parent;
 	public String key;
-	public TextureRegion region;
+	private TextureRegion region;
 	public int userIndex;
 	public int index;
-	public float x = 0f;
-	public float y = 0f;
-	public float z = 1;
-	public float width = 0f;
-	public float height = 0f;
-	public float initWidth = 0f;
-	public float initHeight = 0f;
-	public float scaleX = 1f;
-	public float scaleY = 1f;
-	public float rotation = 0f;
-	public float tcOffsetX = 0f;
-	public float tcOffsetY = 0f;
-	public ColorRGBA color = new ColorRGBA(1,1,1,1);
-	public Vector2f origin = new Vector2f(0,0);
+	private Vector2f position = new Vector2f(0,0);
+	private Vector2f initPosition = new Vector2f(0,0);
+	private float z = 1;
+	private Vector2f dimensions = new Vector2f();
+	private Vector2f initDimensions = new Vector2f();
+	private Vector2f scale = new Vector2f();
+	private float rotation = 0f;
+	private Vector2f tcOffset = new Vector2f();
+	private ColorRGBA color = new ColorRGBA(1,1,1,1);
+	private Vector2f origin = new Vector2f(0,0);
 	private boolean visible = true;
 	
 	public QuadData(AnimElement element, String quadKey, TextureRegion region, float x, float y, float width, float height, Vector2f origin) {
 		this.element = element;
 		this.key = quadKey;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		this.origin = origin;
+		this.position.set(x,y);
+		this.initPosition.set(x,y);
+		this.dimensions.set(width,height);
+		this.initDimensions.set(width,height);
+		this.scale.set(1,1);
+		this.origin.set(origin);
 		this.region = region;
 	}
+	
+	public void setTextureRegion(TextureRegion region) {
+		this.region = region;
+		element.mesh.buildTexCoords = true;
+	}
+	
+	public TextureRegion getTextureRegion() { return this.region; }
 	
 	@Override
 	public void addAction(TemporalAction action) {
@@ -70,18 +74,17 @@ public class QuadData implements Transformable {
 	
 	public void hide() {
 		if (visible) {
-			initWidth = width;
-			initHeight = height;
-			width = 0;
-			height = 0;
+			initDimensions.set(dimensions);
+			dimensions.set(0,0);
+			element.mesh.buildPosition = true;
 			visible = false;
 		}
 	}
 	
 	public void show() {
 		if (!visible) {
-			width = initWidth;
-			height = initHeight;
+			dimensions.set(initDimensions);
+			element.mesh.buildPosition = true;
 			visible = true;
 		}
 	}
@@ -92,49 +95,149 @@ public class QuadData implements Transformable {
 	
 	@Override
 	public void setPositionX(float x) {
-		this.x = x;
+		this.position.x = x;
+		element.mesh.buildPosition = true;
 	}
 
 	@Override
 	public void setPositionY(float y) {
-		this.y = y;
+		this.position.y = y;
+		element.mesh.buildPosition = true;
+	}
+
+	@Override
+	public void setPositionZ(float z) {
+		this.z = z;
+		element.mesh.buildPosition = true;
 	}
 
 	@Override
 	public void setPosition(float x, float y) {
-		this.x = x;
-		this.y = y;
+		this.position.set(x,y);
+		element.mesh.buildPosition = true;
 	}
 
 	@Override
 	public void setPosition(Vector2f pos) {
-		this.x = pos.x;
-		this.y = pos.y;
+		this.position.set(pos);
+		element.mesh.buildPosition = true;
 	}
 
 	@Override
 	public void setRotation(float rotation) {
 		this.rotation = rotation;
+		element.mesh.buildPosition = true;
 	}
 
 	@Override
 	public void setScaleX(float scaleX) {
-		this.scaleX = scaleX;
+		this.scale.x = scaleX;
+		element.mesh.buildPosition = true;
 	}
 
 	@Override
 	public void setScaleY(float scaleY) {
-		this.scaleY = scaleY;
+		this.scale.y = scaleY;
+		element.mesh.buildPosition = true;
+	}
+
+	@Override
+	public void setScale(float x, float y) {
+		this.scale.set(x,y);
+		element.mesh.buildPosition = true;
+		
+	}
+
+	@Override
+	public void setScale(Vector2f scale) {
+		this.scale.set(scale);
+		element.mesh.buildPosition = true;
+	}
+
+	@Override
+	public void setOrigin(float x, float y) {
+		this.origin.set(x,y);
+		element.mesh.buildPosition = true;
+	}
+
+	@Override
+	public void setOrigin(Vector2f origin) {
+		this.origin.set(origin);
+		element.mesh.buildPosition = true;
+	}
+
+	@Override
+	public void setOriginX(float originX) {
+		this.origin.x = originX;
+		element.mesh.buildPosition = true;
+	}
+
+	@Override
+	public void setOriginY(float originY) {
+		this.origin.y = originY;
+		element.mesh.buildPosition = true;
+	}
+
+	@Override
+	public void setColor(ColorRGBA color) {
+		this.color.set(color);
+		element.mesh.buildColor = true;
+	}
+
+	@Override
+	public void setColorR(float r) {
+		this.color.r = r;
+		element.mesh.buildColor = true;
+	}
+
+	@Override
+	public void setColorG(float g) {
+		this.color.g = g;
+		element.mesh.buildColor = true;
+	}
+
+	@Override
+	public void setColorB(float b) {
+		this.color.b = b;
+		element.mesh.buildColor = true;
+	}
+
+	@Override
+	public void setColorA(float a) {
+		this.color.a = a;
+		element.mesh.buildColor = true;
+	}
+
+	@Override
+	public void setTCOffsetX(float x) {
+		this.tcOffset.x = x;
+		element.mesh.buildTexCoords = true;
+	}
+
+	@Override
+	public void setTCOffsetY(float y) {
+		this.tcOffset.y = y;
+		element.mesh.buildTexCoords = true;
+	}
+
+	@Override
+	public Vector2f getPosition() {
+		return position;
 	}
 
 	@Override
 	public float getPositionX() {
-		return x;
+		return position.x;
 	}
 
 	@Override
 	public float getPositionY() {
-		return y;
+		return position.y;
+	}
+
+	@Override
+	public float getPositionZ() {
+		return z;
 	}
 
 	@Override
@@ -143,13 +246,88 @@ public class QuadData implements Transformable {
 	}
 
 	@Override
+	public Vector2f getScale() {
+		return scale;
+	}
+
+	@Override
 	public float getScaleX() {
-		return scaleX;
+		return scale.x;
 	}
 
 	@Override
 	public float getScaleY() {
-		return scaleY;
+		return scale.y;
+	}
+
+	@Override
+	public Vector2f getOrigin() {
+		return this.origin;
+	}
+
+	@Override
+	public float getOriginX() {
+		return this.origin.x;
+	}
+
+	@Override
+	public float getOriginY() {
+		return this.origin.y;
+	}
+
+	@Override
+	public ColorRGBA getColor() {
+		return this.color;
+	}
+
+	@Override
+	public float getColorR() {
+		return this.color.r;
+	}
+
+	@Override
+	public float getColorG() {
+		return this.color.g;
+	}
+
+	@Override
+	public float getColorB() {
+		return this.color.b;
+	}
+
+	@Override
+	public float getColorA() {
+		return this.color.a;
+	}
+
+	@Override
+	public Vector2f getDimensions() {
+		return this.dimensions;
+	}
+
+	@Override
+	public float getWidth() {
+		return this.dimensions.x;
+	}
+
+	@Override
+	public float getHeight() {
+		return this.dimensions.y;
+	}
+
+	@Override
+	public Vector2f getTCOffset() {
+		return this.tcOffset;
+	}
+
+	@Override
+	public float getTCOffsetX() {
+		return this.tcOffset.x;
+	}
+
+	@Override
+	public float getTCOffsetY() {
+		return this.tcOffset.y;
 	}
 
 	@Override
