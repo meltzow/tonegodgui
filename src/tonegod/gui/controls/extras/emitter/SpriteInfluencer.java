@@ -55,7 +55,7 @@ public class SpriteInfluencer extends InfluencerBase {
 						if (currentIndex == emitter.particles.getTextureRegions().size())
 							currentIndex = 0;
 						particle.putData("currentIndex", currentIndex);
-						particle.particle.region = particle.particle.element.getTextureRegion("sprite" + currentIndex);
+						particle.particle.setTextureRegion(particle.particle.element.getTextureRegion("sprite" + currentIndex));
 						break;
 					case SequentialDefinedOrder:
 					case SequentialDefinedOrderOverLife:
@@ -63,15 +63,15 @@ public class SpriteInfluencer extends InfluencerBase {
 						if (currentIndex == spriteOrder.length)
 							currentIndex = 0;
 						particle.putData("currentIndex", currentIndex);
-						particle.particle.region = particle.particle.element.getTextureRegion("sprite" + spriteOrder[currentIndex]);
+						particle.particle.setTextureRegion(particle.particle.element.getTextureRegion("sprite" + spriteOrder[currentIndex]));
 						break;
 					case RandomAll:
 					case RandomAllOverLife:
-						particle.particle.region = getRandomSprite(particle);
+						particle.particle.setTextureRegion(getRandomSprite(particle));
 						break;
 					case RandomDefinedOrder:
 					case RandomDefinedOrderOverLife:
-						particle.particle.region = getRandomSpriteFromRange(particle);
+						particle.particle.setTextureRegion(getRandomSpriteFromRange(particle));
 						break;
 				}
 				currentInterval -= targetInterval;
@@ -98,9 +98,9 @@ public class SpriteInfluencer extends InfluencerBase {
 				if (!randomStartImage) {
 					currentIndex = 0;
 					particle.putData("currentIndex", currentIndex);
-					particle.particle.region = particle.particle.element.getTextureRegion("sprite" + currentIndex);
+					particle.particle.setTextureRegion(particle.particle.element.getTextureRegion("sprite" + currentIndex));
 				} else {
-					particle.particle.region = getRandomSprite(particle);
+					particle.particle.setTextureRegion(getRandomSprite(particle));
 				}
 				break;
 			case SequentialDefinedOrder:
@@ -113,9 +113,9 @@ public class SpriteInfluencer extends InfluencerBase {
 				if (!randomStartImage) {
 					currentIndex = 0;
 					particle.putData("currentIndex", currentIndex);
-					particle.particle.region = particle.particle.element.getTextureRegion("sprite" + spriteOrder[currentIndex]);
+					particle.particle.setTextureRegion(particle.particle.element.getTextureRegion("sprite" + spriteOrder[currentIndex]));
 				} else {
-					particle.particle.region = getRandomSpriteFromRange(particle);
+					particle.particle.setTextureRegion(getRandomSpriteFromRange(particle));
 				}
 				break;
 			case RandomAll:
@@ -125,7 +125,7 @@ public class SpriteInfluencer extends InfluencerBase {
 				else
 					targetInterval = 1f/fps;
 				particle.putData("targetInterval", targetInterval);
-				particle.particle.region = getRandomSprite(particle);
+				particle.particle.setTextureRegion(getRandomSprite(particle));
 				break;
 			case RandomDefinedOrder:
 			case RandomDefinedOrderOverLife:
@@ -134,7 +134,7 @@ public class SpriteInfluencer extends InfluencerBase {
 				else
 					targetInterval = 1f/fps;
 				particle.putData("targetInterval", targetInterval);
-				particle.particle.region = getRandomSpriteFromRange(particle);
+				particle.particle.setTextureRegion(getRandomSpriteFromRange(particle));
 				break;
 			case SingleImage:
 				targetInterval = 1;
@@ -142,12 +142,12 @@ public class SpriteInfluencer extends InfluencerBase {
 				if (!randomStartImage) {
 					currentIndex = 0;
 					particle.putData("currentIndex", currentIndex);
-					particle.particle.region = particle.particle.element.getTextureRegion("sprite" + spriteOrder[currentIndex]);
+					particle.particle.setTextureRegion(particle.particle.element.getTextureRegion("sprite" + spriteOrder[currentIndex]));
 				} else {
 					if (spriteOrderSet)
-						particle.particle.region = getRandomSpriteFromRange(particle);
+						particle.particle.setTextureRegion(getRandomSpriteFromRange(particle));
 					else
-						particle.particle.region = getRandomSprite(particle);
+						particle.particle.setTextureRegion(getRandomSprite(particle));
 				}
 				break;
 		}
