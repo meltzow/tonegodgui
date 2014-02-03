@@ -10,15 +10,10 @@ import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
-import tonegod.gui.listeners.MouseFocusListener;
 import tonegod.gui.listeners.MouseWheelListener;
 
 /**
@@ -288,10 +283,12 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	public final void adjustWidthForScroll() {
 		if (vScrollBar.getParent() == null && !scrollHidden) {
 			setWidth(getWidth()+vScrollBar.getWidth());
+		//	vScrollBar.hide();
 			scrollHidden = true;
 		} else if (vScrollBar.getParent() != null && scrollHidden) {
 			setWidth(getWidth()-vScrollBar.getWidth());
 			getVScrollBar().setX(getWidth());
+		//	vScrollBar.show();
 			scrollHidden = false;
 		}
 	}
