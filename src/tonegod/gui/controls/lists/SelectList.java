@@ -15,12 +15,9 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
-import tonegod.gui.controls.menuing.Menu;
-import tonegod.gui.controls.menuing.MenuItem;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.listeners.KeyboardListener;
@@ -426,6 +423,7 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 			scrollToTop();
 			setWidth(getWidth());
 			getVScrollBar().setX(getWidth());
+			getVScrollBar().show();
 		}
 		scrollToTop();
 	}
