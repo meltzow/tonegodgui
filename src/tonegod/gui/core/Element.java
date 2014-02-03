@@ -14,26 +14,17 @@ import com.jme3.material.RenderState;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
 import com.jme3.texture.Texture;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import tonegod.gui.controls.extras.DragElement;
@@ -1496,6 +1487,27 @@ public class Element extends Node {
 		
 	}
 	
+	public void sizeToContent() {
+		float innerX = 10000, innerY = 10000, innerW = -10000, innerH = -10000;
+		float currentHeight = getHeight();
+		Map<Element,Float> newY = new HashMap();
+		for (Element child : elementChildren.values()) {
+			float x = child.getX();
+			float y = currentHeight-(child.getY()+child.getHeight());
+			float w = child.getX()+child.getWidth();
+			float h = currentHeight-child.getY();
+			if (x < innerX) innerX = x;
+			if (y < innerY) innerY = y;
+			if (w > innerW) innerW = w;
+			if (h > innerH) innerH = h;
+			newY.put(child, h);
+		}
+		this.setDimensions(innerW+innerX, innerH+innerY);
+		for (Element child : elementChildren.values()) {
+			float diff = newY.get(child);
+			child.setY(innerH-(diff-innerY));
+		}
+	}
 	/**
 	 * Moves the Element to the specified coordinates
 	 * @param x The new x screen coordinate of the Element
