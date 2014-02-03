@@ -54,7 +54,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	};
 	private String validateAlpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ";
 	private String validateAlphaNoSpace = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	private String validateNumeric = "0123456789.";
+	private String validateNumeric = "0123456789.-";
 	private String validateSpecChar = "`~!@#$%^&*()-_=+[]{}\\|;:'\",<.>/?";
 	private String validateCustom = "";
 	private String testString = "Gg|/X";
@@ -535,6 +535,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	@Override
 	public void setText(String s) {
 		caretIndex = 0;
+		
 		textFieldText.clear();
 		for (int i = 0; i < s.length(); i++) {
 			textFieldText.add(caretIndex, String.valueOf(s.charAt(i)));
@@ -1179,7 +1180,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			int start = finalText.substring(0,caretIndex).lastIndexOf(' ')+1;
 			if (start == -1) start = 0;
 			setTextRangeStart(start);
-			System.out.println(caretIndex + " : " + start + " : " + end);
+		//	System.out.println(caretIndex + " : " + start + " : " + end);
 			caretIndex = end;
 			updateText(getVisibleText());
 			setTextRangeEnd(end);
@@ -1366,9 +1367,14 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			tempIndex = maxLength;
 		}
 		
-		//this.setCaretPositionToEnd();
+		int testIndex = (head > tail) ? tail : head;
+		
 		setText(newText);
-		caretIndex = tempIndex;
+		
+	//	if (text.length() > 0)
+			caretIndex = testIndex;
+	//	else
+	//		caretIndex = 0;
 	}
 	
 	// Control methods
