@@ -446,7 +446,7 @@ public class Element extends Node {
 	}
 	
 	/**
-	 * Returns the screen level elements Map
+	 * Returns the child elements as a Map
 	 * @return 
 	 */
 	public Map<String, Element> getElementsAsMap() {
@@ -454,7 +454,7 @@ public class Element extends Node {
 	}
 	
 	/**
-	 * Returns the screen level elements as a Collection
+	 * Returns the child elements as a Collection
 	 * @return 
 	 */
 	public Collection<Element> getElements() {
