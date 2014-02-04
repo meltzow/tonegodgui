@@ -52,6 +52,7 @@ import java.nio.FloatBuffer;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -106,7 +107,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	private Application app;
 	protected Spatial spatial;
-	private Map<String, Element> elements = new HashMap();
+	private Map<String, Element> elements = new LinkedHashMap();
 	private Map<String, SubScreen> subscreens = new HashMap();
 	private Ray elementZOrderRay = new Ray();
 	private Vector3f guiRayOrigin = new Vector3f();

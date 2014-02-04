@@ -23,6 +23,7 @@ import com.jme3.texture.Texture;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -140,7 +141,7 @@ public class Element extends Node {
 	private ColorRGBA defaultColor = new ColorRGBA(1,1,1,0);
 	
 	private Element elementParent = null;
-	protected Map<String, Element> elementChildren = new HashMap();
+	protected Map<String, Element> elementChildren = new LinkedHashMap();
 	
 	protected boolean isClipped = false;
 	protected boolean wasClipped = false;
