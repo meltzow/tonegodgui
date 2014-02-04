@@ -688,11 +688,13 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	
 	@Override
 	public void resetTabFocus() {
-		screen.setKeyboardElement(null);
-		Effect effect = getEffect(Effect.EffectEvent.LoseTabFocus);
-		if (effect != null) {
-			effect.setColor(ColorRGBA.White);
-			screen.getEffectManager().applyEffect(effect);
+		if (!getIsToggled()) {
+			screen.setKeyboardElement(null);
+			Effect effect = getEffect(Effect.EffectEvent.LoseTabFocus);
+			if (effect != null) {
+				effect.setColor(ColorRGBA.White);
+				screen.getEffectManager().applyEffect(effect);
+			}
 		}
 	}
 	

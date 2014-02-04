@@ -216,16 +216,4 @@ public class CheckBox extends ButtonAdapter {
 	public boolean getIsChecked() {
 		return this.getIsToggled();
 	}
-	
-	@Override
-	public void resetTabFocus() {
-		if (!getIsChecked()) {
-			screen.setKeyboardElement(null);
-			Effect effect = getEffect(Effect.EffectEvent.LoseTabFocus);
-			if (effect != null) {
-				effect.setColor(ColorRGBA.White);
-				screen.getEffectManager().applyEffect(effect);
-			}
-		}
-	}
 }
