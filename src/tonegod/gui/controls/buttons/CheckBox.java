@@ -8,6 +8,7 @@ import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.MouseButtonEvent;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.controls.text.Label;
@@ -214,5 +215,17 @@ public class CheckBox extends ButtonAdapter {
 	 */
 	public boolean getIsChecked() {
 		return this.getIsToggled();
+	}
+	
+	@Override
+	public void resetTabFocus() {
+		if (!getIsChecked()) {
+			screen.setKeyboardElement(null);
+			Effect effect = getEffect(Effect.EffectEvent.LoseTabFocus);
+			if (effect != null) {
+				effect.setColor(ColorRGBA.White);
+				screen.getEffectManager().applyEffect(effect);
+			}
+		}
 	}
 }
