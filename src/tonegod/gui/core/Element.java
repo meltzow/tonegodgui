@@ -22,6 +22,7 @@ import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -442,6 +443,22 @@ public class Element extends Node {
 			e.removeFromParent();
 		}
 		elementChildren.clear();
+	}
+	
+	/**
+	 * Returns the screen level elements Map
+	 * @return 
+	 */
+	public Map<String, Element> getElementsAsMap() {
+		return this.elementChildren;
+	}
+	
+	/**
+	 * Returns the screen level elements as a Collection
+	 * @return 
+	 */
+	public Collection<Element> getElements() {
+		return this.elementChildren.values();
 	}
 	
 	/**

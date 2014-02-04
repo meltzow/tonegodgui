@@ -51,6 +51,7 @@ import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -373,6 +374,22 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			}
 		}
 		return ret;
+	}
+	
+	/**
+	 * Returns the screen level elements Map
+	 * @return 
+	 */
+	public Map<String, Element> getElementsAsMap() {
+		return this.elements;
+	}
+	
+	/**
+	 * Returns the screen level elements as a Collection
+	 * @return 
+	 */
+	public Collection<Element> getElements() {
+		return this.elements.values();
 	}
 	
 	/**
