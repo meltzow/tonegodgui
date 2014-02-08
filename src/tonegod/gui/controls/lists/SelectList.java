@@ -352,6 +352,34 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 			return null;
 	}
 	
+	public ListItem getListItemByCaption(String caption) {
+		ListItem mItem = null;
+		for (ListItem mi : getListItems()) {
+			if (mi.getCaption().equals(caption)) {
+				mItem = mi;
+				break;
+			}
+		}
+		
+		return mItem;
+	}
+	
+	
+	
+	public int getListItemIndexByCaption(String caption) {
+		int index = -1;
+		int count = 0;
+		for (ListItem mi : getListItems()) {
+			if (mi.getCaption().equals(caption)) {
+				index = count;
+				break;
+			}
+			count++;
+		}
+		
+		return index;
+	}
+	
 	/**
 	 * Returns a List containing all ListItems corresponding to the list of selectedIndexes
 	 * @return List<ListItem>
@@ -367,7 +395,10 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 	public List<ListItem> getListItems() {
 		return this.listItems;
 	}
-		
+	
+	public float getListItemHeight() {
+		return this.listItemHeight;
+	}
 	/**
 	 * Forces the SelectList to rebuild all ListItems.  This does not need to be called, however it will not effect anything negatively if it is.
 	 */

@@ -446,7 +446,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			atlasTexture = app.getAssetManager().loadTexture(texturePath);
 			atlasTexture.setMinFilter(Texture.MinFilter.BilinearNearestMipMap);
 			atlasTexture.setMagFilter(Texture.MagFilter.Bilinear);
-			atlasTexture.setWrap(Texture.WrapMode.BorderClamp);
+			atlasTexture.setWrap(Texture.WrapMode.Repeat);
 		} else {
 			atlasTexture = null;
 		}
