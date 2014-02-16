@@ -10,7 +10,6 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 
 /**
@@ -86,10 +85,7 @@ public class Label extends Element {
 		this.setIsResizable(false);
 		this.setScaleNS(false);
 		this.setScaleEW(false);
-		this.setDockN(true);
-		this.setDockW(true);
-		
-		
+		this.setDocking(Docking.NW);
 	}
 	
 }
