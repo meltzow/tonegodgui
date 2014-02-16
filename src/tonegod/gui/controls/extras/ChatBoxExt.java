@@ -23,7 +23,6 @@ import tonegod.gui.controls.windows.Panel;
 import tonegod.gui.controls.windows.Window;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 
@@ -199,7 +198,7 @@ public abstract class ChatBoxExt extends Panel {
 		saChatArea.setScaleNS(true);
 		saChatArea.setClippingLayer(saChatArea);
 		saChatArea.getScrollableArea().setIgnoreMouse(true);
-		saChatArea.getScrollableArea().setDockS(true);
+		saChatArea.getScrollableArea().setDocking(Docking.SW);
 		saChatArea.setPadding(2);
 		saChatArea.setText("");
 		addChild(saChatArea);
@@ -250,8 +249,7 @@ public abstract class ChatBoxExt extends Panel {
 						}
 					};
 					btnFiltersClose.setText("Close");
-					btnFiltersClose.setDockS(true);
-					btnFiltersClose.setDockE(true);
+					btnFiltersClose.setDocking(Docking.SE);
 					filters.addChild(btnFiltersClose);
 
 					screen.addElement(filters);
@@ -259,9 +257,7 @@ public abstract class ChatBoxExt extends Panel {
 				showFiltersWindow();
 			}
 		};
-	//	btnChatFilter.setFontSize(16);
-		btnChatFilter.setDockS(true);
-		btnChatFilter.setDockW(true);
+		btnChatFilter.setDocking(Docking.SW);
 		btnChatFilter.setScaleEW(false);
 		btnChatFilter.setScaleNS(false);
 		btnChatFilter.setText("F");
@@ -276,12 +272,9 @@ public abstract class ChatBoxExt extends Panel {
 			new Vector2f(120, controlSize)
 		) {
 			@Override
-			public void onChange(int selectedIndex, Object value) {
-			//	throw new UnsupportedOperationException("Not supported yet.");
-			}
+			public void onChange(int selectedIndex, Object value) {  }
 		};
-		sbDefaultChannel.setDockS(true);
-		sbDefaultChannel.setDockW(true);
+		sbDefaultChannel.setDocking(Docking.SW);
 		sbDefaultChannel.setScaleEW(false);
 		sbDefaultChannel.setScaleNS(false);
 		
@@ -298,7 +291,6 @@ public abstract class ChatBoxExt extends Panel {
 			public void controlKeyPressHook(KeyInputEvent evt, String text) {
 				if (evt.getKeyCode() == sendKey) {
 					if (tfChatInput.getText().length() > 0) {
-					//	tfChatInput.setText(tfChatInput.getText().substring(0,tfChatInput.getText().length()-1));
 						sendMsg();
 					}
 				}
@@ -306,8 +298,7 @@ public abstract class ChatBoxExt extends Panel {
 		};
 		tfChatInput.setScaleEW(true);
 		tfChatInput.setScaleNS(false);
-		tfChatInput.setDockS(true);
-		tfChatInput.setDockW(true);
+		tfChatInput.setDocking(Docking.SW);
 		
 		btnChatSendMsg = new ButtonAdapter(
 			screen,
@@ -322,8 +313,7 @@ public abstract class ChatBoxExt extends Panel {
 		};
 		btnChatSendMsg.setScaleEW(false);
 		btnChatSendMsg.setScaleNS(false);
-		btnChatSendMsg.setDockS(true);
-		btnChatSendMsg.setDockE(true);
+		btnChatSendMsg.setDocking(Docking.SE);
 		btnChatSendMsg.setText("Send");
 		
 		
@@ -355,8 +345,6 @@ public abstract class ChatBoxExt extends Panel {
 	 * @param msg The String message to display
 	 */
 	public void receiveMsg(Object command, String msg) {
-	//	System.out.println(command);
-		
 		ChatChannel channel = null;
 		if (command instanceof String)
 			channel = getChannelByStringCommand((String)command);
@@ -414,8 +402,7 @@ public abstract class ChatBoxExt extends Panel {
 		l.setTextWrap(LineWrapMode.Word);
 		l.setScaleEW(true);
 		l.setScaleNS(false);
-		l.setDockN(true);
-		l.setDockW(true);
+		l.setDocking(Docking.NW);
 		l.setIsResizable(false);
 		l.setIsMovable(false);
 		l.setIgnoreMouse(true);
@@ -657,7 +644,6 @@ public abstract class ChatBoxExt extends Panel {
 		scrollableArea.setHeight(currentHeight);
 		scrollableArea.setWidth(getWidth());
 		scrollableArea.setText(finalString);
-	//	scrollableArea.setTextPosition(0,-filterLineHeight);
 		
 		index = 0;
 		for (ChatChannel channel : channels) {
@@ -682,8 +668,7 @@ public abstract class ChatBoxExt extends Panel {
 		checkbox.setElementUserData(channel);
 		checkbox.setScaleEW(false);
 		checkbox.setScaleNS(false);
-		checkbox.setDockS(true);
-		checkbox.setDockW(true);
+		checkbox.setDocking(Docking.SW);
 		checkbox.setIsResizable(false);
 		checkbox.setIsMovable(false);
 		checkbox.setIgnoreMouse(false);
@@ -692,9 +677,6 @@ public abstract class ChatBoxExt extends Panel {
 		if (!channel.getIsFiltered())
 			checkbox.setIsChecked(true);
 		filtersScrollArea.addScrollableChild(checkbox);
-
-	//	if (!getIsVisible())
-	//		checkbox.hide();
 	}
 	
 	/**

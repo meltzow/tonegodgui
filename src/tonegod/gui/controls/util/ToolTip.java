@@ -49,8 +49,7 @@ public class ToolTip extends Label {
 		this.setIsResizable(true);
 		this.setScaleNS(false);
 		this.setScaleEW(false);
-		this.setDockN(true);
-		this.setDockW(true);
+		this.setDocking(Docking.NW);
 		
 		// Load default font info
 		this.setFontColor(screen.getStyle("ToolTip").getColorRGBA("fontColor"));

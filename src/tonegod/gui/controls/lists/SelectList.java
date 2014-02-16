@@ -430,7 +430,6 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 			if (selectedIndexes.contains(index)) {
 				Element highlight = createHighlight(index);
 				highlight.setX(0);
-			//	highlight.setY(listPadding);
 				highlight.setWidth( getWidth()-(listPadding*2) );
 				highlight.setHeight(listItemHeight);
 				highlight.getElementMaterial().setColor("Color", highlightColor);
@@ -467,7 +466,6 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 			if (selectedIndexes.contains(index)) {
 				Element highlight = createHighlight(index);
 				highlight.setX(0);
-			//	highlight.setY(listPadding);
 				highlight.setWidth( getWidth()-(listPadding*2) );
 				highlight.setHeight(listItemHeight);
 				highlight.getElementMaterial().setColor("Color", highlightColor);
@@ -492,8 +490,7 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 		);
 		highlight.setScaleEW(true);
 		highlight.setScaleNS(false);
-		highlight.setDockN(true);
-		highlight.setDockS(true);
+		highlight.setDocking(Docking.SW);
 		highlight.setIgnoreMouse(true);
 		
 		return highlight;

@@ -27,7 +27,6 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	private VScrollBar vScrollBar;
 	protected float scrollSize;
 	private boolean scrollHidden = false;
-//	protected float orgWidth;
 	
 	/**
 	 * Creates a new instance of the ScrollArea control
@@ -158,14 +157,11 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	
 	private void createScrollableArea() {
 		scrollableArea = new Element(screen, getUID() + ":scrollable", new Vector2f(0, 0), new Vector2f(getWidth(), 25), new Vector4f(14,14,14,14), null);
-	//	scrollableArea.setTextPadding(0);
-		
 		scrollableArea.setIsResizable(false);
 		scrollableArea.setIsMovable(false);
 		scrollableArea.setScaleEW(true);
 		scrollableArea.setScaleNS(false);
-		scrollableArea.setDockN(true);
-		scrollableArea.setDockW(true);
+		scrollableArea.setDocking(Docking.NW);
 		
 		// Load default font info
 		scrollableArea.setFontColor(screen.getStyle("ScrollArea").getColorRGBA("fontColor"));
@@ -251,9 +247,9 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	 */
 	public float getScrollableHeight() {
 		if (isTextOnly) {
-			return textElement.getHeight()+(getTextPadding()*2);//+(getClipPadding()*2);
+			return textElement.getHeight()+(getTextPadding()*2);
 		} else {
-			return scrollableArea.getHeight()+(scrollableArea.getTextPadding()*2);//+(scrollableArea.getClipPadding()*2);
+			return scrollableArea.getHeight()+(scrollableArea.getTextPadding()*2);
 		}
 	}
 	
@@ -270,8 +266,6 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	
 	@Override
 	public void setControlClippingLayer(Element clippingLayer) {
-	//	setClippingLayer(clippingLayer);
-	//	Set<String> keys = elementChildren.keySet();
 		for (Element el : elementChildren.values()) {
 			el.setControlClippingLayer(clippingLayer);
 		}
@@ -283,12 +277,10 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	public final void adjustWidthForScroll() {
 		if (vScrollBar.getParent() == null && !scrollHidden) {
 			setWidth(getWidth()+vScrollBar.getWidth());
-		//	vScrollBar.hide();
 			scrollHidden = true;
 		} else if (vScrollBar.getParent() != null && scrollHidden) {
 			setWidth(getWidth()-vScrollBar.getWidth());
 			getVScrollBar().setX(getWidth());
-		//	vScrollBar.show();
 			scrollHidden = false;
 		}
 	}

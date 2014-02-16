@@ -14,7 +14,6 @@ import java.util.List;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 
 /**
@@ -146,10 +145,9 @@ public abstract class Spinner extends TextField {
 		
 		this.orientation = orientation;
 		this.cycle = cycle;
-		setScaleEW(false);
-		setScaleNS(false);
-		setDockN(true);
-		setDockW(true);
+		this.setScaleEW(false);
+		this.setScaleNS(false);
+		this.setDocking(Docking.NW);
 		
 		btnWidth = getHeight();
 		
@@ -195,9 +193,7 @@ public abstract class Spinner extends TextField {
 			}
 		};
 		btnInc.setButtonIcon(btnIncIconSize, btnIncIconSize, btnIncIcon);
-		btnInc.setDockS(true);
-		btnInc.setDockW(true);
-		
+		btnInc.setDocking(Docking.SW);
 		addChild(btnInc);
 		
 		btnDec = new ButtonAdapter(
@@ -217,9 +213,7 @@ public abstract class Spinner extends TextField {
 			}
 		};
 		btnDec.setButtonIcon(btnDecIconSize, btnDecIconSize, btnDecIcon);
-		btnDec.setDockS(true);
-		btnDec.setDockW(true);
-		
+		btnDec.setDocking(Docking.SW);
 		addChild(btnDec);
 		
 		setIsEnabled(false);
@@ -322,7 +316,6 @@ public abstract class Spinner extends TextField {
 		
 		this.selectedIndex = selectedIndex;
 		displaySelectedStep();
-	//	onChange(selectedIndex, stepValues.get(selectedIndex));
 	}
 	
 	private void incStep() {

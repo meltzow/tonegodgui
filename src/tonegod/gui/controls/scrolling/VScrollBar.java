@@ -48,8 +48,7 @@ public class VScrollBar extends Element {
 		
 		this.setScaleNS(true);
 		this.setScaleEW(false);
-		this.setDockN(true);
-		this.setDockE(true);
+		this.setDocking(Docking.NE);
 		
 		btnScrollTrack = new ButtonAdapter(screen, UID + "btnScrollTrack",
 			new Vector2f(0, getWidth()),
@@ -107,7 +106,7 @@ public class VScrollBar extends Element {
 		};
 		btnScrollTrack.setScaleEW(false);
 		btnScrollTrack.setScaleNS(true);
-		btnScrollTrack.setDockS(true);
+		btnScrollTrack.setDocking(Docking.SW);
 		btnScrollTrack.setInterval(100);
 		this.addChild(btnScrollTrack);
 		
@@ -116,7 +115,7 @@ public class VScrollBar extends Element {
 		btnScrollTrack.removeEffect(Effect.EffectEvent.Release);
 		
 		btnScrollThumb = new ButtonAdapter(screen, UID + "btnScrollThumb",
-			new Vector2f(0, 0),//btnScrollTrack.getHeight()-getWidth()),
+			new Vector2f(0, 0),
 			new Vector2f(getWidth(), getWidth()),
 			screen.getStyle("ScrollArea#VScrollBar").getVector4f("thumbResizeBorders"),
 			screen.getStyle("ScrollArea#VScrollBar").getString("thumbImg")
@@ -136,7 +135,6 @@ public class VScrollBar extends Element {
 			@Override
 			public void controlMoveHook() {
 				if (scrollableArea != null) {
-				//	setThumbScale();
 					setByThumbPosition();
 				}
 			}
@@ -151,7 +149,7 @@ public class VScrollBar extends Element {
 		btnScrollThumb.setlockToParentBounds(true);
 		btnScrollThumb.setScaleEW(false);
 		btnScrollThumb.setScaleNS(true);
-		btnScrollThumb.setDockN(true);
+		btnScrollThumb.setDocking(Docking.NW);
 		btnScrollTrack.addChild(btnScrollThumb);
 		
 		btnScrollUp = new ButtonAdapter(screen, UID + "btnScrollUp",
@@ -189,8 +187,7 @@ public class VScrollBar extends Element {
 		btnScrollUp.setButtonPressedInfo(screen.getStyle("ScrollArea#VScrollBar").getString("btnUpPressedImg"), ColorRGBA.Gray);
 		btnScrollUp.setScaleEW(false);
 		btnScrollUp.setScaleNS(false);
-		btnScrollUp.setDockN(true);
-		btnScrollUp.setDockW(true);
+		btnScrollUp.setDocking(Docking.NW);
 		btnScrollUp.setInterval(100);
 		if (screen.getStyle("ScrollArea#VScrollBar").getBoolean("useBtnUpArrowIcon")) {
 			btnScrollUp.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowUp"));
@@ -232,8 +229,7 @@ public class VScrollBar extends Element {
 		btnScrollDown.setButtonPressedInfo(screen.getStyle("ScrollArea#VScrollBar").getString("btnDownPressedImg"), ColorRGBA.Gray);
 		btnScrollDown.setScaleEW(false);
 		btnScrollDown.setScaleNS(false);
-		btnScrollDown.setDockS(true);
-		btnScrollDown.setDockW(true);
+		btnScrollDown.setDocking(Docking.SW);
 		btnScrollDown.setInterval(100);
 		if (screen.getStyle("ScrollArea#VScrollBar").getBoolean("useBtnDownArrowIcon")) {
 			btnScrollDown.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowDown"));
@@ -351,13 +347,11 @@ public class VScrollBar extends Element {
 	 */
 	public final void setThumbScale() {
 		float scrollLayerHeight = scrollableArea.getScrollableHeight();
-	//	System.out.println(scrollLayerHeight);
 		float diff = scrollLayerHeight-scrollableArea.getHeight();
 		if (diff > 0) {
 			float scale = 1/scrollLayerHeight*diff;
 			btnScrollThumb.setHeight(btnScrollTrack.getHeight()-(btnScrollTrack.getHeight()*scale));
-		//	if (btnScrollThumb.getY()+btnScrollThumb.getHeight() > btnScrollTrack.getHeight())
-				btnScrollThumb.setY(btnScrollTrack.getHeight()-btnScrollThumb.getHeight());
+			btnScrollThumb.setY(btnScrollTrack.getHeight()-btnScrollThumb.getHeight());
 		} else {
 			btnScrollThumb.setY(0);
 			btnScrollThumb.setHeight(btnScrollTrack.getHeight());

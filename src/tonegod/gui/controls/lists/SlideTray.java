@@ -9,11 +9,9 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.BatchEffect;
 import tonegod.gui.effects.Effect;
@@ -137,8 +135,7 @@ public class SlideTray extends Element {
 		super(screen, UID, position, dimensions, resizeBorders, null);
 		this.orientation = orientation;
 		
-		this.setDockN(true);
-		this.setDockW(true);
+		this.setDocking(Docking.NW);
 		this.setScaleEW(true);
 		this.setScaleNS(false);
 		
@@ -160,8 +157,7 @@ public class SlideTray extends Element {
 		};
 		btnPrevElement.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowLeft"));
 		btnPrevElement.clearAltImages();
-		btnPrevElement.setDockS(true);
-		btnPrevElement.setDockW(true);
+		btnPrevElement.setDocking(Docking.SW);
 		btnPrevElement.setScaleEW(false);
 		btnPrevElement.setScaleNS(false);
 		
@@ -181,8 +177,7 @@ public class SlideTray extends Element {
 		};
 		btnNextElement.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowRight"));
 		btnNextElement.clearAltImages();
-		btnNextElement.setDockS(true);
-		btnNextElement.setDockE(true);
+		btnNextElement.setDocking(Docking.SE);
 		btnNextElement.setScaleEW(false);
 		btnNextElement.setScaleNS(false);
 		
@@ -192,8 +187,7 @@ public class SlideTray extends Element {
 			new Vector4f(0,0,0,0),
 			null
 		);
-		elTray.setDockS(true);
-		elTray.setDockW(true);
+		elTray.setDocking(Docking.SW);
 		elTray.setScaleEW(true);
 		elTray.setScaleNS(false);
 		
@@ -220,8 +214,7 @@ public class SlideTray extends Element {
 		else
 			element.setPosition(0,getNextPosition());
 		element.setClippingLayer(elTray);
-		element.setDockS(true);
-		element.setDockW(true);
+		element.setDocking(Docking.SW);
 		element.setScaleEW(false);
 		element.setScaleNS(false);
 		trayElements.add(element);
@@ -319,7 +312,6 @@ public class SlideTray extends Element {
 	@Override
 	public void setControlClippingLayer(Element clippingLayer) {
 		setClippingLayer(clippingLayer);
-	//	Set<String> keys = elementChildren.keySet();
 		for (Element el : elementChildren.values()) {
 			if (!trayElements.contains(el))
 				el.setControlClippingLayer(clippingLayer);

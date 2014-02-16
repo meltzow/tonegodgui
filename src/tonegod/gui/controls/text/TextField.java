@@ -168,8 +168,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		
 		this.setScaleEW(true);
 		this.setScaleNS(false);
-		this.setDockN(true);
-		this.setDockW(true);
+		this.setDocking(Docking.NW);
 		
 		compareClick = screen.getApplication().getTimer().getTimeInSeconds();
 		
@@ -192,11 +191,9 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		
 		caret.setLocalMaterial(caretMat);
 		caret.setIgnoreMouse(true);
-	//	caret.setlockToParentBounds(true);
 		caret.setScaleEW(true);
 		caret.setScaleNS(false);
-		caret.setDockS(true);
-		caret.setDockW(true);
+		caret.setDocking(Docking.SW);
 		
 		setTextFieldFontColor(screen.getStyle("TextField").getColorRGBA("fontColor"));
 		this.addChild(caret);
@@ -552,13 +549,6 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	public final void setFontSize(float fontSize) {
 		this.fontSize = fontSize;
 		
-	//	widthTest = new BitmapText(font, false);
-	//	widthTest.setBox(null);
-	//	widthTest.setSize(getFontSize());
-	//	widthTest.setText(testString);
-		
-	
-		
 		if (textElement != null) {
 			textElement.setSize(fontSize);
 		}
@@ -598,7 +588,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 				visibleText = "";
 		} else if (caretIndex < head) {
 			head = caretIndex;
-			index2 = caretIndex; //finalText.length()-1;
+			index2 = caretIndex;
 			if (index2 == caretIndex && caretIndex != textFieldText.size()) {
 				index2 = caretIndex+1;
 				widthTest.setText(finalText.substring(caretIndex, index2));
@@ -619,7 +609,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 				visibleText = "";
 		} else if (caretIndex > tail) {
 			tail = caretIndex;
-			index2 = caretIndex; //finalText.length()-1;
+			index2 = caretIndex;
 			if (index2 == caretIndex && caretIndex != 0) {
 				index2 = caretIndex-1;
 				widthTest.setText(finalText.substring(index2, caretIndex));
@@ -638,7 +628,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			else
 				visibleText = "";
 		} else {
-			index2 = tail; //finalText.length()-1;
+			index2 = tail;
 			if (index2 > finalText.length())
 				index2 = finalText.length();
 			if (tail != head) {
@@ -690,7 +680,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		float nextCaretX = widthTest.getLineWidth();
 		if (useFix) nextCaretX -= fixWidth;
 
-		caretX = nextCaretX; //widthTest.getLineWidth();
+		caretX = nextCaretX;
 		setCaretPosition(getAbsoluteX()+caretX);
 		
 		return visibleText;
@@ -715,7 +705,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			float nextCaretX = widthTest.getLineWidth();
 			if (useFix) nextCaretX -= fixWidth;
 
-			caretX = nextCaretX; //widthTest.getLineWidth();
+			caretX = nextCaretX;
 			setCaretPosition(getAbsoluteX()+caretX);
 		}
 	}
@@ -947,7 +937,6 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		}
 		if (isEnabled && !this.controls.contains(this)) {
 			addControl(this);
-		//	System.out.println(getUID() + " : Is now receiving updates.");
 		}
 	}
 	
@@ -967,7 +956,6 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		}
 		if (isEnabled && this.controls.contains(this)) {
 			removeControl(this);
-		//	System.out.println(getUID() + " : Is no longer receiving updates.");
 		}
 	}
 	
@@ -1009,7 +997,6 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		updateTextElement();
 		if (textElement.getParent() == null) {
 			this.attachChild(textElement);
-		//	textElement.move(0,0,getNextZOrder());
 		}
 		centerTextVertically();
 	}
@@ -1180,7 +1167,6 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 			int start = finalText.substring(0,caretIndex).lastIndexOf(' ')+1;
 			if (start == -1) start = 0;
 			setTextRangeStart(start);
-		//	System.out.println(caretIndex + " : " + start + " : " + end);
 			caretIndex = end;
 			updateText(getVisibleText());
 			setTextRangeEnd(end);
@@ -1243,8 +1229,6 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 				widthTest.setText(visibleText);
 			
 			textRangeText = (rangeHead < rangeTail) ? finalText.substring(rangeHead, rangeTail) : finalText.substring(rangeTail, rangeHead);
-			
-		//	System.out.println(textRangeText);
 			
 			float rangeW = getTextPadding();
 			if (rangeTail <= this.tail) {
@@ -1371,10 +1355,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		
 		setText(newText);
 		
-	//	if (text.length() > 0)
-			caretIndex = testIndex;
-	//	else
-	//		caretIndex = 0;
+		caretIndex = testIndex;
 	}
 	
 	// Control methods

@@ -5,16 +5,11 @@
 package tonegod.gui.controls.extras;
 
 import com.jme3.font.BitmapFont;
-import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import com.jme3.util.BufferUtils;
 import java.awt.Color;
-import java.nio.FloatBuffer;
-import java.util.Set;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.lists.Dial;
 import tonegod.gui.controls.lists.Slider;
@@ -23,7 +18,6 @@ import tonegod.gui.controls.text.TextField;
 import tonegod.gui.controls.windows.Window;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 
 /**
@@ -222,10 +216,7 @@ public abstract class ColorWheel extends Window {
 		primarySelector.setDialImageIndicator(screen.getStyle("ColorWheel").getString("colorWheelSelectorImg"));
 		primarySelector.setIsMovable(false);
 		primarySelector.setIsResizable(false);
-	//	primarySelector.setScaleEW(true);
-	//	primarySelector.setScaleNS(true);
-		primarySelector.setDockN(true);
-		primarySelector.setDockW(true);
+		primarySelector.setDocking(Docking.NW);
 		addChild(primarySelector);
 		
 		float csX = 10+(primarySelector.getWidth()/2)-38;
@@ -339,9 +330,6 @@ public abstract class ColorWheel extends Window {
 				displayFactoredColor();
 			}
 		};
-	//	sH.getElementMaterial().setColor("Color", new ColorRGBA(1.0f, 1.0f, 1.0f, 0.0f));
-	//	sH.getElementMaterial().setBoolean("VertexColor", true);
-	//	sH.getModel().setGradientFillHorizontal(ColorRGBA.White, new ColorRGBA(red, green, blue, 1.0f));
 		addChild(sH);
 		
 		Label lH = new Label(screen, UID + ":lH", new Vector2f(lX, lY), new Vector2f(30, 15));
@@ -379,7 +367,6 @@ public abstract class ColorWheel extends Window {
 		lY += yInc;
 		sY += yInc;
 		
-	//	addLightSliderBG(sX, sY, 150, 15);
 		sL = new Slider(screen, UID + ":sL", new Vector2f(sX, sY), new Vector2f(150,15), Vector4f.ZERO, screen.getStyle("ColorWheel").getString("colorLImg"), Slider.Orientation.HORIZONTAL, true) {
 			@Override
 			public void onChange(int selectedIndex, Object value) {
@@ -531,7 +518,6 @@ public abstract class ColorWheel extends Window {
 		float[] hsv = new float[3];
 		hsv = Color.RGBtoHSB(R,G,B,hsv);
 		H = (int)(hsv[0]*100);
-	//	System.out.println(hsv[0]);
 		S = (int)(hsv[1]*100);
 		L = (int)(hsv[2]*100);
 	}
@@ -550,10 +536,6 @@ public abstract class ColorWheel extends Window {
 	
 	private void getRGBFromHue() {
 		HSLToRGB();
-	//	int rgb = Color.HSBtoRGB(H*0.01f, 1f, 1f);
-	//	R = (rgb >> 16) & 0xff;
-	//	G = (rgb >> 8) & 0xff;
-	//	B = (rgb >> 0) & 0xff;
 	}
 	
 	private void factorSaturation() {
@@ -608,7 +590,6 @@ public abstract class ColorWheel extends Window {
 		float av = average();
 		sS.getModel().setGradientFillHorizontal(new ColorRGBA(av, av, av, 1.0f), new ColorRGBA(red, green, blue, 1.0f));
 		sL.getModel().setGradientFillHorizontal(ColorRGBA.Black, new ColorRGBA(red, green, blue, 1.0f));
-	//	colorToWhite.getModel().setGradientFillHorizontal(new ColorRGBA(red, green, blue, 1.0f), ColorRGBA.White);
 		sA.getModel().setGradientFillHorizontal(new ColorRGBA(finalRed, finalGreen, finalBlue, 0.0f), new ColorRGBA(finalRed, finalGreen, finalBlue, 1.0f));
 		finalColor.set(finalRed, finalGreen, finalBlue, finalAlpha);
 		onChange(finalColor);
@@ -691,7 +672,6 @@ public abstract class ColorWheel extends Window {
 		if (red < 0) red = 0;
 		else if (red > 255) red = 255;
 		R = red;
-	//	factorAndDisplay();
 	}
 	
 	public void setRed(float red) {
@@ -722,7 +702,6 @@ public abstract class ColorWheel extends Window {
 		if (blue < 0) blue = 0;
 		else if (blue > 255) blue = 255;
 		B = blue;
-	//	factorAndDisplay();
 	}
 	
 	public void setBlue(float blue) {
@@ -748,7 +727,6 @@ public abstract class ColorWheel extends Window {
 		else if (hue > 1) hue = 1;
 		H = (int)(hue*100);
 		sH.setSelectedIndex(H);
-	//	factorAndDisplay();
 	}
 	
 	public void setSaturation(float saturation) {
@@ -756,7 +734,6 @@ public abstract class ColorWheel extends Window {
 		else if (saturation > 1) saturation = 1;
 		S = (int)(saturation*100);
 		sS.setSelectedIndex(S);
-	//	factorAndDisplay();
 	}
 	
 	public void setLight(float light) {
@@ -764,7 +741,6 @@ public abstract class ColorWheel extends Window {
 		else if (light > 1) light = 1;
 		L = (int)(light*100);
 		sL.setSelectedIndex(L);
-	//	factorAndDisplay();
 	}
 	
 	public ColorRGBA getColor() {

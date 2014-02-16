@@ -6,12 +6,10 @@ package tonegod.gui.controls.extras;
 
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
-import com.jme3.input.event.TouchEvent;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import com.jme3.scene.Node;
-import java.util.Set;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.OSRBridge;
@@ -21,7 +19,6 @@ import tonegod.gui.listeners.MouseButtonListener;
 import tonegod.gui.listeners.MouseFocusListener;
 import tonegod.gui.listeners.MouseMovementListener;
 import tonegod.gui.listeners.MouseWheelListener;
-import tonegod.gui.listeners.TouchListener;
 
 /**
  *
@@ -132,8 +129,7 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 			);
 			elOverlay.setScaleNS(true);
 			elOverlay.setScaleEW(true);
-			elOverlay.setDockN(true);
-			elOverlay.setDockW(true);
+			elOverlay.setDocking(Docking.NW);
 			elOverlay.setIsResizable(true);
 			elOverlay.setIsMovable(false);
 			elOverlay.setIgnoreMouse(true);

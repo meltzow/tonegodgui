@@ -15,7 +15,6 @@ import java.util.List;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
@@ -153,10 +152,9 @@ public abstract class Slider extends ButtonAdapter {
 		
 		this.orientation = orientation;
 		this.trackSurroundsThumb = trackSurroundsThumb;;
-		setScaleNS(false);
-		setScaleEW(false);
-		setDockN(true);
-		setDockW(true);
+		this.setScaleNS(false);
+		this.setScaleEW(false);
+		this.setDocking(Docking.NW);
 		
 		if (orientation == Orientation.VERTICAL) {
 			controlSize = dimensions.x;
@@ -258,8 +256,7 @@ public abstract class Slider extends ButtonAdapter {
 		};
 		elThumbLock.setScaleNS(false);
 		elThumbLock.setScaleEW(false);
-		elThumbLock.setDockS(true);
-		elThumbLock.setDockW(true);
+		elThumbLock.setDocking(Docking.SW);
 		elThumbLock.setlockToParentBounds(true);
 		addChild(elThumbLock);
 		
@@ -280,8 +277,7 @@ public abstract class Slider extends ButtonAdapter {
 		
 		elThumb.setScaleNS(false);
 		elThumb.setScaleEW(false);
-		elThumb.setDockS(true);
-		elThumb.setDockW(true);
+		elThumb.setDocking(Docking.SW);
 		elThumb.setIsMovable(true);
 		elThumb.setEffectParent(true);
 		
@@ -410,7 +406,6 @@ public abstract class Slider extends ButtonAdapter {
 				stepSize = getHeight()/(stepValues.size()-1);
 			}
 		}
-	//	System.out.println("Slider: " + (getHeight()-controlSize));
 	}
 	
 	/**
@@ -495,9 +490,6 @@ public abstract class Slider extends ButtonAdapter {
 			if (trackSurroundsThumb)elThumbLock.setY(step+(controlSize/2));
 			else					elThumbLock.setY(step);
 		}
-		
-	//	if( isStepped)	onChange(selectedIndex, stepValues.get(selectedIndex));
-	//	else			onChange(selectedIndex, selectedIndex);
 	}
 	
 	/**

@@ -140,8 +140,6 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	public Menu(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, boolean isScrollable) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg, false);
 		
-	//	setFontSize(20);
-		
 		menuOverhang = screen.getStyle("Menu").getFloat("menuOverhang");
 		menuPadding = screen.getStyle("Menu").getFloat("menuPadding");
 		highlightColor = screen.getStyle("Menu").getColorRGBA("highlightColor");
@@ -186,8 +184,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		);
 		highlight.setScaleEW(true);
 		highlight.setScaleNS(false);
-		highlight.setDockN(true);
-		highlight.setDockW(true);
+		highlight.setDocking(Docking.NW);
 		highlight.setIgnoreMouse(true);
 		
 		populateEffects("Menu");
@@ -298,7 +295,6 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		if (!menuItems.isEmpty()) {
 			if (index >= 0 && index < menuItems.size()) {
 				menuItems.remove(index);
-		//		miIndex--;
 				validateSettings();
 				pack();
 			}
@@ -480,7 +476,6 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 			this.setHeight(currentHeight+(menuPadding*2));
 		} else {
 			float nextWidth = preferredSize.x;
-		//	float nextWidth = (preferredSize.x > width+(menuPadding*2)) ? preferredSize.x : width+(menuPadding*2);
 			float nextHeight = (currentHeight > preferredSize.y+(menuPadding*2)) ? preferredSize.y : currentHeight+(menuPadding*2);
 			this.resize(getX()+nextWidth, getY()+nextHeight, Borders.SE);
 			this.setWidth(nextWidth);
@@ -509,8 +504,6 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		
 		if(getScrollableHeight() > getHeight()-(menuPadding*2)) {
 			scrollToTop();
-		//	if (getVScrollBar() != null)
-		//		getVScrollBar().setX(getWidth());
 			setWidth(getWidth());
 			getVScrollBar().setX(getWidth());
 			setIsResizable(true);
@@ -523,15 +516,14 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	
 	private void addSubmenuArrow(int index) {
 		Element elArrow = new Element(screen, getUID() + ":Arrow:" + index,
-				new Vector2f(getWidth()-menuItemHeight-(menuPadding*2), -(menuItems.size()*menuItemHeight)+(menuItemHeight+(index*menuItemHeight))),//(menuItems.size()*menuItemHeight)-menuItemHeight+menuPadding-(index*menuItemHeight)),
+				new Vector2f(getWidth()-menuItemHeight-(menuPadding*2), -(menuItems.size()*menuItemHeight)+(menuItemHeight+(index*menuItemHeight))),
 				new Vector2f(menuItemHeight, menuItemHeight),
 				new Vector4f(0,0,0,0),
 				screen.getStyle("Common").getString("arrowRight")
 			);
 			elArrow.setScaleEW(false);
 			elArrow.setScaleNS(false);
-			elArrow.setDockS(true);
-			elArrow.setDockE(true);
+			elArrow.setDocking(Docking.SE);
 			elArrow.setIsResizable(false);
 			elArrow.setIsMovable(false);
 			elArrow.setIgnoreMouse(true);
@@ -550,8 +542,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		);
 		checkbox.setScaleEW(false);
 		checkbox.setScaleNS(false);
-		checkbox.setDockS(true);
-		checkbox.setDockW(true);
+		checkbox.setDocking(Docking.SW);
 		checkbox.setIsResizable(false);
 		checkbox.setIsMovable(false);
 		checkbox.setIgnoreMouse(true);

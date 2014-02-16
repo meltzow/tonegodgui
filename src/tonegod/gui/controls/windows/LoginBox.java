@@ -16,7 +16,6 @@ import tonegod.gui.controls.text.Password;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 
 /**
@@ -144,8 +143,7 @@ public abstract class LoginBox extends Window {
 		);
 		responseMsg.setIsResizable(false);
 		responseMsg.setIgnoreMouse(true);
-		responseMsg.setDockN(true);
-		responseMsg.setDockW(true);
+		responseMsg.setDocking(Docking.NW);
 		responseMsg.setScaleEW(true);
 		responseMsg.setScaleNS(true);
 		responseMsg.setFontColor(ColorRGBA.Red);
@@ -165,8 +163,7 @@ public abstract class LoginBox extends Window {
 			}
 		};
 		btnLogin.setText("Login");
-		btnLogin.setDockS(true);
-		btnLogin.setDockE(true);
+		btnLogin.setDocking(Docking.SE);
 		addChild(btnLogin);
 		form.addFormElement(btnLogin);
 		
@@ -182,8 +179,7 @@ public abstract class LoginBox extends Window {
 			}
 		};
 		btnCancel.setText("Cancel");
-		btnCancel.setDockS(true);
-		btnCancel.setDockW(true);
+		btnCancel.setDocking(Docking.SW);
 		addChild(btnCancel);
 		form.addFormElement(btnCancel);
 		

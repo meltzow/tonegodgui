@@ -177,7 +177,6 @@ public class Element extends Node {
 		this.dimensions.set(dimensions);
 		this.orgDimensions = dimensions.clone();
 		this.orgRelDimensions = new Vector2f(1,1);
-	//	this.minDimensions = dimensions.clone();
 		this.borders.set(resizeBorders);
 		
 		BitmapFont tempFont = app.getAssetManager().loadFont(screen.getStyle("Font").getString("defaultFont"));
@@ -725,24 +724,38 @@ public class Element extends Node {
 	}
 	
 	public void setDocking(Docking docking) {
-		
+		this.docking = docking;
 	}
 	
+	public Docking getDocking() {
+		return this.docking;
+	}
 	/**
 	 * Enables north docking of element (disables south docking of Element).  This
 	 * determines how the Element should retain positioning on parent resize events.
 	 * 
 	 * @param dockN boolean
 	 */
+	@Deprecated
 	public void setDockN(boolean dockN) {
 		this.dockS = dockN;
 		this.dockN = !dockN;
+		Docking d = null;
+		if (dockS) {
+			if (dockE)	d = Docking.NE;
+			else		d = Docking.NW;
+		} else {
+			if (dockE)	d = Docking.SE;
+			else		d = Docking.SW;
+		}
+		setDocking(d);
 	}
 	
 	/**
 	 * Returns if the Element is docked to the north quadrant of it's parent element.
 	 * @return boolean dockN
 	 */
+	@Deprecated
 	public boolean getDockN() {
 		return this.dockS;
 	}
@@ -753,15 +766,26 @@ public class Element extends Node {
 	 * 
 	 * @param dockW boolean
 	 */
+	@Deprecated
 	public void setDockW(boolean dockW) {
 		this.dockW = dockW;
 		this.dockE = !dockW;
+		Docking d = null;
+		if (dockE) {
+			if (dockS)	d = Docking.NE;
+			else		d = Docking.SE;
+		} else {
+			if (dockS)	d = Docking.NW;
+			else		d = Docking.SW;
+		}
+		setDocking(d);
 	}
 	
 	/**
 	 * Returns if the Element is docked to the west quadrant of it's parent element.
 	 * @return boolean dockW
 	 */
+	@Deprecated
 	public boolean getDockW() {
 		return this.dockW;
 	}
@@ -772,15 +796,26 @@ public class Element extends Node {
 	 * 
 	 * @param dockE boolean
 	 */
+	@Deprecated
 	public void setDockE(boolean dockE) {
 		this.dockE = dockE;
 		this.dockW = !dockE;
+		Docking d = null;
+		if (dockE) {
+			if (dockS)	d = Docking.NE;
+			else		d = Docking.SE;
+		} else {
+			if (dockS)	d = Docking.NW;
+			else		d = Docking.SW;
+		}
+		setDocking(d);
 	}
 	
 	/**
 	 * Returns if the Element is docked to the east quadrant of it's parent element.
 	 * @return boolean dockE
 	 */
+	@Deprecated
 	public boolean getDockE() {
 		return this.dockE;
 	}
@@ -791,15 +826,26 @@ public class Element extends Node {
 	 * 
 	 * @param dockS boolean
 	 */
+	@Deprecated
 	public void setDockS(boolean dockS) {
 		this.dockN = dockS;
 		this.dockS = !dockS;
+		Docking d = null;
+		if (dockS) {
+			if (dockE)	d = Docking.NE;
+			else		d = Docking.NW;
+		} else {
+			if (dockE)	d = Docking.SE;
+			else		d = Docking.SW;
+		}
+		setDocking(d);
 	}
 	
 	/**
 	 * Returns if the Element is docked to the south quadrant of it's parent element.
 	 * @return boolean dockS
 	 */
+	@Deprecated
 	public boolean getDockS() {
 		return this.dockN;
 	}
@@ -1423,17 +1469,17 @@ public class Element extends Node {
 	private void childResize(float diffX, float diffY, Borders dir) {
 		if (dir == Borders.NW || dir == Borders.N || dir == Borders.NE) {
 			if (getScaleNS()) setHeight(getHeight()-diffY);
-			if (getDockN() && !getScaleNS()) setY(getY()-diffY);
+			if ((getDocking() == Docking.NW || getDocking() == Docking.NE) && !getScaleNS()) setY(getY()-diffY);
 		} else if (dir == Borders.SW || dir == Borders.S || dir == Borders.SE) {
 			if (getScaleNS()) setHeight(getHeight()-diffY);
-			if (getDockN() && !getScaleNS()) setY(getY()-diffY);
+			if ((getDocking() == Docking.NW || getDocking() == Docking.NE) && !getScaleNS()) setY(getY()-diffY);
 		}
 		if (dir == Borders.NW || dir == Borders.W || dir == Borders.SW) {
 			if (getScaleEW()) setWidth(getWidth()-diffX);
-			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
+			if ((getDocking() == Docking.NE || getDocking() == Docking.SE) && !getScaleEW()) setX(getX()-diffX);
 		} else if (dir == Borders.NE || dir == Borders.E || dir == Borders.SE) {
 			if (getScaleEW()) setWidth(getWidth()-diffX);
-			if (getDockE() && !getScaleEW()) setX(getX()-diffX);
+			if ((getDocking() == Docking.NE || getDocking() == Docking.SE) && !getScaleEW()) setX(getX()-diffX);
 		}
 		for (Element el : elementChildren.values()) {
 			el.childResize(diffX,diffY,dir);
@@ -1870,7 +1916,6 @@ public class Element extends Node {
 		updateTextElement();
 		if (textElement.getParent() == null) {
 			this.attachChild(textElement);
-		//	textElement.move(0,0,getNextZOrder());
 		}
 	}
 	

@@ -458,8 +458,8 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			texturePath
 		);
 		icon.setIgnoreMouse(true);
-		icon.setDockS(true);
-		icon.setDockS(true);
+	//	icon.setDockS(true);
+		icon.setDocking(Docking.SW);
 		icon.setScaleEW(false);
 		icon.setScaleNS(false);
 		this.addChild(icon);

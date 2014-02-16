@@ -17,7 +17,6 @@ import tonegod.gui.controls.buttons.RadioButtonGroup;
 import tonegod.gui.controls.lists.SlideTray;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 
@@ -122,8 +121,7 @@ public class TabControl extends Element {
 		
 		this.setIsMovable(false);
 		this.setIsResizable(false);
-		this.setDockN(true);
-		this.setDockW(true);
+		this.setDocking(Docking.NW);
 		this.setScaleNS(true);
 		this.setScaleEW(true);
 		this.setClipPadding(screen.getStyle("Window").getFloat("clipPadding"));
@@ -211,8 +209,7 @@ public class TabControl extends Element {
 			screen.getStyle("Tab").getColorRGBA("pressedColor")
 		);
 		tab.setText(title);
-		tab.setDockN(true);
-		tab.setDockW(true);
+		tab.setDocking(Docking.NW);
 		tab.setScaleEW(false);
 		tab.setScaleNS(false);
 		tab.setElementUserData(tabButtonIndex);
