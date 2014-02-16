@@ -66,6 +66,7 @@ public class Effect implements Cloneable {
 	private Texture blendImage;
 	private Vector2f blendImageOffset;
 	private ColorRGBA blendColor;
+	private ColorRGBA tempColor = new ColorRGBA();
 	private boolean init = false;
 	private boolean destroyOnHide = false;
 	private EffectDirection effectDir = EffectDirection.Top;
@@ -465,8 +466,12 @@ public class Effect implements Cloneable {
 		if (pass >= 1.0) {
 			disableShaderEffect();
 			isActive = false;
-		} else
+		} else {
 			element.getElementMaterial().setFloat("EffectStep", pass);
+			if (element.getTextElement() != null) {
+				element.getTextElement().setAlpha(pass);
+			}
+		}
 	}
 	
 	private void updateFadeOut() {
@@ -483,8 +488,12 @@ public class Effect implements Cloneable {
 				destoryElement();
 				isActive = false;
 			}
-		} else
+		} else {
 			element.getElementMaterial().setFloat("EffectStep", 1.0f-pass);
+			if (element.getTextElement() != null) {
+				element.getTextElement().setAlpha(1.0f-pass);
+			}
+		}
 	}
 	
 	private void updateSpinIn() {
