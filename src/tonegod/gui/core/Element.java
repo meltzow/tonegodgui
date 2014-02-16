@@ -45,20 +45,38 @@ public class Element extends Node {
 		S,
 		SE;
 	};
+	/**
+	 * Some controls provide different layout's based on the orientation of the control
+	 */
 	public static enum Orientation {
 		/**
-		 *
+		 * Vertical layout
 		 */
 		VERTICAL,
 		/**
-		 *
+		 * Horizontal layout
 		 */
 		HORIZONTAL
 	}
+	/**
+	 * Defines how the element will dock to it's parent element during resize events
+	 */
 	public static enum Docking {
+		/**
+		 * Docks to the top left of parent
+		 */
 		NW,
+		/**
+		 * Docks to the top right of parent
+		 */
 		NE,
+		/**
+		 * Docks to the bottom left of parent
+		 */
 		SW,
+		/**
+		 * Docks to the bottom right of parent
+		 */
 		SE
 	}
 	
@@ -723,6 +741,14 @@ public class Element extends Node {
 		return this.resizeE;
 	}
 	
+	/**
+	 * Sets how the element will docking to it's parent element during resize events.
+	 * NW = Top Left of parent element
+	 * NE = Top Right of parent element
+	 * SW = Bottom Left of parent element
+	 * SE = Bottom Right of parent element
+	 * @param docking 
+	 */
 	public void setDocking(Docking docking) {
 		this.docking = docking;
 	}
