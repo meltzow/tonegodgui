@@ -313,7 +313,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 				this.hoverImg.setMagFilter(Texture.MagFilter.Nearest);
 				this.hoverImg.setWrap(Texture.WrapMode.Repeat);
 			} else {
-				this.hoverImg = this.getElementTexture();//screen.getAtlasTexture();
+				this.hoverImg = this.getElementTexture();
 				hoverImgOffset = getAtlasTextureOffset(screen.parseAtlasCoords(pathHoverImg));
 			}
 		} else {
@@ -366,7 +366,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 				this.pressedImg.setMagFilter(Texture.MagFilter.Nearest);
 				this.pressedImg.setWrap(Texture.WrapMode.Repeat);
 			} else {
-				this.pressedImg = this.getElementTexture();//screen.getAtlasTexture();
+				this.pressedImg = this.getElementTexture();
 				pressedImgOffset = getAtlasTextureOffset(screen.parseAtlasCoords(pathPressedImg));
 			}
 		} else {
@@ -445,10 +445,6 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			}
 		}
 		
-	//	Texture tex = app.getAssetManager().loadTexture(texturePath);
-	//	float imgWidth = tex.getImage().getWidth();
-	//	tex = null;
-		
 		icon = new Element(
 			screen,
 			this.getUID() + ":btnIcon",
@@ -458,7 +454,6 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			texturePath
 		);
 		icon.setIgnoreMouse(true);
-	//	icon.setDockS(true);
 		icon.setDocking(Docking.SW);
 		icon.setScaleEW(false);
 		icon.setScaleNS(false);
@@ -525,9 +520,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		if (isEnabled) {
 			onButtonMouseRightDown(evt, isToggled);
 			if (screen.getUseToolTips()) {
-				if (getToolTipText() !=  null) {
-				//	screen.setToolTip(null);
-				}
+				
 			}
 		}
 		evt.setConsumed();
@@ -551,9 +544,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 				screen.setCursor(Screen.CursorType.HAND);
 				onButtonFocus(evt);
 				if (screen.getUseToolTips()) {
-					if (getToolTipText() !=  null) {
-					//	screen.setToolTip(getToolTipText());
-					}
+					
 				}
 			}
 			setHasFocus(true);
@@ -739,7 +730,6 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		updateTextElement();
 		if (textElement.getParent() == null) {
 			this.attachChild(textElement);
-		//	textElement.move(0,0,getNextZOrder());
 		}
 	}
 	/**

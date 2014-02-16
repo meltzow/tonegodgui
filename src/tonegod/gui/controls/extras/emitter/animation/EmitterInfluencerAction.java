@@ -6,7 +6,6 @@ package tonegod.gui.controls.extras.emitter.animation;
 
 import tonegod.gui.controls.extras.emitter.ElementEmitter;
 import tonegod.gui.controls.extras.emitter.Influencer;
-import tonegod.gui.core.Element;
 import tonegod.gui.framework.animation.TemporalAction;
 
 /**

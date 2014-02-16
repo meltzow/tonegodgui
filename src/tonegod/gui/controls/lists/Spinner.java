@@ -21,11 +21,12 @@ import tonegod.gui.core.utils.UIDUtil;
  * @author t0neg0d
  */
 public abstract class Spinner extends TextField {
+	/*
 	public static enum Orientation {
 		VERTICAL,
 		HORIZONTAL
 	}
-	
+	*/
 	protected List<String> stepValues = new ArrayList();
 	private boolean cycle = false;
 	private int selectedIndex = -1;

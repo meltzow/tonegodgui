@@ -23,11 +23,12 @@ import tonegod.gui.effects.Effect;
  * @author t0neg0d
  */
 public abstract class Slider extends ButtonAdapter {
+	/*
 	public static enum Orientation {
 		VERTICAL,
 		HORIZONTAL
 	}
-	
+	*/
 	protected List<Object> stepValues = new ArrayList();
 	private Element elThumbLock;
 	private ButtonAdapter elThumb;

@@ -20,7 +20,6 @@ public class EffectQueue {
 	float targetTime = 0;
 	boolean effectSet = false;
 	boolean effectStarted = false;
-//	boolean delayComplete = true;
 	boolean isActive = true;
 	
 	public EffectQueue() {

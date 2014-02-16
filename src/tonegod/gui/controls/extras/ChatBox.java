@@ -4,11 +4,8 @@
  */
 package tonegod.gui.controls.extras;
 
-import com.jme3.font.BitmapFont;
-import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
@@ -20,7 +17,6 @@ import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.controls.windows.Panel;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 
 /**

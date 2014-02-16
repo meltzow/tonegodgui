@@ -14,7 +14,6 @@ import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 
 /**

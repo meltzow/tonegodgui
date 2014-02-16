@@ -6,10 +6,8 @@ package tonegod.gui.controls.buttons;
 
 import java.util.ArrayList;
 import java.util.List;
-import tonegod.gui.controls.form.Form;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 
 /**

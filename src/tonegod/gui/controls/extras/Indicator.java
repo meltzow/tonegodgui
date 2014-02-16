@@ -6,29 +6,24 @@ package tonegod.gui.controls.extras;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
-import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import com.jme3.texture.Image;
-import com.jme3.texture.Texture;
-import java.util.Set;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
-import tonegod.gui.effects.Effect;
-import tonegod.gui.listeners.MouseFocusListener;
 
 /**
  *
  * @author t0neg0d
  */
 public abstract class Indicator extends Element {
+	/*
 	public static enum Orientation {
 		HORIZONTAL,
 		VERTICAL
 	}
+	*/
 	private float maxValue = 0, currentValue = 0, percentage = 0;
 	private Orientation orientation;
 	private ColorRGBA indicatorColor;
