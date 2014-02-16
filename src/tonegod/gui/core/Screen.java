@@ -1,7 +1,10 @@
 package tonegod.gui.core;
 
+import tonegod.gui.core.utils.StyleLoader;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.asset.AssetKey;
+import com.jme3.asset.AssetNotFoundException;
 import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -186,8 +189,6 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private boolean useTextureAtlas = false;
 	private Texture atlasTexture;
 	
-	private LayoutParser layoutParser;
-	
 	private ElementQuadGrid mesh;
 	
 	private Keyboard virtualKeys;
@@ -206,6 +207,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			uv1 = new Vector2f(),
 			uv2 = new Vector2f(),
 			uv3 = new Vector2f();
+	private static boolean initializedLoader;
 	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
@@ -224,6 +226,11 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 * @param styleMap A path to the style_map.xml file containing the custom theme information
 	 */
 	public Screen(Application app, String styleMap) {
+		if(!initializedLoader) {
+			app.getAssetManager().registerLoader(StyleLoader.class, "xml");
+			initializedLoader = true;
+		}
+
 		this.app = app;
 		this.elementZOrderRay.setDirection(Vector3f.UNIT_Z);
 		try {
@@ -236,7 +243,6 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		effectManager = new EffectManager(this);
 		animManager = new AnimManager(this);
 		app.getInputManager().addRawInputListener(this);
-		layoutParser = new LayoutParser(this);
 	}
 	
 	public void setUseMultiTouch(boolean useMultiTouch) {
@@ -1438,13 +1444,18 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		List<String> docPaths = new ArrayList();
 		try {
 			// Get Cursors
-			InputStream file = Screen.class.getClassLoader().getResourceAsStream(
-				path
-			);
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(file);
-			doc.getDocumentElement().normalize();
+		//	InputStream file = Screen.class.getClassLoader().getResourceAsStream(
+		//		path
+		//	);
+		//	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		//	DocumentBuilder db = dbf.newDocumentBuilder();
+		//	Document doc = db.parse(file);
+		//	doc.getDocumentElement().normalize();
+			Document doc = app.getAssetManager().loadAsset(new AssetKey<Document>(path));
+			if (doc == null) {
+				throw new AssetNotFoundException(String.format("Could not find style %s", path));
+			}
+
 			NodeList nodeLst = doc.getElementsByTagName("cursors");
 			
 			for (int s = 0; s < nodeLst.getLength(); s++) {
@@ -1457,19 +1468,21 @@ public class Screen implements ElementManager, Control, RawInputListener {
 				}
 			}
 			
-			if (file != null)
-				file.close();
+		//	if (file != null)
+		//		file.close();
 			
 			for (String docPath : docPaths) {
 				try {
-					file = Screen.class.getClassLoader().getResourceAsStream(
-						docPath
-					);
+				//	file = Screen.class.getClassLoader().getResourceAsStream(
+				//		docPath
+				//	);
 					
-					dbf = DocumentBuilderFactory.newInstance();
-					db = dbf.newDocumentBuilder();
-					doc = db.parse(file);
-					doc.getDocumentElement().normalize();
+				//	dbf = DocumentBuilderFactory.newInstance();
+				//	db = dbf.newDocumentBuilder();
+				//	doc = db.parse(file);
+				//	doc.getDocumentElement().normalize();
+					doc = app.getAssetManager().loadAsset(new AssetKey<Document>(docPath));
+					
 					NodeList nLst = doc.getElementsByTagName("cursor");
 					
 					for (int s = 0; s < nLst.getLength(); s++) {
@@ -1487,8 +1500,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 							);
 						}
 					}
-					if (file != null)
-						file.close();
+				//	if (file != null)
+				//		file.close();
 				} catch (Exception ex) {
 					System.err.println("Problem loading control definition: " + ex);
 				}
@@ -1497,13 +1510,14 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			// Get Audio
 			docPaths.clear();
 			
-			file = Screen.class.getClassLoader().getResourceAsStream(
-				path
-			);
-			dbf = DocumentBuilderFactory.newInstance();
-			db = dbf.newDocumentBuilder();
-			doc = db.parse(file);
-			doc.getDocumentElement().normalize();
+		//	file = Screen.class.getClassLoader().getResourceAsStream(
+		//		path
+		//	);
+		//	dbf = DocumentBuilderFactory.newInstance();
+		//	db = dbf.newDocumentBuilder();
+		//	doc = db.parse(file);
+		//	doc.getDocumentElement().normalize();
+			doc = app.getAssetManager().loadAsset(new AssetKey<Document>(path));
 			nodeLst = doc.getElementsByTagName("audio");
 			
 			for (int s = 0; s < nodeLst.getLength(); s++) {
@@ -1516,19 +1530,21 @@ public class Screen implements ElementManager, Control, RawInputListener {
 				}
 			}
 			
-			if (file != null)
-				file.close();
+		//	if (file != null)
+		//		file.close();
 			
 			for (String docPath : docPaths) {
 				try {
-					file = Screen.class.getClassLoader().getResourceAsStream(
-						docPath
-					);
+				//	file = Screen.class.getClassLoader().getResourceAsStream(
+				//		docPath
+				//	);
 					
-					dbf = DocumentBuilderFactory.newInstance();
-					db = dbf.newDocumentBuilder();
-					doc = db.parse(file);
-					doc.getDocumentElement().normalize();
+				//	dbf = DocumentBuilderFactory.newInstance();
+				//	db = dbf.newDocumentBuilder();
+				//	doc = db.parse(file);
+				//	doc.getDocumentElement().normalize();
+					
+					doc = app.getAssetManager().loadAsset(new AssetKey<Document>(docPath));
 					NodeList nLst = doc.getElementsByTagName("audiofile");
 					
 					for (int s = 0; s < nLst.getLength(); s++) {
@@ -1545,8 +1561,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 							t0neg0dGUI.attachChild(audioNode);
 						}
 					}
-					if (file != null)
-						file.close();
+				//	if (file != null)
+				//		file.close();
 				} catch (Exception ex) {
 					System.err.println("Problem loading audio file: " + ex);
 				}
@@ -1555,13 +1571,14 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			// Get Styles
 			docPaths.clear();
 			
-			file = Screen.class.getClassLoader().getResourceAsStream(
-				path
-			);
-			dbf = DocumentBuilderFactory.newInstance();
-			db = dbf.newDocumentBuilder();
-			doc = db.parse(file);
-			doc.getDocumentElement().normalize();
+		//	file = Screen.class.getClassLoader().getResourceAsStream(
+		//		path
+		//	);
+		//	dbf = DocumentBuilderFactory.newInstance();
+		//	db = dbf.newDocumentBuilder();
+		//	doc = db.parse(file);
+		//	doc.getDocumentElement().normalize();
+			doc = app.getAssetManager().loadAsset(new AssetKey<Document>(path));
 			nodeLst = doc.getElementsByTagName("style");
 			
 			for (int s = 0; s < nodeLst.getLength(); s++) {
@@ -1574,19 +1591,21 @@ public class Screen implements ElementManager, Control, RawInputListener {
 				}
 			}
 
-			if (file != null)
-				file.close();
+		//	if (file != null)
+		//		file.close();
 			
 			for (String docPath : docPaths) {
 				try {
-					file = Screen.class.getClassLoader().getResourceAsStream(
-						docPath
-					);
+				//	file = Screen.class.getClassLoader().getResourceAsStream(
+				//		docPath
+				//	);
 					
-					dbf = DocumentBuilderFactory.newInstance();
-					db = dbf.newDocumentBuilder();
-					doc = db.parse(file);
-					doc.getDocumentElement().normalize();
+				//	dbf = DocumentBuilderFactory.newInstance();
+				//	db = dbf.newDocumentBuilder();
+				//	doc = db.parse(file);
+				//	doc.getDocumentElement().normalize();
+					
+					doc = app.getAssetManager().loadAsset(new AssetKey<Document>(docPath));
 					NodeList nLst = doc.getElementsByTagName("element");
 					
 					for (int s = 0; s < nLst.getLength(); s++) {
@@ -1651,19 +1670,19 @@ public class Screen implements ElementManager, Control, RawInputListener {
 							styles.put(key, style);
 						}
 					}
-					if (file != null)
-						file.close();
+				//	if (file != null)
+				//		file.close();
 				} catch (Exception ex) {
 					System.err.println("Problem loading control definition: " + ex);
 				}
 			}
 			
-			if (file != null)
-				file.close();
+		//	if (file != null)
+		//		file.close();
 			
 			doc = null;
-			db = null;
-			dbf = null;
+		//	db = null;
+		//	dbf = null;
 		} catch (Exception e) {
 			System.err.println("Problem loading style map: " + e);
 		}
@@ -2199,11 +2218,6 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	public void lostOwnership(Clipboard clipboard, Transferable contents) {
 	//	System.out.println("Clipboard failed, switching to internal clipboard.");
 	//	this.clipboardActive = false;
-	}
-	
-	// Layout Parser
-	public void parseLayout(String path, AbstractAppState state) {
-		layoutParser.parseLayout(path, state);
 	}
 	
 	// Android Keyboard Control
