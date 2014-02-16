@@ -11,6 +11,7 @@ import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
@@ -167,7 +168,7 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 	 * @param caption The display caption of the MenuItem
 	 * @param value The value to associate with the MenuItem
 	 */
-	public void addListItem(String caption, Object value) {
+	public int addListItem(String caption, Object value) {
 		this.getVScrollBar().hide();
 		ListItem listItem = new ListItem(
 			this,
@@ -177,6 +178,8 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 		
 		this.listItems.add(listItem);
 		pack();
+		
+		return listItems.size()-1;
 	}
 	
 	/**
@@ -200,6 +203,22 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 		}
 	}
 	
+	public void updateListItem(int index, String caption, Object value) {
+		if (!listItems.isEmpty()) {
+			if (index >= 0 && index < listItems.size()) {
+				this.getVScrollBar().hide();
+				ListItem listItem = new ListItem(
+					this,
+					caption,
+					value
+				);
+				this.listItems.remove(index);
+				listItems.add(index, listItem);
+				pack();
+			}
+		}
+	}
+	
 	/**
 	 * Remove the ListItem at the provided index
 	 * @param index int
@@ -218,7 +237,7 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 	 * Remove the first ListItem that contains the provided value
 	 * @param value Object
 	 */
-	public void removeListItem(Object value) {
+	public int removeListItem(Object value) {
 		if (!listItems.isEmpty()) {
 			int index = -1;
 			int count = 0;
@@ -229,7 +248,11 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 				}
 				count++;
 			}
-			removeListItem(index);
+			if (index != -1)
+				removeListItem(index);
+			return index;
+		} else {
+			return -1;
 		}
 	}
 	
@@ -237,7 +260,7 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 	 * Remove the first ListItem that contains the provided caption
 	 * @param value Object
 	 */
-	public void removeListItem(String caption) {
+	public int removeListItem(String caption) {
 		if (!listItems.isEmpty()) {
 			int index = -1;
 			int count = 0;
@@ -248,23 +271,38 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 				}
 				count++;
 			}
-			removeListItem(index);
+			if (index != -1) {
+				removeListItem(index);
+				return index;
+			} else {
+				return -1;
+			}
+		} else {
+			return -1;
 		}
 	}
 	
 	/**
 	 * Removes the first ListItem in the SelectList
 	 */
-	public void removeFirstListItem() {
-		removeListItem(0);
+	public int removeFirstListItem() {
+		if (!listItems.isEmpty()) {
+			removeListItem(0);
+			return 0;
+		} else {
+			return -1;
+		}
 	}
 	
 	/**
 	 * Removes the last ListItem in the SelectList
 	 */
-	public void removeLastListItem() {
+	public int removeLastListItem() {
 		if (!listItems.isEmpty()) {
 			removeListItem(listItems.size()-1);
+			return listItems.size();
+		} else {
+			return -1;
 		}
 	}
 	
@@ -279,6 +317,8 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 	 * @param index int
 	 */
 	public void setSelectedIndex(Integer index) {
+		if (index < 0) index = 0;
+		else if (index >= listItems.size()) index = listItems.size()-1;
 		selectedIndexes = new ArrayList();
 		selectedIndexes.add(index);
 		displayHighlights();
@@ -589,5 +629,18 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 		public Object getValue() {
 			return this.value;
 		}
+	}
+	
+	public void scrollToSelected() {
+		int rIndex = getSelectedIndex();
+		float diff = (rIndex+1) * getListItemHeight();
+		
+		float y = -(getScrollableHeight()-diff);
+		
+		if (FastMath.abs(y) > getScrollableHeight()) {
+			y = getScrollableHeight();
+		}
+		
+		scrollThumbYTo(y);
 	}
 }
