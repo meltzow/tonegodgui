@@ -35,6 +35,7 @@ import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.lists.ComboBox;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.text.TextField;
+import tonegod.gui.controls.util.ModalBackground;
 import tonegod.gui.controls.util.ToolTip;
 import tonegod.gui.core.Element.Borders;
 import tonegod.gui.core.Screen.CursorType;
@@ -1272,5 +1273,20 @@ public class SubScreen implements ElementManager, Control {
 	@Override
 	public void setUseCursorEffects(boolean use) {
 		screen.setUseCursorEffects(use);
+	}
+	
+	@Override
+	public ModalBackground getModalBackground() {
+		return screen.getModalBackground();
+	}
+	
+	@Override
+	public void showAsModal(Element el, boolean showWithEffect) {
+		screen.showAsModal(el, showWithEffect);
+	}
+	
+	@Override
+	public void hideModalBackground() {
+		screen.hideModalBackground();
 	}
 }

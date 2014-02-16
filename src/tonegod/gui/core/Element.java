@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package tonegod.gui.core;
 
 import com.jme3.app.Application;
@@ -39,46 +35,16 @@ import tonegod.gui.effects.Effect;
  * @author t0neg0d
  */
 public class Element extends Node {
-	/**
-	 *
-	 */
 	public static enum Borders {
-		/**
-		 *
-		 */
 		NW,
-		/**
-		 *
-		 */
 		N,
-		/**
-		 *
-		 */
 		NE,
-		/**
-		 *
-		 */
 		W,
-		/**
-		 *
-		 */
 		E,
-		/**
-		 *
-		 */
 		SW,
-		/**
-		 *
-		 */
 		S,
-		/**
-		 *
-		 */
 		SE;
 	};
-	/**
-	 *
-	 */
 	public static enum Orientation {
 		/**
 		 *
@@ -88,6 +54,12 @@ public class Element extends Node {
 		 *
 		 */
 		HORIZONTAL
+	}
+	public static enum Docking {
+		NW,
+		NE,
+		SW,
+		SE
 	}
 	
 	protected Application app;
@@ -152,6 +124,7 @@ public class Element extends Node {
 	private float textClipPadding = 0;
 	protected boolean isVisible = true;
 	protected boolean wasVisible = true;
+	protected boolean isVisibleAsModal = false;
 	private boolean hasFocus = false;
 	private boolean resetKeyboardFocus = true;
 	
@@ -173,6 +146,10 @@ public class Element extends Node {
 	private boolean initialized = false;
 	
 	private boolean isDragElement = false, isDropElement = false;
+	
+	private Docking docking = Docking.NW;
+	private Orientation orientation = Orientation.HORIZONTAL;
+	
 	/**
 	 * The Element class is the single primitive for all controls in the gui library.
 	 * Each element consists of an ElementQuadMesh for rendering resizable textures,
@@ -745,6 +722,10 @@ public class Element extends Node {
 	 */
 	public boolean getResizeE() {
 		return this.resizeE;
+	}
+	
+	public void setDocking(Docking docking) {
+		
 	}
 	
 	/**
@@ -2068,6 +2049,10 @@ public class Element extends Node {
 		}
 	}
 	
+	public void showAsModal(boolean showWithEffect) {
+		isVisibleAsModal = true;
+		screen.showAsModal(this,showWithEffect);
+	}
 	/**
 	 * Recursive call for properly showing children of the Element.  I'm thinking this
 	 * this needs to be a private method, however I need to verify this before I
@@ -2100,6 +2085,10 @@ public class Element extends Node {
 				this.propagateEffect(clone, true);
 			} else
 				screen.getEffectManager().applyEffect(effect);
+			if (isVisibleAsModal) {
+				isVisibleAsModal = false;
+				screen.hideModalBackground();
+			}
 		} else
 			this.hide();
 	}
@@ -2112,6 +2101,10 @@ public class Element extends Node {
 	 */
 	public void hide() {
 		if (isVisible) {
+			if (isVisibleAsModal) {
+				isVisibleAsModal = false;
+				screen.hideModalBackground();
+			}
 			this.wasVisible = isVisible;
 			this.isVisible = false;
 			this.isClipped = true;

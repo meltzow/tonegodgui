@@ -72,6 +72,7 @@ import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.lists.ComboBox;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.text.TextField;
+import tonegod.gui.controls.util.ModalBackground;
 import tonegod.gui.controls.util.ToolTip;
 import tonegod.gui.core.Element.Borders;
 import tonegod.gui.core.utils.BitmapTextUtil;
@@ -188,6 +189,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	private boolean useTextureAtlas = false;
 	private Texture atlasTexture;
+        
+	private LayoutParser layoutParser;
 	
 	private ElementQuadGrid mesh;
 	
@@ -208,6 +211,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			uv2 = new Vector2f(),
 			uv3 = new Vector2f();
 	private static boolean initializedLoader;
+	
+	private ModalBackground modalBackground;
 	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
@@ -243,6 +248,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		effectManager = new EffectManager(this);
 		animManager = new AnimManager(this);
 		app.getInputManager().addRawInputListener(this);
+		layoutParser = new LayoutParser(this);
 	}
 	
 	public void setUseMultiTouch(boolean useMultiTouch) {
@@ -1429,6 +1435,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			((Node)spatial).attachChild(t0neg0dGUI);
 			t0neg0dGUI.addControl(effectManager);
 			t0neg0dGUI.addControl(animManager);
+			initModalBackground();
+			t0neg0dGUI.attachChild(modalBackground);
 			if (isAndroid()) initVirtualKeys();
 		}
 	}
@@ -2113,7 +2121,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	public void updateCursorEmitter() {
 		Camera cam = cursorEmitterVP.getOSRBridge().getCamera();
 		CollisionResults results = new CollisionResults();
-		Vector3f click3d = cam.getWorldCoordinates(
+		click3d = cam.getWorldCoordinates(
 			new Vector2f(mouseXY.x, mouseXY.y), 0f).clone();
 		Vector3f dir = cam.getWorldCoordinates(
 			new Vector2f(mouseXY.x, mouseXY.y), 1f).subtractLocal(click3d).normalizeLocal();
@@ -2218,6 +2226,39 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	public void lostOwnership(Clipboard clipboard, Transferable contents) {
 	//	System.out.println("Clipboard failed, switching to internal clipboard.");
 	//	this.clipboardActive = false;
+	}
+        
+	// Layout Parser
+	public void parseLayout(String path, AbstractAppState state) {
+		layoutParser.parseLayout(path, state);
+	}
+	
+	// Modal Background
+	@Override
+	public ModalBackground getModalBackground() {
+		return this.modalBackground;
+	}
+	
+	private void initModalBackground() {
+		modalBackground = new ModalBackground(this);
+		modalBackground.hide();
+	}
+	
+	@Override
+	public void showAsModal(Element el, boolean showWithEffect) {
+		modalBackground.fillScreen();
+		modalBackground.show();
+	//	updateZOrder(modalBackground);
+		if (showWithEffect)
+			el.showWithEffect();
+		else
+			el.show();
+	//	updateZOrder(el.getAbsoluteParent());
+	}
+	
+	@Override
+	public void hideModalBackground() {
+		modalBackground.hide();
 	}
 	
 	// Android Keyboard Control
