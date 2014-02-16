@@ -692,7 +692,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					mouseLeftPressed = true;
 				//	eventElement = getEventElement(evt.getX(), evt.getY());
 					if (eventElement != null) {
-						if (eventElement.getEffectZOrder())
+						if (eventElement.getAbsoluteParent().getEffectZOrder())
 							updateZOrder(eventElement.getAbsoluteParent());
 						if (eventElement.getResetKeyboardFocus())
 							this.setTabFocusElement(eventElement);
@@ -773,7 +773,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					mouseRightPressed = true;
 				//	eventElement = getEventElement(evt.getX(), evt.getY());
 					if (eventElement != null) {
-						if (eventElement.getEffectZOrder())
+						if (eventElement.getAbsoluteParent().getEffectZOrder())
 							updateZOrder(eventElement.getAbsoluteParent());
 						if (eventElement instanceof MouseButtonListener) {
 							((MouseButtonListener)eventElement).onMouseRightPressed(evt);
@@ -899,7 +899,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			if (target.getResetKeyboardFocus())
 				resetTabFocusElement();
 
-			if (target.getEffectZOrder())
+			if (target.getAbsoluteParent().getEffectZOrder())
 				updateZOrder(target.getAbsoluteParent());
 			if (target.getResetKeyboardFocus())
 				this.setTabFocusElement(target);
@@ -1230,7 +1230,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		float y = element.getAbsoluteY()+1;
 		eventElement = getEventElement(x,y);
 		if (eventElement != null) {
-			if (eventElement.getEffectZOrder())
+			if (eventElement.getAbsoluteParent().getEffectZOrder())
 				updateZOrder(eventElement.getAbsoluteParent());
 			this.setTabFocusElement(eventElement);
 			if (eventElement.getIsDragDropDragElement())
