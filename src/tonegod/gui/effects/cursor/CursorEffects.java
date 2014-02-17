@@ -18,6 +18,7 @@ import tonegod.gui.controls.extras.emitter.RotationInfluencer;
 import tonegod.gui.controls.extras.emitter.SizeInfluencer;
 import tonegod.gui.controls.extras.emitter.SpriteInfluencer;
 import tonegod.gui.core.Screen;
+import tonegod.gui.framework.animation.Interpolation;
 
 /**
  *
@@ -33,17 +34,17 @@ public class CursorEffects {
 	public static enum EmitterTheme {
 		SPARKS,
 		FLAMES,
-		POISON,
-		CUSTOM
+		OOZE
 	}
-	Screen screen;
-	Application app;
-	ElementEmitter cursorEmitter;
-	EmitterTheme theme = EmitterTheme.SPARKS;
-	CursorEffectSettings defaultSettings = new CursorEffectSettings();
-	CursorEffectSettings leftClickSettings = new CursorEffectSettings();
-	CursorEffectSettings wheelClickSettings = new CursorEffectSettings();
-	CursorEffectSettings rightClickSettings = new CursorEffectSettings();
+	private Screen screen;
+	private Application app;
+	private ElementEmitter cursorEmitter;
+	private EmitterTheme theme = EmitterTheme.SPARKS;
+	private CursorEffectSettings defaultSettings = new CursorEffectSettings();
+	private CursorEffectSettings leftClickSettings = new CursorEffectSettings();
+	private CursorEffectSettings wheelClickSettings = new CursorEffectSettings();
+	private CursorEffectSettings rightClickSettings = new CursorEffectSettings();
+	private boolean isActive = false;
 	
 	public CursorEffects(Screen screen) {
 		this.screen = screen;
@@ -51,7 +52,7 @@ public class CursorEffects {
 		
 		cursorEmitter = new ElementEmitter(screen,new Vector2f(screen.getWidth()/2-200,screen.getHeight()/2),2,2);
 		cursorEmitter.setSprite("Textures/bullet_02.png", 3, 3, 8);
-		cursorEmitter.setMaxParticles(160);
+		cursorEmitter.setMaxParticles(60);
 		this.setTheme(EmitterTheme.SPARKS);
 		
 	}
@@ -81,10 +82,16 @@ public class CursorEffects {
 		cursorEmitter.startEmitter((Node)app.getGuiViewPort().getScenes().get(0));
 		float z = screen.getGUINode().getLocalTranslation().z;
 		cursorEmitter.getParticles().setLocalTranslation(0, 0, 1f);
+		isActive = true;
 	}
 	
 	public void stop() {
 		cursorEmitter.stopEmitter();
+		isActive = false;
+	}
+	
+	public boolean getIsActive() {
+		return this.isActive;
 	}
 	
 	public ElementEmitter getEmitter() {
@@ -112,24 +119,6 @@ public class CursorEffects {
 		cursorEmitter.setLowLife(currentConfig.lowLife);
 		cursorEmitter.setUseFixedDirection(currentConfig.useFixedDirection,currentConfig.fixedDirection);
 		cursorEmitter.setParticlesPerSecond(currentConfig.particlesPerSecond);
-	//	cursorEmitter.removeInfluencer(AlphaInfluencer.class);
-	//	cursorEmitter.addInfluencer(currentConfig.ai);
-	//	cursorEmitter.removeInfluencer(ColorInfluencer.class);
-	//	cursorEmitter.addInfluencer(currentConfig.ci);
-	//	cursorEmitter.removeInfluencer(DirectionInfluencer.class);
-	//	cursorEmitter.addInfluencer(currentConfig.di);
-	//	cursorEmitter.removeInfluencer(GravityInfluencer.class);
-	//	cursorEmitter.addInfluencer(currentConfig.gi);
-	//	cursorEmitter.removeInfluencer(ImpulseInfluencer.class);
-	//	cursorEmitter.addInfluencer(currentConfig.ii);
-	//	cursorEmitter.removeInfluencer(RotationInfluencer.class);
-	//	cursorEmitter.addInfluencer(currentConfig.ri);
-	//	cursorEmitter.removeInfluencer(SizeInfluencer.class);
-	//	cursorEmitter.addInfluencer(currentConfig.si);
-	//	cursorEmitter.removeInfluencer(SpriteInfluencer.class);
-	//	cursorEmitter.addInfluencer(currentConfig.spi);
-	//	if (currentConfig != defaultSettings)
-	//		cursorEmitter.removeAllParticles();
 	}
 	
 	public void storeSettings(EmitterConfig which) {
@@ -175,14 +164,14 @@ public class CursorEffects {
 				cursorEmitter.setParticlesPerSecond(30);
 				cursorEmitter.setMinForce(1.75f);
 				cursorEmitter.setMaxForce(1.75f);
-				cursorEmitter.setHighLife(2.5f);
-				cursorEmitter.setLowLife(1.2f);
-				cursorEmitter.getInfluencer(GravityInfluencer.class).setGravity(new Vector2f(0f,1f));
+				cursorEmitter.setHighLife(1.5f);
+				cursorEmitter.setLowLife(0.62f);
+				cursorEmitter.getInfluencer(GravityInfluencer.class).setGravity(new Vector2f(0f,2f));
 				cursorEmitter.getInfluencer(RotationInfluencer.class).setMaxRotationSpeed(.25f);
-				cursorEmitter.getInfluencer(ColorInfluencer.class).setStartColor(new ColorRGBA(1.0f,1.0f,1.0f,1.0f));
-				cursorEmitter.getInfluencer(ColorInfluencer.class).setEndColor(ColorRGBA.White);
-				cursorEmitter.getInfluencer(SizeInfluencer.class).setStartSize(1f);
+				cursorEmitter.getInfluencer(ColorInfluencer.class).setStartColor(new ColorRGBA(1f,1f,1f,1f));
+				cursorEmitter.getInfluencer(ColorInfluencer.class).setEndColor(new ColorRGBA(1f,0.35f,0f,1.0f));
 				cursorEmitter.getInfluencer(SizeInfluencer.class).setStartSize(.5f);
+				cursorEmitter.getInfluencer(SizeInfluencer.class).setEndSize(0f);
 				cursorEmitter.setUseFixedDirection(false, Vector2f.ZERO);
 				cursorEmitter.setFixedDirectionStrength(0.5f);
 				storeSettings(EmitterConfig.DEFAULT);
@@ -206,6 +195,34 @@ public class CursorEffects {
 				break;
 			case FLAMES:
 				cursorEmitter.setParticlesPerSecond(30);
+				cursorEmitter.setForce(3f);
+				cursorEmitter.setHighLife(.75f);
+				cursorEmitter.setLowLife(.25f);
+				cursorEmitter.getInfluencer(GravityInfluencer.class).setGravity(new Vector2f(0f,-1f));
+				cursorEmitter.getInfluencer(RotationInfluencer.class).setMaxRotationSpeed(.25f);
+				cursorEmitter.getInfluencer(ColorInfluencer.class).setStartColor(ColorRGBA.Red);
+				cursorEmitter.getInfluencer(ColorInfluencer.class).setEndColor(ColorRGBA.Yellow);
+				cursorEmitter.getInfluencer(SizeInfluencer.class).setStartSize(1.15f);
+				cursorEmitter.getInfluencer(SizeInfluencer.class).setEndSize(0f);
+				cursorEmitter.getInfluencer(SizeInfluencer.class).setInterpolation(Interpolation.exp5In);
+				cursorEmitter.getInfluencer(ImpulseInfluencer.class).setVariationStrength(0.15f);
+				cursorEmitter.getInfluencer(AlphaInfluencer.class).setStartAlpha(0.75f);
+				cursorEmitter.getInfluencer(AlphaInfluencer.class).setEndAlpha(0.5f);
+				cursorEmitter.getInfluencer(AlphaInfluencer.class).setInterpolation(Interpolation.exp5In);
+				cursorEmitter.setUseFixedDirection(true, new Vector2f(0,1));
+				cursorEmitter.setFixedDirectionStrength(0.65f);
+				storeSettings(EmitterConfig.DEFAULT);
+				cursorEmitter.setParticlesPerSecond(0);
+				cursorEmitter.setMinForce(1.75f);
+				cursorEmitter.setMaxForce(4.75f);
+				cursorEmitter.setUseFixedDirection(false, Vector2f.ZERO);
+				storeSettings(EmitterConfig.LEFT_CLICK);
+				storeSettings(EmitterConfig.WHEEL_CLICK);
+				storeSettings(EmitterConfig.RIGHT_CLICK);
+				loadSettings(EmitterConfig.DEFAULT);
+				break;
+			case OOZE:
+				cursorEmitter.setParticlesPerSecond(30);
 				cursorEmitter.setForce(.25f);
 				cursorEmitter.setHighLife(4f);
 				cursorEmitter.setLowLife(1.2f);
@@ -219,40 +236,22 @@ public class CursorEffects {
 				cursorEmitter.setUseFixedDirection(false, Vector2f.ZERO);
 				storeSettings(EmitterConfig.DEFAULT);
 				cursorEmitter.setParticlesPerSecond(0);
-				cursorEmitter.setUseFixedDirection(true, new Vector2f(1,1).normalize());
+				cursorEmitter.setMinForce(2.75f);
+				cursorEmitter.setMaxForce(4.75f);
+				cursorEmitter.setUseFixedDirection(true, new Vector2f(-1,1).normalize());
 				storeSettings(EmitterConfig.LEFT_CLICK);
+				cursorEmitter.setMinForce(2.75f);
+				cursorEmitter.setMaxForce(4.75f);
 				cursorEmitter.setUseFixedDirection(true, new Vector2f(0,1).normalize());
 				storeSettings(EmitterConfig.WHEEL_CLICK);
-				cursorEmitter.setUseFixedDirection(true, new Vector2f(-1,1).normalize());
-				storeSettings(EmitterConfig.RIGHT_CLICK);
-				cursorEmitter.setParticlesPerSecond(30);
-				cursorEmitter.setUseFixedDirection(false, Vector2f.ZERO);
-				break;
-			case POISON:
-				cursorEmitter.setParticlesPerSecond(30);
-				cursorEmitter.setForce(.25f);
-				cursorEmitter.setHighLife(4f);
-				cursorEmitter.setLowLife(1.2f);
-				cursorEmitter.getInfluencer(GravityInfluencer.class).setGravity(new Vector2f(0f,0f));
-				cursorEmitter.getInfluencer(RotationInfluencer.class).setMaxRotationSpeed(.25f);
-				cursorEmitter.getInfluencer(ColorInfluencer.class).setStartColor(ColorRGBA.Green);
-				cursorEmitter.getInfluencer(ColorInfluencer.class).setEndColor(ColorRGBA.White);
-				cursorEmitter.getInfluencer(SizeInfluencer.class).setStartSize(1f);
-				cursorEmitter.getInfluencer(SizeInfluencer.class).setStartSize(.5f);
-				cursorEmitter.getInfluencer(ImpulseInfluencer.class).setVariationStrength(1.5f);
-				cursorEmitter.setUseFixedDirection(false, Vector2f.ZERO);
-				storeSettings(EmitterConfig.DEFAULT);
-				cursorEmitter.setParticlesPerSecond(0);
+				cursorEmitter.setMinForce(2.75f);
+				cursorEmitter.setMaxForce(4.75f);
 				cursorEmitter.setUseFixedDirection(true, new Vector2f(1,1).normalize());
-				storeSettings(EmitterConfig.LEFT_CLICK);
-				cursorEmitter.setUseFixedDirection(true, new Vector2f(0,1).normalize());
-				storeSettings(EmitterConfig.WHEEL_CLICK);
-				cursorEmitter.setUseFixedDirection(true, new Vector2f(-1,1).normalize());
 				storeSettings(EmitterConfig.RIGHT_CLICK);
+				cursorEmitter.setMinForce(1.75f);
+				cursorEmitter.setMaxForce(1.75f);
 				cursorEmitter.setParticlesPerSecond(30);
 				cursorEmitter.setUseFixedDirection(false, Vector2f.ZERO);
-				break;
-			case CUSTOM:
 				break;
 		}
 	}

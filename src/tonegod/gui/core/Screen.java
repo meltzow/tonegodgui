@@ -1697,14 +1697,19 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 */
 	@Override
 	public void setUseCursorEffects(boolean useCursorEffects) {
-		if (cursorEffects == null)
+		if (cursorEffects == null) {
 			cursorEffects = new CursorEffects(this);
-		
+		//	cursorEffects.setTheme(CursorEffects.EmitterTheme.FLAMES);
+		}
 		this.useCursorEffects = useCursorEffects;
 		
-		if (useCursorEffects)
-			cursorEffects.start();
-		else
+		if (useCursorEffects) {
+			if (!cursorEffects.getIsActive()) {
+				cursorEffects.getEmitter().removeAllParticles();
+				cursorEffects.updatePosition(mouseXY);
+				cursorEffects.start();
+			}
+		} else
 			cursorEffects.stop();
 	}
 	

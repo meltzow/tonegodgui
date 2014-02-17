@@ -4,6 +4,7 @@
  */
 package tonegod.gui.controls.extras.emitter;
 
+import com.jme3.math.Vector2f;
 import tonegod.gui.controls.extras.emitter.ElementEmitter.ElementParticle;
 import tonegod.gui.framework.animation.Interpolation;
 
@@ -16,6 +17,8 @@ public class AlphaInfluencer extends InfluencerBase {
 	private float startAlpha = 1.0f;
 	private float endAlpha = 0.0f;
 	private Interpolation interpolation = Interpolation.linear;
+	private Vector2f tempV2a = new Vector2f();
+	private Vector2f tempV2b = new Vector2f();
 	
 	public AlphaInfluencer(ElementEmitter emitter) {
 		super(emitter);
@@ -24,15 +27,15 @@ public class AlphaInfluencer extends InfluencerBase {
 	@Override
 	public void update(ElementParticle particle, float tpf) {
 		if (isEnabled) {
-			float alpha = (startAlpha-endAlpha);
-			alpha *= (1-(1/particle.life));
-			alpha += endAlpha;
+			tempV2a.set(startAlpha, startAlpha);
+			tempV2b.set(endAlpha, endAlpha);
+			tempV2a.interpolate(tempV2b, interpolation.apply(particle.blend));
 			
 			particle.color.set(
 				particle.color.r,
 				particle.color.g,
 				particle.color.b,
-				interpolation.apply(alpha)
+				tempV2a.x
 			);
 		}
 	}
