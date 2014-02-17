@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<cursors path="tonegod/gui/style/def/Common/Cursors/Cursors.gui.xml" />
+	<audio path="tonegod/gui/style/def/Common/Audio/Audio.gui.xml" />
+	<style control="Font" path="tonegod/gui/style/def/Fonts/Fonts.gui.xml" />
+	<style control="Common" path="tonegod/gui/style/atlasdef/Common/Common.gui.xml" />
+	<style control="Keyboard" path="tonegod/gui/style/atlasdef/Keyboard/Keyboard.gui.xml" />
+	<style control="Scrolling" path="tonegod/gui/style/atlasdef/Scrolling/Scrolling.gui.xml" />
+	<style control="Window" path="tonegod/gui/style/atlasdef/Window/Window.gui.xml" />
+	<style control="Button" path="tonegod/gui/style/atlasdef/Button/Button.gui.xml" />
+	<style control="Dial" path="tonegod/gui/style/atlasdef/Dial/Dial.gui.xml" />
+	<style control="Menu" path="tonegod/gui/style/atlasdef/Menu/Menu.gui.xml" />
+	<style control="Label" path="tonegod/gui/style/atlasdef/Label/Label.gui.xml" />
+	<style control="Slider" path="tonegod/gui/style/atlasdef/Slider/Slider.gui.xml" />
+	<style control="Spinner" path="tonegod/gui/style/atlasdef/Spinner/Spinner.gui.xml" />
+	<style control="TextField" path="tonegod/gui/style/atlasdef/TextField/TextField.gui.xml" />
+	<style control="TabControl" path="tonegod/gui/style/atlasdef/Tabs/Tabs.gui.xml" />
+	<style control="ChatBox" path="tonegod/gui/style/atlasdef/ChatBox/ChatBox.gui.xml" />
+	<style control="Indicator" path="tonegod/gui/style/atlasdef/Common/Extras/Indicator.gui.xml" />
+	<style control="ColorWheel" path="tonegod/gui/style/atlasdef/Common/Extras/ColorWheel.gui.xml" />
+</root>

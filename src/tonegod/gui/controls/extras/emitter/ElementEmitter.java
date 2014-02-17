@@ -5,14 +5,11 @@
 package tonegod.gui.controls.extras.emitter;
 
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
@@ -26,9 +23,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import tonegod.gui.controls.extras.SpriteElement;
-import tonegod.gui.core.Element;
 import tonegod.gui.core.Screen;
 import tonegod.gui.framework.animation.Interpolation;
 import tonegod.gui.framework.animation.TemporalAction;

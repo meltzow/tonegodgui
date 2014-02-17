@@ -186,7 +186,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 * @param app A JME Application
 	 */
 	public Screen(Application app) {
-		this(app, "tonegod/gui/style/def/style_map.xml");
+		this(app, "tonegod/gui/style/def/style_map.gui.xml");
 	}
 	
 	/**
@@ -197,7 +197,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 */
 	public Screen(Application app, String styleMap) {
 		if(!initializedLoader) {
-			app.getAssetManager().registerLoader(StyleLoader.class, "xml");
+			app.getAssetManager().registerLoader(StyleLoader.class, "gui.xml");
 			initializedLoader = true;
 		}
 

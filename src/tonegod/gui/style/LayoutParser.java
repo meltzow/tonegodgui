@@ -5,8 +5,8 @@
 package tonegod.gui.style;
 
 import com.jme3.app.state.AbstractAppState;
-import com.jme3.audio.AudioNode;
-import com.jme3.cursors.plugins.JmeCursor;
+import com.jme3.asset.AssetKey;
+import com.jme3.asset.AssetNotFoundException;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.MouseButtonEvent;
@@ -106,6 +106,7 @@ public class LayoutParser {
                 this.state = state;
                 try {
                         // Get Cursors
+						/*
                         InputStream file = Screen.class.getClassLoader().getResourceAsStream(
                                 filePath
                         );
@@ -113,18 +114,18 @@ public class LayoutParser {
                         DocumentBuilder db = dbf.newDocumentBuilder();
                         Document doc = db.parse(file);
                         doc.getDocumentElement().normalize();
+						*/
+						Document doc = screen.getApplication().getAssetManager().loadAsset(new AssetKey<Document>(filePath));
+						if (doc == null) {
+							throw new AssetNotFoundException(String.format("Could not find style %s", filePath));
+						}
                         NodeList screenNodeLst = doc.getElementsByTagName("screen");
                         org.w3c.dom.Node screenNode = screenNodeLst.item(0);
-                        NodeList nodeLst = screenNode.getChildNodes();//getElementsByTagName("screen");
+                        NodeList nodeLst = screenNode.getChildNodes();
                         
                         parseNodeList(nodeLst, null);
                         
-                        if (file != null)
-                                file.close();
-                        
                         doc = null;
-                        db = null;
-                        dbf = null;
                 } catch (Exception e) {
                         e.printStackTrace();
                 }
