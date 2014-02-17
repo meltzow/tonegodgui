@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.XMLHelper;
@@ -77,8 +79,8 @@ public class StyleManager {
 			NodeList nodeLst = doc.getElementsByTagName("cursors");
 			
 			for (int s = 0; s < nodeLst.getLength(); s++) {
-				org.w3c.dom.Node fstNode = nodeLst.item(0);
-				if (fstNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+				Node fstNode = nodeLst.item(0);
+				if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
 					String cursorDocPath = XMLHelper.getNodeAttributeValue(fstNode, "path");
 					docPaths.add(cursorDocPath);
 				}
@@ -95,8 +97,8 @@ public class StyleManager {
 			nodeLst = doc.getElementsByTagName("audio");
 			
 			for (int s = 0; s < nodeLst.getLength(); s++) {
-				org.w3c.dom.Node fstNode = nodeLst.item(0);
-				if (fstNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+				Node fstNode = nodeLst.item(0);
+				if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
 					String audioDocPath = XMLHelper.getNodeAttributeValue(fstNode, "path");
 					docPaths.add(audioDocPath);
 				}
@@ -113,8 +115,8 @@ public class StyleManager {
 			nodeLst = doc.getElementsByTagName("style");
 			
 			for (int s = 0; s < nodeLst.getLength(); s++) {
-				org.w3c.dom.Node fstNode = nodeLst.item(s);
-				if (fstNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+				Node fstNode = nodeLst.item(s);
+				if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
 					String styleDocPath = XMLHelper.getNodeAttributeValue(fstNode, "path");
 					docPaths.add(styleDocPath);
 				}
@@ -139,9 +141,9 @@ public class StyleManager {
 				NodeList nLst = doc.getElementsByTagName("cursor");
 
 				for (int s = 0; s < nLst.getLength(); s++) {
-					org.w3c.dom.Node fstNode = nLst.item(s);
-					if (fstNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-						org.w3c.dom.Element fstElmnt = (org.w3c.dom.Element) fstNode;
+					Node fstNode = nLst.item(s);
+					if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
+						Element fstElmnt = (Element) fstNode;
 						String key = XMLHelper.getNodeAttributeValue(fstNode, "type");
 						String curPath = XMLHelper.getNodeAttributeValue(fstNode, "path");
 
@@ -169,9 +171,9 @@ public class StyleManager {
 				NodeList nLst = doc.getElementsByTagName("audiofile");
 
 				for (int s = 0; s < nLst.getLength(); s++) {
-					org.w3c.dom.Node fstNode = nLst.item(s);
-					if (fstNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-						org.w3c.dom.Element fstElmnt = (org.w3c.dom.Element) fstNode;
+					Node fstNode = nLst.item(s);
+					if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
+						Element fstElmnt = (Element) fstNode;
 						String key = XMLHelper.getNodeAttributeValue(fstNode, "key");
 						String audioPath = XMLHelper.getNodeAttributeValue(fstNode, "path");
 
@@ -198,58 +200,58 @@ public class StyleManager {
 				NodeList nLst = doc.getElementsByTagName("element");
 
 				for (int s = 0; s < nLst.getLength(); s++) {
-					org.w3c.dom.Node fstNode = nLst.item(s);
-					if (fstNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-						org.w3c.dom.Element fstElmnt = (org.w3c.dom.Element) fstNode;
+					Node fstNode = nLst.item(s);
+					if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
+						Element fstElmnt = (Element) fstNode;
 						String key = XMLHelper.getNodeAttributeValue(fstNode, "name");
 
 						Style style = new Style();
 
 						try {
-							org.w3c.dom.Node nds = fstElmnt.getElementsByTagName("attributes").item(0);
-							org.w3c.dom.Element el = (org.w3c.dom.Element) nds;
+							Node nds = fstElmnt.getElementsByTagName("attributes").item(0);
+							Element el = (Element) nds;
 							NodeList nodes = el.getElementsByTagName("property");
 
 							for (int n = 0; n < nodes.getLength(); n++) {
-								org.w3c.dom.Node nNode = nodes.item(n);
-								if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-									org.w3c.dom.Element nElmnt = (org.w3c.dom.Element) nNode;
+								Node nNode = nodes.item(n);
+								if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+									Element nElmnt = (Element) nNode;
 									addStyleTag(style, nNode, nElmnt);
 								}
 							}
 
 							nds = fstElmnt.getElementsByTagName("images").item(0);
-							el = (org.w3c.dom.Element) nds;
+							el = (Element) nds;
 							nodes = el.getElementsByTagName("property");
 
 							for (int n = 0; n < nodes.getLength(); n++) {
-								org.w3c.dom.Node nNode = nodes.item(n);
-								if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-									org.w3c.dom.Element nElmnt = (org.w3c.dom.Element) nNode;
+								Node nNode = nodes.item(n);
+								if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+									Element nElmnt = (Element) nNode;
 									addStyleTag(style, nNode, nElmnt);
 								}
 							}
 
 							nds = fstElmnt.getElementsByTagName("font").item(0);
-							el = (org.w3c.dom.Element) nds;
+							el = (Element) nds;
 							nodes = el.getElementsByTagName("property");
 
 							for (int n = 0; n < nodes.getLength(); n++) {
-								org.w3c.dom.Node nNode = nodes.item(n);
-								if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-									org.w3c.dom.Element nElmnt = (org.w3c.dom.Element) nNode;
+								Node nNode = nodes.item(n);
+								if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+									Element nElmnt = (Element) nNode;
 									addStyleTag(style, nNode, nElmnt);
 								}
 							}
 
 							nds = fstElmnt.getElementsByTagName("effects").item(0);
-							el = (org.w3c.dom.Element) nds;
+							el = (Element) nds;
 							nodes = el.getElementsByTagName("property");
 
 							for (int n = 0; n < nodes.getLength(); n++) {
-								org.w3c.dom.Node nNode = nodes.item(n);
-								if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-									org.w3c.dom.Element nElmnt = (org.w3c.dom.Element) nNode;
+								Node nNode = nodes.item(n);
+								if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+									Element nElmnt = (Element) nNode;
 									addStyleTag(style, nNode, nElmnt);
 								}
 							}
@@ -265,7 +267,7 @@ public class StyleManager {
 		}
 	}
 	
-	private void addStyleTag(Style style, org.w3c.dom.Node nNode, org.w3c.dom.Element nElmnt) {
+	private void addStyleTag(Style style, Node nNode, Element nElmnt) {
 		String name = XMLHelper.getNodeAttributeValue(nNode, "name");
 		String type = XMLHelper.getNodeAttributeValue(nNode, "type");
 		if (type.equals("Vector2f")) {
