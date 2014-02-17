@@ -1,4 +1,4 @@
-package tonegod.gui.core.utils;
+package tonegod.gui.style;
 
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLoader;

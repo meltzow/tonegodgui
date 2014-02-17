@@ -3,7 +3,7 @@ package tonegod.gui.core;
 import tonegod.gui.style.StyleManager;
 import tonegod.gui.style.LayoutParser;
 import tonegod.gui.style.Style;
-import tonegod.gui.core.utils.StyleLoader;
+import tonegod.gui.style.StyleLoader;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.audio.AudioNode;
