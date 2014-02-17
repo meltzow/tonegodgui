@@ -421,9 +421,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		
 		if (texturePath != null) {
 			atlasTexture = app.getAssetManager().loadTexture(texturePath);
-			atlasTexture.setMinFilter(Texture.MinFilter.BilinearNearestMipMap);
-			atlasTexture.setMagFilter(Texture.MagFilter.Bilinear);
-			atlasTexture.setWrap(Texture.WrapMode.Repeat);
+			atlasTexture.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
+			atlasTexture.setMagFilter(Texture.MagFilter.Nearest);
+			atlasTexture.setWrap(Texture.WrapMode.Clamp);
 		} else {
 			atlasTexture = null;
 		}
@@ -439,8 +439,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	public Texture createNewTexture(String texturePath) {
 		Texture newTex = app.getAssetManager().loadTexture(texturePath);
 		newTex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
-		newTex.setMagFilter(Texture.MagFilter.Bilinear);
-		newTex.setWrap(Texture.WrapMode.Repeat);
+		newTex.setMagFilter(Texture.MagFilter.Nearest);
+		newTex.setWrap(Texture.WrapMode.Clamp);
 		return newTex;
 	}
 	

@@ -190,11 +190,11 @@
 			<property name="EnterLabel" type="String" value="DONE" />
 		</attributes>
 		<images>
-			<property name="shiftImg" type="String" value="x=69|y=69|w=16|h=16" />
-			<property name="symbolImg" type="String" value="x=1|y=86|w=27|h=12" />
-			<property name="returnImg" type="String" value="x=52|y=69|w=16|h=16" />
+			<property name="shiftImg" type="String" value="x=73|y=73|w=16|h=16" />
+			<property name="symbolImg" type="String" value="x=1|y=91|w=34|h=16" />
+			<property name="returnImg" type="String" value="x=55|y=73|w=16|h=16" />
 			<property name="spaceImg" type="String" value="x=1|y=99|w=17|h=5" />
-			<property name="backspaceImg" type="String" value="x=86|y=69|w=32|h=16" />
+			<property name="backspaceImg" type="String" value="x=91|y=73|w=34|h=16" />
 		</images>
 		<effects></effects>
 	</element>

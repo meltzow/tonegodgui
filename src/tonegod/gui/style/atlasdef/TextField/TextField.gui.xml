@@ -31,7 +31,7 @@
 			</property>
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=69|y=35|w=16|h=16" />
+			<property name="defaultImg" type="String" value="x=73|y=37|w=16|h=16" />
 		</images>
 		<effects>
 			<property name="event0" type="Effect">

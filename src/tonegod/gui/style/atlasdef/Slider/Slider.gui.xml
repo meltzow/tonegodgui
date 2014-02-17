@@ -15,7 +15,7 @@
 			</property>
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=69|y=18|w=16|h=16" />
+			<property name="defaultImg" type="String" value="x=73|y=19|w=16|h=16" />
 		</images>
 		<effects></effects>
 	</element>

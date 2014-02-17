@@ -236,8 +236,8 @@ public class Element extends Node {
 			} else {
 				defaultTex = app.getAssetManager().loadTexture(texturePath);
 				defaultTex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
-				defaultTex.setMagFilter(Texture.MagFilter.Bilinear);
-				defaultTex.setWrap(Texture.WrapMode.Repeat);
+				defaultTex.setMagFilter(Texture.MagFilter.Nearest);
+				defaultTex.setWrap(Texture.WrapMode.Clamp);
 
 				imgWidth = defaultTex.getImage().getWidth();
 				imgHeight = defaultTex.getImage().getHeight();
@@ -1978,8 +1978,8 @@ public class Element extends Node {
 		} else {
 			alpha = app.getAssetManager().loadTexture(alphaMap);
 			alpha.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
-			alpha.setMagFilter(Texture.MagFilter.Bilinear);
-			alpha.setWrap(Texture.WrapMode.Repeat);
+			alpha.setMagFilter(Texture.MagFilter.Nearest);
+			alpha.setWrap(Texture.WrapMode.Clamp);
 		}
 		
 		this.alphaMap = alpha;
@@ -2029,8 +2029,8 @@ public class Element extends Node {
 		} else {
 			color = app.getAssetManager().loadTexture(colorMap);
 			color.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
-			color.setMagFilter(Texture.MagFilter.Bilinear);
-			color.setWrap(Texture.WrapMode.Repeat);
+			color.setMagFilter(Texture.MagFilter.Nearest);
+			color.setWrap(Texture.WrapMode.Clamp);
 		}
 		
 		this.defaultTex = color;

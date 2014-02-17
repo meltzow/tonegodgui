@@ -19,8 +19,8 @@
 			</property>
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=68|y=86|w=32|h=32" />
-			<property name="radialImg" type="String" value="x=101|y=86|w=5|h=5" />
+			<property name="defaultImg" type="String" value="x=73|y=91|w=32|h=32" />
+			<property name="radialImg" type="String" value="x=108|y=90|w=5|h=5" />
 		</images>
 		<effects></effects>
 	</element>
