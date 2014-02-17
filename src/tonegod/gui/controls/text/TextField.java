@@ -26,6 +26,7 @@ import java.util.List;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
+import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
@@ -971,13 +972,13 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 
 	@Override
 	public void onGetFocus(MouseMotionEvent evt) {
-		if (getIsEnabled()) screen.setCursor(Screen.CursorType.TEXT);
+		if (getIsEnabled()) screen.setCursor(CursorType.TEXT);
 		setHasFocus(true);
 	}
 
 	@Override
 	public void onLoseFocus(MouseMotionEvent evt) {
-		if (getIsEnabled()) screen.setCursor(Screen.CursorType.POINTER);
+		if (getIsEnabled()) screen.setCursor(CursorType.POINTER);
 		setHasFocus(false);
 	}
 	

@@ -23,6 +23,7 @@ import com.jme3.texture.Texture;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
+import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
@@ -541,7 +542,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 				if (!isToggled) {
 					runHoverEffect(true);
 				}
-				screen.setCursor(Screen.CursorType.HAND);
+				screen.setCursor(CursorType.HAND);
 				onButtonFocus(evt);
 				if (screen.getUseToolTips()) {
 					
@@ -558,15 +559,8 @@ public abstract class Button extends Element implements Control, MouseButtonList
 				if (!isToggled) {
 					runLoseFocusEffect();
 				}
-				screen.setCursor(Screen.CursorType.POINTER);
+				screen.setCursor(CursorType.POINTER);
 				onButtonLostFocus(evt);
-				/*
-				if (screen.getUseToolTips()) {
-					if (getToolTipText() !=  null) {
-						screen.setToolTip(null);
-					}
-				}
-				*/
 			}
 			setHasFocus(false);
 		}

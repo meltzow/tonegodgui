@@ -1,5 +1,6 @@
 package tonegod.gui.core;
 
+import tonegod.gui.style.Style;
 import com.jme3.app.Application;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -38,7 +39,7 @@ import tonegod.gui.controls.text.TextField;
 import tonegod.gui.controls.util.ModalBackground;
 import tonegod.gui.controls.util.ToolTip;
 import tonegod.gui.core.Element.Borders;
-import tonegod.gui.core.Screen.CursorType;
+import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.EffectManager;
 import tonegod.gui.framework.core.AnimManager;

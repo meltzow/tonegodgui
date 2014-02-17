@@ -1,10 +1,11 @@
 package tonegod.gui.core;
 
+import tonegod.gui.style.StyleManager;
+import tonegod.gui.style.LayoutParser;
+import tonegod.gui.style.Style;
 import tonegod.gui.core.utils.StyleLoader;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
-import com.jme3.asset.AssetKey;
-import com.jme3.asset.AssetNotFoundException;
 import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -50,22 +51,15 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import tonegod.gui.controls.extras.OSRViewPort;
 import tonegod.gui.controls.extras.android.Keyboard;
 import tonegod.gui.controls.form.Form;
@@ -75,9 +69,8 @@ import tonegod.gui.controls.text.TextField;
 import tonegod.gui.controls.util.ModalBackground;
 import tonegod.gui.controls.util.ToolTip;
 import tonegod.gui.core.Element.Borders;
+import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.core.utils.BitmapTextUtil;
-import tonegod.gui.core.utils.XMLHelper;
-import tonegod.gui.effects.Effect;
 import tonegod.gui.effects.EffectManager;
 import tonegod.gui.fonts.BitmapFontLoaderX;
 import tonegod.gui.framework.core.AnimManager;
@@ -88,28 +81,6 @@ import tonegod.gui.listeners.*;
  * @author t0neg0d
  */
 public class Screen implements ElementManager, Control, RawInputListener {
-
-	public static enum CursorType {
-		POINTER,
-		HAND,
-		MOVE,
-		TEXT,
-		WAIT,
-		RESIZE_CNW,
-		RESIZE_CNE,
-		RESIZE_NS,
-		RESIZE_EW,
-		CUSTOM_0,
-		CUSTOM_1,
-		CUSTOM_2,
-		CUSTOM_3,
-		CUSTOM_4,
-		CUSTOM_5,
-		CUSTOM_6,
-		CUSTOM_7,
-		CUSTOM_8,
-		CUSTOM_9
-	}
 	private Application app;
 	protected Spatial spatial;
 	private Map<String, Element> elements = new LinkedHashMap();
@@ -151,13 +122,12 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	private String clipboardText = "";
 	
-	private String styleMap;
-	private Map<String, Style> styles = new HashMap();
-	
+	private StyleManager styleManager;
+	private LayoutParser layoutParser;
 	protected EffectManager effectManager;
-	protected Node t0neg0dGUI = new Node("t0neg0dGUI");
-	
 	protected AnimManager animManager;
+	
+	protected Node t0neg0dGUI = new Node("t0neg0dGUI");
 	
 	private Vector2f mouseXY = new Vector2f(0,0);
 	private boolean SHIFT = false;
@@ -166,7 +136,6 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	private boolean useCustomCursors = false;
 	private boolean forceCursor = false;
-	private Map<CursorType, JmeCursor> cursors = new HashMap();
 	
 	private boolean useToolTips = false;
 	private ToolTip toolTip = null;
@@ -174,11 +143,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	private float globalAlpha = 1.0f;
 	
-	private Map<String, AudioNode> audioNodes = new HashMap();
 	private boolean useUIAudio = false;
-	private float uiAudioVolume;
+	private float uiAudioVolume = 1;
 	
-	private ParticleEmitter cursorEmitter;
+	private ParticleEmitter cursorEmitter = null;
 	private OSRViewPort cursorEmitterVP = null;
 	private Node cursorEmitterNode = new Node("cursorEmitterNode");
 	private Node cursorEmitterPlaneNode = new Node("cursorEmitterPlaneNode");
@@ -190,10 +158,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private boolean useTextureAtlas = false;
 	private Texture atlasTexture;
         
-	private LayoutParser layoutParser;
-	
 	private ElementQuadGrid mesh;
 	
+	private ModalBackground modalBackground;
 	private Keyboard virtualKeys;
 	
 	// SubScreen collisions
@@ -211,8 +178,6 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			uv2 = new Vector2f(),
 			uv3 = new Vector2f();
 	private static boolean initializedLoader;
-	
-	private ModalBackground modalBackground;
 	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
@@ -243,8 +208,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			app.getAssetManager().registerLoader(BitmapFontLoaderX.class, "fnt");
 		} catch (Exception ex) {  }
 		
-		this.styleMap = styleMap;
-		parseStyles(styleMap);
+		styleManager = new StyleManager(this,styleMap);
+		styleManager.parseStyles(styleMap);
 		effectManager = new EffectManager(this);
 		animManager = new AnimManager(this);
 		app.getInputManager().addRawInputListener(this);
@@ -1423,7 +1388,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	@Override
 	public Control cloneForSpatial(Spatial spatial) {
-		Screen screen = new Screen(this.app, this.styleMap);
+		Screen screen = new Screen(this.app, styleManager.getStyleMap());
 		screen.elements.putAll(this.elements);
 		return screen;
 	}
@@ -1448,6 +1413,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	public void read(JmeImporter im) throws IOException {  }
 	
 	// Styles
+	/*
 	private void parseStyles(String path) {
 		List<String> docPaths = new ArrayList();
 		try {
@@ -1769,7 +1735,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			);
 		}
 	}
-	
+	*/
 	/**
 	 * Returns the Style object associated to the provided key
 	 * @param key The String key of the Style
@@ -1777,11 +1743,11 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 */
 	@Override
 	public Style getStyle(String key) {
-		return styles.get(key);
+		return styleManager.getStyle(key);
 	}
 	
 	/**
-	 * Enables the use of Style defined custom cursors.  Initally set prior to initializing screen
+	 * Enables the use of Style defined custom cursors.  Initially set prior to initializing screen
 	 * @param useCustomCursors boolean
 	 */
 	@Override
@@ -1790,7 +1756,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		if (!useCustomCursors) {
 			getApplication().getInputManager().setMouseCursor(null);
 		} else {
-			setCursor(CursorType.POINTER);
+			setCursor(StyleManager.CursorType.POINTER);
 		}
 	}
 	
@@ -1811,7 +1777,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	public void setCursor(CursorType cur) {
 		if (getUseCustomCursors()) {
 			if (!forceCursor) {
-				JmeCursor jmeCur = cursors.get(cur);
+				JmeCursor jmeCur = styleManager.getCursor(cur);
 				if (jmeCur != null)
 					getApplication().getInputManager().setMouseCursor(jmeCur);
 			}
@@ -1824,7 +1790,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 */
 	public void setForcedCursor(CursorType cur) {
 		if (getUseCustomCursors()) {
-			JmeCursor jmeCur = cursors.get(cur);
+			JmeCursor jmeCur = styleManager.getCursor(cur);
 			if (jmeCur != null) {
 				getApplication().getInputManager().setMouseCursor(jmeCur);
 				forceCursor = true;
@@ -1837,7 +1803,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 */
 	public void releaseForcedCursor() {
 		if (getUseCustomCursors()) {
-			JmeCursor jmeCur = cursors.get(CursorType.POINTER);
+			JmeCursor jmeCur = styleManager.getCursor(CursorType.POINTER);
 			if (jmeCur != null) {
 				getApplication().getInputManager().setMouseCursor(jmeCur);
 			}
@@ -2048,7 +2014,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 * @param volume float the volume to play the instance at (effected by global volume)
 	 */
 	public void playAudioNode(String key, float volume) {
-		AudioNode audioNode = audioNodes.get(key);
+		AudioNode audioNode = styleManager.getAudioNode(key);
 		if (audioNode != null) {
 			audioNode.setVolume(volume*getUIAudioVolume());
 			audioNode.playInstance();

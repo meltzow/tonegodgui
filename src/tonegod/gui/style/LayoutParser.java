@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tonegod.gui.core;
+package tonegod.gui.style;
 
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.audio.AudioNode;
@@ -54,6 +54,8 @@ import tonegod.gui.controls.windows.LoginBox;
 import tonegod.gui.controls.windows.Panel;
 import tonegod.gui.controls.windows.TabControl;
 import tonegod.gui.controls.windows.Window;
+import tonegod.gui.core.Element;
+import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.core.utils.XMLHelper;
 import tonegod.gui.effects.Effect;

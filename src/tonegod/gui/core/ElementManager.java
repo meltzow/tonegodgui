@@ -4,6 +4,7 @@
  */
 package tonegod.gui.core;
 
+import tonegod.gui.style.Style;
 import com.jme3.app.Application;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.math.Vector2f;
@@ -11,7 +12,7 @@ import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.util.ModalBackground;
-import tonegod.gui.core.Screen.CursorType;
+import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.effects.EffectManager;
 import tonegod.gui.framework.core.AnimManager;
 

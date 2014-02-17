@@ -14,7 +14,7 @@ import java.util.List;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.windows.Panel;
 import tonegod.gui.core.ElementManager;
-import tonegod.gui.core.Style;
+import tonegod.gui.style.Style;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
