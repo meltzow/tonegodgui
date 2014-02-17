@@ -58,6 +58,7 @@ public class GravityInfluencer extends InfluencerBase {
 	public GravityInfluencer clone() {
 		GravityInfluencer clone = new GravityInfluencer(emitter);
 		clone.setGravity(gravity);
+		clone.setIsEnabled(isEnabled);
 		return clone;
 	}
 }

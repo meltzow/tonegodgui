@@ -68,4 +68,14 @@ public class AlphaInfluencer extends InfluencerBase {
 	public void setInterpolation(Interpolation interpolation) {
 		this.interpolation = interpolation;
 	}
+	
+	@Override
+	public AlphaInfluencer clone() {
+		AlphaInfluencer clone = new AlphaInfluencer(emitter);
+		clone.setStartAlpha(startAlpha);
+		clone.setEndAlpha(endAlpha);
+		clone.setInterpolation(interpolation);
+		clone.setIsEnabled(isEnabled);
+		return clone;
+	}
 }

@@ -52,4 +52,12 @@ public class ImpulseInfluencer extends InfluencerBase {
 	public void setVariationStrength(float variationStrength) {
 		this.variationStrength = variationStrength;
 	}
+	
+	@Override
+	public ImpulseInfluencer clone() {
+		ImpulseInfluencer clone = new ImpulseInfluencer(emitter);
+		clone.setVariationStrength(variationStrength);
+		clone.setIsEnabled(isEnabled);
+		return clone;
+	}
 }

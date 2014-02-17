@@ -120,6 +120,11 @@ public class RotationInfluencer extends InfluencerBase {
 	public RotationInfluencer clone() {
 		RotationInfluencer clone = new RotationInfluencer(emitter);
 		clone.setMaxRotationSpeed(maxRotationSpeed);
+		clone.setRotateFromEmitterPosition(rotateFromEmitterPosition);
+		clone.setRotateToVelocity(rotateToVelocity);
+		clone.setUseFixedRotationSpeed(useFixedRotationSpeed);
+		clone.setUseRandomStartAngle(useRandomStartAngle);
+		clone.setIsEnabled(isEnabled);
 		return clone;
 	}
 }

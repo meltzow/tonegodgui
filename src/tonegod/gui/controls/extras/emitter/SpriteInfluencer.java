@@ -203,4 +203,15 @@ public class SpriteInfluencer extends InfluencerBase {
 	public void setTargetFPS(int fps) {
 		this.fps = (float)fps;
 	}
+	
+	@Override
+	public SpriteInfluencer clone() {
+		SpriteInfluencer clone = new SpriteInfluencer(emitter);
+		clone.setAnimOrder(animOrder);
+		clone.setRandomStartImage(randomStartImage);
+		clone.setSpriteOrder(spriteOrder);
+		clone.setTargetFPS((int)fps);
+		clone.setIsEnabled(isEnabled);
+		return clone;
+	}
 }

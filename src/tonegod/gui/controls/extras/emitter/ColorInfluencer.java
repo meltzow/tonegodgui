@@ -45,11 +45,11 @@ public class ColorInfluencer extends InfluencerBase {
 	}
 	
 	public void setStartColor(ColorRGBA startColor) {
-		this.startColor = startColor;
+		this.startColor.set(startColor);
 	}
 	
 	public void setEndColor(ColorRGBA endColor) {
-		this.endColor = endColor;
+		this.endColor.set(endColor);
 	}
 	
 	public void setInterpolation(Interpolation interpolation) {
@@ -61,6 +61,8 @@ public class ColorInfluencer extends InfluencerBase {
 		ColorInfluencer clone = new ColorInfluencer(emitter);
 		clone.setStartColor(startColor);
 		clone.setEndColor(endColor);
+		clone.setInterpolation(interpolation);
+		clone.setIsEnabled(isEnabled);
 		return clone;
 	}
 }

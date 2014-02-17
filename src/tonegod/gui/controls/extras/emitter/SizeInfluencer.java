@@ -61,6 +61,8 @@ public class SizeInfluencer extends InfluencerBase {
 		SizeInfluencer clone = new SizeInfluencer(emitter);
 		clone.setStartSize(startSize);
 		clone.setEndSize(endSize);
+		clone.setInterpolation(interpolation);
+		clone.setIsEnabled(isEnabled);
 		return clone;
 	}
 }

@@ -68,6 +68,7 @@ public class DirectionInfluencer extends InfluencerBase {
 		DirectionInfluencer clone = new DirectionInfluencer(emitter);
 		clone.setDirection(direction);
 		clone.setStrength(strength);
+		clone.setIsEnabled(isEnabled);
 		return clone;
 	}
 }

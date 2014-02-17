@@ -39,6 +39,7 @@ public class ElementEmitter implements Control, Transformable {
 	private List<TemporalAction> actions = new ArrayList();
 	private Screen screen;
 	private Application app;
+	private int particlesPerSecond;
 	private float targetInterval = 1f;
 	private float currentInterval = 0f;
 	private boolean isEnabled = false;
@@ -71,6 +72,7 @@ public class ElementEmitter implements Control, Transformable {
 	private float lowLife = .1f;
 	private boolean useFixedDirection = false;
 	private Vector2f fixedDirection = new Vector2f(0,1);
+	private float fixedDirectionStrength = 1f;
 	
 	private Node targetElement = null;
 	private Node rootNode = null;
@@ -274,8 +276,13 @@ public class ElementEmitter implements Control, Transformable {
 	}
 	
 	public void setParticlesPerSecond(int particlesPerSecond) {
+		this.particlesPerSecond = particlesPerSecond;
 		this.targetInterval = 1f/(float)particlesPerSecond;
 		currentInterval = 0;
+	}
+	
+	public int getParticlesPerSecond() {
+		return this.particlesPerSecond;
 	}
 	
 	public void startEmitter() {
@@ -407,6 +414,14 @@ public class ElementEmitter implements Control, Transformable {
 	public boolean getUseFixedDirection() { return this.useFixedDirection; }
 	
 	public Vector2f getFixedDirection() { return this.fixedDirection; }
+	
+	public void setFixedDirectionStrength(float fixedDirectionStrength) {
+		this.fixedDirectionStrength = fixedDirectionStrength;
+	}
+	
+	public float getFixedDirectionStrength() {
+		return this.fixedDirectionStrength;
+	}
 	
 	public AnimElement getParticles() {
 		return this.particles;
@@ -739,20 +754,20 @@ public class ElementEmitter implements Control, Transformable {
 			else
 				randforce = maxforce;
 			
-			if (!useFixedDirection) {
-				if (!centerVelocity) {
-					float velX = FastMath.rand.nextFloat();
-					if (FastMath.rand.nextBoolean()) velX = -velX;
-					float velY = FastMath.rand.nextFloat();
-					if (FastMath.rand.nextBoolean()) velY = -velY;
-					velocity.set(velX,velY);
-				} else {
-					velocity.set(1/emitterWidth*diffX, 1/emitterHeight*diffY);
-					velocity.subtractLocal(0.5f,0.5f);
-				}
+			if (!centerVelocity) {
+				float velX = FastMath.rand.nextFloat();
+				if (FastMath.rand.nextBoolean()) velX = -velX;
+				float velY = FastMath.rand.nextFloat();
+				if (FastMath.rand.nextBoolean()) velY = -velY;
+				velocity.set(velX,velY);
 			} else {
-				velocity.set(fixedDirection);
+				velocity.set(1/emitterWidth*diffX, 1/emitterHeight*diffY);
+				velocity.subtractLocal(0.5f,0.5f);
 			}
+			
+			if (useFixedDirection)
+				velocity.interpolate(fixedDirection, fixedDirectionStrength);
+			
 			velocity.multLocal(randforce);
 			
 			if (useFixedLife)
