@@ -175,7 +175,7 @@ public class SubScreen implements ElementManager, Control {
 	 */
 	@Override
 	public float getWidth() {
-		return app.getViewPort().getCamera().getWidth();
+		return bridge.getCamera().getWidth();
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public class SubScreen implements ElementManager, Control {
 	 */
 	@Override
 	public float getHeight() {
-		return app.getViewPort().getCamera().getHeight();
+		return bridge.getCamera().getHeight();
 	}
 	
 	@Override
