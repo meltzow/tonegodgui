@@ -10,9 +10,6 @@ import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.cursors.plugins.JmeCursor;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
-import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.font.Rectangle;
@@ -26,24 +23,18 @@ import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Triangle;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.math.Vector4f;
-import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.Control;
-import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Texture;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -60,7 +51,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tonegod.gui.controls.extras.OSRViewPort;
 import tonegod.gui.controls.extras.android.Keyboard;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.lists.ComboBox;
@@ -1711,6 +1701,15 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			}
 		} else
 			cursorEffects.stop();
+	}
+	
+	/**
+	 * Returns the cursor effects manager
+	 * @return 
+	 */
+	@Override
+	public CursorEffects getCursorEffects() {
+		return this.cursorEffects;
 	}
 	
 	// Forms and tab focus

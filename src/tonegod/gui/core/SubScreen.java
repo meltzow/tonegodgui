@@ -42,6 +42,7 @@ import tonegod.gui.core.Element.Borders;
 import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.EffectManager;
+import tonegod.gui.effects.cursor.CursorEffects;
 import tonegod.gui.framework.core.AnimManager;
 import tonegod.gui.listeners.*;
 
@@ -1274,6 +1275,11 @@ public class SubScreen implements ElementManager, Control {
 	@Override
 	public void setUseCursorEffects(boolean use) {
 		screen.setUseCursorEffects(use);
+	}
+	
+	@Override
+	public CursorEffects getCursorEffects() {
+		return screen.getCursorEffects();
 	}
 	
 	@Override
