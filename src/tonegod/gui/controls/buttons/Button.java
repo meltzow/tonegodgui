@@ -20,6 +20,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.texture.Texture;
+import tonegod.gui.controls.text.TextElement;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
@@ -708,6 +709,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		if (textElement == null) {
 			textElement = new BitmapText(font, false);
 			textElement.setBox(new Rectangle(0,0,getDimensions().x,getDimensions().y));
+		//	textElement = new TextElement(screen, Vector2f.ZERO);
 		}
 		textElement.setLineWrapMode(textWrap);
 		textElement.setAlignment(textAlign);
@@ -726,6 +728,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			this.attachChild(textElement);
 		}
 	}
+	
 	/**
 	 * Fix for BitmapFont.VAlign
 	 * @param text 

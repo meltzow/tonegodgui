@@ -5,7 +5,6 @@
 package tonegod.gui.framework.core;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.bounding.BoundingBox;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -51,7 +50,8 @@ public abstract class AnimElement extends Node implements Transformable {
 		flagForUpdate();
 		mesh.initialize();
 		
-		mat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
+	//	mat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
+		mat = new Material(am, "tonegod/gui/shaders/Unshaded.j3md");
 		mat.setTexture("ColorMap", tex);
 		mat.setBoolean("VertexColor", true);
 		mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
@@ -63,6 +63,10 @@ public abstract class AnimElement extends Node implements Transformable {
 		setMaterial(mat);
 	}
 	
+	public boolean getIsInitialized() {
+		return this.mesh.init;
+	}
+	
 	public void setTexture(Texture tex) {
 		this.tex = tex;
 	}
@@ -71,33 +75,44 @@ public abstract class AnimElement extends Node implements Transformable {
 		return tex;
 	}
 	
-	public void addTextureRegion(String regionKey, int x, int y, int w, int h) {
+	public TextureRegion addTextureRegion(String regionKey, int x, int y, int w, int h) {
 		TextureRegion tr = new TextureRegion(tex, x, y, w, h);
 		tr.flip(false, true);
 		uvs.put(regionKey, tr);
+		return tr;
 	}
 	
 	public TextureRegion getTextureRegion(String regionKey) {
 		return uvs.get(regionKey);
 	}
 	
+	public Material getMaterial() {
+		return this.mat;
+	}
+	
+	public void setElementMaterial(Material mat) {
+		this.mat = mat;
+	}
+	
 	public Map<String,TextureRegion> getTextureRegions() {
 		return this.uvs;
 	}
 	
-	public void addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin) {
+	public QuadData addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin) {
 		QuadData qd = new QuadData(this, quadKey, uvs.get(regionKey), position.x, position.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
 		quads.put(quadKey, qd);
 		flagForUpdate();
+		return qd;
 	}
 	
-	public void addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin, String parentKey) {
+	public QuadData addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin, String parentKey) {
 		QuadData qd = new QuadData(this, quadKey, uvs.get(regionKey), position.x, position.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
 		qd.parent = quads.get(parentKey);
 		qd.setPositionX(qd.getPositionX()-qd.parent.getPositionX());
 		qd.setPositionY(qd.getPositionY()-qd.parent.getPositionY());
 		quads.put(quadKey, qd);
 		flagForUpdate();
+		return qd;
 	}
 	
 	public void flagForUpdate() {

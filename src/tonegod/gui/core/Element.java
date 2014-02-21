@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import tonegod.gui.controls.extras.DragElement;
 import tonegod.gui.controls.form.Form;
+import tonegod.gui.controls.text.TextElement;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
@@ -118,6 +119,7 @@ public class Element extends Node {
 	private Texture alphaMap = null;
 	
 	protected BitmapText textElement;
+//	protected TextElement textElement;
 	protected Vector2f textPosition = new Vector2f(0,0);
 	protected LineWrapMode textWrap = LineWrapMode.Word;
 	protected BitmapFont.Align textAlign = BitmapFont.Align.Left;
@@ -1920,6 +1922,10 @@ public class Element extends Node {
 		if (textElement != null) {
 			textElement.setLocalTranslation(textPosition.x+textPadding, getHeight()-(textPosition.y+textPadding), textElement.getLocalTranslation().z);
 			textElement.setBox(new Rectangle(0,0,dimensions.x-(textPadding*2),dimensions.y-(textPadding*2)));
+		//	textElement.setPosition(textPadding, textPadding);
+		//	textElement.setDimensions(dimensions.x-(textPadding*2),dimensions.y-(textPadding*2));
+		//	textElement.controlResizeHook();
+		//	textElement.updateAnimText(0);
 		}
 	}
 	
@@ -1932,6 +1938,7 @@ public class Element extends Node {
 		if (textElement == null) {
 			textElement = new BitmapText(font, false);
 			textElement.setBox(new Rectangle(0,0,dimensions.x,dimensions.y));
+		//	textElement = new TextElement(screen, Vector2f.ZERO, getDimensions());
 		}
 		textElement.setLineWrapMode(textWrap);
 		textElement.setAlignment(textAlign);
@@ -1960,6 +1967,7 @@ public class Element extends Node {
 	 * @return BitmapText textElement
 	 */
 	public BitmapText getTextElement() {
+//	public TextElement getTextElement() {
 		return this.textElement;
 	}
 	

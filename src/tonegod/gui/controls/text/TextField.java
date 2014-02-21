@@ -987,6 +987,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 		if (textElement == null) {
 			textElement = new BitmapText(font, false);
 			textElement.setBox(new Rectangle(0,0,getDimensions().x,getDimensions().y));
+		//	textElement = new TextElement(screen, Vector2f.ZERO);
 			centerTextVertically();
 		}
 		textElement.setLineWrapMode(textWrap);

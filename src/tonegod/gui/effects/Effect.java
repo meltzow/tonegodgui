@@ -8,6 +8,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.texture.Texture;
+import tonegod.gui.controls.text.TextElement;
 import tonegod.gui.core.Element;
 import tonegod.gui.framework.animation.Interpolation;
 
@@ -471,6 +472,8 @@ public class Effect implements Cloneable {
 			if (element.getTextElement() != null) {
 				element.getTextElement().setAlpha(pass);
 			}
+			if (element instanceof TextElement)
+				((TextElement)element).setAlpha(pass);
 		}
 	}
 	
@@ -493,6 +496,8 @@ public class Effect implements Cloneable {
 			if (element.getTextElement() != null) {
 				element.getTextElement().setAlpha(1.0f-pass);
 			}
+			if (element instanceof TextElement)
+				((TextElement)element).setAlpha(1.0f-pass);
 		}
 	}
 	
