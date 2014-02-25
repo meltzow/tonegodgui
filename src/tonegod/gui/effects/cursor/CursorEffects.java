@@ -51,7 +51,7 @@ public class CursorEffects {
 		this.app = screen.getApplication();
 		
 		cursorEmitter = new ElementEmitter(screen,new Vector2f(screen.getWidth()/2-200,screen.getHeight()/2),2,2);
-		cursorEmitter.setSprite("Textures/bullet_02.png", 3, 3, 8);
+		cursorEmitter.setSprite("tonegod/gui/style/def/Common/Particles/core.png", 3, 3, 8);
 		cursorEmitter.setMaxParticles(60);
 		this.setTheme(EmitterTheme.SPARKS);
 		
@@ -168,7 +168,7 @@ public class CursorEffects {
 				cursorEmitter.setLowLife(0.62f);
 				cursorEmitter.getInfluencer(GravityInfluencer.class).setGravity(new Vector2f(0f,2f));
 				cursorEmitter.getInfluencer(RotationInfluencer.class).setMaxRotationSpeed(.25f);
-				cursorEmitter.getInfluencer(ColorInfluencer.class).setStartColor(new ColorRGBA(1f,1f,1f,1f));
+				cursorEmitter.getInfluencer(ColorInfluencer.class).setStartColor(new ColorRGBA(1f,1f,0f,1f));
 				cursorEmitter.getInfluencer(ColorInfluencer.class).setEndColor(new ColorRGBA(1f,0.35f,0f,1.0f));
 				cursorEmitter.getInfluencer(SizeInfluencer.class).setStartSize(.5f);
 				cursorEmitter.getInfluencer(SizeInfluencer.class).setEndSize(0f);
