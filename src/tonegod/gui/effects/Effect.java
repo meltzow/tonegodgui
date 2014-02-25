@@ -31,6 +31,8 @@ public class Effect implements Cloneable {
 		ColorSwap,
 		PulseColor,
 		ImageSwap,
+		ImageFadeIn,
+		ImageFadeOut,
 		Desaturate,
 		Saturate
 	}
@@ -215,6 +217,12 @@ public class Effect implements Cloneable {
 				break;
 			case ImageSwap:
 				updateImageSwap();
+				break;
+			case ImageFadeIn:
+				updateImageFadeIn();
+				break;
+			case ImageFadeOut:
+				updateImageFadeOut();
 				break;
 			case ColorSwap:
 				updateColorSwap();
@@ -561,6 +569,36 @@ public class Effect implements Cloneable {
 			init = true;
 			isActive = false;
 		}
+	}
+	
+	private void updateImageFadeIn() {
+		if (!init) {
+			element.getElementMaterial().setBoolean("UseEffect", true);
+			element.getElementMaterial().setBoolean("EffectFade", false);
+			element.getElementMaterial().setBoolean("EffectPulse", true);
+			element.getElementMaterial().setBoolean("EffectPulseColor", false);
+			element.getElementMaterial().setBoolean("EffectImageSwap", false);
+			element.getElementMaterial().setTexture("EffectMap", blendImage);
+			if (element.getScreen().getUseTextureAtlas() || element.getUseLocalAtlas())
+				element.getElementMaterial().setVector2("OffsetTexCoord", blendImageOffset);
+			init = true;
+		}
+		element.getElementMaterial().setFloat("EffectStep", pass);
+	}
+	
+	private void updateImageFadeOut() {
+		if (!init) {
+			element.getElementMaterial().setBoolean("UseEffect", true);
+			element.getElementMaterial().setBoolean("EffectFade", false);
+			element.getElementMaterial().setBoolean("EffectPulse", true);
+			element.getElementMaterial().setBoolean("EffectPulseColor", false);
+			element.getElementMaterial().setBoolean("EffectImageSwap", false);
+			element.getElementMaterial().setTexture("EffectMap", blendImage);
+			if (element.getScreen().getUseTextureAtlas() || element.getUseLocalAtlas())
+				element.getElementMaterial().setVector2("OffsetTexCoord", blendImageOffset);
+			init = true;
+		}
+		element.getElementMaterial().setFloat("EffectStep", 1.0f-pass);
 	}
 	
 	private void updateColorSwap() {

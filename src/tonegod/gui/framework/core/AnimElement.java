@@ -38,7 +38,7 @@ public abstract class AnimElement extends Node implements Transformable {
 	ColorRGBA color = new ColorRGBA();
 	float rotation;
 	Spatial spatial;
-	Material mat;
+	Material mat = null;
 	AssetManager am;
 	
 	public AnimElement(AssetManager am) {
@@ -69,6 +69,8 @@ public abstract class AnimElement extends Node implements Transformable {
 	
 	public void setTexture(Texture tex) {
 		this.tex = tex;
+		if (mat != null)
+			mat.setTexture("ColorMap", tex);
 	}
 	
 	public Texture getTexture() {

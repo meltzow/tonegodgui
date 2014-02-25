@@ -4,11 +4,10 @@
  */
 package tonegod.gui.controls.text;
 
+import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapFont.Align;
 import com.jme3.font.BitmapFont.VAlign;
 import com.jme3.font.LineWrapMode;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
@@ -16,34 +15,25 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
-import com.jme3.texture.Texture;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.utils.UIDUtil;
-import tonegod.gui.framework.animation.MoveByAction;
-import tonegod.gui.framework.animation.RotateByAction;
-import tonegod.gui.framework.animation.ScaleByAction;
 import tonegod.gui.framework.core.AnimText;
 
 /**
  *
  * @author t0neg0d
  */
-public class TextElement extends Element implements Control {
+public abstract class TextElement extends Element implements Control {
 	AnimText animText;
-	
+	String teText = "";
+	boolean useTextClipping = false;
 //	LineWrapMode wrapMode = LineWrapMode.NoWrap;
 //	VAlign vAlign = VAlign.Top;
 //	Align hAlign = Align.Left;
 	
 	
 	int qdIndex = 0;
-	ScaleByAction sRoll;
-	RotateByAction rRoll;
-	MoveByAction mRoll;
-	float rollTime = .025f;
-	float rotTime = .125f;
-	float rollCounter = 0;
 	
 	/**
 	 * Creates a new instance of the TextElement control
@@ -51,11 +41,12 @@ public class TextElement extends Element implements Control {
 	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public TextElement(ElementManager screen, Vector2f position) {
+	public TextElement(ElementManager screen, Vector2f position, BitmapFont font) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("Label").getVector2f("defaultSize"),
 			Vector4f.ZERO,
-			null
+			null,
+			font
 		);
 	}
 	
@@ -66,10 +57,11 @@ public class TextElement extends Element implements Control {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public TextElement(ElementManager screen, Vector2f position, Vector2f dimensions) {
+	public TextElement(ElementManager screen, Vector2f position, Vector2f dimensions, BitmapFont font) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
 			Vector4f.ZERO,
-			null
+			null,
+			font
 		);
 	}
 	
@@ -82,8 +74,8 @@ public class TextElement extends Element implements Control {
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Slider's track
 	 */
-	public TextElement(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
-		this(screen, UIDUtil.getUID(), position, dimensions,resizeBorders,defaultImg);
+	public TextElement(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, BitmapFont font) {
+		this(screen, UIDUtil.getUID(), position, dimensions,resizeBorders,defaultImg, font);
 	}
 	
 	/**
@@ -93,11 +85,12 @@ public class TextElement extends Element implements Control {
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
-	public TextElement(ElementManager screen, String UID, Vector2f position) {
+	public TextElement(ElementManager screen, String UID, Vector2f position, BitmapFont font) {
 		this(screen, UID, position,
 			screen.getStyle("Label").getVector2f("defaultSize"),
 			Vector4f.ZERO,
-			null
+			null,
+			font
 		);
 	}
 	
@@ -109,10 +102,11 @@ public class TextElement extends Element implements Control {
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */
-	public TextElement(ElementManager screen, String UID, Vector2f position, Vector2f dimensions) {
+	public TextElement(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, BitmapFont font) {
 		this(screen, UID, position, dimensions,
 			Vector4f.ZERO,
-			null
+			null,
+			font
 		);
 	}
 	
@@ -126,26 +120,21 @@ public class TextElement extends Element implements Control {
 	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Slider's track
 	 */
-	public TextElement(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+	public TextElement(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, BitmapFont font) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		this.setIsResizable(false);
 		this.setIsMovable(false);
 		this.setIgnoreMouse(true);
+		this.setDocking(Docking.NW);
 		this.setClippingLayer(this);
 		
-		Material mat = new Material(app.getAssetManager(), "tonegod/gui/shaders/Unshaded.j3md");
-		mat.setTexture("ColorMap", (Texture)font.getPage(0).getParam("ColorMap").getValue());
-		mat.setColor("Color", new ColorRGBA(1,1,1,1));
-		mat.setVector2("OffsetAlphaTexCoord", new Vector2f(0,0));
-		mat.setFloat("GlobalAlpha", screen.getGlobalAlpha());
-		mat.setBoolean("VertexColor", true);
+		textWrap = LineWrapMode.NoWrap;
 		
-		mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-		mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
+		BitmapFont teFont = (font == null) ? getFont() : font;
 		
 		animText = new AnimText(
 			screen.getApplication().getAssetManager(),
-			getFont()
+			teFont
 		);
 		animText.setBounds(dimensions);
 		animText.setScale(1,1);
@@ -153,9 +142,13 @@ public class TextElement extends Element implements Control {
 		attachChild(animText);
 	}
 	
+	public AnimText getAnimText() {
+		return this.animText;
+	}
+	
 	@Override
 	public void setText(String text) {
-	//	this.text = text;
+		this.teText = text;
 		animText.setText(text);
 		animText.setPositionY(getHeight()-animText.getLineHeight());
 		setTextWrap(textWrap);
@@ -169,21 +162,23 @@ public class TextElement extends Element implements Control {
 	
 	@Override
 	public void controlResizeHook() {
-		animText.setPositionY(getHeight()-animText.getLineHeight());
-		animText.setBounds(getDimensions());
-		switch (textWrap) {
-			case Character:
-				animText.wrapTextToCharacter(getWidth());
-				break;
-			case Word:
-				animText.wrapTextToWord(getWidth());
-				break;
+		if (this.getIsResizable()) {
+			animText.setPositionY(getHeight()-animText.getLineHeight());
+			animText.setBounds(getDimensions());
+			switch (textWrap) {
+				case Character:
+					animText.wrapTextToCharacter(getWidth());
+					break;
+				case Word:
+					animText.wrapTextToWord(getWidth());
+					break;
+			}
+			setTextAlign(textAlign);
+			setTextVAlign(textVAlign);
+			animText.getMaterial().setVector4("Clipping", getClippingBounds());
+		//	animText.getMaterial().setBoolean("UseClipping", true);
+			animText.update(0);
 		}
-		setTextAlign(textAlign);
-		setTextVAlign(textVAlign);
-		animText.getMaterial().setVector4("Clipping", getClippingBounds());
-	//	animText.getMaterial().setBoolean("UseClipping", true);
-		animText.update(0);
 	}
 	
 	public void setLineWrapMode(LineWrapMode textWrap) {
@@ -213,6 +208,7 @@ public class TextElement extends Element implements Control {
 	}
 	
 	public void setUseTextClipping(boolean clip) {
+		useTextClipping = clip;
 		animText.getMaterial().setVector4("Clipping", getClippingBounds());
 		animText.getMaterial().setBoolean("UseClipping", clip);
 	}
@@ -235,6 +231,13 @@ public class TextElement extends Element implements Control {
 	public void setFontColor(ColorRGBA fontColor) {
 		animText.setFontColor(fontColor);
 		setTextWrap(textWrap);
+	}
+	
+	public void setFont(BitmapFont font) {
+		this.animText.setFont(font);
+		setText(teText);
+		setUseTextClipping(useTextClipping);
+		setTextVAlign(textVAlign);
 	}
 	
 	public void setSubStringColor(String subString, ColorRGBA color) {
@@ -275,53 +278,29 @@ public class TextElement extends Element implements Control {
 		animText.setTextVAlign(textVAlign);
 	}
 	
-	public void effect(boolean active) {
-		if (active) {
-			this.addControl(this);
-		} else {
-			this.removeControl(TextElement.class);
-		}
+	public void startEffect() {
+		onEffectStart();
+		this.addControl(this);
 	}
+	
+	public void stopEffect() {
+		this.removeControl(TextElement.class);
+		onEffectStop();
+		update(0);
+	}
+	
+	public abstract void onUpdate(float tpf);
+	public abstract void onEffectStart();
+	public abstract void onEffectStop();
 	
 	@Override
 	public void update(float tpf) {
-		rollText(tpf);
+		onUpdate(tpf);
+		updateAnimText(tpf);
+	}
+	
+	private void updateAnimText(float tpf) {
 		animText.update(tpf);
-	}
-	
-	public void resetRoll() {
-		rollCounter = 0;
-		qdIndex = 0;
-	}
-	
-	private void rollText(float tpf) {
-		rollCounter += tpf;
-		if (rollCounter >= rollTime) {
-			if (animText.getQuadDataAt(qdIndex).actions.isEmpty()) {
-				float mX = animText.getWidth()/2;
-				mX *= 3;
-				mX = -mX;
-				float mY = 0;
-				sRoll = new ScaleByAction();
-				sRoll.setAmount(1.5f, 1.65f);
-				sRoll.setDuration(.5f);
-				sRoll.setAutoReverse(true);
-				animText.getQuadDataAt(qdIndex).addAction(sRoll);
-				mRoll = new MoveByAction();
-				mRoll.setAmount(mX,mY);
-				mRoll.setDuration(.5f);
-				mRoll.setAutoReverse(true);
-				animText.getQuadDataAt(qdIndex).addAction(mRoll);
-				qdIndex++;
-				if (qdIndex == animText.length())
-					qdIndex = 0;
-				rollCounter = 0;
-			}
-		}
-	}
-	
-	public void updateAnimText(float tpf) {
-		animText.update(0);
 	}
 	
 	@Override

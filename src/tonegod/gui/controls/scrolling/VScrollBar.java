@@ -49,6 +49,7 @@ public class VScrollBar extends Element {
 		this.setScaleNS(true);
 		this.setScaleEW(false);
 		this.setDocking(Docking.NE);
+		this.setAsContainerOnly();
 		
 		btnScrollTrack = new ButtonAdapter(screen, UID + "btnScrollTrack",
 			new Vector2f(0, getWidth()),

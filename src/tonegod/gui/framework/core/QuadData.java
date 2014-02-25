@@ -33,6 +33,7 @@ public class QuadData implements Transformable {
 	private ColorRGBA color = new ColorRGBA(1,1,1,1);
 	private Vector2f origin = new Vector2f(0,0);
 	private boolean visible = true;
+	private Vector2f borders = new Vector2f(4,4);
 	
 	public QuadData(AnimElement element, String quadKey, TextureRegion region, float x, float y, float width, float height, Vector2f origin) {
 		this.element = element;
@@ -333,5 +334,17 @@ public class QuadData implements Transformable {
 	@Override
 	public boolean getContainsAction(TemporalAction action) {
 		return actions.contains(action);
+	}
+	
+	public void setBorders(Vector2f borders) {
+		this.borders.set(borders);
+	}
+	
+	public void setBorders(float x, float y) {
+		this.borders.set(x,y);
+	}
+	
+	public Vector2f getBorders() {
+		return borders;
 	}
 }
