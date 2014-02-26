@@ -249,9 +249,7 @@ public class AnimText extends AnimElement {
 					offset -= (bc.getYOffset()*size);
 					quad.setPosition(x,offset+y);
 					quad.setDimensions(quad.getTextureRegion().getRegionWidth()*size,quad.getTextureRegion().getRegionHeight()*size);
-				//	quad.setPositionX(x);
-				//	quad.setPositionY(font.getCharSet().getBase()-bc.getHeight()-bc.getYOffset()+y);
-
+					
 					x += bc.getXAdvance()*size;
 					lnWidth += bc.getXAdvance()*size;
 					lIndex++;
@@ -349,7 +347,6 @@ public class AnimText extends AnimElement {
 		int i = 0;
 		
 		for (char c : characters) {
-		//	c = text.charAt(i);
 			bc = font.getCharSet().getCharacter(c);
 			
 			if (bc != null) {
@@ -373,7 +370,7 @@ public class AnimText extends AnimElement {
 					lnWidth += bcSpc.getXAdvance()*size;
 					wordSIndex = lIndex;
 				} else {
-					QuadData quad = letters[lIndex];//getQuadDataAt(lIndex);
+					QuadData quad = letters[lIndex];
 					float offset = font.getCharSet().getBase()*size;
 					offset -= (bc.getHeight()*size);
 					offset -= (bc.getYOffset()*size);
@@ -706,8 +703,6 @@ public class AnimText extends AnimElement {
 		
 		setText(".");
 		initialize();
-		
-	//	setBounds(getWidth(),getHeight());
 	}
 	
 	public void setSubStringColor(String subString, ColorRGBA color, boolean allInstances, int... whichInstances) {
