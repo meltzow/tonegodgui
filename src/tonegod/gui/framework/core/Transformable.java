@@ -34,6 +34,10 @@ public interface Transformable {
 	public void setColorA(float a);
 	public void setTCOffsetX(float x);
 	public void setTCOffsetY(float y);
+	public void setDimensions(Vector2f dim);
+	public void setDimensions(float w, float h);
+	public void setWidth(float w);
+	public void setHeight(float h);
 	
 	public Vector2f getPosition();
 	public float getPositionX();

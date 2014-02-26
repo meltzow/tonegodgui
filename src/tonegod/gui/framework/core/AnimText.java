@@ -20,6 +20,7 @@ import static com.jme3.font.LineWrapMode.NoWrap;
 import static com.jme3.font.LineWrapMode.Word;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -58,7 +59,8 @@ public class AnimText extends AnimElement {
 	private VAlign textVAlign = VAlign.Top;
 	private Align lastAlign = textAlign;
 	private Align currentAlign = textAlign;
-
+	private boolean justified = true;
+	
 	private int lineCount = 0;
 	private float	fadeDuration = 0,
 					fadeCounter = 0,
@@ -90,6 +92,8 @@ public class AnimText extends AnimElement {
 		this(assetManager, font, (Texture)font.getPage(0).getParam("ColorMap").getValue());
 	}
 	
+	private float size = 30;
+	
 	public AnimText(AssetManager assetManager, BitmapFont font, Texture bfTexture) {
 		super(assetManager);
 		this.font = font;
@@ -114,7 +118,7 @@ public class AnimText extends AnimElement {
 		bcSpc = font.getCharSet().getCharacter('i');
 		lIndex = 0;
 		lineWidth = 0;
-		
+		int textIndex = 0;
 		text = stripTags(text);
 		
 		for (int i = 0; i < text.length(); i++) {
@@ -129,13 +133,14 @@ public class AnimText extends AnimElement {
 					pos.set(lineWidth,font.getCharSet().getBase()-bc.getHeight()-bc.getYOffset());
 					qd = addQuad(String.valueOf(lIndex), String.valueOf(c.hashCode()), pos, align);
 					qd.setColor(fontColor);
-					qd.userIndex = i;
+					qd.userIndex = textIndex;
 					lineWidth += bc.getXAdvance();
 					lIndex++;
 				} else {
 					lineWidth += bcSpc.getXAdvance();
 				}
 			}
+			textIndex++;
 		}
 		
 		setOrigin(getWidth()/2,getHeight()/2);
@@ -229,10 +234,10 @@ public class AnimText extends AnimElement {
 	
 	public void wrapTextNoWrap() {
 	//	int i = 0;
-		float x = 0, y = -(font.getCharSet().getBase()/2);
-		float lnWidth = 0;
-		int lIndex = 0;
-		BitmapCharacter bc, bcSpc = font.getCharSet().getCharacter('i');
+		x = 0; y = -(font.getCharSet().getBase()/2);
+		lnWidth = 0;
+		lIndex = 0;
+		bcSpc = font.getCharSet().getCharacter('i');
 		for (char c : text.toCharArray()) {
 			bc = font.getCharSet().getCharacter(c);
 			
@@ -330,8 +335,8 @@ public class AnimText extends AnimElement {
 	}
 	public void wrapTextToWord(float width) {
 		float scaled = width*getScale().x;
-		float diff = scaled-width;
-		width -= diff;
+		float diff = width-scaled;
+		width += diff;
 		
 		bcSpc = font.getCharSet().getCharacter('i');
 		wordSIndex = 0; wordEIndex = 0;
@@ -524,6 +529,7 @@ public class AnimText extends AnimElement {
 	}
 	
 	public void setFontSize(float size) {
+		this.size = size;
 		float tempScale = size/font.getPreferredSize();
 		setScale(
 			tempScale,

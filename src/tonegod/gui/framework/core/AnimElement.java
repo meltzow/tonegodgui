@@ -300,6 +300,23 @@ public abstract class AnimElement extends Node implements Transformable {
 		
 	}
 	@Override
+	public void setDimensions(Vector2f dim) {
+		this.dimensions.set(dim);
+	}
+	@Override
+	public void setDimensions(float w, float h) {
+		this.dimensions.set(w,h);
+	}
+	@Override
+	public void setWidth(float w) {
+		this.dimensions.setX(w);
+	}
+	@Override
+	public void setHeight(float h) {
+		this.dimensions.setY(h);
+	}
+	
+	@Override
 	public float getPositionX() {
 		return position.x;
 	}

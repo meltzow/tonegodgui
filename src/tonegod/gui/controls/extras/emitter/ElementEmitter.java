@@ -592,6 +592,22 @@ public class ElementEmitter implements Control, Transformable {
 		
 	}
 	@Override
+	public void setDimensions(Vector2f dim) {
+		this.particles.setDimensions(dim);
+	}
+	@Override
+	public void setDimensions(float w, float h) {
+		this.particles.setDimensions(w,h);
+	}
+	@Override
+	public void setWidth(float w) {
+		this.particles.setWidth(w);
+	}
+	@Override
+	public void setHeight(float h) {
+		this.particles.setHeight(h);
+	}
+	@Override
 	public float getPositionX() {
 		return emitterPosition.x;
 	}
