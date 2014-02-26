@@ -1437,6 +1437,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		if (getUseCustomCursors()) {
 			if (!forceCursor) {
 				JmeCursor jmeCur = styleManager.getCursor(cur);
+				if (cur == CursorType.TEXT) {
+					jmeCur.setxHotSpot(jmeCur.getWidth()/2);
+					jmeCur.setyHotSpot(jmeCur.getHeight()/2);
+				}
 				if (jmeCur != null)
 					getApplication().getInputManager().setMouseCursor(jmeCur);
 			}
