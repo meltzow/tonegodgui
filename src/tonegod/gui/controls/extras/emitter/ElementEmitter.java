@@ -694,6 +694,35 @@ public class ElementEmitter implements Control, Transformable {
 		return this.particles.getTCOffset();
 	}
 	@Override
+	public void setSkew(Vector2f skew) {
+		this.particles.setSkew(skew);
+	}
+	@Override
+	public void setSkew(float x, float y) {
+		this.particles.setSkew(x,y);
+	}
+	@Override
+	public void setSkewX(float x) {
+		this.particles.setSkewX(x);
+	}
+	@Override
+	public void setSkewY(float y) {
+		this.particles.setSkewY(y);
+	}
+	@Override
+	public Vector2f getSkew() {
+		return particles.getSkew();
+	}
+	@Override
+	public float getSkewX() {
+		return particles.getSkewX();
+	}
+	@Override
+	public float getSkewY() {
+		return particles.getSkewY();
+	}
+	
+	@Override
 	public void addAction(TemporalAction action) {
 		action.setTransformable(this);
 		actions.add(action);

@@ -34,6 +34,7 @@ public class QuadData implements Transformable {
 	private Vector2f origin = new Vector2f(0,0);
 	private boolean visible = true;
 	private Vector2f borders = new Vector2f(4,4);
+	private Vector2f skew = new Vector2f(0,0);
 	
 	public QuadData(AnimElement element, String quadKey, TextureRegion region, float x, float y, float width, float height, Vector2f origin) {
 		this.element = element;
@@ -346,7 +347,35 @@ public class QuadData implements Transformable {
 	public void setHeight(float h) {
 		this.dimensions.setY(h);
 	}
-
+	@Override
+	public void setSkew(Vector2f skew) {
+		this.skew.set(skew);
+	}
+	@Override
+	public void setSkew(float x, float y) {
+		this.skew.set(x,y);
+	}
+	@Override
+	public void setSkewX(float x) {
+		this.skew.setX(x);
+	}
+	@Override
+	public void setSkewY(float y) {
+		this.skew.setY(y);
+	}
+	@Override
+	public Vector2f getSkew() {
+		return this.skew;
+	}
+	@Override
+	public float getSkewX() {
+		return skew.x;
+	}
+	@Override
+	public float getSkewY() {
+		return skew.y;
+	}
+	
 	@Override
 	public boolean getContainsAction(TemporalAction action) {
 		return actions.contains(action);

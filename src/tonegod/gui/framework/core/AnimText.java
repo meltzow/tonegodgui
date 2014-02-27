@@ -22,9 +22,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
-import com.jme3.scene.shape.Quad;
+import com.jme3.math.Vector4f;
 import com.jme3.texture.Texture;
 import java.util.LinkedList;
 
@@ -41,25 +39,27 @@ public class AnimText extends AnimElement {
 		Italic,
 		Bold
 	}
+	private LinkedList<Tag> tags = new LinkedList();
 	private BitmapFont font;
 	private String text;
 	private int imgHeight;
 	private boolean fadeIn = false;
 	private boolean fadeOut = false;
+	private char[] characters;
+	private Character c;
 	private QuadData[] letters;
+	private QuadData[] lines;
 	private QuadData qd;
+	private QuadData line;
 	private TextureRegion tr;
 	private Vector2f bounds = new Vector2f();
-	private Character c;
-	
-	char[] characters;
 	
 	private LineWrapMode textWrap = LineWrapMode.NoWrap;
 	private Align textAlign = Align.Left;
 	private VAlign textVAlign = VAlign.Top;
-	private Align lastAlign = textAlign;
 	private Align currentAlign = textAlign;
-	private boolean justified = true;
+	private float size = 30;
+	private ColorRGBA fontColor = new ColorRGBA(1f,1f,1f,1f);
 	
 	private int lineCount = 0;
 	private float	fadeDuration = 0,
@@ -71,28 +71,29 @@ public class AnimText extends AnimElement {
 	BitmapCharacter bc, bcSpc;
 	int wordSIndex = 0, wordEIndex = 0;
 	int lineSIndex = 0, lineEIndex = 0;
+	int italicSIndex = 0, italicEIndex = 0;
 	float x = 0, y = 0, lnWidth = 0, wordWidth = 0;
 	int lIndex = 0;
 	boolean placeWord = false;
 	
-	private boolean useDropShadow = false;
-	private Vector2f dsOffset = new Vector2f(0,-3);
-	private ColorRGBA fontColor = new ColorRGBA(1f,1f,1f,1f);
-	private ColorRGBA dsColor = new ColorRGBA(0.3f,0.3f,0.3f,0.5f);
+	// Formatting
+	boolean hasLines = false;
+	AnimElement lineDisplay;
+	int lineDisplaySIndex = 0, lineDisplayEIndex = 0;
+	TextureRegion trLine;
+	int lineIndex = 0;
+	boolean ul = false;
+	float lineOffset = 3;
+	float lineSize = 2;
+	float skewSize = 3;
 	
 	// Temp vars
 	private Vector2f align = new Vector2f();
 	private Vector2f pos = new Vector2f();
 	
-	char[] nl;
-	
-	private LinkedList<Tag> tags = new LinkedList();
-	
 	public AnimText(AssetManager assetManager, BitmapFont font) {
 		this(assetManager, font, (Texture)font.getPage(0).getParam("ColorMap").getValue());
 	}
-	
-	private float size = 30;
 	
 	public AnimText(AssetManager assetManager, BitmapFont font, Texture bfTexture) {
 		super(assetManager);
@@ -101,8 +102,17 @@ public class AnimText extends AnimElement {
 		this.setScale(1,1);
 		this.setPosition(0,0);
 		this.setOrigin(0,0);
-		nl = System.getProperty("line.separator").toCharArray();
+	//	nl = System.getProperty("line.separator").toCharArray();
 		this.size = 30/font.getPreferredSize();
+		
+		Texture tex = assetManager.loadTexture("tonegod/gui/style/def/TextField/text_field_x.png");
+		
+		lineDisplay = new AnimElement(assetManager) {
+			@Override
+			public void animElementUpdate(float tpf) {  }
+		};
+		lineDisplay.setTexture(tex);
+		trLine = lineDisplay.addTextureRegion("trLine", 4, 4, 6, 6);
 		
 		setTexture(bfTexture);
 		imgHeight = (int)bfTexture.getImage().getHeight();
@@ -111,9 +121,18 @@ public class AnimText extends AnimElement {
 		initialize();
 		
 		setBounds(getWidth(),getHeight());
+	//	lineDisplay.setDimensions(bounds);
+	}
+	
+	public AnimElement getLineDisplay() {
+		return this.lineDisplay;
 	}
 	
 	public final void setText(String text) {
+		hasLines = false;
+		lineDisplay.quads.clear();
+		lineDisplay.detachAllChildren();
+		
 		this.uvs.clear();
 		this.quads.clear();
 		bcSpc = font.getCharSet().getCharacter('i');
@@ -130,11 +149,16 @@ public class AnimText extends AnimElement {
 				if (c != ' ') {
 					tr = addTextureRegion(String.valueOf(c.hashCode()), bc.getX(), imgHeight-bc.getY()-bc.getHeight(), bc.getWidth(), bc.getHeight());
 					tr.flip(false, true);
-					align.set(bc.getWidth()/2, bc.getHeight()/2);
+					align.set(bc.getWidth()*size/2, bc.getHeight()*size/2);
 					pos.set(lineWidth,font.getCharSet().getBase()-bc.getHeight()-bc.getYOffset());
 					qd = addQuad(String.valueOf(lIndex), String.valueOf(c.hashCode()), pos, align);
 					qd.setColor(fontColor);
 					qd.userIndex = textIndex;
+					if (hasLines) {
+						line = lineDisplay.addQuad(String.valueOf(lIndex), "trLine", pos, align);
+						line.setDimensions(bc.getXAdvance()*size,(lineSize*size < 1) ? 1 : lineSize*size);
+						line.setColor(fontColor);
+					}
 					lineWidth += bc.getXAdvance();
 					lIndex++;
 				} else {
@@ -155,6 +179,22 @@ public class AnimText extends AnimElement {
 		letters = quads.values().toArray(new QuadData[0]);
 		
 		this.text = text;
+		
+		if (hasLines) {
+			lineDisplay.initialize();
+			if (getMaterial().getParam("Clipping") != null) {
+				lineDisplay.getMaterial().setVector4("Clipping", (Vector4f)getMaterial().getParam("Clipping").getValue());
+				lineDisplay.getMaterial().setBoolean("UseClipping", (Boolean)getMaterial().getParam("UseClipping").getValue());
+			}
+			lineDisplay.update(0);
+			if (lineDisplay.getParent() == null)
+				attachChild(lineDisplay);
+		} else {
+			lineDisplay.removeFromParent();
+		}
+		
+		lines = lineDisplay.quads.values().toArray(new QuadData[0]);
+		
 	}
 	
 	private String stripTags(String text) {
@@ -178,9 +218,7 @@ public class AnimText extends AnimElement {
 						}
 						break;
 					case Underline:
-						if (!tag.close) {
-							
-						}
+						hasLines = true;
 						break;
 				}
 				
@@ -191,16 +229,15 @@ public class AnimText extends AnimElement {
 			}
 			sIndex = text.indexOf("<");
 		}
-		
 		return text;
 	}
 	
 	private TagType getTagType(String tagName) {
 		if (tagName.equals("<u>") || tagName.equals("</u>"))
 			return TagType.Underline;
-		else if (tagName.indexOf("<i>") != -1 || tagName.indexOf("</i>") != -1)
+		else if (tagName.equals("<i>") || tagName.equals("</i>"))
 			return TagType.Italic;
-		else if (tagName.indexOf("<strike") != -1 || tagName.indexOf("</strike") != -1)
+		else if (tagName.equals("<strike>") || tagName.equals("</strike>"))
 			return TagType.StrikeThrough;
 		else if (tagName.indexOf("<b>") != -1 || tagName.indexOf("</b>") != -1)
 			return TagType.Bold;
@@ -209,19 +246,6 @@ public class AnimText extends AnimElement {
 		else if (tagName.indexOf("<p") != -1 || tagName.indexOf("</p>") != -1)
 			return TagType.Paragraph;
 		else return null;
-	}
-	
-	private Tag hasTagAt(int index) {
-		Tag ret = null;
-		
-		for (Tag tag : tags) {
-			if (tag.index == index) {
-				ret = tag;
-				break;
-			}
-		}
-		
-		return ret;
 	}
 	
 	public void setMaxAlpha(float alpha) {
@@ -234,21 +258,61 @@ public class AnimText extends AnimElement {
 	}
 	
 	public void wrapTextNoWrap() {
+		int i = 0;
 		x = 0; y = -(font.getCharSet().getBase()/2)*size;
 		lnWidth = 0;
 		lIndex = 0;
 		bcSpc = font.getCharSet().getCharacter('i');
-		for (char c : text.toCharArray()) {
+		for (char c : characters) {
 			bc = font.getCharSet().getCharacter(c);
 			
 			if (bc != null) {
+				for (Tag t : tags) {
+					if (t.index == i) {
+						switch (t.type) {
+							case Italic:
+								if (t.close) {
+									italicEIndex = lIndex;
+									formatItalic();
+								} else {
+									italicSIndex = lIndex;
+								}
+								break;
+							case Underline:
+								if (t.close) {
+									ul = false;
+								} else {
+									ul = true;
+								}
+								break;
+						}
+					}
+				}
 				if (c != ' ') {
-					QuadData quad = getQuads().get(String.valueOf(lIndex));
+					QuadData quad = letters[lIndex];
 					float offset = font.getCharSet().getBase()*size;
 					offset -= (bc.getHeight()*size);
 					offset -= (bc.getYOffset()*size);
 					quad.setPosition(x,offset+y);
 					quad.setDimensions(quad.getTextureRegion().getRegionWidth()*size,quad.getTextureRegion().getRegionHeight()*size);
+					
+					if (hasLines) {
+						line = lines[lIndex];
+						line.setPosition(x,y-(lineOffset*size));
+						line.setDimensions(quad.getWidth(),(lineSize*size < 1) ? 1 : lineSize*size);
+						if (!ul) line.setWidth(0);
+						else {
+							if (lIndex-1 > -1) {
+								QuadData lastLine = lines[lIndex-1];
+								if (lastLine.getWidth() != 0) {
+									if (line.getPositionX() > lastLine.getPositionX()) {
+										lastLine.setWidth(line.getPositionX()-lastLine.getPositionX());
+									}
+								}
+							}
+						}
+					}
+					
 					
 					x += bc.getXAdvance()*size;
 					lnWidth += bc.getXAdvance()*size;
@@ -256,8 +320,10 @@ public class AnimText extends AnimElement {
 				} else {
 					x += bcSpc.getXAdvance()*size;
 					lnWidth += bcSpc.getXAdvance()*size;
+					if (hasLines && ul) line.setWidth(line.getWidth()+(bcSpc.getXAdvance()*size));
 				}
 			}
+			i++;
 		}
 		
 		lineWidth = lnWidth;
@@ -270,6 +336,7 @@ public class AnimText extends AnimElement {
 		setOrigin(getWidth()/2,getHeight()/2);
 		mesh.update(0);
 		mesh.updateBound();
+		lineDisplay.update(0);
 		alignToBoundsV();
 	}
 	public void wrapTextToCharacter(float width) {
@@ -345,6 +412,7 @@ public class AnimText extends AnimElement {
 		lIndex = 0;
 		placeWord = false;
 		int i = 0;
+		lineIndex = 0;
 		
 		for (char c : characters) {
 			bc = font.getCharSet().getCharacter(c);
@@ -360,8 +428,20 @@ public class AnimText extends AnimElement {
 							case Paragraph:
 								formatParagraph(t,width);
 								break;
+							case Italic:
+								if (t.close) {
+									italicEIndex = lIndex;
+									formatItalic();
+								} else {
+									italicSIndex = lIndex;
+								}
+								break;
 							case Underline:
-								
+								if (t.close) {
+									ul = false;
+								} else {
+									ul = true;
+								}
 								break;
 						}
 					}
@@ -369,6 +449,7 @@ public class AnimText extends AnimElement {
 				if (c == ' ') {
 					lnWidth += bcSpc.getXAdvance()*size;
 					wordSIndex = lIndex;
+					if (hasLines && ul) line.setWidth(line.getWidth()+(bcSpc.getXAdvance()+4*size));
 				} else {
 					QuadData quad = letters[lIndex];
 					float offset = font.getCharSet().getBase()*size;
@@ -376,6 +457,15 @@ public class AnimText extends AnimElement {
 					offset -= (bc.getYOffset()*size);
 					quad.setPosition(x,offset+y);
 					quad.setDimensions(quad.getTextureRegion().getRegionWidth()*size,quad.getTextureRegion().getRegionHeight()*size);
+					quad.setOrigin(quad.getWidth()/2,quad.getHeight()/2);
+					
+					if (hasLines) {
+						line = lines[lIndex];
+						line.setPosition(x,y-(lineOffset*size));
+						line.setDimensions(quad.getWidth(),(lineSize*size < 1) ? 1 : lineSize*size);
+						if (!ul) line.setWidth(0);
+					}
+					
 					x += bc.getXAdvance()*size;
 					wordWidth += bc.getXAdvance()*size;
 					
@@ -389,6 +479,18 @@ public class AnimText extends AnimElement {
 					if (placeWord) {
 						placeWord(width);
 					}
+					
+					if (hasLines) {
+						if (lIndex-1 > -1) {
+							QuadData lastLine = lines[lIndex-1];
+							if (lastLine.getWidth() != 0) {
+								if (line.getPositionX() > lastLine.getPositionX()) {
+									lastLine.setWidth(line.getPositionX()-lastLine.getPositionX());
+								}
+							}
+						}
+					}
+					
 					lIndex++;
 				}
 			}
@@ -404,6 +506,14 @@ public class AnimText extends AnimElement {
 					case Paragraph:
 						formatParagraph(t,width);
 						break;
+					case Italic:
+						if (t.close) {
+							italicEIndex = lIndex;
+							formatItalic();
+						} else {
+							italicSIndex = lIndex;
+						}
+						break;
 				}
 			}
 		}
@@ -411,6 +521,7 @@ public class AnimText extends AnimElement {
 		alignToBoundsV();
 		mesh.update(0);
 		mesh.updateBound();
+		lineDisplay.update(0);
 	}
 	
 	private void placeWord(float width) {
@@ -418,18 +529,20 @@ public class AnimText extends AnimElement {
 			for (int w = wordSIndex; w <= wordEIndex; w++) {
 				QuadData quad = letters[w];
 				quad.setPositionX(quad.getPositionX()+lnWidth);
+				lines[w].setPositionX(quad.getPositionX());
 			}
 			lnWidth += wordWidth;
 		} else {
 			updateLineForAlignment(currentAlign, lineSIndex, wordSIndex, width, lnWidth);
 			
 			y -= font.getCharSet().getBase()*size;
-
+			
 			for (int w = wordSIndex; w <= wordEIndex; w++) {
 				QuadData quad = letters[w];
 				quad.setPositionY(
 					quad.getPositionY()-(font.getCharSet().getBase()*size)
 				);
+				lines[w].setPositionY(y-(lineOffset*size));
 			}
 			lineSIndex = wordSIndex;
 			
@@ -451,7 +564,7 @@ public class AnimText extends AnimElement {
 		y -= font.getCharSet().getBase()*size;
 	}
 	
-	public void formatParagraph(Tag t, float width) {
+	private void formatParagraph(Tag t, float width) {
 		placeWord(width);
 		updateLineForAlignment(currentAlign, lineSIndex, wordEIndex, width, lnWidth);
 		lineSIndex = wordEIndex;
@@ -466,16 +579,24 @@ public class AnimText extends AnimElement {
 		}
 	}
 	
+	private void formatItalic() {
+		for (int xi = italicSIndex; xi < italicEIndex; xi++) {
+			letters[xi].setSkew(skewSize*size,0);
+		}
+	}
+	
 	private void updateLineForAlignment(int head, int tail, float width) {
 		switch (textAlign) {
 			case Right:
 				for (int xi = head; xi < tail; xi++) {
 					letters[xi].setPositionX(letters[xi].getPositionX()-width);
+					if (hasLines) lines[xi].setPositionX(lines[xi].getPositionX()-width);
 				}
 				break;
 			case Center:
 				for (int xi = head; xi < tail; xi++) {
 					letters[xi].setPositionX(letters[xi].getPositionX()-(width/2));
+					if (hasLines) lines[xi].setPositionX(lines[xi].getPositionX()-(width/2));
 				}
 				break;
 		}
@@ -487,11 +608,13 @@ public class AnimText extends AnimElement {
 			case Right:
 				for (int xi = head; xi < tail; xi++) {
 					letters[xi].setPositionX(letters[xi].getPositionX()+(width-lnWidth));
+					if (hasLines) lines[xi].setPositionX(lines[xi].getPositionX()+(width-lnWidth));
 				}
 				break;
 			case Center:
 				for (int xi = head; xi < tail; xi++) {
 					letters[xi].setPositionX(letters[xi].getPositionX()+((width/2)-(lnWidth/2)));
+					if (hasLines) lines[xi].setPositionX(lines[xi].getPositionX()+((width/2)-(lnWidth/2)));
 				}
 				break;
 		}
@@ -560,31 +683,15 @@ public class AnimText extends AnimElement {
 	}
 	
 	public void setFontColor(ColorRGBA color) {
-		boolean set = false;
 		for (QuadData quad : quads.values()) {
-			if (useDropShadow) {
-				if (set) quad.setColor(color);
-				set = !set;
-			} else {
-				quad.setColor(color);
-			}
+			quad.setColor(color);
 		}
 		fontColor.set(color);
 		alpha = color.a;
 	}
 	
 	public QuadData getQuadDataAt(int index) {
-		if (useDropShadow)
-			return (QuadData)quads.values().toArray()[index*2+1];
-		else
-			return (QuadData)quads.values().toArray()[index];
-	}
-	
-	public QuadData getDropShadowAt(int index) {
-		if (useDropShadow)
-			return (QuadData)quads.values().toArray()[index*2];
-		else
-			return null;
+		return (QuadData)quads.values().toArray()[index];
 	}
 	
 	public int length() {
@@ -624,15 +731,18 @@ public class AnimText extends AnimElement {
 		switch (textVAlign) {
 			case Top:
 				setPositionY(height-lnHeight);
+				if (hasLines) lineDisplay.setOriginY(0);
 				break;
 			case Center:
 				switch (textWrap) {
 					case NoWrap:
 					case Clip:
 						setPositionY((height/2)+(lnHeight/2));
+						if (hasLines) lineDisplay.setOriginY(0);
 						break;
 					default:
 						setPositionY((height/2)+(innerHeight/2));
+						if (hasLines) lineDisplay.setOriginY(0);
 						break;
 				}
 				break;
@@ -641,15 +751,18 @@ public class AnimText extends AnimElement {
 					case NoWrap:
 					case Clip:
 						setPositionY((lnHeight*2));
+						if (hasLines) lineDisplay.setOriginY(0);
 						break;
 					default:
 						setPositionY(innerHeight+lnHeight);
+						if (hasLines) lineDisplay.setOriginY(0);
 						break;
 				}
 				break;
 		}
 		mesh.update(0);
 		mesh.updateBound();
+		lineDisplay.update(0);
 	}
 	
 	public void setTextWrap(LineWrapMode textWrap) {
@@ -752,16 +865,6 @@ public class AnimText extends AnimElement {
 				temp = temp.substring(eIndex, temp.length());
 			}
 		}
-	}
-	
-	private boolean checkNewLine(char ch) {
-		boolean ret = false;
-		for (int i = 0; i < nl.length; i++) {
-			if (ret == false)
-				ret = (ch == System.getProperty("line.separator").charAt(i));
-		}
-		return ret; //(c == System.getProperty("line.separator").charAt(0) ||
-				//c == System.getProperty("line.separator").charAt(1));
 	}
 	
 	public class Tag {

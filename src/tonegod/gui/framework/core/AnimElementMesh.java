@@ -25,6 +25,7 @@ public class AnimElementMesh extends Mesh {
 	public boolean init = false;
 	private Vector2f pos = new Vector2f(0,0);
 	private Vector2f dim = new Vector2f(0,0);
+	private Vector2f skew = new Vector2f(0,0);
 	private Vector2f tempV = new Vector2f(0,0);
 	private Vector2f tempV2 = new Vector2f(0,0);
 	
@@ -85,28 +86,29 @@ public class AnimElementMesh extends Mesh {
 		qd.index = vIndex;
 		
 		dim.set(qd.getWidth(), qd.getHeight());
+		skew.set(qd.getSkew());
 		
 		/** VERT 1 **/
 	//	if (buildPosition) {
-			applyTransforms(qd, 0, 0);
+			applyTransforms(qd, -skew.x, -skew.y);
 			vb	.put(tempV.x)
 				.put(tempV.y)
 				.put(0);
 
 			/** VERT 2 **/
-			applyTransforms(qd, dim.x, 0);
+			applyTransforms(qd, dim.x-skew.x, -skew.y);
 			vb	.put(tempV.x)
 				.put(tempV.y)
 				.put(0);
 
 			/** VERT 3 **/
-			applyTransforms(qd, 0, dim.y);
+			applyTransforms(qd, skew.x, dim.y+skew.y);
 			vb	.put(tempV.x)
 				.put(tempV.y)
 				.put(0);
 
 			/** VERT 4 **/
-			applyTransforms(qd, dim.x, dim.y);
+			applyTransforms(qd, dim.x+skew.x, dim.y+skew.y);
 			vb	.put(tempV.x)
 				.put(tempV.y)
 				.put(0);

@@ -38,6 +38,10 @@ public interface Transformable {
 	public void setDimensions(float w, float h);
 	public void setWidth(float w);
 	public void setHeight(float h);
+	public void setSkew(Vector2f skew);
+	public void setSkew(float x, float y);
+	public void setSkewX(float x);
+	public void setSkewY(float y);
 	
 	public Vector2f getPosition();
 	public float getPositionX();
@@ -61,6 +65,9 @@ public interface Transformable {
 	public Vector2f getTCOffset();
 	public float getTCOffsetX();
 	public float getTCOffsetY();
+	public Vector2f getSkew();
+	public float getSkewX();
+	public float getSkewY();
 	
 	public void addAction(TemporalAction action);
 	

@@ -9,6 +9,7 @@ import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
+import com.jme3.math.Vector4f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -35,6 +36,7 @@ public abstract class AnimElement extends Node implements Transformable {
 	Vector2f scale = new Vector2f(1,1);
 	Vector2f origin = new Vector2f(0,0);
 	Vector2f dimensions = new Vector2f(0,0);
+	Vector2f skew = new Vector2f(0,0);
 	ColorRGBA color = new ColorRGBA();
 	float rotation;
 	Spatial spatial;
@@ -50,10 +52,21 @@ public abstract class AnimElement extends Node implements Transformable {
 		flagForUpdate();
 		mesh.initialize();
 		
-	//	mat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
+		Vector4f clip = null;;
+		boolean useClip = false;
+		boolean reset = false;
+		if (mat != null) {
+			clip = (Vector4f)mat.getParam("Clipping").getValue();
+			useClip = (Boolean)getMaterial().getParam("UseClipping").getValue();
+			reset = true;
+		}
 		mat = new Material(am, "tonegod/gui/shaders/Unshaded.j3md");
 		mat.setTexture("ColorMap", tex);
 		mat.setBoolean("VertexColor", true);
+		if (reset) {
+			mat.setVector4("Clipping", clip);
+			mat.setBoolean("UseClipping", useClip);
+		}
 		mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
 		
 		Geometry geom = new Geometry();
@@ -315,6 +328,22 @@ public abstract class AnimElement extends Node implements Transformable {
 	public void setHeight(float h) {
 		this.dimensions.setY(h);
 	}
+	@Override
+	public void setSkew(Vector2f skew) {
+		this.skew.set(skew);
+	}
+	@Override
+	public void setSkew(float x, float y) {
+		this.skew.set(x,y);
+	}
+	@Override
+	public void setSkewX(float x) {
+		this.skew.setX(x);
+	}
+	@Override
+	public void setSkewY(float y) {
+		this.skew.setY(y);
+	}
 	
 	@Override
 	public float getPositionX() {
@@ -399,6 +428,19 @@ public abstract class AnimElement extends Node implements Transformable {
 	public Vector2f getTCOffset() {
 		return null;
 	}
+	@Override
+	public Vector2f getSkew() {
+		return this.skew;
+	}
+	@Override
+	public float getSkewX() {
+		return skew.x;
+	}
+	@Override
+	public float getSkewY() {
+		return skew.y;
+	}
+	
 	@Override
 	public void addAction(TemporalAction action) {
 		action.setTransformable(this);
