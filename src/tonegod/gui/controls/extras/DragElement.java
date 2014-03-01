@@ -175,11 +175,11 @@ public abstract class DragElement extends Element implements MouseButtonListener
 		
 		boolean success = onDragEnd(evt, dropEl);
 		
-		if (parentDroppable != null && parentDroppable != dropEl) {
-			parentDroppable.removeChild(this);
-		}
-		
 		if (success) {
+			if (parentDroppable != null && parentDroppable != dropEl) {
+				parentDroppable.removeChild(this);
+				parentDroppable = null;
+			}
 			parentDroppable = dropEl;
 			Vector2f pos = new Vector2f(getAbsoluteX(),getAbsoluteY());
 			Element parent = getElementParent();
