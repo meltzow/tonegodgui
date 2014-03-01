@@ -181,7 +181,6 @@ public abstract class DragElement extends Element implements MouseButtonListener
 		
 		if (success) {
 			parentDroppable = dropEl;
-			System.out.println(getParentDroppable());
 			Vector2f pos = new Vector2f(getAbsoluteX(),getAbsoluteY());
 			Element parent = getElementParent();
 			if (parent != dropEl) {
