@@ -9,6 +9,8 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
+import tonegod.gui.core.Screen;
+import tonegod.gui.core.SubScreen;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.MouseButtonListener;
@@ -25,6 +27,7 @@ public abstract class DragElement extends Element implements MouseButtonListener
 	private boolean lockToDropElementCenter = false;
 	private boolean useLockToDropElementEffect = false;
 	private boolean isEnabled = true;
+	private Element parentDroppable = null;
 	
 	private Effect slideTo;
 	
@@ -144,6 +147,20 @@ public abstract class DragElement extends Element implements MouseButtonListener
 		return this.useSpringBackEffect;
 	}
 	
+	public Element getParentDroppable() {
+		return this.parentDroppable;
+	}
+	
+	public void bindToDroppable(Element el) {
+		float x = el.getAbsoluteX()+(el.getWidth()/2);
+		float y = el.getAbsoluteY()+(el.getHeight()/2);
+		MouseButtonEvent evt = new MouseButtonEvent(0, false, (int)x, (int)y);
+		if (screen instanceof Screen) {
+			((Screen)screen).forceEventElement(this);
+			((Screen)screen).onMouseButtonEvent(evt);
+		}
+	}
+	
 	@Override
 	public void onMouseLeftPressed(MouseButtonEvent evt) {
 		
@@ -156,7 +173,13 @@ public abstract class DragElement extends Element implements MouseButtonListener
 		
 		boolean success = onDragEnd(evt, dropEl);
 		
+		if (parentDroppable != null && parentDroppable != dropEl) {
+			parentDroppable.removeChild(this);
+		}
+		
 		if (success) {
+			parentDroppable = dropEl;
+			System.out.println(getParentDroppable());
 			Vector2f pos = new Vector2f(getAbsoluteX(),getAbsoluteY());
 			Element parent = getElementParent();
 			if (parent != dropEl) {
