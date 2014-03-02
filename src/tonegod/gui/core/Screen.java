@@ -569,26 +569,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		if (useToolTips) updateToolTipLocation();
 		if (!mousePressed) {
 			mouseFocusElement = getEventElement(evt.getX(), evt.getY());
-			if (mouseFocusElement != previousMouseFocusElement) {
-				if (previousMouseFocusElement instanceof MouseFocusListener) {
-					((MouseFocusListener)previousMouseFocusElement).onLoseFocus(evt);
-				}
-				if (mouseFocusElement instanceof MouseFocusListener) {
-					((MouseFocusListener)mouseFocusElement).onGetFocus(evt);
-				}
-				previousMouseFocusElement = mouseFocusElement;
-			}
 			if (mouseFocusElement != null) {
-				focusElementIsMovable = mouseFocusElement.getIsMovable();
-				
-				if (mouseFocusElement instanceof MouseWheelListener) {
-					if (evt.getDeltaWheel() > 0) {
-						((MouseWheelListener)mouseFocusElement).onMouseWheelDown(evt);
-					} else if (evt.getDeltaWheel() < 0) {
-						((MouseWheelListener)mouseFocusElement).onMouseWheelUp(evt);
-					}
-				}
-				
 				if (useCustomCursors) {
 					if (mouseFocusElement.getIsResizable()) {
 						float offsetX = evt.getX();
@@ -621,6 +602,26 @@ public class Screen implements ElementManager, Control, RawInputListener {
 						}
 					} else {
 						this.setCursor(CursorType.POINTER);
+					}
+				}
+			}
+			if (mouseFocusElement != previousMouseFocusElement) {
+				if (previousMouseFocusElement instanceof MouseFocusListener) {
+					((MouseFocusListener)previousMouseFocusElement).onLoseFocus(evt);
+				}
+				if (mouseFocusElement instanceof MouseFocusListener) {
+					((MouseFocusListener)mouseFocusElement).onGetFocus(evt);
+				}
+				previousMouseFocusElement = mouseFocusElement;
+			}
+			if (mouseFocusElement != null) {
+				focusElementIsMovable = mouseFocusElement.getIsMovable();
+				
+				if (mouseFocusElement instanceof MouseWheelListener) {
+					if (evt.getDeltaWheel() > 0) {
+						((MouseWheelListener)mouseFocusElement).onMouseWheelDown(evt);
+					} else if (evt.getDeltaWheel() < 0) {
+						((MouseWheelListener)mouseFocusElement).onMouseWheelUp(evt);
 					}
 				}
 			}
