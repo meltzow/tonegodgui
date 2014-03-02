@@ -159,6 +159,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		scrollableArea.setTextWrap(LineWrapMode.valueOf(screen.getStyle("Menu").getString("textWrap")));
 		scrollableArea.setTextPadding(screen.getStyle("Menu").getFloat("textPadding"));
 		scrollableArea.setTextClipPadding(menuPadding+screen.getStyle("Menu").getFloat("textPadding"));
+		scrollableArea.setTextPosition(0, menuPadding);
 		
 		menuItemHeight = BitmapTextUtil.getTextLineHeight(this, "Xg");
 		
@@ -484,7 +485,6 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		
 		scrollableArea.setX(menuPadding);
 		scrollableArea.setWidth( ((getWidth() > width) ? getWidth() : width)-(menuPadding*2) );
-		scrollableArea.setY(menuPadding);
 		scrollableArea.setHeight(currentHeight);
 		
 		
@@ -698,7 +698,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		currentHighlightIndex = index;
 		if (highlight.getParent() == null)
 			this.attachChild(highlight);
-		highlight.setY(scrollableArea.getHeight()+scrollableArea.getY()-(index*menuItemHeight)-menuItemHeight);
+		highlight.setY(scrollableArea.getHeight()+scrollableArea.getY()-(index*menuItemHeight)-menuItemHeight - menuPadding);
 	}
 	
 	public Element getHighlight() {
@@ -713,6 +713,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	@Override
 	public void onMouseLeftReleased(MouseButtonEvent evt) {
 		boolean hasSubMenu = false;
+                        
 		if (Screen.isAndroid()) {
 			float x = evt.getX()-getX();
 			float y = scrollableArea.getAbsoluteHeight()-menuPadding-evt.getY();
@@ -762,5 +763,12 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		highlight.setY(scrollableArea.getHeight()+scrollableArea.getY()-(currentHighlightIndex*menuItemHeight)-menuItemHeight);
 		if (getCallerElement() != null)
 			screen.setTabFocusElement(getCallerElement());
+	}
+        
+	@Override
+	protected void onAdjustWidthForScroll() {
+		if(highlight != null) {
+			highlight.setWidth( getWidth()-(menuPadding*2));
+		}
 	}
 }

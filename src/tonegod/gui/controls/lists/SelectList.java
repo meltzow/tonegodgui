@@ -475,19 +475,19 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 				highlight.getElementMaterial().setColor("Color", highlightColor);
 				highlight.setClippingLayer(this);
 				highlight.setClipPadding(listPadding);
-				highlight.setY(scrollableArea.getHeight()-((listItems.size()-index)*listItemHeight)+listPadding);
+				highlight.setY(scrollableArea.getHeight()-((listItems.size()-index)*listItemHeight) + listPadding);
 				scrollableArea.addChild(highlight);
 			}
 			currentHeight += listItemHeight;
 			index++;
 		}
 		scrollableArea.setText(finalString);
+		scrollableArea.setTextPosition(0, listPadding);
 		
 		scrollableArea.setX(listPadding);
 		scrollableArea.setWidth( ((getWidth() > width) ? getWidth() : width)-(listPadding*2) );
 		scrollableArea.setY(listPadding);
 		scrollableArea.setHeight(currentHeight);
-		
 		
 		if(getScrollableHeight() > getHeight()-(listPadding*2)) {
 			scrollToTop();
@@ -511,7 +511,7 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 				highlight.getElementMaterial().setColor("Color", highlightColor);
 				highlight.setClippingLayer(this);
 				highlight.setClipPadding(listPadding);
-				highlight.setY(scrollableArea.getHeight()-((listItems.size()-index)*listItemHeight));
+				highlight.setY(scrollableArea.getHeight()-((listItems.size()-index)*listItemHeight) + listPadding);
 				scrollableArea.addChild(highlight);
 			}
 			currentHeight += listItemHeight;
