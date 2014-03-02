@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <cursor type="POINTER" path="tonegod/gui/style/def/Common/Cursors/Pointer.cur" />
-    <cursor type="HAND" path="tonegod/gui/style/def/Common/Cursors/Hand.cur" />
-    <cursor type="TEXT" path="tonegod/gui/style/def/Common/Cursors/Text.cur" />
+    <cursor type="POINTER" path="tonegod/gui/style/def/Common/Cursors/Pointer.cur" x="3" y="29" />
+    <cursor type="HAND" path="tonegod/gui/style/def/Common/Cursors/Hand.cur" x="3" y="29" />
+    <cursor type="TEXT" path="tonegod/gui/style/def/Common/Cursors/Text.cur" x="16" y="16" />
+    <cursor type="RESIZE_EW" path="tonegod/gui/style/def/Common/Cursors/ResizeEW.cur" x="16" y="16" />
+    <cursor type="RESIZE_NS" path="tonegod/gui/style/def/Common/Cursors/ResizeNS.cur" x="16" y="16" />
+    <cursor type="RESIZE_CNW" path="tonegod/gui/style/def/Common/Cursors/ResizeCNW.cur" x="16" y="16" />
+    <cursor type="RESIZE_CNE" path="tonegod/gui/style/def/Common/Cursors/ResizeCNE.cur" x="16" y="16" />
 </root>

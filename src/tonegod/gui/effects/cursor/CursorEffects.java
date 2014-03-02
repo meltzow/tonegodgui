@@ -67,14 +67,17 @@ public class CursorEffects {
 				loadSettings(EmitterConfig.LEFT_CLICK);
 				cursorEmitter.emitAllParticles();
 				loadSettings(EmitterConfig.DEFAULT);
+				break;
 			case 1:
 				loadSettings(EmitterConfig.RIGHT_CLICK);
 				cursorEmitter.emitAllParticles();
 				loadSettings(EmitterConfig.DEFAULT);
+				break;
 			case 2:
 				loadSettings(EmitterConfig.WHEEL_CLICK);
 				cursorEmitter.emitAllParticles();
 				loadSettings(EmitterConfig.DEFAULT);
+				break;
 		}
 	}
 	

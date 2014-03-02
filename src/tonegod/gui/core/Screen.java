@@ -588,6 +588,41 @@ public class Screen implements ElementManager, Control, RawInputListener {
 						((MouseWheelListener)mouseFocusElement).onMouseWheelUp(evt);
 					}
 				}
+				
+				if (useCustomCursors) {
+					if (mouseFocusElement.getIsResizable()) {
+						float offsetX = evt.getX();
+						float offsetY = evt.getY();
+						Element el = mouseFocusElement;
+						if (offsetX > el.getAbsoluteX() && offsetX < el.getAbsoluteX()+el.getResizeBorderWestSize()) {
+							if (offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
+								this.setCursor(CursorType.RESIZE_CNE);
+							} else if (offsetY > (el.getAbsoluteHeight()-el.getResizeBorderSouthSize()) && offsetY < el.getAbsoluteHeight()) {
+								this.setCursor(CursorType.RESIZE_CNW);
+							} else {
+								this.setCursor(CursorType.RESIZE_EW);
+							}
+						} else if (offsetX > (el.getAbsoluteWidth()-el.getResizeBorderEastSize()) && offsetX < el.getAbsoluteWidth()) {
+							if (offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
+								this.setCursor(CursorType.RESIZE_CNW);
+							} else if (offsetY > (el.getAbsoluteHeight()-el.getResizeBorderSouthSize()) && offsetY < el.getAbsoluteHeight()) {
+								this.setCursor(CursorType.RESIZE_CNE);
+							} else {
+								this.setCursor(CursorType.RESIZE_EW);
+							}
+						} else {
+							if (offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
+								this.setCursor(CursorType.RESIZE_NS);
+							} else if (offsetY > (el.getAbsoluteHeight()-el.getResizeBorderSouthSize()) && offsetY < el.getAbsoluteHeight()) {
+								this.setCursor(CursorType.RESIZE_NS);
+							} else {
+								this.setCursor(CursorType.POINTER);
+							}
+						}
+					} else {
+						this.setCursor(CursorType.POINTER);
+					}
+				}
 			}
 			if (mouseFocusElement instanceof MouseMovementListener) {
 				((MouseMovementListener)mouseFocusElement).onMouseMove(evt);
@@ -1437,10 +1472,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		if (getUseCustomCursors()) {
 			if (!forceCursor) {
 				JmeCursor jmeCur = styleManager.getCursor(cur);
-				if (cur == CursorType.TEXT) {
-					jmeCur.setxHotSpot(jmeCur.getWidth()/2);
-					jmeCur.setyHotSpot(jmeCur.getHeight()/2);
-				}
+			//	if (cur == CursorType.TEXT) {
+			//		jmeCur.setxHotSpot(jmeCur.getWidth()/2);
+			//		jmeCur.setyHotSpot(jmeCur.getHeight()/2);
+			//	}
 				if (jmeCur != null)
 					getApplication().getInputManager().setMouseCursor(jmeCur);
 			}
