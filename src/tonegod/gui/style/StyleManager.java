@@ -147,16 +147,13 @@ public class StyleManager {
 						String key = XMLHelper.getNodeAttributeValue(fstNode, "type");
 						String curPath = XMLHelper.getNodeAttributeValue(fstNode, "path");
 						
-						int hsX = 0;
-						Integer hsY = 0;
-						try {
-							hsX = Integer.valueOf(XMLHelper.getNodeAttributeValue(fstNode, "x"));
-							hsY = Integer.valueOf(XMLHelper.getNodeAttributeValue(fstNode, "y"));
-						} catch (Exception npe) {  }
-						
 						JmeCursor jmeCursor = (JmeCursor)app.getAssetManager().loadAsset(curPath);//new JmeCursor();
-						jmeCursor.setxHotSpot(hsX);
-						jmeCursor.setyHotSpot(hsY);
+						try {
+							int hsX = Integer.valueOf(XMLHelper.getNodeAttributeValue(fstNode, "x"));
+							int hsY = Integer.valueOf(XMLHelper.getNodeAttributeValue(fstNode, "y"));
+							jmeCursor.setxHotSpot(hsX);
+							jmeCursor.setyHotSpot(hsY);
+						} catch (Exception npe) {  }
 						
 						cursors.put(
 							CursorType.valueOf(key), 
