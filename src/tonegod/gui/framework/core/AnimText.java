@@ -563,7 +563,6 @@ public class AnimText extends AnimElement {
 		wordWidth = 0;
 		y -= font.getCharSet().getBase()*size;
 	}
-	
 	private void formatParagraph(Tag t, float width) {
 		placeWord(width);
 		updateLineForAlignment(currentAlign, lineSIndex, wordEIndex, width, lnWidth);
@@ -578,7 +577,6 @@ public class AnimText extends AnimElement {
 			currentAlign = textAlign;
 		}
 	}
-	
 	private void formatItalic() {
 		for (int xi = italicSIndex; xi < italicEIndex; xi++) {
 			letters[xi].setSkew(skewSize*size,0);
@@ -601,7 +599,6 @@ public class AnimText extends AnimElement {
 				break;
 		}
 	}
-	
 	private void updateLineForAlignment(Align textAlign, int head, int tail, float width, float lnWidth) {
 		if (tail == letters.length-1) tail = letters.length;
 		switch (textAlign) {
