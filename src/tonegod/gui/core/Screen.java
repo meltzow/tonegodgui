@@ -606,6 +606,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 							currentCursor != CursorType.TEXT)
 							this.setCursor(CursorType.POINTER);
 					}
+				} else {
+					this.setCursor(CursorType.POINTER);
 				}
 			}
 			if (mouseFocusElement != previousMouseFocusElement) {
@@ -657,6 +659,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					}
 				}
 			}
+		}
+		if (!mousePressed && mouseFocusElement == null) {
+			if (currentCursor != CursorType.POINTER)
+				this.setCursor(CursorType.POINTER);
 		}
 	}
 
@@ -1481,8 +1487,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			//		jmeCur.setyHotSpot(jmeCur.getHeight()/2);
 			//	}
 				if (jmeCur != null) {
-					currentCursor = cur;
 					getApplication().getInputManager().setMouseCursor(jmeCur);
+					currentCursor = cur;
 				}
 			}
 		}
