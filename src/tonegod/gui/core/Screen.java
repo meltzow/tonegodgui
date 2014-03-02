@@ -576,30 +576,36 @@ public class Screen implements ElementManager, Control, RawInputListener {
 						float offsetX = evt.getX();
 						float offsetY = evt.getY();
 						Element el = mouseFocusElement;
-						if (offsetX > el.getAbsoluteX() && offsetX < el.getAbsoluteX()+el.getResizeBorderWestSize()) {
-							if (offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
-								this.setCursor(CursorType.RESIZE_CNE);
-							} else if (offsetY > (el.getAbsoluteHeight()-el.getResizeBorderSouthSize()) && offsetY < el.getAbsoluteHeight()) {
-								this.setCursor(CursorType.RESIZE_CNW);
-							} else {
-								this.setCursor(CursorType.RESIZE_EW);
-							}
+						if (offsetX > el.getAbsoluteX() && offsetX < el.getAbsoluteX()+el.getResizeBorderWestSize() &&
+							offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
+							if (el.getResizeW() && el.getResizeS()) this.setCursor(CursorType.RESIZE_CNE);
+							else if (el.getResizeW()) this.setCursor(CursorType.RESIZE_EW);
+							else if (el.getResizeS()) this.setCursor(CursorType.RESIZE_NS);
+						} else if (offsetX > (el.getAbsoluteWidth()-el.getResizeBorderEastSize()) && offsetX < el.getAbsoluteWidth() &&
+							offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
+							if (el.getResizeE() && el.getResizeS()) this.setCursor(CursorType.RESIZE_CNW);
+							else if (el.getResizeE()) this.setCursor(CursorType.RESIZE_EW);
+							else if (el.getResizeS()) this.setCursor(CursorType.RESIZE_NS);
+						} else if (offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
+							if (el.getResizeS()) this.setCursor(CursorType.RESIZE_NS);
+						} else if (offsetX > el.getAbsoluteX() && offsetX < el.getAbsoluteX()+el.getResizeBorderWestSize() &&
+							offsetY > (el.getAbsoluteHeight()-el.getResizeBorderSouthSize()) && offsetY < el.getAbsoluteHeight()) {
+							if (el.getResizeW() && el.getResizeN()) this.setCursor(CursorType.RESIZE_CNW);
+							else if (el.getResizeW()) this.setCursor(CursorType.RESIZE_EW);
+							else if (el.getResizeN()) this.setCursor(CursorType.RESIZE_NS);
+						} else if (offsetX > (el.getAbsoluteWidth()-el.getResizeBorderEastSize()) && offsetX < el.getAbsoluteWidth() &&
+							offsetY > (el.getAbsoluteHeight()-el.getResizeBorderSouthSize()) && offsetY < el.getAbsoluteHeight()) {
+							if (el.getResizeE() && el.getResizeN()) this.setCursor(CursorType.RESIZE_CNE);
+							else if (el.getResizeE()) this.setCursor(CursorType.RESIZE_EW);
+							else if (el.getResizeN()) this.setCursor(CursorType.RESIZE_NS);
+						} else if (offsetY > (el.getAbsoluteHeight()-el.getResizeBorderSouthSize()) && offsetY < el.getAbsoluteHeight()) {
+							if (el.getResizeN()) this.setCursor(CursorType.RESIZE_NS);
+						} else if (offsetX > el.getAbsoluteX() && offsetX < el.getAbsoluteX()+el.getResizeBorderWestSize()) {
+							if (el.getResizeW()) this.setCursor(CursorType.RESIZE_EW);
 						} else if (offsetX > (el.getAbsoluteWidth()-el.getResizeBorderEastSize()) && offsetX < el.getAbsoluteWidth()) {
-							if (offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
-								this.setCursor(CursorType.RESIZE_CNW);
-							} else if (offsetY > (el.getAbsoluteHeight()-el.getResizeBorderSouthSize()) && offsetY < el.getAbsoluteHeight()) {
-								this.setCursor(CursorType.RESIZE_CNE);
-							} else {
-								this.setCursor(CursorType.RESIZE_EW);
-							}
+							if (el.getResizeE()) this.setCursor(CursorType.RESIZE_EW);
 						} else {
-							if (offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
-								this.setCursor(CursorType.RESIZE_NS);
-							} else if (offsetY > (el.getAbsoluteHeight()-el.getResizeBorderSouthSize()) && offsetY < el.getAbsoluteHeight()) {
-								this.setCursor(CursorType.RESIZE_NS);
-							} else {
-								this.setCursor(CursorType.POINTER);
-							}
+							this.setCursor(CursorType.POINTER);
 						}
 					} else {
 						if (currentCursor != CursorType.HAND &&
