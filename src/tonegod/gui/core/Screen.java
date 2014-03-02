@@ -128,6 +128,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	private boolean useCustomCursors = false;
 	private boolean forceCursor = false;
+	private CursorType currentCursor = CursorType.POINTER;
 	
 	private boolean useToolTips = false;
 	private ToolTip toolTip = null;
@@ -601,7 +602,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 							}
 						}
 					} else {
-						this.setCursor(CursorType.POINTER);
+						if (currentCursor != CursorType.HAND &&
+							currentCursor != CursorType.TEXT)
+							this.setCursor(CursorType.POINTER);
 					}
 				}
 			}
@@ -1477,8 +1480,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			//		jmeCur.setxHotSpot(jmeCur.getWidth()/2);
 			//		jmeCur.setyHotSpot(jmeCur.getHeight()/2);
 			//	}
-				if (jmeCur != null)
+				if (jmeCur != null) {
+					currentCursor = cur;
 					getApplication().getInputManager().setMouseCursor(jmeCur);
+				}
 			}
 		}
 	}
