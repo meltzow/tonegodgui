@@ -283,6 +283,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 			getVScrollBar().setX(getWidth());
 			scrollHidden = false;
 		}
+        onAdjustWidthForScroll();
 	}
 	
 	/**
@@ -363,5 +364,9 @@ public class ScrollArea extends Element implements MouseWheelListener {
 			vScrollBar.scrollByYInc(vScrollBar.getTrackInc());
 		}
 		evt.setConsumed();
+	}
+        
+	protected void onAdjustWidthForScroll() {
+		// Hook called when width adjusts because of scrollbar visibility
 	}
 }
