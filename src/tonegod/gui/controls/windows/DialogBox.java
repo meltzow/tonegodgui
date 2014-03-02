@@ -122,6 +122,10 @@ public abstract class DialogBox extends AlertBox {
 		form.addFormElement(btnCancel);
 	}
 	
+	public ButtonAdapter getButtonCancel() {
+		return this.btnCancel;
+	}
+	
 	/**
 	 * Sets the text of the Cancel button
 	 * @param text String

@@ -151,6 +151,14 @@ public abstract class AlertBox extends Window {
 		form.addFormElement(btnOk);
 	}
 	
+	public ScrollArea getMessageArea() {
+		return this.dlg;
+	}
+	
+	public ButtonAdapter getButtonOk() {
+		return this.btnOk;
+	}
+	
 	/**
 	 * Sets the message to display in the AlertBox
 	 * @param text String The message

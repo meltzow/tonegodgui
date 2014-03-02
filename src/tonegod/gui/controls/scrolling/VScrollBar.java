@@ -238,6 +238,22 @@ public class VScrollBar extends Element {
 		this.addChild(btnScrollDown);
 	}
 	
+	public ButtonAdapter getScrollTrack() {
+		return this.btnScrollTrack;
+	}
+	
+	public ButtonAdapter getScrollThumb() {
+		return this.btnScrollThumb;
+	}
+	
+	public ButtonAdapter getScrollButtonUp() {
+		return this.btnScrollUp;
+	}
+	
+	public ButtonAdapter getScrollButtonDown() {
+		return this.btnScrollDown;
+	}
+	
 	/**
 	 * Sets the increment value used when scrolling by arrow button click
 	 * @param btnInc int
