@@ -112,6 +112,7 @@ public class Element extends Node {
 	
 	private Geometry geom;
 	private ElementQuadGrid model;
+	private boolean tileImage = false;
 	private Material mat;
 	private Texture defaultTex;
 	private boolean useLocalAtlas = false;
@@ -372,6 +373,19 @@ public class Element extends Node {
 		float pixelHeight = 1f/imgHeight;
 
 		return new Vector2f( getModel().getEffectOffset( pixelWidth*coords[0], pixelHeight*(imgHeight-coords[1]-coords[3]) ));
+	}
+	
+	public void setTileImage(boolean tileImage) {
+		this.tileImage = tileImage;
+		if (tileImage)
+			((Texture)mat.getParam("ColorMap").getValue()).setWrap(Texture.WrapMode.Repeat);
+		else
+			((Texture)mat.getParam("ColorMap").getValue()).setWrap(Texture.WrapMode.Clamp);
+		setDimensions(dimensions);
+	}
+	
+	public boolean getTileImage() {
+		return this.tileImage;
 	}
 	
 	/**
@@ -1118,6 +1132,11 @@ public class Element extends Node {
 		this.dimensions.setX(w);
 		this.dimensions.setY(h);
 		getModel().updateDimensions(dimensions.x, dimensions.y);
+		if (tileImage) {
+			float tcW = dimensions.x/getModel().getImageWidth();
+			float tcH = dimensions.y/getModel().getImageHeight();
+			getModel().updateTiledTexCoords(0, -tcH, tcW, 0);
+		}
 		geom.updateModelBound();
 		if (textElement != null) {
 			updateTextElement();
@@ -1132,6 +1151,11 @@ public class Element extends Node {
 	public void setDimensions(Vector2f dimensions) {
 		this.dimensions.set(dimensions);
 		getModel().updateDimensions(dimensions.x, dimensions.y);
+		if (tileImage) {
+			float tcW = dimensions.x/getModel().getImageWidth();
+			float tcH = dimensions.y/getModel().getImageHeight();
+			getModel().updateTiledTexCoords(0, -tcH, tcW, 0);
+		}
 		geom.updateModelBound();
 		if (textElement != null) {
 			updateTextElement();
@@ -1155,6 +1179,11 @@ public class Element extends Node {
 	public void setWidth(float width) {
 		this.dimensions.setX(width);
 		getModel().updateWidth(dimensions.x);
+		if (tileImage) {
+			float tcW = dimensions.x/getModel().getImageWidth();
+			float tcH = dimensions.y/getModel().getImageHeight();
+			getModel().updateTiledTexCoords(0, -tcH, tcW, 0);
+		}
 		geom.updateModelBound();
 		if (textElement != null) {
 			updateTextElement();
@@ -1169,6 +1198,11 @@ public class Element extends Node {
 	public void setHeight(float height) {
 		this.dimensions.setY(height);
 		getModel().updateHeight(dimensions.y);
+		if (tileImage) {
+			float tcW = dimensions.x/getModel().getImageWidth();
+			float tcH = dimensions.y/getModel().getImageHeight();
+			getModel().updateTiledTexCoords(0, -tcH, tcW, 0);
+		}
 		geom.updateModelBound();
 		if (textElement != null) {
 			updateTextElement();

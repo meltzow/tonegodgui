@@ -125,6 +125,12 @@ public class ElementQuadGrid extends Mesh {
 		
 		setBuffers(true);
 	}
+	public float getImageWidth() {
+		return this.imgWidth;
+	}
+	public float getImageHeight() {
+		return this.imgHeight;
+	}
 	public Vector2f getEffectOffset(float x, float y) {
 		return  new Vector2f( x-atlasX, y-atlasY );
 	}
@@ -216,6 +222,33 @@ public class ElementQuadGrid extends Mesh {
 		this.clearBuffer(Type.TexCoord);
 		this.setBuffer(Type.TexCoord, 2, coords);
 	}
+	public void updateTiledTexCoords(float atlasX, float atlasY, float atlasW, float atlasH) {
+		templateCoordX = new float[] {
+			atlasX, atlasX+(pixelWidth*borders.y), atlasW-(pixelWidth*borders.z), atlasW
+		};
+		templateCoordY = new float[] {
+			atlasY, atlasY+(pixelHeight*borders.x), atlasH-(pixelHeight*borders.w), atlasH
+		};
+		
+		int index = 0;
+		int indexX = 0;
+		int indexY = 0;
+		for (int y = 0; y < 4; y++) {
+			for (int x = 0; x < 4; x++) {
+				coords.put(index, templateCoordX[indexX]);
+				index++;
+				coords.put(index, templateCoordY[indexY]);
+				index++;
+				indexX++;
+				if (indexX == 4) { indexX = 0; }
+			}
+			indexY++;
+			if (indexY == 4) { indexY = 0; }
+		}
+		this.clearBuffer(Type.TexCoord);
+		this.setBuffer(Type.TexCoord, 2, coords);
+	}
+	
 	public void resetColorBuffer() {
 		colors = null;
 		setBuffers(true);
