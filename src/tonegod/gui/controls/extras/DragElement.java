@@ -151,6 +151,10 @@ public abstract class DragElement extends Element implements MouseButtonListener
 		return this.parentDroppable;
 	}
 	
+	public void clearParentDroppable() {
+		this.parentDroppable = null;
+	}
+	
 	public void bindToDroppable(Element el) {
 		if (el.getIsDragDropDropElement()) {
 			float x = el.getAbsoluteX()+(el.getWidth()/2);
