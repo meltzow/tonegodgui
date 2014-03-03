@@ -151,14 +151,14 @@ public class AnimElementMesh extends Mesh {
 		QuadData p = qd.parent;
 		tempV.set(x,y);
 		tempV.subtractLocal(qd.getOrigin());
-		tempV.set(rot(tempV, qd.getRotation()));
 		tempV.multLocal(tempV2.set(qd.getScaleX(), qd.getScaleY()));
+		tempV.set(rot(tempV, qd.getRotation()));
 		tempV.addLocal(qd.getOrigin());
 		tempV.addLocal(qd.getPositionX(),qd.getPositionY());
 		while (p != null) {
 			tempV.subtractLocal(p.getOriginX(), p.getOriginY());
-			tempV.set(rot(tempV, p.getRotation()));
 			tempV.multLocal(tempV2.set(p.getScaleX(), p.getScaleY()));
+			tempV.set(rot(tempV, p.getRotation()));
 			tempV.addLocal(p.getOriginX(), p.getOriginY());
 			tempV.addLocal(p.getPositionX(),p.getPositionY());
 			p = p.parent;
