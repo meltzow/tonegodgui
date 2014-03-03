@@ -157,6 +157,11 @@ public abstract class DragElement extends Element implements MouseButtonListener
 	
 	public void bindToDroppable(Element el) {
 		if (el.getIsDragDropDropElement()) {
+			if (getElementParent() != null)
+				getElementParent().removeChild(this);
+			if (screen.getElementById(getUID()) == null)
+				screen.addElement(this);
+			
 			float x = el.getAbsoluteX()+(el.getWidth()/2);
 			float y = el.getAbsoluteY()+(el.getHeight()/2);
 			MouseButtonEvent evt = new MouseButtonEvent(0, false, (int)x, (int)y);

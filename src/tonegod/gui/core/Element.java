@@ -440,6 +440,7 @@ public class Element extends Node {
 	public void removeChild(Element child) {
 		Element e = elementChildren.remove(child.getUID());
 		if (e != null) {
+			e.elementParent = null;
 			e.removeFromParent();
 			e.cleanup();
 		}
