@@ -539,7 +539,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	
 	private void addCheckBox(int index, MenuItem mi) {
 		CheckBox checkbox = new CheckBox(screen, getUID() + ":CheckBox:" + index,
-			new Vector2f(menuPadding, -(menuItems.size()*menuItemHeight)+(menuItemHeight+(index*menuItemHeight)))
+			new Vector2f(menuPadding, -(menuItems.size()*menuItemHeight)+(menuItemHeight+(index*menuItemHeight)+(menuPadding)))
 		);
 		checkbox.setScaleEW(false);
 		checkbox.setScaleNS(false);
