@@ -18,7 +18,7 @@ MaterialDef Unshaded {
         Boolean VertexColor (UseVertexColor)
 		Boolean UseClipping : false
 		Vector4 Clipping
-		Boolean IsTextField : false
+		Boolean IsTextField
 		Boolean HasTabFocus : false
 		Float CaretX : 1.0
 		Float CaretSpeed : 10.0
@@ -46,15 +46,6 @@ MaterialDef Unshaded {
             HAS_COLOR : Color
 			HAS_ALPHAMAP : AlphaMap
 			IS_TEXTFIELD : IsTextField
-			USE_EFFECT : UseEffect
-			USE_CLIPPING : UseClipping
-			EFFECT_PULSE : EffectPulse
-			EFFECT_PULSE_COLOR : EffectPulseColor
-			EFFECT_FADE : EffectFade
-			EFFECT_SATURATE : EffectSaturate
-			EFFECT_IMAGE_SWAP : EffectImageSwap
-			SHOW_TEXT_RANGE : ShowTextRange
-			HAS_TAB_FOCUS : HasTabFocus
         }
     }
 }
