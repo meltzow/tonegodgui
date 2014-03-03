@@ -18,4 +18,5 @@
 	<style control="ChatBox" path="tonegod/gui/style/atlasdef/ChatBox/ChatBox.gui.xml" />
 	<style control="Indicator" path="tonegod/gui/style/atlasdef/Common/Extras/Indicator.gui.xml" />
 	<style control="ColorWheel" path="tonegod/gui/style/atlasdef/Common/Extras/ColorWheel.gui.xml" />
+	<style control="Table" path="tonegod/gui/style/atlasdef/Table/Table.gui.xml" />
 </root>
