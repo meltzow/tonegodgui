@@ -26,22 +26,34 @@ import tonegod.gui.framework.animation.TemporalAction;
  * @author t0neg0d
  */
 public abstract class AnimElement extends Node implements Transformable {
+	public static enum ZOrderEffect {
+		Self,
+		Child,
+		Both,
+		None
+	}
 	public List<TemporalAction> actions = new ArrayList();
 	protected Map<String, QuadData> quads = new LinkedHashMap();
-	Texture tex;
+	protected Texture tex;
 	protected Map<String, TextureRegion> uvs = new HashMap();
 	protected AnimElementMesh mesh;
-	Vector2f position = new Vector2f(0,0);
-	float z = 1;
-	Vector2f scale = new Vector2f(1,1);
-	Vector2f origin = new Vector2f(0,0);
-	Vector2f dimensions = new Vector2f(0,0);
-	Vector2f skew = new Vector2f(0,0);
-	ColorRGBA color = new ColorRGBA();
-	float rotation;
-	Spatial spatial;
-	Material mat = null;
-	AssetManager am;
+	protected Vector2f position = new Vector2f(0,0);
+	protected float z = 1;
+	protected Vector2f scale = new Vector2f(1,1);
+	protected Vector2f origin = new Vector2f(0,0);
+	protected Vector2f dimensions = new Vector2f(0,0);
+	protected Vector2f skew = new Vector2f(0,0);
+	protected ColorRGBA color = new ColorRGBA();
+	protected float rotation;
+	protected Spatial spatial;
+	protected Material mat = null;
+	protected AssetManager am;
+	protected String elementKey;
+	protected Object dataStruct;
+	protected ZOrderEffect zOrderEffect = ZOrderEffect.Child;
+	protected boolean ignoreMouse = false;
+	protected boolean isMovable = false;
+	protected AnimLayer parentLayer = null;
 	
 	public AnimElement(AssetManager am) {
 		this.am = am;
@@ -74,6 +86,22 @@ public abstract class AnimElement extends Node implements Transformable {
 		
 		attachChild(geom);
 		setMaterial(mat);
+	}
+	
+	public void setZOrderEffect(ZOrderEffect zOrderEffect) {
+		this.zOrderEffect = zOrderEffect;
+	}
+	
+	public ZOrderEffect getZOrderEffect() {
+		return this.zOrderEffect;
+	}
+	
+	public void setParentLayer(AnimLayer layer) {
+		this.parentLayer = layer;
+	}
+	
+	public AnimLayer getParentLayer() {
+		return this.parentLayer;
 	}
 	
 	public boolean getIsInitialized() {
@@ -355,6 +383,14 @@ public abstract class AnimElement extends Node implements Transformable {
 	public void setSkewY(float y) {
 		this.skew.setY(y);
 	}
+	@Override
+	public void setIgnoreMouse(boolean ignoreMouse) {
+		this.ignoreMouse = ignoreMouse;
+	}
+	@Override
+	public void setIsMovable(boolean isMovable) {
+		this.isMovable = isMovable;
+	}
 	
 	@Override
 	public float getPositionX() {
@@ -451,6 +487,14 @@ public abstract class AnimElement extends Node implements Transformable {
 	public float getSkewY() {
 		return skew.y;
 	}
+	@Override
+	public boolean getIgnoreMouse() {
+		return this.ignoreMouse;
+	}
+	@Override
+	public boolean getIsMovable() {
+		return this.isMovable;
+	}
 	
 	@Override
 	public void addAction(TemporalAction action) {
@@ -463,7 +507,13 @@ public abstract class AnimElement extends Node implements Transformable {
 	}
 	//</editor-fold>
 	
-	public Object dataStruct;
+	public void setElementKey(String key) {
+		this.elementKey = key;
+	}
+	
+	public String getElementKey() {
+		return elementKey;
+	}
 	
 	public <T extends Object> void setDataStruct(T dataStruct) {
 		this.dataStruct = dataStruct;

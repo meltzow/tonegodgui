@@ -42,6 +42,8 @@ public interface Transformable {
 	public void setSkew(float x, float y);
 	public void setSkewX(float x);
 	public void setSkewY(float y);
+	public void setIgnoreMouse(boolean ignoreMouse);
+	public void setIsMovable(boolean isMovable);
 	
 	public Vector2f getPosition();
 	public float getPositionX();
@@ -68,6 +70,8 @@ public interface Transformable {
 	public Vector2f getSkew();
 	public float getSkewX();
 	public float getSkewY();
+	public boolean getIgnoreMouse();
+	public boolean getIsMovable();
 	
 	public void addAction(TemporalAction action);
 	

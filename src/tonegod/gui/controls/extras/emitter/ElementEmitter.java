@@ -77,6 +77,9 @@ public class ElementEmitter implements Control, Transformable {
 	private Node targetElement = null;
 	private Node rootNode = null;
 	
+	protected boolean ignoreMouse = true;
+	protected boolean isMovable = false;
+	
 	public ElementEmitter(Screen screen, Vector2f position, float emitterWidth, float emitterHeight) {
 		
 		this.screen = screen;
@@ -608,6 +611,14 @@ public class ElementEmitter implements Control, Transformable {
 		this.particles.setHeight(h);
 	}
 	@Override
+	public void setIgnoreMouse(boolean ignoreMouse) {
+		this.ignoreMouse = ignoreMouse;
+	}
+	@Override
+	public void setIsMovable(boolean isMovable) {
+		this.isMovable = isMovable;
+	}
+	@Override
 	public float getPositionX() {
 		return emitterPosition.x;
 	}
@@ -720,6 +731,14 @@ public class ElementEmitter implements Control, Transformable {
 	@Override
 	public float getSkewY() {
 		return particles.getSkewY();
+	}
+	@Override
+	public boolean getIgnoreMouse() {
+		return this.ignoreMouse;
+	}
+	@Override
+	public boolean getIsMovable() {
+		return this.isMovable;
 	}
 	
 	@Override

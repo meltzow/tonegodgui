@@ -35,6 +35,8 @@ public class QuadData implements Transformable {
 	private boolean visible = true;
 	private Vector2f borders = new Vector2f(4,4);
 	private Vector2f skew = new Vector2f(0,0);
+	private boolean ignoreMouse = false;
+	private boolean isMovable = false;
 	
 	public QuadData(AnimElement element, String quadKey, TextureRegion region, float x, float y, float width, float height, Vector2f origin) {
 		this.element = element;
@@ -221,6 +223,14 @@ public class QuadData implements Transformable {
 		this.tcOffset.y = y;
 		element.mesh.buildTexCoords = true;
 	}
+	@Override
+	public void setIgnoreMouse(boolean ignoreMouse) {
+		this.ignoreMouse = ignoreMouse;
+	}
+	@Override
+	public void setIsMovable(boolean isMovable) {
+		this.isMovable = isMovable;
+	}
 
 	@Override
 	public Vector2f getPosition() {
@@ -374,6 +384,14 @@ public class QuadData implements Transformable {
 	@Override
 	public float getSkewY() {
 		return skew.y;
+	}
+	@Override
+	public boolean getIgnoreMouse() {
+		return this.ignoreMouse;
+	}
+	@Override
+	public boolean getIsMovable() {
+		return this.isMovable;
 	}
 	
 	@Override

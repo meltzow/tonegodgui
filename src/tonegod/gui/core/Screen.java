@@ -28,6 +28,7 @@ import com.jme3.math.Ray;
 import com.jme3.math.Triangle;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
@@ -61,10 +62,15 @@ import tonegod.gui.controls.util.ToolTip;
 import tonegod.gui.core.Element.Borders;
 import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.core.utils.BitmapTextUtil;
+import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.EffectManager;
 import tonegod.gui.effects.cursor.CursorEffects;
 import tonegod.gui.fonts.BitmapFontLoaderX;
+import tonegod.gui.framework.core.AnimElement;
+import tonegod.gui.framework.core.AnimElement.ZOrderEffect;
 import tonegod.gui.framework.core.AnimManager;
+import tonegod.gui.framework.core.AnimLayer;
+import tonegod.gui.framework.core.QuadData;
 import tonegod.gui.listeners.*;
 
 /**
@@ -78,6 +84,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private Map<String, SubScreen> subscreens = new HashMap();
 	private Ray elementZOrderRay = new Ray();
 	private Vector3f guiRayOrigin = new Vector3f();
+	private CollisionResults results;
 	
 	private boolean useMultiTouch = false;
 	private Vector2f tempElementOffset = new Vector2f();
@@ -152,6 +159,16 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private ModalBackground modalBackground;
 	private Keyboard virtualKeys;
 	
+	// AnimLayer & 2D framework support
+	private Map<String, AnimLayer> layers = new LinkedHashMap();
+	private float layerZOrderCurrent = 0f;
+	private AnimElement eventAnimElement = null;
+	private QuadData eventQuad = null;
+	private float eventAnimOffsetX = 0;
+	private float eventAnimOffsetY = 0;
+	private float eventQuadOffsetX = 0;
+	private float eventQuadOffsetY = 0;
+	
 	// SubScreen collisions
 	private Vector2f click2d = new Vector2f(), tempV2 = new Vector2f();
 	private Vector3f click3d = new Vector3f(), pickOrigin = new Vector3f(), pickDir = new Vector3f();
@@ -192,6 +209,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 
 		this.app = app;
 		this.elementZOrderRay.setDirection(Vector3f.UNIT_Z);
+		this.results = new CollisionResults();
 		try {
 			app.getAssetManager().unregisterLoader(BitmapFontLoader.class);
 			app.getAssetManager().registerLoader(BitmapFontLoaderX.class, "fnt");
@@ -1127,8 +1145,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		guiRayOrigin.set(x, y, 0f);
 		
 		elementZOrderRay.setOrigin(guiRayOrigin);
-		CollisionResults results = new CollisionResults();
-
+		results.clear();
+		
 		t0neg0dGUI.collideWith(elementZOrderRay, results);
 		
 		lastCollision = results.getClosestCollision();
@@ -1179,8 +1197,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		guiRayOrigin.set(x, y, 0f);
 		
 		elementZOrderRay.setOrigin(guiRayOrigin);
-		CollisionResults results = new CollisionResults();
-
+		results.clear();
+		
 		t0neg0dGUI.collideWith(elementZOrderRay, results);
 
 		float z = 0;
@@ -1282,8 +1300,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		guiRayOrigin.set(x, y, 0f);
 		
 		elementZOrderRay.setOrigin(guiRayOrigin);
-		CollisionResults results = new CollisionResults();
-
+		results.clear();
+		
 		t0neg0dGUI.collideWith(elementZOrderRay, results);
 
 		float z = 0;
@@ -1348,6 +1366,57 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	public Element getDropElement() {
 		return this.targetElement;
 	}
+	
+	public void getAnimEventTargets(float x, float y) {
+		guiRayOrigin.set(x, y, 0f);
+		
+		elementZOrderRay.setOrigin(guiRayOrigin);
+		results.clear();
+		
+		t0neg0dGUI.collideWith(elementZOrderRay, results);
+		
+		lastCollision = results.getClosestCollision();
+		
+		eventAnimElement = null;
+		eventQuad = null;
+		for (CollisionResult result : results) {
+			boolean discard = false;
+			if (!discard) {
+				if (result.getGeometry().getParent() instanceof AnimElement) {
+					eventAnimElement = (AnimElement)result.getGeometry().getParent();
+					if (!eventAnimElement.getIgnoreMouse()) {
+						eventAnimOffsetX = x-eventAnimElement.getPositionX();
+						eventAnimOffsetY = y-eventAnimElement.getPositionY();
+						eventQuad = eventAnimElement.getQuad((int)FastMath.floor(result.getTriangleIndex()/2));
+						if (eventAnimElement.getZOrderEffect() == ZOrderEffect.Self)
+							if (eventAnimElement.getParentLayer() != null)
+								eventAnimElement.getParentLayer().bringAnimElementToFront(eventAnimElement);
+						if (eventAnimElement.getZOrderEffect() == ZOrderEffect.Child || eventAnimElement.getZOrderEffect() == ZOrderEffect.Both)
+							eventAnimElement.bringQuadToFront(eventQuad);
+						eventQuadOffsetX = x-eventQuad.getPositionX();
+						eventQuadOffsetY = y-eventQuad.getPositionY();
+						break;
+					} else {
+						eventAnimElement = null;
+					}
+				}
+			}
+		}
+	}
+	
+	public QuadData getEventQuad() {
+		return this.eventQuad;
+	}
+	
+	public float getEventQuadOffsetX() { return this.eventQuadOffsetX; }
+	public float getEventQuadOffsetY() { return this.eventQuadOffsetY; }
+	
+	public AnimElement getEventAnimElement() {
+		return this.eventAnimElement;
+	}
+	
+	public float getEventAnimOffsetX() { return this.eventAnimOffsetX; }
+	public float getEventAnimOffsetY() { return this.eventAnimOffsetY; }
 	//</editor-fold>
 	
 	//<editor-fold desc="Clipboard Support">
@@ -1409,6 +1478,78 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	@Override
 	public AnimManager getAnimManager() {
 		return this.animManager;
+	}
+	
+	public AnimLayer addAnimLayer() {
+		return addAnimLayer(UIDUtil.getUID());
+	}
+	
+	public AnimLayer addAnimLayer(String UID) {
+		if (getAnimLayerById(UID) != null) {
+			try {
+				throw new ConflictingIDException();
+			} catch (ConflictingIDException ex) {
+				Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The child layer '" + UID + "' (Element) conflicts with a previously added child layer in parent Screen.", ex);
+				System.exit(0);
+			}
+			return null;
+		} else {
+			AnimLayer layer = new AnimLayer(
+				this,
+				UID
+			);
+			
+			layer.initZOrder(layerZOrderCurrent);
+			layerZOrderCurrent += this.getZOrderStepMajor();
+			
+			layers.put(UID, layer);
+			if (!layer.getInitialized()) {
+				layer.orgPosition = layer.getPosition().clone();
+				layer.setInitialized();
+			}
+			t0neg0dGUI.attachChild(layer);
+			
+			return layer;
+		}
+	}
+	
+	public AnimLayer removeAnimLayer(String UID) {
+		AnimLayer animLayer = layers.get(UID);
+		if (animLayer != null) {
+			removeAnimLayer(animLayer);
+			return animLayer;
+		} else
+			return null;
+	}
+	
+	public void removeAnimLayer(AnimLayer animLayer) {
+		if (layers.containsValue(animLayer)) {
+			layers.remove(animLayer.getUID());
+			float shiftZ = animLayer.getLocalTranslation().getZ();
+			for (AnimLayer el : layers.values()) {
+				if (el.getLocalTranslation().getZ() > shiftZ) {
+					el.move(0,0,-zOrderStepMajor);
+				}
+			}
+			layerZOrderCurrent -= zOrderStepMajor;
+			animLayer.removeFromParent();
+			animLayer.cleanup();
+		}
+	}
+	
+	public AnimLayer getAnimLayerById(String UID) {
+		AnimLayer ret = null;
+		if (layers.containsKey(UID)) {
+			ret = layers.get(UID);
+		} else {
+			for (AnimLayer el : layers.values()) {
+				ret = (AnimLayer)el.getChildElementById(UID);
+				if (ret != null) {
+					break;
+				}
+			}
+		}
+		return ret;
 	}
 	//</editor-fold>
 	
