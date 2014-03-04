@@ -392,4 +392,14 @@ public class QuadData implements Transformable {
 	public Vector2f getBorders() {
 		return borders;
 	}
+	
+	public Object dataStruct;
+	
+	public <T extends Object> void setDataStruct(T dataStruct) {
+		this.dataStruct = dataStruct;
+	}
+	
+	public <T extends Object> T getDataStruct() {
+		return (T)dataStruct;
+	}
 }

@@ -177,6 +177,17 @@ public abstract class AnimElement extends Node implements Transformable {
 		return this.quads.get(key);
 	}
 	
+	public QuadData getQuad(int index) {
+		return this.quads.values().toArray(new QuadData[0])[index];
+	}
+	
+	public void bringQuadToFront(QuadData quad) {
+		quads.remove(quad.key);
+		quads.put(quad.key, quad);
+		mesh.buildPosition = true;
+		mesh.buildTexCoords = true;
+	}
+	
 	public void centerQuads() {
 		float totalWidth = 0, totalHeight = 0;
 		for (QuadData q : quads.values()) {
@@ -451,4 +462,14 @@ public abstract class AnimElement extends Node implements Transformable {
 		return actions.contains(action);
 	}
 	//</editor-fold>
+	
+	public Object dataStruct;
+	
+	public <T extends Object> void setDataStruct(T dataStruct) {
+		this.dataStruct = dataStruct;
+	}
+	
+	public <T extends Object> T getDataStruct() {
+		return (T)dataStruct;
+	}
 }
