@@ -214,6 +214,7 @@ public abstract class AnimElement extends Node implements Transformable {
 		quads.put(quad.key, quad);
 		mesh.buildPosition = true;
 		mesh.buildTexCoords = true;
+		mesh.buildColor = true;
 	}
 	
 	public void centerQuads() {

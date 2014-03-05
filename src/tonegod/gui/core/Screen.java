@@ -164,6 +164,11 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private float layerZOrderCurrent = 0f;
 	private AnimElement eventAnimElement = null;
 	private QuadData eventQuad = null;
+	private AnimElement targetAnimElement = null;
+	private QuadData targetQuad = null;
+	private AnimElement mouseFocusAnimElement = null;
+	private AnimElement previousMouseFocusAnimElement = null;
+	private AnimElement mouseFocusQuad = null;
 	private float eventAnimOffsetX = 0;
 	private float eventAnimOffsetY = 0;
 	private float eventQuadOffsetX = 0;
@@ -637,6 +642,37 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			if (currentCursor != CursorType.POINTER)
 				this.setCursor(CursorType.POINTER);
 		}
+		
+		// 2D Framework
+		if (mouseFocusElement == null) {
+			if (!mousePressed) {
+				if (previousMouseFocusAnimElement != null) {
+					if (previousMouseFocusAnimElement instanceof MouseFocusListener) {
+						((MouseFocusListener)previousMouseFocusAnimElement).onLoseFocus(evt);
+						previousMouseFocusAnimElement = null;
+					}
+				}
+			//	getAnimEventTargets(evt.getX(), evt.getY());
+				if (eventAnimElement != null) {
+					mouseFocusAnimElement = eventAnimElement;
+					if (eventAnimElement instanceof MouseFocusListener) {
+						((MouseFocusListener)mouseFocusAnimElement).onGetFocus(evt);
+					}
+					previousMouseFocusAnimElement = mouseFocusAnimElement;
+				}
+			} else {
+				if (eventAnimElement != null) {
+					if (eventAnimElement.getIsMovable()) {
+
+					} else if (eventQuad.getIsMovable()) {
+						eventQuad.setPosition(
+							evt.getX()-eventQuadOffsetX,
+							evt.getY()-eventQuadOffsetY
+						);
+					}
+				}
+			}
+		}
 	}
 
 	@Override
@@ -733,6 +769,15 @@ public class Screen implements ElementManager, Control, RawInputListener {
 						if (keyboardElement == null)
 							if (Screen.isAndroid()) hideVirtualKeyboard();
 					}
+					
+					// 2D Framework
+					if (eventElement == null) {
+						setAnimElementZOrder();
+						if (eventAnimElement instanceof MouseButtonListener) {
+							((MouseButtonListener)eventAnimElement).onMouseLeftPressed(evt);
+						}
+						evt.setConsumed();
+					}
 					break;
 				case 1:
 					mouseRightPressed = true;
@@ -744,6 +789,15 @@ public class Screen implements ElementManager, Control, RawInputListener {
 							((MouseButtonListener)eventElement).onMouseRightPressed(evt);
 						}
 						evt.setConsumed();
+					} else {
+						// 2D Framework
+						if (eventAnimElement != null) {
+							setAnimElementZOrder();
+							if (eventAnimElement instanceof MouseButtonListener) {
+								((MouseButtonListener)eventAnimElement).onMouseRightPressed(evt);
+							}
+							evt.setConsumed();
+						}
 					}
 					break;
 				case 2:
@@ -754,6 +808,15 @@ public class Screen implements ElementManager, Control, RawInputListener {
 							((MouseWheelListener)eventElement).onMouseWheelPressed(evt);
 						}
 						evt.setConsumed();
+					} else {
+						// 2D Framework
+						if (eventAnimElement != null) {
+							setAnimElementZOrder();
+							if (eventAnimElement instanceof MouseWheelListener) {
+								((MouseWheelListener)eventAnimElement).onMouseWheelPressed(evt);
+							}
+							evt.setConsumed();
+						}
 					}
 					break;
 			}
@@ -770,6 +833,14 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					}
 					if (eventElement != null)
 						evt.setConsumed();
+					else {
+						if (eventAnimElement != null) {
+							if (eventAnimElement instanceof MouseButtonListener) {
+								((MouseButtonListener)eventAnimElement).onMouseLeftReleased(evt);
+							}
+							evt.setConsumed();
+						}
+					}
 					break;
 				case 1:
 					mouseRightPressed = false;
@@ -778,6 +849,14 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					}
 					if (eventElement != null)
 						evt.setConsumed();
+					else {
+						if (eventAnimElement != null) {
+							if (eventAnimElement instanceof MouseButtonListener) {
+								((MouseButtonListener)eventAnimElement).onMouseRightReleased(evt);
+							}
+							evt.setConsumed();
+						}
+					}
 					break;
 				case 2:
 					mouseWheelPressed = false;
@@ -786,6 +865,14 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					}
 					if (eventElement != null)
 						evt.setConsumed();
+					else {
+						if (eventAnimElement != null) {
+							if (eventAnimElement instanceof MouseWheelListener) {
+								((MouseWheelListener)eventAnimElement).onMouseWheelReleased(evt);
+							}
+							evt.setConsumed();
+						}
+					}
 					break;
 			}
 			mousePressed = false;
@@ -1189,6 +1276,28 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			eventElementOffsetY = y-el.getY();
 			return el;
 		} else {
+			// 2D Framework
+			eventAnimElement = null;
+			eventQuad = null;
+			for (CollisionResult result : results) {
+				boolean discard = false;
+				if (!discard) {
+					if (result.getGeometry().getParent() instanceof AnimElement) {
+						eventAnimElement = (AnimElement)result.getGeometry().getParent();
+						if (!eventAnimElement.getIgnoreMouse()) {
+							eventAnimOffsetX = x-eventAnimElement.getPositionX();
+							eventAnimOffsetY = y-eventAnimElement.getPositionY();
+							eventQuad = eventAnimElement.getQuad((int)FastMath.floor(result.getTriangleIndex()/2));
+							eventQuadOffsetX = x-eventQuad.getPositionX();
+							eventQuadOffsetY = y-eventQuad.getPositionY();
+							break;
+						} else {
+							eventAnimElement = null;
+							eventQuad = null;
+						}
+					}
+				}
+			}
 			return null;
 		}
 	}
@@ -1237,6 +1346,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 				tempElementOffset.set(x-el.getX(),y-el.getY());
 			return el;
 		} else {
+			// 2D Framework
+			
 			return null;
 		}
 	}
@@ -1346,6 +1457,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			targetElementOffsetY = y-el.getY();
 			return el;
 		} else {
+			// 2D Framework
+			
 			return null;
 		}
 	}
@@ -1366,7 +1479,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	public Element getDropElement() {
 		return this.targetElement;
 	}
-	
+	/*
 	public void getAnimEventTargets(float x, float y) {
 		guiRayOrigin.set(x, y, 0f);
 		
@@ -1388,21 +1501,18 @@ public class Screen implements ElementManager, Control, RawInputListener {
 						eventAnimOffsetX = x-eventAnimElement.getPositionX();
 						eventAnimOffsetY = y-eventAnimElement.getPositionY();
 						eventQuad = eventAnimElement.getQuad((int)FastMath.floor(result.getTriangleIndex()/2));
-						if (eventAnimElement.getZOrderEffect() == ZOrderEffect.Self)
-							if (eventAnimElement.getParentLayer() != null)
-								eventAnimElement.getParentLayer().bringAnimElementToFront(eventAnimElement);
-						if (eventAnimElement.getZOrderEffect() == ZOrderEffect.Child || eventAnimElement.getZOrderEffect() == ZOrderEffect.Both)
-							eventAnimElement.bringQuadToFront(eventQuad);
 						eventQuadOffsetX = x-eventQuad.getPositionX();
 						eventQuadOffsetY = y-eventQuad.getPositionY();
 						break;
 					} else {
 						eventAnimElement = null;
+						eventQuad = null;
 					}
 				}
 			}
 		}
 	}
+	*/
 	
 	public QuadData getEventQuad() {
 		return this.eventQuad;
@@ -1550,6 +1660,18 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			}
 		}
 		return ret;
+	}
+	
+	private void setAnimElementZOrder() {
+		if (eventAnimElement != null) {
+			if (eventAnimElement.getZOrderEffect() == AnimElement.ZOrderEffect.Self ||
+				eventAnimElement.getZOrderEffect() == AnimElement.ZOrderEffect.Both)
+				if (eventAnimElement.getParentLayer() != null)
+					eventAnimElement.getParentLayer().bringAnimElementToFront(eventAnimElement);
+			if (eventAnimElement.getZOrderEffect() == AnimElement.ZOrderEffect.Child ||
+				eventAnimElement.getZOrderEffect() == AnimElement.ZOrderEffect.Both)
+				eventAnimElement.bringQuadToFront(eventQuad);
+		}
 	}
 	//</editor-fold>
 	
