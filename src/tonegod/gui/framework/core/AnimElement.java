@@ -17,6 +17,7 @@ import com.jme3.texture.Texture;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import tonegod.gui.framework.animation.TemporalAction;
@@ -34,6 +35,7 @@ public abstract class AnimElement extends Node implements Transformable {
 	}
 	public List<TemporalAction> actions = new ArrayList();
 	protected Map<String, QuadData> quads = new LinkedHashMap();
+	private List<QuadData> tempQuads = new LinkedList();
 	protected Texture tex;
 	protected Map<String, TextureRegion> uvs = new HashMap();
 	protected AnimElementMesh mesh;
@@ -224,11 +226,20 @@ public abstract class AnimElement extends Node implements Transformable {
 		quads.remove(quad.key);
 		quads.put(quad.key, quad);
 		resetZOrder();
-	//	quad.setPositionZ(zOrder);
-	//	zOrder -= zOrderStepMinor;
-	//	mesh.buildPosition = true;
-	//	mesh.buildTexCoords = true;
-	//	mesh.buildColor = true;
+	}
+	
+	public void sendQuadToBack(QuadData quad) {
+		tempQuads.clear();
+		for (QuadData qd : quads.values()) {
+			if (qd != quad)
+				tempQuads.add(qd);
+		}
+		quads.clear();
+		quads.put(quad.key, quad);
+		for (QuadData qd : tempQuads) {
+				quads.put(qd.key,qd);
+		}
+		resetZOrder();
 	}
 	
 	public void resetZOrder() {

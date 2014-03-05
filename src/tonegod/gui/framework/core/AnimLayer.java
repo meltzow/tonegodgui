@@ -7,6 +7,8 @@ package tonegod.gui.framework.core;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
@@ -18,6 +20,7 @@ import tonegod.gui.core.utils.UIDUtil;
  */
 public class AnimLayer extends Element {
 	private Map<String, AnimElement> animElements = new LinkedHashMap<String, AnimElement>();
+	private List<AnimElement> tempElements = new LinkedList();
 	private float childZOrder = -1;
 	private float zOrderStepMid = 0.001f;
 	
@@ -60,6 +63,24 @@ public class AnimLayer extends Element {
 	public void bringAnimElementToFront(AnimElement el) {
 		animElements.remove(el.getElementKey());
 		animElements.put(el.getElementKey(), el);
+		resetZOrder();
+	}
+	
+	public void sendAnimElementToBack(AnimElement el) {
+		tempElements.clear();
+		for (AnimElement ae : animElements.values()) {
+			if (ae != el)
+				tempElements.add(ae);
+		}
+		animElements.clear();
+		animElements.put(el.getElementKey(), el);
+		for (AnimElement ae : tempElements) {
+			animElements.put(ae.getElementKey(),ae);
+		}
+		resetZOrder();
+	}
+	
+	private void resetZOrder() {
 		childZOrder = getLocalTranslation().z;
 		for (AnimElement ae : animElements.values()) {
 			ae.setPositionZ(childZOrder);
