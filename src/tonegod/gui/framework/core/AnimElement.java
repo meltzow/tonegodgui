@@ -54,6 +54,9 @@ public abstract class AnimElement extends Node implements Transformable {
 	protected boolean ignoreMouse = false;
 	protected boolean isMovable = false;
 	protected AnimLayer parentLayer = null;
+	protected float zOrder = -1f;
+	private float zOrderStepMinor = 0.00001f;
+	private Geometry geom;
 	
 	public AnimElement(AssetManager am) {
 		this.am = am;
@@ -81,7 +84,7 @@ public abstract class AnimElement extends Node implements Transformable {
 		}
 		mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
 		
-		Geometry geom = new Geometry();
+		geom = new Geometry();
 		geom.setMesh(mesh);
 		
 		attachChild(geom);
@@ -142,17 +145,25 @@ public abstract class AnimElement extends Node implements Transformable {
 	}
 	
 	public QuadData addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin) {
+		if (zOrder == -1)
+			zOrder = getPositionZ();
 		QuadData qd = new QuadData(this, quadKey, uvs.get(regionKey), position.x, position.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
 		quads.put(quadKey, qd);
+		qd.setPositionZ(zOrder);
+		zOrder += zOrderStepMinor;
 		flagForUpdate();
 		return qd;
 	}
 	
 	public QuadData addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin, String parentKey) {
+		if (zOrder == -1)
+			zOrder = getPositionZ();
 		QuadData qd = new QuadData(this, quadKey, uvs.get(regionKey), position.x, position.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
 		qd.parent = quads.get(parentKey);
 		qd.setPositionX(qd.getPositionX()-qd.parent.getPositionX());
 		qd.setPositionY(qd.getPositionY()-qd.parent.getPositionY());
+		qd.setPositionZ(zOrder);
+		zOrder += zOrderStepMinor;
 		quads.put(quadKey, qd);
 		flagForUpdate();
 		return qd;
@@ -212,6 +223,8 @@ public abstract class AnimElement extends Node implements Transformable {
 	public void bringQuadToFront(QuadData quad) {
 		quads.remove(quad.key);
 		quads.put(quad.key, quad);
+		quad.setPositionZ(zOrder);
+		zOrder -= zOrderStepMinor;
 		mesh.buildPosition = true;
 		mesh.buildTexCoords = true;
 		mesh.buildColor = true;
@@ -243,6 +256,9 @@ public abstract class AnimElement extends Node implements Transformable {
 	
 	public void update(float tpf) {
 		mesh.update(tpf);
+		if (mesh.updateCol)
+			geom.updateModelBound();
+		
 		for (TemporalAction a : actions) {
 			a.act(tpf);
 		}
@@ -460,8 +476,14 @@ public abstract class AnimElement extends Node implements Transformable {
 	@Override
 	public void setPositionZ(float z) {
 		this.z = z;
+		zOrder = z;
+		for (QuadData qd : quads.values()) {
+			qd.setPositionZ(zOrder);
+			zOrder -= zOrderStepMinor;
+		}
 		mesh.buildPosition = true;
 	}
+	
 	@Override
 	public float getPositionZ() { return z; }
 	@Override

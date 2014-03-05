@@ -44,6 +44,8 @@ public class AnimElementMesh extends Mesh {
 	
 	int bufferSetCount = 0;
 	
+	boolean updateCol = false;
+	
 	public AnimElementMesh(AnimElement batch) {
 		this.batch = batch;
 	}
@@ -58,6 +60,7 @@ public class AnimElementMesh extends Mesh {
 	
 	public void update(float tpf) {
 		if (init) {
+			updateCol = false;
 		//	if (buildPosition)
 				vb.rewind();
 			if (buildColor) cb.rewind();
@@ -93,25 +96,25 @@ public class AnimElementMesh extends Mesh {
 			applyTransforms(qd, -skew.x, -skew.y);
 			vb	.put(tempV.x)
 				.put(tempV.y)
-				.put(0);
+				.put(qd.getPositionZ());
 
 			/** VERT 2 **/
 			applyTransforms(qd, dim.x-skew.x, -skew.y);
 			vb	.put(tempV.x)
 				.put(tempV.y)
-				.put(0);
+				.put(qd.getPositionZ());
 
 			/** VERT 3 **/
 			applyTransforms(qd, skew.x, dim.y+skew.y);
 			vb	.put(tempV.x)
 				.put(tempV.y)
-				.put(0);
+				.put(qd.getPositionZ());
 
 			/** VERT 4 **/
 			applyTransforms(qd, dim.x+skew.x, dim.y+skew.y);
 			vb	.put(tempV.x)
 				.put(tempV.y)
-				.put(0);
+				.put(qd.getPositionZ());
 	//	}
 		
 		if (buildColor) {
@@ -186,8 +189,6 @@ public class AnimElementMesh extends Mesh {
 	}
 	
 	private void setBuffers() {
-		boolean updateCol = false;
-		
 		if (buildPosition) {
 			this.clearBuffer(VertexBuffer.Type.Position);
 			this.setBuffer(VertexBuffer.Type.Position, 3, vb);

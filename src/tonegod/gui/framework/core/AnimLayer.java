@@ -18,6 +18,8 @@ import tonegod.gui.core.utils.UIDUtil;
  */
 public class AnimLayer extends Element {
 	private Map<String, AnimElement> animElements = new LinkedHashMap<String, AnimElement>();
+	private float childZOrder = -1;
+	private float zOrderStepMid = 0.001f;
 	
 	public AnimLayer(ElementManager screen) {
 		this(screen, UIDUtil.getUID());
@@ -38,8 +40,12 @@ public class AnimLayer extends Element {
 	}
 	
 	public void addAnimElement(String UID, AnimElement el) {
+		if (childZOrder == -1)
+			childZOrder = getLocalTranslation().z;
 		el.setElementKey(UID);
 		animElements.put(UID, el);
+		el.setPositionZ(childZOrder);
+		childZOrder -= zOrderStepMid;
 		attachChild(el);
 	}
 	

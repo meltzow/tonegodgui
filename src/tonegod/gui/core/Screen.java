@@ -161,7 +161,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	// AnimLayer & 2D framework support
 	private Map<String, AnimLayer> layers = new LinkedHashMap();
-	private float layerZOrderCurrent = 0f;
+	private float layerZOrderCurrent = .4999f;
 	private AnimElement eventAnimElement = null;
 	private QuadData eventQuad = null;
 	private AnimElement targetAnimElement = null;
