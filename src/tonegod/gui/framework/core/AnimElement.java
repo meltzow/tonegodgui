@@ -223,8 +223,20 @@ public abstract class AnimElement extends Node implements Transformable {
 	public void bringQuadToFront(QuadData quad) {
 		quads.remove(quad.key);
 		quads.put(quad.key, quad);
-		quad.setPositionZ(zOrder);
-		zOrder -= zOrderStepMinor;
+		resetZOrder();
+	//	quad.setPositionZ(zOrder);
+	//	zOrder -= zOrderStepMinor;
+	//	mesh.buildPosition = true;
+	//	mesh.buildTexCoords = true;
+	//	mesh.buildColor = true;
+	}
+	
+	public void resetZOrder() {
+		zOrder = getPositionZ();
+		for (QuadData qd : quads.values()) {
+			qd.setPositionZ(zOrder);
+			zOrder -= zOrderStepMinor;
+		}
 		mesh.buildPosition = true;
 		mesh.buildTexCoords = true;
 		mesh.buildColor = true;

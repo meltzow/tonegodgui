@@ -58,6 +58,13 @@ public class AnimLayer extends Element {
 	}
 	
 	public void bringAnimElementToFront(AnimElement el) {
-		
+		animElements.remove(el.getElementKey());
+		animElements.put(el.getElementKey(), el);
+		childZOrder = getLocalTranslation().z;
+		for (AnimElement ae : animElements.values()) {
+			ae.setPositionZ(childZOrder);
+			ae.resetZOrder();
+			childZOrder -= zOrderStepMid;
+		}
 	}
 }
