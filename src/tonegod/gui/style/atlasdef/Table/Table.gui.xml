@@ -2,17 +2,6 @@
 <root>
 	<element name="Table">
 		<font>
-			<property name="fontSize" type="float" value="20" />
-			<property name="fontColor" type="ColorRGBA">
-				<r value="1" />
-				<g value="1" />
-				<b value="1" />
-				<a value="1" />
-			</property>
-			<property name="textAlign" type="String" value="Left" />
-			<property name="textVAlign" type="String" value="Top" />
-			<property name="textWrap" type="String" value="Word" />
-			<property name="textPadding" type="float" value="0" />
 		</font>
 		<attributes>
 			<property name="highlightColor" type="ColorRGBA">
@@ -36,18 +25,11 @@
 				<y value="200" />
 			</property>
 			<property name="tablePadding" type="float" value="4" />
-			<property name="menuOverhang" type="float" value="8" />
-			<property name="headerHeight" type="float" value="23" />
 		</attributes>
 		<images>
 			<property name="defaultImg" type="String" value="x=37|y=1|w=34|h=34" />
 		</images>
 		<effects>
-			<property name="event0" type="Effect">
-				<event value="Show" />
-				<effect value="FadeIn" />
-				<speed value=".1" />
-			</property>
 		</effects>
 	</element>
 
@@ -74,6 +56,17 @@
 
 	<element name="Table#Header">
 		<font>
+                        <property name="fontSize" type="float" value="20" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="Word" />
+			<property name="textPadding" type="float" value="0" />
 		</font>
 		<attributes>
 			<property name="defaultSize" type="Vector2f">
@@ -86,11 +79,30 @@
 				<z value="5" />
 				<w value="5" />
 			</property>
+                        <property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+			<property name="arrowSize" type="Vector2f">
+				<x value="20" />
+				<y value="20" />
+			</property>
 		</attributes>
 		<images>
 			<property name="defaultImg" type="String" value="x=1|y=37|w=16|h=16" />
 			<property name="hoverImg" type="String" value="x=19|y=37|w=16|h=16" />
 			<property name="pressedImg" type="String" value="x=37|y=37|w=16|h=16" />
+			<property name="arrowUpImg" type="String" value="x=91|y=1|w=16|h=16" />
+			<property name="arrowDownImg" type="String" value="x=91|y=19|w=16|h=16" />
+			<property name="noArrowImg" type="String" value="x=0|y=0|w=1|h=1" />
 		</images>
 		<effects>
 		</effects>
@@ -98,6 +110,17 @@
 
 	<element name="Table#Cell">
 		<font>
+			<property name="fontSize" type="float" value="20" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="textPadding" type="float" value="3" />
 		</font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">

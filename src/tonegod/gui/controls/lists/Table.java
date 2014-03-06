@@ -11,10 +11,13 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.core.Element;
@@ -33,18 +36,37 @@ import tonegod.gui.listeners.TabFocusListener;
  */
 public abstract class Table extends ScrollArea implements MouseMovementListener, MouseWheelListener, MouseButtonListener, TabFocusListener, KeyboardListener {
 
+    private final Vector2f arrowSize;
+
     public enum ColumnResizeMode {
 
         NONE, AUTO_ALL, AUTO_FIRST, AUTO_LAST;
     }
+
+    public enum SelectionMode {
+
+        NONE, ROW, MULTIPLE_ROWS, CELL, MULTIPLE_CELLS;
+
+        public boolean isEnabled() {
+            return !this.equals(NONE);
+        }
+
+        public boolean isSingle() {
+            return this.equals(ROW) || this.equals(CELL);
+        }
+
+        public boolean isMultiple() {
+            return this.equals(MULTIPLE_CELLS) || this.equals(MULTIPLE_ROWS);
+        }
+    }
     private List<TableRow> rows = new ArrayList();
-    private List<Integer> selectedIndexes = new ArrayList();
+    private List<Integer> selectedRows = new ArrayList();
+    private Map<Integer, List<Integer>> selectedCells = new HashMap();
     private List<Element> highlights = new ArrayList();
-    private boolean isMultiselect = false;
-    private float initWidth;
-    private float listPadding = 1;
+    private SelectionMode selectionMode = SelectionMode.ROW;
+    private float tablePadding = 1;
     private ColorRGBA highlightColor;
-    protected int currentListItemIndex = -1;
+    protected int currentRowIndex = -1;
     protected int currentColumnIndex = -1;
     private boolean shift = false, ctrl = false;
     private final List<TableColumn> columns = new ArrayList<TableColumn>();
@@ -52,6 +74,10 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
     private final float rowHeight;
     private Element clipLayer;
     private ColumnResizeMode columnResizeMode = ColumnResizeMode.NONE;
+    private boolean sortable;
+    private String arrowUpImg;
+    private String arrowDownImg;
+    private String noArrowImg;
 
     public static class TableCell extends Element implements Comparable<TableCell> {
 
@@ -68,6 +94,16 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
         }
 
         private void init(String label, Object value) {
+
+            // Load default font info
+            setFontColor(screen.getStyle("Table#Cell").getColorRGBA("fontColor"));
+            setFontSize(screen.getStyle("Table#Cell").getFloat("fontSize"));
+            setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Table#Cell").getString("textAlign")));
+            setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("Table#Cell").getString("textVAlign")));
+            setTextWrap(LineWrapMode.valueOf(screen.getStyle("Table#Cell").getString("textWrap")));
+            setTextPadding(screen.getStyle("Table#Cell").getFloat("textPadding"));
+            setTextClipPadding(screen.getStyle("Table#Cell").getFloat("textPadding"));
+
             setText(label);
             setIgnoreMouse(true);
             this.value = value;
@@ -89,6 +125,7 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
 
         private Table table;
         private Boolean sort;
+        private boolean resized;
 
         public TableColumn(Table table, ElementManager screen, String UID) {
             super(screen, UID, Vector2f.ZERO, screen.getStyle("Table#Header").getVector2f("defaultSize"), screen.getStyle("Table#Header").getVector4f("resizeBorders"), screen.getStyle("Table#Header").getString("defaultImg"));
@@ -102,26 +139,64 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
 
         @Override
         public void controlResizeHook() {
+            // This flag is to stop sort events when actually resizing
+            resized = true;
             super.controlResizeHook();
+
+            // Adjust table columns to new size
+            table.displayHighlights();
             table.sizeColumns();
+
+        }
+
+        @Override
+        public void onMouseLeftPressed(MouseButtonEvent evt) {
+            resized = false;
+            super.onMouseLeftPressed(evt);
         }
 
         @Override
         public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
             super.onButtonMouseLeftUp(evt, toggled);
-            if (sort == null) {
-                sort = true;
-            } else {
-                sort = !sort;
+            if (!resized) {
+                if (sort == null) {
+                    sort = true;
+                } else {
+                    sort = !sort;
+                }
+                table.sort(this, sort);
             }
-            table.sort(this, sort);
 
         }
 
         private void init(Table table) {
+
+            // Load default font info
+            setFontColor(screen.getStyle("Table#Header").getColorRGBA("fontColor"));
+            setFontSize(screen.getStyle("Table#Header").getFloat("fontSize"));
+            setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Table#Header").getString("textAlign")));
+            setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("Table#Header").getString("textVAlign")));
+            setTextWrap(LineWrapMode.valueOf(screen.getStyle("Table#Header").getString("textWrap")));
+            setTextPadding(screen.getStyle("Table#Header").getFloat("textPadding"));
+            setTextClipPadding(screen.getStyle("Table#Header").getFloat("textPadding"));
+
+            setButtonIcon(table.arrowSize.x, table.arrowSize.y, table.noArrowImg); // start with the blank icon
+            getButtonIcon().setX(getWidth() - getButtonIcon().getWidth() - borders.z - getTextPadding());
+
             this.table = table;
+            if (screen.getStyle("Table#Header").getString("hoverImg") != null) {
+                setButtonHoverInfo(
+                        screen.getStyle("Table#Header").getString("hoverImg"),
+                        screen.getStyle("Table#Header").getColorRGBA("hoverColor"));
+            }
+            if (screen.getStyle("Table#Header").getString("pressedImg") != null) {
+                setButtonPressedInfo(
+                        screen.getStyle("Table#Header").getString("pressedImg"),
+                        screen.getStyle("Table#Header").getColorRGBA("pressedColor"));
+            }
             setResizeN(false);
             setResizeS(false);
+            setClippingLayer(table);
             reconfigure();
         }
 
@@ -137,6 +212,10 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
                     case AUTO_LAST:
                         setResizeE(true);
                         setResizeW(index > 1 && index < table.columns.size());
+                        break;
+                    case NONE:
+                        setResizeE(true);
+                        setResizeW(false);
                         break;
                 }
             }
@@ -225,41 +304,63 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
     public Table(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
         super(screen, UID, position, dimensions, resizeBorders, defaultImg, false);
 
-        listPadding = screen.getStyle("Table").getFloat("tablePadding");
+        arrowSize = screen.getStyle("Table#Header").getVector2f("arrowSize");
+        arrowUpImg = screen.getStyle("Table#Header").getString("arrowUpImg");
+        arrowDownImg = screen.getStyle("Table#Header").getString("arrowDownImg");
+        noArrowImg = screen.getStyle("Table#Header").getString("noArrowImg");
+
+        tablePadding = screen.getStyle("Table").getFloat("tablePadding");
         headerHeight = screen.getStyle("Table#Header").getVector2f("defaultSize").y;
         highlightColor = screen.getStyle("Table").getColorRGBA("highlightColor");
         // Load default font info
-        setFontColor(screen.getStyle("Table").getColorRGBA("fontColor"));
-        setFontSize(screen.getStyle("Table").getFloat("fontSize"));
-        setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Table").getString("textAlign")));
-        setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("Table").getString("textVAlign")));
-        setTextWrap(LineWrapMode.valueOf(screen.getStyle("Table").getString("textWrap")));
-        setTextPadding(screen.getStyle("Table").getFloat("textPadding"));
-        setTextClipPadding(screen.getStyle("Table").getFloat("textPadding"));
         scrollableArea.setScaleEW(false);
         scrollableArea.setScaleNS(false);
-        
 
-        rowHeight = screen.getStyle("Table#Header").getVector2f("defaultSize").y;
+        rowHeight = screen.getStyle("Table#Cell").getVector2f("defaultSize").y;
 
+        scrollableArea.setScaleEW(true);
         scrollableArea.setText(" ");
         scrollableArea.setIgnoreMouse(true);
         scrollableArea.setHeight(rowHeight);
-        scrollableArea.setY(headerHeight);
-
-        initWidth = rowHeight * 3;
+        scrollableArea.setX(tablePadding);
 
         // Dedicated clip layer
-        clipLayer = new Element(screen, getUID() + ":clipLayer", new Vector2f(listPadding, listPadding + headerHeight), new Vector2f(getWidth() - (listPadding * 2), getHeight() - (listPadding * 2) - headerHeight), Vector4f.ZERO, null);
+        clipLayer = new Element(screen, getUID() + ":clipLayer", new Vector2f(tablePadding, tablePadding + headerHeight), getViewPortSize(), Vector4f.ZERO, null);
         clipLayer.setAsContainerOnly();
         clipLayer.setScaleEW(true);
         clipLayer.setScaleNS(true);
+
         addChild(clipLayer);
     }
-    
+
+    /**
+     * Get the size of the visible scrolling area
+     *
+     * @return viewport size
+     */
+    public final Vector2f getViewPortSize() {
+        return new Vector2f(getWidth() - (tablePadding * 2), getHeight() - (tablePadding * 2) - headerHeight);
+    }
+
+    /**
+     * Get if the table is sortable.
+     *
+     * @return sortable
+     */
+    public boolean getIsSortable() {
+        return sortable;
+    }
+
+    public void setSortable(boolean sortable) {
+        this.sortable = sortable;
+        for (TableColumn column : columns) {
+            column.setIsEnabled(sortable);
+        }
+    }
+
     /**
      * Get the columns.
-     * 
+     *
      * @return columns
      */
     public List<TableColumn> getColumns() {
@@ -267,13 +368,15 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
     }
 
     /**
-     * Sort a column. 
+     * Sort a column.
+     *
      * @param column
-     * @param ascending 
+     * @param ascending
      */
     public void sort(TableColumn column, boolean ascending) {
+        // Sort rows
         final int columnIndex = columns.indexOf(column);
-        selectedIndexes.clear();
+        selectedRows.clear();
         Collections.sort(rows, new Comparator<TableRow>() {
             @Override
             public int compare(TableRow o1, TableRow o2) {
@@ -288,13 +391,23 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
         if (!ascending) {
             Collections.reverse(rows);
         }
+
+        // Set header button images
+        for (TableColumn tc : columns) {
+            if (tc == column) {
+                tc.getButtonIcon().setColorMap((ascending) ? arrowDownImg : arrowUpImg);
+            } else {
+                tc.getButtonIcon().setColorMap(noArrowImg);
+            }
+        }
+
         pack();
     }
 
     /**
      * Get the column resize mode.
-     * 
-     * @return  column resize mode
+     *
+     * @return column resize mode
      */
     public ColumnResizeMode getColumnResizeMode() {
         return columnResizeMode;
@@ -302,18 +415,19 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
 
     /**
      * Set the column resize mode.
-     * 
-     * @param columnResizeMode  column resize mode
+     *
+     * @param columnResizeMode column resize mode
      */
     public void setColumnResizeMode(ColumnResizeMode columnResizeMode) {
         this.columnResizeMode = columnResizeMode;
         reconfigureHeaders();
         sizeColumns();
+        displayHighlights();
     }
 
     /**
      * Add a new column.
-     * 
+     *
      * @param columnName column name
      */
     public void addColumn(String columnName) {
@@ -323,13 +437,16 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
     }
 
     /**
-     * Add a new column control. Using this as opposed the simple string varient
-     * allows custom controls to be used for the header.
-     * 
-     * @param column column 
+     * Add a new column control. Using this as opposed the simple string varient allows
+     * custom controls to be used for the header.
+     *
+     * @param column column
      */
     public void addColumn(TableColumn column) {
+        column.getButtonIcon().setColorMap(noArrowImg);
         columns.add(column);
+        column.setIsEnabled(sortable);
+        column.setControlClippingLayer(this);
         addChild(column);
         reconfigureHeaders();
         sizeColumns();
@@ -341,12 +458,15 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
         sizeColumns();
     }
 
-    public void setIsMultiselect(boolean isMultiselect) {
-        this.isMultiselect = isMultiselect;
+    public void setSelectionMode(SelectionMode selectionMode) {
+        this.selectionMode = selectionMode;
+        selectedRows.clear();
+        selectedCells.clear();
+        displayHighlights();
     }
 
-    public boolean getIsMultiselect() {
-        return this.isMultiselect;
+    public SelectionMode getSelectionMode() {
+        return selectionMode;
     }
 
     /**
@@ -384,6 +504,8 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
      * @param index int
      */
     public void removeRow(int index) {
+        selectedCells.remove(index);
+        selectedRows.remove(index);
         this.getVScrollBar().hide();
         if (!rows.isEmpty()) {
             if (index >= 0 && index < rows.size()) {
@@ -421,13 +543,29 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
      * Remove all rows.
      */
     public void removeAllRows() {
-        this.rows = new ArrayList();
-        this.selectedIndexes = new ArrayList();
+        rows.clear();
+        selectedRows.clear();
+        selectedCells.clear();
         pack();
     }
 
     /**
-     * Sets the current selected index for single select Table
+     * Select an entire column
+     *
+     * @param column column
+     */
+    public void setSelectColumn(int column) {
+        selectedCells.clear();
+        selectedRows.clear();
+        for (int i = 0; i < rows.size(); i++) {
+            selectedRows.add(i);
+            selectedCells.put(i, new ArrayList<Integer>(Arrays.asList(column)));
+        }
+        displayHighlights();
+    }
+
+    /**
+     * Sets the current selected row index for single select Table
      *
      * @param index int
      */
@@ -437,8 +575,30 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
         } else if (index >= rows.size()) {
             index = rows.size() - 1;
         }
-        selectedIndexes = new ArrayList();
-        selectedIndexes.add(index);
+        selectedRows.clear();
+        selectedRows.add(index);
+        selectedCells.clear();
+        displayHighlights();
+        onChange();
+    }
+
+    /**
+     * Sets the current selected row and colum indexes
+     *
+     * @param index int
+     */
+    public void setSelectedCellIndexes(Integer rowIndex, Integer... columnIndexes) {
+        if (rowIndex < 0) {
+            rowIndex = 0;
+        } else if (rowIndex >= rows.size()) {
+            rowIndex = rows.size() - 1;
+        }
+        selectedRows.clear();
+        selectedCells.clear();
+        if (columnIndexes.length > 0) {
+            selectedCells.put(rowIndex, new ArrayList(Arrays.asList(columnIndexes)));
+            selectedRows.add(rowIndex);
+        }
         displayHighlights();
         onChange();
     }
@@ -448,10 +608,11 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
      *
      * @param indexes
      */
-    public void setSelectedIndexes(Integer... indexes) {
+    public void setSelectedRowIndexes(Integer... indexes) {
+        selectedCells.clear();
         for (int i = 0; i < indexes.length; i++) {
-            if (!selectedIndexes.contains(indexes[i])) {
-                selectedIndexes.add(indexes[i]);
+            if (!selectedRows.contains(indexes[i])) {
+                selectedRows.add(indexes[i]);
             }
         }
         displayHighlights();
@@ -459,13 +620,41 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
     }
 
     /**
-     * Adds the specified index to the list of selected indexes
+     * Adds specific cells of the specified row to the list of selected indexes
      *
-     * @param index int
+     * @param rowIndex row index
+     * @param columnIndex column
      */
-    public void addSelectedIndex(Integer index) {
-        if (!selectedIndexes.contains(index)) {
-            selectedIndexes.add(index);
+    public void addSelectedCellIndexes(Integer rowIndex, Integer... columnIndexes) {
+        if (columnIndexes.length == 0) {
+            throw new IllegalArgumentException("Must supply at least one column index.");
+        }
+        List<Integer> selectedColumns = selectedCells.get(rowIndex);
+        if (selectedColumns == null) {
+            selectedColumns = new ArrayList<Integer>();
+            selectedCells.put(rowIndex, selectedColumns);
+        }
+        for (Integer col : columnIndexes) {
+            if (!selectedColumns.contains(col)) {
+                selectedColumns.add(col);
+            }
+        }
+        if (!selectedRows.contains(rowIndex) && !selectedColumns.isEmpty()) {
+            selectedRows.add(rowIndex);
+        }
+        displayHighlights();
+        onChange();
+    }
+
+    /**
+     * Adds all cells of the specified row to the list of selected indexes
+     *
+     * @param row row index
+     */
+    public void addSelectedRowIndex(Integer row) {
+        selectedCells.remove(row);
+        if (!selectedRows.contains(row) && row > -1) {
+            selectedRows.add(row);
         }
         displayHighlights();
         onChange();
@@ -476,23 +665,74 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
      *
      * @param index int
      */
-    public void removeSelectedIndex(Integer index) {
-        selectedIndexes.remove(index);
+    public void removeSelectedRowIndex(Integer index) {
+        selectedCells.remove(index);
+        selectedRows.remove(index);
         displayHighlights();
         onChange();
     }
 
     /**
-     * Returns the first (or only) index in the list of selected indexes
+     * Removes the specified cells from the list of selected indexes
+     *
+     * @param index int
+     */
+    public void removeSelectedCellIndexes(Integer rowIndex, Integer... columnIndexes) {
+        if (columnIndexes.length == 0) {
+            throw new IllegalArgumentException("Must supply at least one column index.");
+        }
+        List<Integer> selectedColumns = selectedCells.get(rowIndex);
+        if (selectedColumns != null) {
+            selectedColumns.removeAll(Arrays.asList(columnIndexes));
+            if (selectedColumns.isEmpty()) {
+                selectedCells.remove(rowIndex);
+            }
+            if (selectedColumns.isEmpty()) {
+                selectedRows.remove(rowIndex);
+            }
+        } else {
+            if (columnIndexes.length == columns.size()) {
+                selectedRows.remove(rowIndex);
+            }
+        }
+        displayHighlights();
+        onChange();
+    }
+
+    /**
+     * Get if anything is selected (rows or cells)
+     *
+     * @return select
+     */
+    public boolean isAnythingSelected() {
+        return !selectedRows.isEmpty();
+    }
+
+    /**
+     * Returns the first (or only) row in the list of selected indexes
      *
      * @return int
      */
-    public int getSelectedIndex() {
-        if (selectedIndexes.isEmpty()) {
+    public int getSelectedRowIndex() {
+        if (selectedRows.isEmpty()) {
             return -1;
         } else {
-            return selectedIndexes.get(0);
+            return selectedRows.get(0);
         }
+    }
+
+    /**
+     * Get the list of column indexes that are selected for the row.
+     *
+     * @return List<Integer>
+     */
+    public List<Integer> getSelectedColumnIndexes(int rowIndex) {
+        if (selectedCells.containsKey(rowIndex)) {
+            return selectedCells.get(rowIndex);
+        } else if (selectedRows.contains(rowIndex)) {
+            return getAllColumnIndexes();
+        }
+        return Collections.emptyList();
     }
 
     /**
@@ -500,8 +740,8 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
      *
      * @return List<Integer>
      */
-    public List<Integer> getSelectedIndexes() {
-        return this.selectedIndexes;
+    public List<Integer> getSelectedRowIndexes() {
+        return this.selectedRows;
     }
 
     /**
@@ -523,6 +763,44 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
     }
 
     /**
+     * Get the co-ordinates of the first selected cell. First element in array is the row,
+     * the second is the column.
+     * <code>null</code> will be returned if nothing is selected.
+     *
+     * @return first selected cell
+     */
+    public int[] getSelectedCell() {
+        int r = getSelectedRowIndex();
+        if (r == -1) {
+            return null;
+        }
+        List<Integer> cols = getSelectedColumnIndexes(r);
+        if (cols.isEmpty()) {
+            return null;
+        }
+        return new int[]{r, cols.get(0)};
+    }
+
+    /**
+     * Get the co-ordinates of the last selected cell. First element in array is the row,
+     * the second is the column.
+     * <code>null</code> will be returned if nothing is selected.
+     *
+     * @return first selected cell
+     */
+    public int[] getLastSelectedCell() {
+        int r = selectedRows.get(selectedRows.size() - 1);
+        if (r == -1) {
+            return null;
+        }
+        List<Integer> cols = getSelectedColumnIndexes(r);
+        if (cols.isEmpty()) {
+            return null;
+        }
+        return new int[]{r, cols.get(cols.size() - 1)};
+    }
+
+    /**
      * Returns a List containing all ListItems corresponding to the list of
      * selectedIndexes
      *
@@ -530,10 +808,14 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
      */
     public List<TableRow> getSelectedRows() {
         List<TableRow> ret = new ArrayList();
-        for (Integer i : selectedIndexes) {
+        for (Integer i : selectedRows) {
             ret.add(getRow(i));
         }
         return ret;
+    }
+
+    public int getRowCount() {
+        return rows.size();
     }
 
     public List<TableRow> getRows() {
@@ -545,8 +827,8 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
     }
 
     /**
-     * Forces the Table to rebuild all TableRows. This does not need to be called,
-     * however it will not effect anything negatively if it is.
+     * Forces the Table to rebuild all TableRows. This does not need to be called, however
+     * it will not effect anything negatively if it is.
      */
     public void pack() {
 
@@ -555,49 +837,56 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
         scrollableArea.setHeight(headerHeight);
 
         int index = 0;
-        float currentHeight = 0;
-        float width = rowHeight * 3;
-
+        float currentHeight = headerHeight;
+        float width = getWidth();
 
         // Get the scrollable height
-        scrollableArea.setWidth(((getWidth() > width) ? getWidth() : width) - (listPadding * 2));
         for (TableRow mi : rows) {
             mi.setWidth(scrollableArea.getWidth());
             mi.pack();
             currentHeight += mi.getHeight();
         }
 
+        scrollableArea.setWidth(width);
         scrollableArea.setHeight(currentHeight);
-        scrollableArea.setY(listPadding + headerHeight);
 
-
-        float y = currentHeight - listPadding - headerHeight;
-        for (TableRow mi : rows) {
-        //    System.err.println();
+        float y = tablePadding;
+        for (int i = rows.size() - 1; i >= 0; i--) {
+            TableRow mi = rows.get(i);
             mi.setInitialized();
-            mi.setPosition(listPadding, y);
-         //   System.err.println("       " + y);
+            mi.setPosition(0, y);
             addScrollableChild(mi);
-
-            if (selectedIndexes.contains(index)) {
-                Element highlight = createHighlight(index);
-                highlight.setWidth(getWidth() - (listPadding * 2));
+            List<Integer> cells = selectedCells.get(i);
+            if (cells != null) {
+                for (Integer columnIndex : cells) {
+                    TableColumn column = columns.get(columnIndex);
+                    Element highlight = createHighlight(index, columnIndex);
+                    highlight.setWidth(column.getWidth());
+                    highlight.setHeight(rowHeight);
+                    highlight.getElementMaterial().setColor("Color", highlightColor);
+                    highlight.setClippingLayer(clipLayer);
+                    highlight.setPosition(column.getX() - tablePadding, y);
+                    scrollableArea.addChild(highlight);
+                    highlights.add(highlight);
+                }
+            } else if (selectedRows.contains(index)) {
+                Element highlight = createHighlight(index, 0);
+                highlight.setWidth(getWidth() - (tablePadding * 2));
                 highlight.setHeight(rowHeight);
                 highlight.getElementMaterial().setColor("Color", highlightColor);
                 highlight.setClippingLayer(clipLayer);
-                highlight.setClipPadding(listPadding);
-                highlight.setPosition(listPadding, y);
+                highlight.setPosition(0, y);
                 scrollableArea.addChild(highlight);
                 highlights.add(highlight);
             }
             index++;
-            y -= mi.getHeight();
+            y += mi.getHeight();
         }
 
-        if (getScrollableHeight() > getHeight() - (listPadding * 2)) {
+        if (getScrollableHeight() > getHeight() - (tablePadding * 2)) {
             scrollToTop();
             setWidth(getWidth());
-            getVScrollBar().setX(getWidth());
+            getVScrollBar().setX(getWidth() + scrollBarGap);
             getVScrollBar().show();
         }
 
@@ -605,14 +894,20 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
         scrollToTop();
     }
 
+    @Override
+    public float getScrollableHeight() {
+        // TODO super.getScrollableHeight() looks like it has a bug? text padding is used even though there is none?
+        return scrollableArea.getHeight();
+    }
+
     protected void sizeColumns() {
 
-        float x = listPadding;
-        int tw = (int) (getWidth() - (listPadding * 2));
-        final float y = getHeight() - headerHeight - listPadding;
+        float x = tablePadding;
+        int tw = (int) (getWidth() - (tablePadding * 2));
+        final float y = getHeight() - headerHeight - tablePadding;
         switch (columnResizeMode) {
             case AUTO_ALL:
-                int cw = (int) (getWidth() - (listPadding * 2)) / columns.size();
+                int cw = (int) (getWidth() - (tablePadding * 2)) / columns.size();
                 for (TableColumn header : columns) {
                     header.setPosition(x, y);
                     header.setDimensions(cw, headerHeight);
@@ -653,6 +948,11 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
                     header.setPosition(x, y);
                     x += header.getWidth();
                 }
+                break;
+        }
+
+        for (TableColumn col : columns) {
+            col.getButtonIcon().setX(col.getWidth() - col.getButtonIcon().getWidth() - col.borders.z - col.getTextPadding());
         }
 
         for (TableRow r : rows) {
@@ -667,30 +967,43 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
         }
         highlights.clear();
         int index = 0;
-        float currentHeight = 0;
+        float y = headerHeight - tablePadding;
         for (TableRow mi : rows) {
-            if (selectedIndexes.contains(index)) {
-                Element highlight = createHighlight(index);
-                highlight.setWidth(getWidth() - (listPadding * 2));
+            List<Integer> cells = selectedCells.get(index);
+            if (cells != null) {
+                for (Integer columnIndex : cells) {
+                    TableColumn column = columns.get(columnIndex);
+                    Element highlight = createHighlight(index, columnIndex);
+                    highlight.setWidth(column.getWidth());
+                    highlight.setHeight(rowHeight);
+                    highlight.getElementMaterial().setColor("Color", highlightColor);
+                    highlight.setClippingLayer(clipLayer);
+                    highlight.setPosition(column.getX() - tablePadding, y);
+                    scrollableArea.addChild(highlight);
+                    highlights.add(highlight);
+                }
+            } else if (selectedRows.contains(index)) {
+                Element highlight = createHighlight(index, 0);
+                highlight.setWidth(getWidth() - (tablePadding * 2));
                 highlight.setHeight(rowHeight);
                 highlight.getElementMaterial().setColor("Color", highlightColor);
                 highlight.setClippingLayer(clipLayer);
-                highlight.setPosition(listPadding, scrollableArea.getHeight() - ((rows.size() - index) * rowHeight) + listPadding);
+                highlight.setPosition(0, y);
                 scrollableArea.addChild(highlight);
                 highlights.add(highlight);
             }
-            currentHeight += rowHeight;
+            y += rowHeight;
             index++;
         }
     }
 
-    private Element createHighlight(int index) {
+    private Element createHighlight(int index, int index2) {
         Element highlight = new Element(
                 screen,
-                getUID() + ":Highlight" + index,
+                getUID() + ":Highlight" + index + ":" + index2,
                 new Vector2f(0, 0),
-                new Vector2f(listPadding, listPadding),
-                new Vector4f(1, 1, 1, 1),
+                new Vector2f(rowHeight, rowHeight),
+                new Vector4f(0, 0, 0, 0),
                 null);
         highlight.setScaleEW(true);
         highlight.setScaleNS(false);
@@ -703,17 +1016,17 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
     @Override
     public void onMouseMove(MouseMotionEvent evt) {
         float x = evt.getX() - getX();
-        float y = scrollableArea.getAbsoluteHeight() - listPadding - evt.getY();
+        float y = scrollableArea.getAbsoluteHeight() - headerHeight - evt.getY();
 
-        for(int i = 0 ; i < columns.size() ; i++) {
+        for (int i = 0; i < columns.size(); i++) {
             TableColumn header = columns.get(i);
-            if(x >= header.getX() && x <= header.getX() + header.getWidth()) {
+            if (x >= header.getX() && x <= header.getX() + header.getWidth()) {
                 currentColumnIndex = i;
                 break;
             }
         }
-        if (currentListItemIndex != (int) Math.floor(y / rowHeight)) {
-            currentListItemIndex = (int) Math.floor(y / rowHeight);
+        if (currentRowIndex != (int) Math.floor(y / rowHeight)) {
+            currentRowIndex = (int) Math.floor(y / rowHeight);
         }
     }
 
@@ -724,24 +1037,90 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
 
     @Override
     public void onMouseLeftReleased(MouseButtonEvent evt) {
-        if (isMultiselect) {
-            if (shift || ctrl) {
-                if (!selectedIndexes.contains(currentListItemIndex)) {
-                    addSelectedIndex(currentListItemIndex);
+        setTabFocus();
+        switch (selectionMode) {
+            case MULTIPLE_ROWS:
+                if (ctrl) {
+                    if (!selectedRows.contains(currentRowIndex)) {
+                        addSelectedRowIndex(currentRowIndex);
+                    } else {
+                        removeSelectedRowIndex(currentRowIndex);
+                    }
+                } else if (shift) {
+                    int lastRow = selectedRows.get(selectedRows.size() - 1);
+                    if (currentRowIndex > lastRow) {
+                        for (int i = lastRow + 1; i <= currentRowIndex; i++) {
+                            addSelectedRowIndex(i);
+                        }
+                    } else {
+                        for (int i = lastRow - 1; i >= currentRowIndex; i--) {
+                            addSelectedRowIndex(i);
+                        }
+                    }
                 } else {
-                    removeSelectedIndex(currentListItemIndex);
+                    setSelectedRowIndex(currentRowIndex);
                 }
-            } else {
-                setSelectedRowIndex(currentListItemIndex);
-            }
-        } else {
-            if (currentListItemIndex >= 0 && currentListItemIndex < rows.size()) {
-                setSelectedRowIndex(currentListItemIndex);
-            } else {
-                selectedIndexes = new ArrayList();
-            }
+                break;
+            case ROW:
+                if (currentRowIndex >= 0 && currentRowIndex < rows.size()) {
+                    setSelectedRowIndex(currentRowIndex);
+                } else {
+                    selectedRows.clear();
+                }
+                break;
+            case MULTIPLE_CELLS:
+                if (ctrl) {
+                    if (!getSelectedColumnIndexes(currentRowIndex).contains(currentColumnIndex)) {
+                        addSelectedCellIndexes(currentRowIndex, currentColumnIndex);
+                    } else {
+                        removeSelectedCellIndexes(currentRowIndex, currentColumnIndex);
+                    }
+                } else if (shift) {
+                    int[] lastSel = getLastSelectedCell();
+                    int lastRow = lastSel[0];
+                    List<Integer> cols = new ArrayList<Integer>(getSelectedColumnIndexes(lastRow));
+                    if (currentColumnIndex > lastSel[1]) {
+                        for (int i = lastSel[1] + 1; i <= currentColumnIndex; i++) {
+                            cols.add(i);
+                        }
+                    } else if (currentColumnIndex < lastSel[1]) {
+                        for (int i = currentColumnIndex; i <= lastSel[1] - 1; i++) {
+                            cols.add(i);
+                        }
+                    }
+                    int startRow = Math.min(Math.min(getSelectedRowIndex(), lastRow), currentRowIndex);
+                    int endRow = Math.max(Math.max(getSelectedRowIndex(), lastRow), currentRowIndex);
+                    for (int i = startRow; i <= endRow; i++) {
+                        addSelectedCellIndexes(i, cols.toArray(new Integer[0]));
+                    }
+                } else {
+                    setSelectedCellIndexes(currentRowIndex, currentColumnIndex);
+                }
+                break;
+            case CELL:
+                if (currentColumnIndex >= 0 && currentColumnIndex < columns.size()
+                        && currentRowIndex >= 0 && currentRowIndex < rows.size()) {
+                    setSelectedCellIndexes(currentRowIndex, currentColumnIndex);
+                } else {
+                    selectedCells.clear();
+                }
+                break;
         }
         evt.setConsumed();
+    }
+
+    /**
+     * Select everything
+     */
+    public void selectAll() {
+        selectedCells.clear();
+        selectedRows.clear();
+        List<Integer> l = new ArrayList();
+        for (int i = 0; i < rows.size(); i++) {
+            l.add(i);
+        }
+        selectedRows.addAll(l);
+        displayHighlights();
     }
 
     @Override
@@ -756,20 +1135,70 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
 
     @Override
     public void onKeyPress(KeyInputEvent evt) {
+        if (selectionMode.equals(SelectionMode.NONE)) {
+            return;
+        }
+
         if (evt.getKeyCode() == KeyInput.KEY_LCONTROL || evt.getKeyCode() == KeyInput.KEY_RCONTROL) {
             ctrl = true;
         } else if (evt.getKeyCode() == KeyInput.KEY_LSHIFT || evt.getKeyCode() == KeyInput.KEY_RSHIFT) {
             shift = true;
         }
+        evt.setConsumed();
     }
 
     @Override
     public void onKeyRelease(KeyInputEvent evt) {
+        if (selectionMode.equals(SelectionMode.NONE)) {
+            return;
+        }
+
+        int newRow = -1;
         if (evt.getKeyCode() == KeyInput.KEY_LCONTROL || evt.getKeyCode() == KeyInput.KEY_RCONTROL) {
             ctrl = false;
         } else if (evt.getKeyCode() == KeyInput.KEY_LSHIFT || evt.getKeyCode() == KeyInput.KEY_RSHIFT) {
             shift = false;
+        } else if (evt.getKeyCode() == KeyInput.KEY_A && ctrl && selectionMode.isEnabled()) {
+            selectAll();
+        } else {
+            if (evt.getKeyCode() == KeyInput.KEY_LEFT) {
+                newRow = selectLeft(evt);
+            } else if (evt.getKeyCode() == KeyInput.KEY_RIGHT) {
+                newRow = selectRight(evt);
+            } else if (evt.getKeyCode() == KeyInput.KEY_DOWN) {
+                newRow = selectDown(evt);
+            } else if (evt.getKeyCode() == KeyInput.KEY_UP) {
+                newRow = selectUp(evt);
+            }
+
+            if (newRow == -1) {
+                // Return now se we don't consume
+                return;
+            }
         }
+
+        // If new row is selected, scroll to it
+        if (newRow >= 0 && newRow < getRowCount()) {
+            TableRow row = rows.get(newRow);
+            final float scrolledAmount = getScrolledAmount();
+            final float viewPortHeight = getViewPortSize().y;
+            final float maxY = scrolledAmount + viewPortHeight;
+            final float rowY = getScrollableHeight() - row.getY() - row.getHeight() - headerHeight + tablePadding;
+            final float rowBottom = rowY + row.getHeight();
+            if (rowBottom >= maxY) {
+                scrollYBy(rowBottom - maxY);
+                setScrollThumb();
+            } else if (rowY < scrolledAmount) {
+                scrollYBy(rowY - scrolledAmount);
+                setScrollThumb();
+            }
+        }
+
+        evt.setConsumed();
+    }
+
+    public float getScrolledAmount() {
+        return getScrollableHeight() - getHeight() + getScrollableArea().getY() + (tablePadding * 2);
     }
 
     @Override
@@ -780,6 +1209,201 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
     @Override
     public void resetTabFocus() {
         screen.setKeyboardElement(null);
+    }
+
+    @Override
+    protected void onAdjustWidthForScroll() {
+        super.onAdjustWidthForScroll();
+        clipLayer.setDimensions(getViewPortSize());
+        displayHighlights();
+    }
+
+    protected int selectUp(KeyInputEvent evt) {
+        int selRow = getSelectedRowIndex();
+        int lastRow = selectedRows.get(selectedRows.size() - 1);
+        int newRow = lastRow - 1;
+        switch (selectionMode) {
+            case ROW:
+            case MULTIPLE_ROWS:
+                if (shift && selectionMode.equals(SelectionMode.MULTIPLE_ROWS)) {
+                    if (selRow >= lastRow) {
+                        addSelectedRowIndex(newRow);
+                    } else {
+                        removeSelectedRowIndex(lastRow);
+                    }
+                } else {
+                    setSelectedRowIndex(newRow);
+                }
+                break;
+            case MULTIPLE_CELLS:
+            case CELL:
+                final List<Integer> selectedColumnIndexes = getSelectedColumnIndexes(lastRow);
+                if (shift && selectionMode.equals(SelectionMode.MULTIPLE_CELLS)) {
+                    if (selRow >= lastRow) {
+                        addSelectedCellIndexes(newRow, selectedColumnIndexes.toArray(new Integer[0]));
+                    } else {
+                        removeSelectedCellIndexes(lastRow, selectedColumnIndexes.toArray(new Integer[0]));
+                    }
+                } else {
+                    setSelectedCellIndexes(newRow, selectedColumnIndexes.toArray(new Integer[0]));
+                }
+                break;
+        }
+        return newRow;
+    }
+
+    protected int selectDown(KeyInputEvent evt) {
+        int newRow = -1;
+        switch (selectionMode) {
+            case ROW:
+            case MULTIPLE_ROWS:
+                int selRow = getSelectedRowIndex();
+                int lastRow = selectedRows.get(selectedRows.size() - 1);
+                newRow = lastRow + 1;
+                if (shift && selectionMode.equals(SelectionMode.MULTIPLE_ROWS)) {
+                    if (lastRow >= selRow) {
+                        addSelectedRowIndex(newRow);
+                    } else {
+                        if (selRow > lastRow) {
+                            removeSelectedRowIndex(lastRow);
+                        } else {
+                            removeSelectedRowIndex(selRow);
+                        }
+                    }
+                } else {
+                    setSelectedRowIndex(newRow);
+                }
+                break;
+            case MULTIPLE_CELLS:
+            case CELL:
+                lastRow = selectedRows.get(selectedRows.size() - 1);
+                final List<Integer> selectedColumnIndexes = getSelectedColumnIndexes(lastRow);
+                if (shift && selectionMode.equals(SelectionMode.MULTIPLE_CELLS)) {
+                    selRow = getSelectedRowIndex();
+                    if (lastRow >= selRow) {
+                        newRow = lastRow + 1;
+                        addSelectedCellIndexes(newRow, selectedColumnIndexes.toArray(new Integer[0]));
+                    } else {
+                        if (selRow > lastRow) {
+                            removeSelectedCellIndexes(lastRow, selectedColumnIndexes.toArray(new Integer[0]));
+                        } else {
+                            removeSelectedCellIndexes(selRow, selectedColumnIndexes.toArray(new Integer[0]));
+                        }
+                    }
+                } else {
+                    newRow = lastRow + 1;
+                    setSelectedCellIndexes(newRow, selectedColumnIndexes.toArray(new Integer[0]));
+                }
+                break;
+        }
+        return newRow;
+    }
+
+    protected int selectRight(KeyInputEvent evt) {
+        int newRow = -1;
+        switch (selectionMode) {
+            case ROW:
+            case MULTIPLE_ROWS:
+                // Return now se we don't consume
+                return newRow;
+            case CELL:
+            case MULTIPLE_CELLS:
+                if (isAnythingSelected()) {
+
+                    int[] sel = getSelectedCell();
+                    int[] lastSel = getLastSelectedCell();
+                    newRow = sel[0];
+                    if (sel[1] > lastSel[1]) {
+                        for (int r : getSelectedRowIndexes()) {
+                            removeSelectedCellIndexes(r, lastSel[1]);
+                        }
+                    } else {
+                        int col = lastSel[1];
+                        col++;
+                        if (selectionMode.equals(SelectionMode.CELL) || !shift) {
+                            if (col >= columns.size()) {
+                                col = 0;
+                                newRow++;
+                            }
+                            if (newRow >= rows.size()) {
+                                newRow = rows.size() - 1;
+                                col = 0;
+                            }
+                        } else {
+                            if (col >= columns.size()) {
+                                col = columns.size() - 1;
+                            }
+                        }
+                        if (shift && selectionMode.equals(SelectionMode.MULTIPLE_CELLS)) {
+                            for (int r : getSelectedRowIndexes()) {
+                                addSelectedCellIndexes(r, col);
+                            }
+                        } else {
+                            setSelectedCellIndexes(newRow, col);
+                        }
+                    }
+                } else if (getRowCount() > 0) {
+                    newRow = 0;
+                    setSelectedCellIndexes(0, 0);
+                }
+                break;
+        }
+        return newRow;
+    }
+
+    protected int selectLeft(KeyInputEvent evt) {
+        int newRow = -1;
+        switch (selectionMode) {
+            case ROW:
+            case MULTIPLE_ROWS:
+                // Return now se we don't consume
+                return newRow;
+            case MULTIPLE_CELLS:
+            case CELL:
+                if (isAnythingSelected()) {
+                    int[] sel = getSelectedCell();
+                    int[] lastSel = getLastSelectedCell();
+                    newRow = sel[0];
+
+                    // Work out which side of the selection we adjust
+                    if (sel[1] < lastSel[1]) {
+                        for (int r : getSelectedRowIndexes()) {
+                            removeSelectedCellIndexes(r, lastSel[1]);
+                        }
+                    } else {
+                        int col = lastSel[1];
+                        col--;
+                        if (selectionMode.equals(SelectionMode.CELL) || !shift) {
+                            if (col < 0) {
+                                col = columns.size() - 1;
+                                newRow--;
+                            }
+                            if (newRow < 0) {
+                                newRow = 0;
+                                col = 0;
+                            }
+                        } else {
+                            if (col < 0) {
+                                col = 0;
+                            }
+                        }
+                        if (shift && selectionMode.equals(SelectionMode.MULTIPLE_CELLS)) {
+                            for (int r : getSelectedRowIndexes()) {
+                                addSelectedCellIndexes(r, col);
+                            }
+                        } else {
+                            setSelectedCellIndexes(newRow, col);
+                        }
+                    }
+
+
+                } else if (getRowCount() > 0) {
+                    newRow = 0;
+                    setSelectedCellIndexes(0, 0);
+                }
+                break;
+        }
+        return newRow;
     }
 
     public abstract void onChange();
@@ -832,8 +1456,7 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
         }
     }
 
-    public void scrollToSelected() {
-        int rIndex = getSelectedIndex();
+    public void scrollToRow(int rIndex) {
         float diff = (rIndex + 1) * getRowHeight();
 
         float y = -(getScrollableHeight() - diff);
@@ -841,13 +1464,35 @@ public abstract class Table extends ScrollArea implements MouseMovementListener,
         if (FastMath.abs(y) > getScrollableHeight()) {
             y = getScrollableHeight();
         }
-
         scrollThumbYTo(y);
+    }
+
+    public void scrollToSelected() {
+        scrollToRow(getSelectedRowIndex());
     }
 
     private void reconfigureHeaders() {
         for (TableColumn header : columns) {
             header.reconfigure();
         }
+    }
+
+    private void setScrollThumb() {
+        /* All this is to update the scroll thumb to the current scroll position. 
+         Im sure something like this would be better*/
+        final float trackLength = getVScrollBar().getScrollTrack().getHeight();
+        float scale = (getScrollableHeight()) / (trackLength);
+        float diff = getScrolledAmount();
+        float thumbHeight = trackLength - getVScrollBar().getScrollThumb().getHeight();
+        final int y = (int) (diff / scale);
+        getVScrollBar().getScrollThumb().setY(thumbHeight - y);
+    }
+
+    private List<Integer> getAllColumnIndexes() {
+        List<Integer> l = new ArrayList();
+        for (int i = 0; i < columns.size(); i++) {
+            l.add(i);
+        }
+        return l;
     }
 }
