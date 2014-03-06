@@ -24,7 +24,7 @@ import tonegod.gui.core.utils.UIDUtil;
  * @author t0neg0d
  */
 public abstract class ComboBox extends TextField {
-	private ButtonAdapter btnArrowDown;
+	protected ButtonAdapter btnArrowDown;
 	private Menu DDList = null;
 	float btnHeight;
 	String ddUID;
@@ -41,6 +41,8 @@ public abstract class ComboBox extends TextField {
 	private String ssCaption;
 	
 	private boolean DDListIsShowing = false;
+	
+	protected boolean selectEnabled = true;
 	
 	/**
 	 * Creates a new instance of the ComboBox control
@@ -621,5 +623,19 @@ public abstract class ComboBox extends TextField {
 	public void controlCleanupHook() {
 		if (DDList != null)
 			screen.removeElement(DDList);
+	}
+	
+	@Override
+	public void setIsEnabled(boolean isEnabled) {
+		super.setIsEnabled(isEnabled);
+		selectEnabled = isEnabled;
+		this.btnArrowDown.setIsEnabled(isEnabled);
+	}
+	
+	@Override
+	public void onKeyPress(KeyInputEvent evt) {
+		if (selectEnabled) {
+			super.onKeyPress(evt);
+		}
 	}
 }

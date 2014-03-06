@@ -4,6 +4,7 @@
  */
 package tonegod.gui.controls.lists;
 
+import com.jme3.input.event.KeyInputEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.core.ElementManager;
@@ -102,4 +103,10 @@ public abstract class SelectBox extends ComboBox {
 		setIsEnabled(false);
 	}
 	
+	@Override
+	public final void setIsEnabled(boolean isEnabled) {
+		super.setIsEnabled(false);
+		selectEnabled = isEnabled;
+		this.btnArrowDown.setIsEnabled(isEnabled);
+	}
 }
