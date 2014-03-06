@@ -6,6 +6,10 @@ package tonegod.gui.framework.core;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.control.Control;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,11 +22,12 @@ import tonegod.gui.core.utils.UIDUtil;
  *
  * @author t0neg0d
  */
-public class AnimLayer extends Element {
+public class AnimLayer extends Element implements Control {
 	private Map<String, AnimElement> animElements = new LinkedHashMap<String, AnimElement>();
 	private List<AnimElement> tempElements = new LinkedList();
 	private float childZOrder = -1;
 	private float zOrderStepMid = 0.001f;
+	private Spatial spatial;
 	
 	public AnimLayer(ElementManager screen) {
 		this(screen, UIDUtil.getUID());
@@ -46,6 +51,7 @@ public class AnimLayer extends Element {
 		if (childZOrder == -1)
 			childZOrder = getLocalTranslation().z;
 		el.setElementKey(UID);
+		el.setParentLayer(this);
 		animElements.put(UID, el);
 		el.setPositionZ(childZOrder);
 		childZOrder -= zOrderStepMid;
@@ -63,6 +69,8 @@ public class AnimLayer extends Element {
 	public void bringAnimElementToFront(AnimElement el) {
 		animElements.remove(el.getElementKey());
 		animElements.put(el.getElementKey(), el);
+		el.removeFromParent();
+		attachChild(el);
 		resetZOrder();
 	}
 	
@@ -87,5 +95,27 @@ public class AnimLayer extends Element {
 			ae.resetZOrder();
 			childZOrder -= zOrderStepMid;
 		}
+	}
+
+	@Override
+	public Control cloneForSpatial(Spatial spatial) {
+		return this;
+	}
+
+	@Override
+	public void setSpatial(Spatial spatial) {
+		this.spatial = spatial;
+	}
+
+	@Override
+	public void update(float tpf) {
+		for (AnimElement el : animElements.values()) {
+			el.update(tpf);
+		}
+	}
+
+	@Override
+	public void render(RenderManager rm, ViewPort vp) {
+		
 	}
 }

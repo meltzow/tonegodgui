@@ -59,6 +59,10 @@ public abstract class AnimElement extends Node implements Transformable {
 	protected float zOrder = -1f;
 	private float zOrderStepMinor = 0.00001f;
 	private Geometry geom;
+	private Vector2f worldPosition = new Vector2f();
+	private float worldRotation = 0;
+	private Vector2f tempV = new Vector2f(),
+			tempV2 = new Vector2f();
 	
 	public AnimElement(AssetManager am) {
 		this.am = am;
@@ -567,5 +571,49 @@ public abstract class AnimElement extends Node implements Transformable {
 	
 	public <T extends Object> T getDataStruct() {
 		return (T)dataStruct;
+	}
+	
+	// Potential Additions
+	private void setWorldTransforms(QuadData qd) {
+		AnimElement a = this;
+		QuadData p = qd.parent;
+		worldPosition.set(0,0);
+		worldPosition.subtractLocal(qd.getOrigin());
+		worldPosition.multLocal(qd.getScale());
+		worldPosition.set(mesh.rot(worldPosition, qd.getRotation()));
+		worldPosition.addLocal(qd.getOrigin());
+		worldPosition.addLocal(qd.getPosition());
+		worldRotation = qd.getRotation();
+		while (p != null) {
+			worldPosition.subtractLocal(p.getOrigin());
+			worldPosition.multLocal(p.getScale());
+			worldPosition.set(mesh.rot(worldPosition, p.getRotation()));
+			worldPosition.addLocal(p.getOrigin());
+			worldPosition.addLocal(p.getPosition());
+			worldRotation += p.getRotation();
+			p = p.parent;
+		}
+		while (a != null) {
+			worldPosition.subtractLocal(a.getOrigin());
+			worldPosition.multLocal(a.getScale());
+			worldPosition.set(mesh.rot(worldPosition, a.getRotation()));
+			worldPosition.addLocal(a.getOrigin());
+			worldPosition.addLocal(a.getPosition());
+			worldRotation += a.getRotation();
+			if (a.getParent() instanceof AnimElement)
+				a = (AnimElement)a.getParent();
+			else
+				a = null;
+		}
+	}
+	
+	public Vector2f getQuadWorldPosition(QuadData qd) {
+		setWorldTransforms(qd);
+		return worldPosition;
+	}
+	
+	public float getQuadWorldRotation(QuadData qd) {
+		setWorldTransforms(qd);
+		return worldRotation;
 	}
 }

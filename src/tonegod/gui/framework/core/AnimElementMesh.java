@@ -180,7 +180,7 @@ public class AnimElementMesh extends Mesh {
 	}
 	
 	float cos, sin, x, y;
-	private Vector2f rot(Vector2f p, float angle) {
+	public Vector2f rot(Vector2f p, float angle) {
 		cos = FastMath.cos(angle*FastMath.DEG_TO_RAD);
 		sin = FastMath.sin(angle*FastMath.DEG_TO_RAD);
 		x = p.x*cos-p.y*sin;

@@ -1618,6 +1618,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 				layer.setInitialized();
 			}
 			t0neg0dGUI.attachChild(layer);
+			t0neg0dGUI.addControl(layer);
 			
 			return layer;
 		}
@@ -1643,6 +1644,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			}
 			layerZOrderCurrent -= zOrderStepMajor;
 			animLayer.removeFromParent();
+			t0neg0dGUI.removeControl(animLayer);
 			animLayer.cleanup();
 		}
 	}
