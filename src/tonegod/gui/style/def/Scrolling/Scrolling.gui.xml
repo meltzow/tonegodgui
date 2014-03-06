@@ -62,6 +62,7 @@
 			</property>
 			<property name="useBtnUpArrowIcon" type="boolean" value="true" />
 			<property name="useBtnDownArrowIcon" type="boolean" value="true" />
+			<property name="gap" type="float" value="0" />
 		</attributes>
 		<images>
 			<property name="trackImg" type="String" value="tonegod/gui/style/def/Scrolling/scroll_track_x.png" />

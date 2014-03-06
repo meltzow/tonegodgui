@@ -27,6 +27,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	private VScrollBar vScrollBar;
 	protected float scrollSize;
 	private boolean scrollHidden = false;
+        protected float scrollBarGap;
 	
 	/**
 	 * Creates a new instance of the ScrollArea control
@@ -132,6 +133,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		setTextWrap(LineWrapMode.valueOf(screen.getStyle("ScrollArea").getString("textWrap")));
 		setTextClipPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
 		
+                scrollBarGap = screen.getStyle("ScrollArea#VScrollBar").getFloat("gap");
 		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 		
 	//	orgWidth = getWidth();
@@ -146,7 +148,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		}
 		
 		vScrollBar = new VScrollBar(screen, UID + ":vScroll",
-			new Vector2f(getWidth(), 0),
+			new Vector2f(getWidth() + scrollBarGap, 0),
 			new Vector2f(scrollSize, getHeight())
 		);
 		
@@ -276,11 +278,11 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	 */
 	public final void adjustWidthForScroll() {
 		if (vScrollBar.getParent() == null && !scrollHidden) {
-			setWidth(getWidth()+vScrollBar.getWidth());
+			setWidth(getWidth()+vScrollBar.getWidth() + scrollBarGap);
 			scrollHidden = true;
 		} else if (vScrollBar.getParent() != null && scrollHidden) {
-			setWidth(getWidth()-vScrollBar.getWidth());
-			getVScrollBar().setX(getWidth());
+			setWidth(getWidth()-vScrollBar.getWidth() - scrollBarGap);
+			vScrollBar.setX(getWidth() + scrollBarGap);
 			scrollHidden = false;
 		}
         onAdjustWidthForScroll();
