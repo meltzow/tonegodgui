@@ -133,7 +133,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		setTextWrap(LineWrapMode.valueOf(screen.getStyle("ScrollArea").getString("textWrap")));
 		setTextClipPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
 		
-                scrollBarGap = screen.getStyle("ScrollArea#VScrollBar").getFloat("gap");
+        scrollBarGap = screen.getStyle("ScrollArea#VScrollBar").getFloat("gap");
 		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 		
 	//	orgWidth = getWidth();
