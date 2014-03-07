@@ -1041,6 +1041,17 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			eventElements.put(evt.getPointerId(),target);
 			eventElementResizeDirections.put(evt.getPointerId(), dir);
 		} else {
+			// 2D Framework
+			if (eventElement == null) {
+				if (eventAnimElement != null) {
+					setAnimElementZOrder();
+					if (eventAnimElement instanceof MouseButtonListener) {
+						MouseButtonEvent mbEvt = new MouseButtonEvent(0,true,(int)evt.getX(),(int)evt.getY());
+						((MouseButtonListener)eventAnimElement).onMouseLeftPressed(mbEvt);
+					}
+					evt.setConsumed();
+				}
+			}
 			if (keyboardElement == null)
 				hideVirtualKeyboard();
 			resetTabFocusElement();
@@ -1095,6 +1106,13 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			elementOffsets.remove(evt.getPointerId());
 			eventElementResizeDirections.remove(evt.getPointerId());
 		} else
+			if (eventAnimElement != null) {
+				if (eventAnimElement instanceof MouseButtonListener) {
+					MouseButtonEvent mbEvt = new MouseButtonEvent(0, true, (int)evt.getX(), (int)evt.getY());
+					((MouseButtonListener)eventAnimElement).onMouseLeftReleased(mbEvt);
+				}
+				evt.setConsumed();
+			}
 			handleMenuState();
 		mousePressed = false;
 	}
