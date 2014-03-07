@@ -62,6 +62,7 @@
 			</property>
 			<property name="useBtnUpArrowIcon" type="boolean" value="true" />
 			<property name="useBtnDownArrowIcon" type="boolean" value="true" />
+			<property name="gap" type="float" value="0" />
 		</attributes>
 		<images>
 			<property name="trackImg" type="String" value="x=73|y=19|w=16|h=16" />
