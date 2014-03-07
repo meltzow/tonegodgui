@@ -772,11 +772,13 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					
 					// 2D Framework
 					if (eventElement == null) {
-						setAnimElementZOrder();
-						if (eventAnimElement instanceof MouseButtonListener) {
-							((MouseButtonListener)eventAnimElement).onMouseLeftPressed(evt);
+						if (eventAnimElement != null) {
+							setAnimElementZOrder();
+							if (eventAnimElement instanceof MouseButtonListener) {
+								((MouseButtonListener)eventAnimElement).onMouseLeftPressed(evt);
+							}
+							evt.setConsumed();
 						}
-						evt.setConsumed();
 					}
 					break;
 				case 1:
