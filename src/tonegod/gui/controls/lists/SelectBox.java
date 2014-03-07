@@ -100,7 +100,7 @@ public abstract class SelectBox extends ComboBox {
 	public SelectBox(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
-		setIsEnabled(false);
+		setIsEnabled(true);
 	}
 	
 	@Override
