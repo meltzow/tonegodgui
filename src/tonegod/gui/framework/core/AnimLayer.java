@@ -59,11 +59,15 @@ public class AnimLayer extends Element implements Control {
 	}
 	
 	public AnimElement removeAnimElement(String UID) {
-		return animElements.remove(UID);
+		AnimElement el = animElements.remove(UID);
+		if (el != null)
+			el.removeFromParent();
+		return el;
 	}
 	
 	public void removeAnimElement(AnimElement el) {
 		animElements.remove(el.getElementKey());
+		el.removeFromParent();
 	}
 	
 	public void bringAnimElementToFront(AnimElement el) {

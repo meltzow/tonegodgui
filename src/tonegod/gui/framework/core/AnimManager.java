@@ -8,9 +8,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import tonegod.gui.core.Screen;
 import tonegod.gui.framework.animation.TemporalAction;
 
