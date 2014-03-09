@@ -31,8 +31,8 @@ public class BitmapFontLoaderX implements AssetLoader {
         String regex = "[\\s=]+";
 
         font.setCharSet(charSet);
-        while (reader.ready()){
-            String line = reader.readLine();
+		String line;
+        while ((line = reader.readLine())!=null){
             String[] tokens = line.split(regex);
             if (tokens[0].equals("info")){
                 // Get rendered size
