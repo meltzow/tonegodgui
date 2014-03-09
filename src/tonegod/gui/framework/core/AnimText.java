@@ -658,11 +658,11 @@ public class AnimText extends AnimElement {
 	}
 	
 	public float getLineWidth() {
-		return lineWidth*getScaleX();
+		return lineWidth;
 	}
 	
 	public float getLineHeight() {
-		return lineHeight*getScaleY();
+		return lineHeight;
 	}
 	
 	public void fadeTextIn(float duration) {

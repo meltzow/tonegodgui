@@ -1644,6 +1644,27 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		}
 	}
 	
+	public void addAnimLayer(String UID, AnimLayer layer) {
+		if (getAnimLayerById(UID) != null) {
+			try {
+				throw new ConflictingIDException();
+			} catch (ConflictingIDException ex) {
+				Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The child layer '" + UID + "' (Element) conflicts with a previously added child layer in parent Screen.", ex);
+				System.exit(0);
+			}
+		} else {
+			layer.initZOrder(layerZOrderCurrent);
+			layerZOrderCurrent += this.getZOrderStepMajor();
+			
+			layers.put(UID, layer);
+			if (!layer.getInitialized()) {
+				layer.orgPosition = layer.getPosition().clone();
+				layer.setInitialized();
+			}
+			t0neg0dGUI.attachChild(layer);
+			t0neg0dGUI.addControl(layer);
+		}
+	}
 	public AnimLayer removeAnimLayer(String UID) {
 		AnimLayer animLayer = layers.get(UID);
 		if (animLayer != null) {
@@ -1655,6 +1676,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	public void removeAnimLayer(AnimLayer animLayer) {
 		if (layers.containsValue(animLayer)) {
+			t0neg0dGUI.removeControl(animLayer);
 			layers.remove(animLayer.getUID());
 			float shiftZ = animLayer.getLocalTranslation().getZ();
 			for (AnimLayer el : layers.values()) {
@@ -1664,7 +1686,6 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			}
 			layerZOrderCurrent -= zOrderStepMajor;
 			animLayer.removeFromParent();
-			t0neg0dGUI.removeControl(animLayer);
 			animLayer.cleanup();
 		}
 	}
@@ -1719,7 +1740,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			t0neg0dGUI.addControl(effectManager);
 			t0neg0dGUI.addControl(animManager);
 			initModalBackground();
-			t0neg0dGUI.attachChild(modalBackground);
+			addElement(modalBackground);
+		//	t0neg0dGUI.attachChild(modalBackground);
 			if (isAndroid()) initVirtualKeys();
 		}
 	}

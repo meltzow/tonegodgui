@@ -20,6 +20,7 @@
 		</attributes>
 		<images>
 			<property name="blankImg" type="String" value="tonegod/gui/style/def/Blank.png" />
+			<property name="whiteImg" type="String" value="tonegod/gui/style/def/whiteImg.png" />
 			<property name="arrowUp" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_up.png" />
 			<property name="arrowDown" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_down.png" />
 			<property name="arrowLeft" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_left.png" />

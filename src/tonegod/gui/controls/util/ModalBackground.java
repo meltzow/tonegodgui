@@ -29,7 +29,7 @@ public class ModalBackground extends Element {
 			Vector2f.ZERO,
 			new Vector2f(100,100),
 			Vector4f.ZERO,
-			screen.getStyle("Common").getString("whiteImg")
+			null//screen.getStyle("Common").getString("whiteImg")
 		);
 		setEffectZOrder(false);
 		bgColor.set(resetColor);
