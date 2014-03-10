@@ -141,6 +141,8 @@ public class AnimText extends AnimElement {
 		int textIndex = 0;
 		text = stripTags(text);
 		
+		lineHeight = font.getCharSet().getLineHeight()*size;
+		
 		for (int i = 0; i < text.length(); i++) {
 			c = text.charAt(i);
 			bc = font.getCharSet().getCharacter(c.charValue());
@@ -150,8 +152,9 @@ public class AnimText extends AnimElement {
 					tr = addTextureRegion(String.valueOf(c.hashCode()), bc.getX(), imgHeight-bc.getY()-bc.getHeight(), bc.getWidth(), bc.getHeight());
 					tr.flip(false, true);
 					align.set(bc.getWidth()*size/2, bc.getHeight()*size/2);
-					pos.set(lineWidth,font.getCharSet().getBase()-bc.getHeight()-bc.getYOffset());
+					pos.set(lineWidth,font.getCharSet().getBase()-bc.getHeight()-bc.getYOffset()*size);
 					qd = addQuad(String.valueOf(lIndex), String.valueOf(c.hashCode()), pos, align);
+					qd.setDimensions(qd.getTextureRegion().getRegionWidth()*size,qd.getTextureRegion().getRegionHeight()*size);
 					qd.setColor(fontColor);
 					qd.userIndex = textIndex;
 					if (hasLines) {
@@ -159,10 +162,10 @@ public class AnimText extends AnimElement {
 						line.setDimensions(bc.getXAdvance()*size,(lineSize*size < 1) ? 1 : lineSize*size);
 						line.setColor(fontColor);
 					}
-					lineWidth += bc.getXAdvance();
+					lineWidth += bc.getXAdvance()*size;
 					lIndex++;
 				} else {
-					lineWidth += bcSpc.getXAdvance();
+					lineWidth += bcSpc.getXAdvance()*size;
 				}
 			}
 			textIndex++;
@@ -194,7 +197,6 @@ public class AnimText extends AnimElement {
 		}
 		
 		lines = lineDisplay.quads.values().toArray(new QuadData[0]);
-		
 	}
 	
 	private String stripTags(String text) {
