@@ -128,6 +128,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	protected Node t0neg0dGUI = new Node("t0neg0dGUI");
 	
+	private Vector2f touchXY = new Vector2f(0,0);
 	private Vector2f mouseXY = new Vector2f(0,0);
 	private boolean SHIFT = false;
 	private boolean CTRL = false;
@@ -509,6 +510,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	@Override
 	public Vector2f getMouseXY() {
 		return this.mouseXY;
+	}
+	
+	public Vector2f getTouchXY() {
+		return this.touchXY;
 	}
 	
 	// Raw Input handlers
@@ -951,6 +956,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	
 	private void androidTouchDownEvent(TouchEvent evt) {
+		touchXY.set(evt.getX(),evt.getY());
 		mousePressed = true;
 		Element contact = getContactElement(evt.getX(), evt.getY());
 		Vector2f offset = tempElementOffset.clone();
@@ -1059,6 +1065,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	
 	private void androidTouchMoveEvent(TouchEvent evt) {
+		touchXY.set(evt.getX(),evt.getY());
 		for (Integer key : eventElements.keySet()) {
 			if (key == evt.getPointerId()) {
 				Element target = eventElements.get(key);
@@ -1087,6 +1094,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	
 	private void androidTouchUpEvent(TouchEvent evt) {
+		touchXY.set(evt.getX(),evt.getY());
 		Element target = eventElements.get(evt.getPointerId());
 		if (target != null) {
 			if (target instanceof MouseButtonListener) {
