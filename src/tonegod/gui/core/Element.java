@@ -1001,12 +1001,22 @@ public class Element extends Node {
 	}
 	
 	/**
-	 * Forces the object to stay within the constrainst of it's parent Elements
+	 * Forces the object to stay within the constraints of it's parent Elements
+	 * dimensions.
+	 * NOTE: use setLockToParentBounds instead.
+	 * 
+	 * @param lockToParentBounds boolean
+	 */
+	@Deprecated
+	public void setlockToParentBounds(boolean lockToParentBounds) {
+		this.lockToParentBounds = lockToParentBounds;
+	}/**
+	 * Forces the object to stay within the constraints of it's parent Elements
 	 * dimensions.
 	 * 
 	 * @param lockToParentBounds boolean
 	 */
-	public void setlockToParentBounds(boolean lockToParentBounds) {
+	public void setLockToParentBounds(boolean lockToParentBounds) {
 		this.lockToParentBounds = lockToParentBounds;
 	}
 	
