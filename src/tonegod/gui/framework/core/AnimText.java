@@ -18,9 +18,7 @@ import static com.jme3.font.LineWrapMode.Character;
 import static com.jme3.font.LineWrapMode.Clip;
 import static com.jme3.font.LineWrapMode.NoWrap;
 import static com.jme3.font.LineWrapMode.Word;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import com.jme3.texture.Texture;
@@ -531,7 +529,8 @@ public class AnimText extends AnimElement {
 			for (int w = wordSIndex; w <= wordEIndex; w++) {
 				QuadData quad = letters[w];
 				quad.setPositionX(quad.getPositionX()+lnWidth);
-				lines[w].setPositionX(quad.getPositionX());
+				if (hasLines)
+					lines[w].setPositionX(quad.getPositionX());
 			}
 			lnWidth += wordWidth;
 		} else {
@@ -544,7 +543,8 @@ public class AnimText extends AnimElement {
 				quad.setPositionY(
 					quad.getPositionY()-(font.getCharSet().getBase()*size)
 				);
-				lines[w].setPositionY(y-(lineOffset*size));
+				if (hasLines)
+					lines[w].setPositionY(y-(lineOffset*size));
 			}
 			lineSIndex = wordSIndex;
 			

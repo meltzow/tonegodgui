@@ -229,6 +229,42 @@ public class SubScreen implements ElementManager, Control {
 	}
 	
 	/**
+	 *  Adds an Element to the Screen and scene graph
+	 * @param element The Element to add
+	 */
+	@Override
+	public void addElement(Element element, boolean hide) {
+		if (element instanceof Menu)
+			element.hide();
+		
+		if (getElementById(element.getUID()) != null) {
+		//	try {
+		//		throw new ConflictingIDException();
+		//	} catch (ConflictingIDException ex) {
+		//		Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The child element '" + element.getUID() + "' (" + element.getClass() + ") conflicts with a previously added child element in parent Screen.", ex);
+		//		System.exit(0);
+		//	}
+		} else {
+			elements.put(element.getUID(), element);
+			if (!element.getInitialized()) {
+				element.setY(getHeight()-element.getHeight()-element.getY());
+				element.orgPosition = element.getPosition().clone();
+				element.orgPosition.setY(element.getY());
+				element.setInitialized();
+			}
+			subScreenNode.attachChild(element);
+
+			// Set initla z-order
+			getNextZOrder(true);
+		//	element.initZOrder(zOrderCurrent);
+			element.resize(element.getX()+element.getWidth(), element.getY()+element.getHeight(), Borders.SE);
+			
+			if (hide)
+				element.hide();
+		}
+	}
+	
+	/**
 	 * Removes an Element from the Screen and scene graph
 	 * @param element The Element to remove
 	 */

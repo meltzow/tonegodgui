@@ -622,4 +622,6 @@ public abstract class Slider extends ButtonAdapter {
 	public String getToolTipText() {
 		return this.elThumb.getToolTipText();
 	}
+	
+	public ButtonAdapter getThumb() { return elThumb; }
 }

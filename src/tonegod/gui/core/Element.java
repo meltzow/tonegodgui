@@ -434,6 +434,38 @@ public class Element extends Node {
 	}
 	
 	/**
+	 * Adds the specified Element as a child to this Element.
+	 * @param child The Element to add as a child
+	 */
+	public void addChild(Element child, boolean hide) {
+		child.elementParent = this;
+		
+		if (!child.getInitialized()) {
+			child.setY(this.getHeight()-child.getHeight()-child.getY());
+			child.orgPosition = position.clone();
+			child.orgPosition.setY(child.getY());
+			child.setInitialized();
+		}
+		child.orgRelDimensions.set(child.getWidth()/getWidth(),child.getHeight()/getHeight());
+		child.setQueueBucket(RenderQueue.Bucket.Gui);
+		
+		if (screen.getElementById(child.getUID()) != null) {
+			try {
+				throw new ConflictingIDException();
+			} catch (ConflictingIDException ex) {
+				Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The child element '" + child.getUID() + "' (" + child.getClass() + ") conflicts with a previously added child element in parent element '" + getUID() + "'.", ex);
+				System.exit(0);
+			}
+		} else {
+			elementChildren.put(child.getUID(), child);
+			this.attachChild(child);
+			
+			if (hide)
+				child.hide();
+		}
+	}
+	
+	/**
 	 * Removes the specified Element
 	 * @param child Element to remove
 	 */

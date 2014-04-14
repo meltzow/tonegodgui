@@ -344,34 +344,42 @@ public class QuadData implements Transformable {
 	@Override
 	public void setDimensions(Vector2f dim) {
 		this.dimensions.set(dim);
+		element.mesh.buildPosition = true;
 	}
 	@Override
 	public void setDimensions(float w, float h) {
 		this.dimensions.set(w,h);
+		element.mesh.buildPosition = true;
 	}
 	@Override
 	public void setWidth(float w) {
 		this.dimensions.setX(w);
+		element.mesh.buildPosition = true;
 	}
 	@Override
 	public void setHeight(float h) {
 		this.dimensions.setY(h);
+		element.mesh.buildPosition = true;
 	}
 	@Override
 	public void setSkew(Vector2f skew) {
 		this.skew.set(skew);
+		element.mesh.buildPosition = true;
 	}
 	@Override
 	public void setSkew(float x, float y) {
 		this.skew.set(x,y);
+		element.mesh.buildPosition = true;
 	}
 	@Override
 	public void setSkewX(float x) {
 		this.skew.setX(x);
+		element.mesh.buildPosition = true;
 	}
 	@Override
 	public void setSkewY(float y) {
 		this.skew.setY(y);
+		element.mesh.buildPosition = true;
 	}
 	@Override
 	public Vector2f getSkew() {

@@ -218,7 +218,12 @@ public abstract class TextElement extends Element implements Control {
 	}
 	
 	@Override
+	public float getFontSize() { return size; }
+	
+	float size;
+	@Override
 	public void setFontSize(float fontSize) {
+		this.size = fontSize;
 		animText.setFontSize(fontSize);
 		setTextWrap(textWrap);
 	}

@@ -30,6 +30,7 @@ public interface ElementManager {
 	public Node getGUINode();
 	
 	public void addElement(Element element);
+	public void addElement(Element element, boolean hide);
 	public void removeElement(Element element);
 	public Element getElementById(String UID);
 	public void setKeyboardElement(Element element);
