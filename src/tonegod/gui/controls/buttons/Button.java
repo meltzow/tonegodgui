@@ -28,6 +28,7 @@ import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
+import tonegod.gui.effects.Effect.EffectType;
 import tonegod.gui.listeners.KeyboardListener;
 import tonegod.gui.listeners.MouseButtonListener;
 import tonegod.gui.listeners.MouseFocusListener;
@@ -727,6 +728,12 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		if (textElement.getParent() == null) {
 			this.attachChild(textElement);
 		}
+	}
+	
+	@Override
+	public void setFontColor(ColorRGBA fontColor) {
+		super.setFontColor(fontColor);
+		originalFontColor = fontColor.clone();
 	}
 	
 	/**
