@@ -156,6 +156,10 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 		initWidth = listItemHeight*3;
 	}
 	
+	public void setHighlightColor(ColorRGBA color) {
+		this.highlightColor.set(color);
+	}
+	
 	public void setIsMultiselect(boolean isMultiselect) {
 		this.isMultiselect = isMultiselect;
 	}
@@ -481,6 +485,7 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 			currentHeight += listItemHeight;
 			index++;
 		}
+		scrollableArea.setFontSize(fontSize);
 		scrollableArea.setText(finalString);
 		scrollableArea.setTextPosition(0, listPadding);
 		

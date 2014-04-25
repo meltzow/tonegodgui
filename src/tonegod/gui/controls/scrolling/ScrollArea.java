@@ -157,6 +157,26 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		setVScrollBar(vScrollBar);
 	}
 	
+	public void setScrollBarWidth(float width) {
+		this.scrollSize = width;
+		this.getVScrollBar().setWidth(width);
+		this.getVScrollBar().getScrollTrack().setWidth(width);
+		this.getVScrollBar().getScrollTrack().setHeight(getHeight()-(width*2));
+		this.getVScrollBar().getScrollTrack().setY(width);
+		this.getVScrollBar().getScrollButtonUp().setDimensions(width, width);
+		this.getVScrollBar().getScrollButtonUp().setY(getHeight()-width);
+		this.getVScrollBar().getScrollThumb().setWidth(width);
+		this.getVScrollBar().getScrollButtonDown().setDimensions(width, width);
+		
+		this.getVScrollBar().getScrollButtonUp().getButtonIcon().centerToParent();
+		this.getVScrollBar().getScrollButtonDown().getButtonIcon().centerToParent();
+		if (getVScrollBar().getIsVisible())
+			this.setWidth(this.orgDimensions.x-width);
+		else
+			this.setWidth(this.orgDimensions.x);
+	//	this.adjustWidthForScroll();
+	}
+	
 	private void createScrollableArea() {
 		scrollableArea = new Element(screen, getUID() + ":scrollable", new Vector2f(0, 0), new Vector2f(getWidth(), 25), new Vector4f(14,14,14,14), null);
 		scrollableArea.setIsResizable(false);
