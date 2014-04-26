@@ -170,6 +170,7 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		
 		this.getVScrollBar().getScrollButtonUp().getButtonIcon().centerToParent();
 		this.getVScrollBar().getScrollButtonDown().getButtonIcon().centerToParent();
+		
 		if (getVScrollBar().getIsVisible())
 			this.setWidth(this.orgDimensions.x-width);
 		else
