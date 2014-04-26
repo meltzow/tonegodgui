@@ -2172,8 +2172,11 @@ public class Element extends Node {
 				Effect clone = effect.clone();
 				clone.setAudioFile(null);
 				this.propagateEffect(clone, false);
-			} else
+			} else {
+				if (getTextElement() != null)
+					getTextElement().setAlpha(1f);
 				screen.getEffectManager().applyEffect(effect);
+			}
 		} else
 			this.show();
 	}
@@ -2191,9 +2194,12 @@ public class Element extends Node {
 			updateClipping();
 			controlShowHook();
 			
+			if (getTextElement() != null)
+				getTextElement().setAlpha(1f);
+			
 			if (getParent() == null) {
 				if (getElementParent() != null) {
-						getElementParent().attachChild(this);
+					getElementParent().attachChild(this);
 				} else {
 					screen.getGUINode().attachChild(this);
 				}
@@ -2215,6 +2221,9 @@ public class Element extends Node {
 	 * update it.
 	 */
 	public void childShow() {
+		if (getTextElement() != null)
+			getTextElement().setAlpha(1f);
+		
 		this.isVisible = wasVisible;
 		this.isClipped = wasClipped;
 		updateClipping();
