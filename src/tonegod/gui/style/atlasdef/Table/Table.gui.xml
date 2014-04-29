@@ -122,8 +122,14 @@
 			<property name="textWrap" type="String" value="NoWrap" />
 			<property name="textPadding" type="float" value="3" />
 		</font>
-		<attributes>
+                <attributes>
 			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="arrowResizeBorders" type="Vector4f">
 				<x value="0" />
 				<y value="0" />
 				<z value="0" />
@@ -133,9 +139,16 @@
 				<x value="100" />
 				<y value="24" />
 			</property>
+			<property name="arrowSize" type="Vector2f">
+				<x value="20" />
+				<y value="20" />
+			</property>
 		</attributes>
 		<images>
+			<property name="expandImg" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_right.png" />
+			<property name="collapseImg" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_down.png" />
 		</images>
+                
 		<effects>
 		</effects>
 	</element>
