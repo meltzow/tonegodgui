@@ -189,7 +189,14 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			uv1 = new Vector2f(),
 			uv2 = new Vector2f(),
 			uv3 = new Vector2f();
-	private static boolean initializedLoader;
+	
+	private boolean initializedLoader;
+	
+	// 3D scene support
+	private boolean use3DSceneSupport = false;
+	private Node mouseFocusNode = null;
+	private Node eventNode = null;
+	private Node previousMouseFocusNode = null;
 	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
@@ -715,6 +722,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 				}
 			}
 		}
+		
+		if (use3DSceneSupport) {
+			s3dOnMouseMotionEvent(evt, mouseFocusElement != null || mouseFocusAnimElement != null);
+		}
 	}
 
 	@Override
@@ -932,6 +943,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					}
 				}
 			}
+		}
+		
+		if (use3DSceneSupport && !evt.isConsumed()) {
+			s3dOnMouseButtonEvent(evt);
 		}
 	}
 	
@@ -1763,6 +1778,90 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	//</editor-fold>
 	
+	//<editor-fold desc="3D Scene Support">
+	public void setUse3DSceneSupport(boolean enable) {
+		this.use3DSceneSupport = enable;
+	}
+	
+	private void s3dOnMouseMotionEvent(MouseMotionEvent evt, boolean guiFocus) {
+		if (!mousePressed) {
+			mouseFocusNode = getEventNode(evt.getX(), evt.getY());
+			if (!guiFocus) {
+				if (mouseFocusNode != previousMouseFocusNode) {
+					if (previousMouseFocusNode instanceof MouseFocusListener) {
+						((MouseFocusListener)previousMouseFocusNode).onLoseFocus(evt);
+					}
+					if (mouseFocusNode instanceof MouseFocusListener) {
+						((MouseFocusListener)mouseFocusNode).onGetFocus(evt);
+					}
+					previousMouseFocusNode = mouseFocusNode;
+				}
+				if (mouseFocusNode != null) {
+					if (mouseFocusNode instanceof MouseWheelListener) {
+						if (evt.getDeltaWheel() > 0) {
+							((MouseWheelListener)mouseFocusNode).onMouseWheelDown(evt);
+						} else if (evt.getDeltaWheel() < 0) {
+							((MouseWheelListener)mouseFocusNode).onMouseWheelUp(evt);
+						}
+					}
+				}
+				if (mouseFocusNode instanceof MouseMovementListener) {
+					((MouseMovementListener)mouseFocusNode).onMouseMove(evt);
+				}
+			} else {
+				if (previousMouseFocusNode instanceof MouseFocusListener) {
+					((MouseFocusListener)previousMouseFocusNode).onLoseFocus(evt);
+					previousMouseFocusNode = null;
+				}
+			}
+		}
+	}
+	
+	private void s3dOnMouseButtonEvent(MouseButtonEvent evt) {
+		eventNode = getEventNode(evt.getX(), evt.getY());
+		if (eventNode != null) {
+			if (evt.isPressed()) {
+				switch (evt.getButtonIndex()) {
+					case 0:
+						if (eventNode instanceof MouseButtonListener) {
+							((MouseButtonListener)eventNode).onMouseLeftPressed(evt);
+						}
+						break;
+					case 1:
+						if (eventNode instanceof MouseButtonListener) {
+							((MouseButtonListener)eventNode).onMouseRightPressed(evt);
+						}
+						break;
+					case 2:
+						if (eventNode instanceof MouseWheelListener) {
+							((MouseWheelListener)eventNode).onMouseWheelPressed(evt);
+						}
+						break;
+				}
+			} else if (evt.isReleased()) {
+				switch (evt.getButtonIndex()) {
+					case 0:
+						if (eventNode instanceof MouseButtonListener) {
+							((MouseButtonListener)eventNode).onMouseLeftReleased(evt);
+						}
+						break;
+					case 1:
+						if (eventNode instanceof MouseButtonListener) {
+							((MouseButtonListener)eventNode).onMouseRightReleased(evt);
+						}
+						break;
+					case 2:
+						if (eventNode instanceof MouseWheelListener) {
+							((MouseWheelListener)eventNode).onMouseWheelReleased(evt);
+						}
+						break;
+				}
+				eventNode = null;
+			}
+		}
+	}
+	//</editor-fold>
+	
 	//<editor-fold desc="JME Control Methods">
 	@Override
 	public void update(float tpf) {  }
@@ -2295,6 +2394,53 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	public static boolean isAndroid() {
 		String OS = System.getProperty("java.vendor").toLowerCase();
 		return (OS.indexOf("android") >= 0);
+	}
+	//</editor-fold>
+	
+	//<editor-fold desc="Node Event Methods">
+	/**
+	 * Determines and returns the current mouse focus Node
+	 * @param x The current mouse X coord
+	 * @param y The current mouse Y coord
+	 * @return Element eventElement
+	 */
+	private Node getEventNode(float x, float y) {
+		Node root = (Node)getApplication().getViewPort().getScenes().get(0);
+		
+		click2d.set(app.getInputManager().getCursorPosition());
+		tempV2.set(click2d);
+		click3d.set(app.getCamera().getWorldCoordinates(tempV2, 0f));
+		pickDir.set(app.getCamera().getWorldCoordinates(tempV2, 1f).subtractLocal(click3d).normalizeLocal());
+		pickRay.setOrigin(click3d);
+		pickRay.setDirection(pickDir);
+		results.clear();
+		root.collideWith(pickRay, results);
+		
+		float z = 0;
+		Node testEl = null, el = null;
+		for (CollisionResult result : results) {
+			boolean listener = false;
+			Node parent = result.getGeometry().getParent();
+			while (parent != root && listener == false) {
+				if (parent instanceof MouseFocusListener ||
+					parent instanceof MouseButtonListener ||
+					parent instanceof MouseMovementListener ||
+					parent instanceof MouseWheelListener ||
+					parent instanceof TouchListener) {
+					el = parent;
+					listener = true;
+					break;
+				}
+				parent = parent.getParent();
+			}
+			if (listener)
+				break;
+		}
+		if (el != null) {
+		//	eventNode = el;
+			return el;
+		} else
+			return null;
 	}
 	//</editor-fold>
 }
