@@ -2491,8 +2491,46 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 * @return Element eventElement
 	 */
 	private Node getEventNode(float x, float y) {
-		Node root = (Node)getApplication().getViewPort().getScenes().get(0);
+	//	Node root = (Node)getApplication().getViewPort().getScenes().get(0);
 		
+		Node el = null;
+		
+		for (Spatial sp : getApplication().getViewPort().getScenes()) {
+			Node root = (Node)sp;
+			
+			click2d.set(app.getInputManager().getCursorPosition());
+			tempV2.set(click2d);
+			click3d.set(app.getCamera().getWorldCoordinates(tempV2, 0f));
+			pickDir.set(app.getCamera().getWorldCoordinates(tempV2, 1f).subtractLocal(click3d).normalizeLocal());
+			pickRay.setOrigin(click3d);
+			pickRay.setDirection(pickDir);
+			results.clear();
+			root.collideWith(pickRay, results);
+
+			boolean listener = false;
+			
+			for (CollisionResult result : results) {
+				Node parent = result.getGeometry().getParent();
+				while (parent != root && listener == false) {
+					if (parent instanceof MouseFocusListener ||
+						parent instanceof MouseButtonListener ||
+						parent instanceof MouseMovementListener ||
+						parent instanceof MouseWheelListener ||
+						parent instanceof TouchListener) {
+						el = parent;
+						listener = true;
+						break;
+					}
+					parent = parent.getParent();
+				}
+				if (listener)
+					break;
+			}
+			
+			if (listener)
+				break;
+		}
+		/*
 		click2d.set(app.getInputManager().getCursorPosition());
 		tempV2.set(click2d);
 		click3d.set(app.getCamera().getWorldCoordinates(tempV2, 0f));
@@ -2522,6 +2560,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			if (listener)
 				break;
 		}
+		*/
 		if (el != null) {
 		//	eventNode = el;
 			return el;
