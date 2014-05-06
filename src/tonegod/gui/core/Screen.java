@@ -2493,7 +2493,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private Node getEventNode(float x, float y) {
 	//	Node root = (Node)getApplication().getViewPort().getScenes().get(0);
 		
-		Node el = null;
+		Node testEl = null, el = null;
+		float z = 100000;
 		
 		for (Spatial sp : getApplication().getViewPort().getScenes()) {
 			Node root = (Node)sp;
@@ -2517,7 +2518,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 						parent instanceof MouseMovementListener ||
 						parent instanceof MouseWheelListener ||
 						parent instanceof TouchListener) {
-						el = parent;
+						testEl = parent;
 						listener = true;
 						break;
 					}
@@ -2527,8 +2528,15 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					break;
 			}
 			
-			if (listener)
-				break;
+			if (testEl != null) {
+				if (testEl.getLocalTranslation().z < z) {
+					el = testEl;
+					z = el.getLocalTranslation().z;
+				}
+			}
+			
+		//	if (listener)
+		//		break;
 		}
 		/*
 		click2d.set(app.getInputManager().getCursorPosition());
