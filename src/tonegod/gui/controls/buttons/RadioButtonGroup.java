@@ -17,8 +17,8 @@ import tonegod.gui.core.utils.UIDUtil;
 public abstract class RadioButtonGroup {
 	private ElementManager screen;
 	private String UID;
-	private List<Button> radioButtons = new ArrayList();
-	private int selectedIndex = -1;
+	protected List<Button> radioButtons = new ArrayList();
+	protected int selectedIndex = -1;
 	private Button selected = null;
 	
 	public RadioButtonGroup(ElementManager screen) {
@@ -90,6 +90,8 @@ public abstract class RadioButtonGroup {
 			onSelect(selectedIndex, button);
 		}
 	}
+	
+	public Button getSelected() { return this.selected; }
 	
 	/**
 	 * Abstract event method for change in selected Radio Button

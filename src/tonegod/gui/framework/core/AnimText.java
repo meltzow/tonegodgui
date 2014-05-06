@@ -38,7 +38,7 @@ public class AnimText extends AnimElement {
 		Bold
 	}
 	private LinkedList<Tag> tags = new LinkedList();
-	private BitmapFont font;
+	protected BitmapFont font;
 	private String text;
 	private int imgHeight;
 	private boolean fadeIn = false;
@@ -816,6 +816,8 @@ public class AnimText extends AnimElement {
 		setText(".");
 		initialize();
 	}
+	
+	public BitmapFont getFont() { return this.font; }
 	
 	public void setSubStringColor(String subString, ColorRGBA color, boolean allInstances, int... whichInstances) {
 		String temp = text;

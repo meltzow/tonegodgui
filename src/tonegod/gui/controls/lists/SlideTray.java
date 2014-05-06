@@ -30,10 +30,10 @@ public class SlideTray extends Element {
 	private ButtonAdapter btnPrevElement, btnNextElement;
 	private Element elTray;
 	
-	private List<Element> trayElements = new ArrayList();
-	private int currentElementIndex = 0;
+	protected List<Element> trayElements = new ArrayList();
+	protected int currentElementIndex = 0;
 	
-	private float trayPadding = 5;
+	protected float trayPadding = 5;
 	
 	private boolean useSlideEffect = false;
 	private Effect slideEffect;
@@ -194,6 +194,20 @@ public class SlideTray extends Element {
 		addChild(elTray);
 		addChild(btnPrevElement);
 		addChild(btnNextElement);
+	}
+	
+	/**
+	 * Returns the current slide tray padding value
+	 * @return 
+	 */
+	public float getTrayPadding() { return this.trayPadding; }
+	
+	/**
+	 * Sets the padding between slide tray elements
+	 * @param trayPadding 
+	 */
+	public void setTrayPadding(float trayPadding) {
+		this.trayPadding = trayPadding;
 	}
 	
 	/**

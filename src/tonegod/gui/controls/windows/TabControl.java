@@ -25,15 +25,15 @@ import tonegod.gui.core.utils.UIDUtil;
  * @author t0neg0d
  */
 public class TabControl extends Element {
-	private List<Button> tabs = new ArrayList();
-	private Map<Integer,TabPanel> tabPanels = new HashMap();
-	private int tabButtonIndex = 0;
-	private float tabWidth, tabHeight, tabXInc;
-	private RadioButtonGroup tabButtonGroup;
-	private Vector4f tabResizeBorders;
-	private SlideTray tabSlider;
-	private boolean isFixedTabWidth = false;
-	private float fixedTabWidth = 0;
+	protected List<Button> tabs = new ArrayList();
+	protected Map<Integer,TabPanel> tabPanels = new HashMap();
+	protected int tabButtonIndex = 0;
+	protected float tabWidth, tabHeight, tabXInc;
+	protected RadioButtonGroup tabButtonGroup;
+	protected Vector4f tabResizeBorders;
+	protected SlideTray tabSlider;
+	protected boolean isFixedTabWidth = false;
+	protected float fixedTabWidth = 0;
 	
 	/**
 	 * Creates a new instance of the TabControl control
@@ -159,6 +159,15 @@ public class TabControl extends Element {
 	}
 	
 	/**
+	 * Sets the resize borders for use with ElementQuadGrid per tab
+	 * @param tabResizeBorders 
+	 */
+	public void setTabResizeBorders(Vector4f tabResizeBorders) {
+		this.tabResizeBorders.set(tabResizeBorders);
+	}
+	
+	
+	/**
 	 * Sets the width to always use for Tabs
 	 * @param fixedTabWidth float Forced width of all Tabs
 	 */
@@ -170,6 +179,14 @@ public class TabControl extends Element {
 			isFixedTabWidth = false;
 			this.fixedTabWidth = 0;
 		}
+	}
+	
+	/**
+	 * Sets the default tab height
+	 * @param tabHeight 
+	 */
+	public void setTabHeight(float tabHeight) {
+		this.tabHeight = tabHeight;
 	}
 	
 	/**

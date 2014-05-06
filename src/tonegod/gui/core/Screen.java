@@ -2359,6 +2359,11 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	
 	/**
+	 * Returns the current tab focus element
+	 */
+	public Element getTabFocusElement() { return this.tabFocusElement; }
+	
+	/**
 	 * Send reset to the current Tab Focus Element
 	 */
 	private void resetFocusElement() {

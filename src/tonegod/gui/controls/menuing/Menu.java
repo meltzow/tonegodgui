@@ -33,18 +33,18 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	private List<MenuItem> menuItems = new ArrayList();
 	private Element highlight;
 	private float initWidth;
-	private float menuItemHeight;
-	private float menuPadding = 4;
+	protected float menuItemHeight;
+	protected float menuPadding = 4;
 	private Menu caller;
-	private Element callerElement;
-	float menuOverhang;
-	boolean isScrollable;
-	ColorRGBA highlightColor;
-	private int currentMenuItemIndex = -1;
-	private int currentHighlightIndex = 0;
-	private Vector2f preferredSize = Vector2f.ZERO;
-	private boolean hasSubMenus = false;
-	private boolean hasToggleItems = false;
+	protected Element callerElement;
+	protected float menuOverhang;
+	protected boolean isScrollable;
+	protected ColorRGBA highlightColor;
+	protected int currentMenuItemIndex = -1;
+	protected int currentHighlightIndex = 0;
+	protected Vector2f preferredSize = Vector2f.ZERO;
+	protected boolean hasSubMenus = false;
+	protected boolean hasToggleItems = false;
 	
 	/**
 	 * Creates a new instance of the Menu control
