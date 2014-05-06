@@ -37,6 +37,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.Control;
 import com.jme3.texture.Texture;
+import com.jme3.util.SafeArrayList;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -199,6 +200,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private Node mouseFocusNode = null;
 	private Node eventNode = null;
 	private Node previousMouseFocusNode = null;
+	private SafeArrayList<Node> scenes = new SafeArrayList(Node.class);
 	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
@@ -236,6 +238,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		animManager = new AnimManager(this);
 		app.getInputManager().addRawInputListener(this);
 		layoutParser = new LayoutParser(this);
+		
+		scenes.add((Node)app.getViewPort().getScenes().get(0));
 	}
 	
 	/**
@@ -2490,15 +2494,24 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 * @param y The current mouse Y coord
 	 * @return Element eventElement
 	 */
+	public void addScene(Node scene) {
+		scenes.add(scene);
+	}
+	
+	public void removeScene(Node scene) {
+		if (scenes.contains(scene))
+			scenes.remove(scene);
+	}
+	
+	
+	
 	private Node getEventNode(float x, float y) {
 	//	Node root = (Node)getApplication().getViewPort().getScenes().get(0);
 		
 		Node testEl = null, el = null;
-		float z = 100000;
+		float distance = 100000;
 		
-		for (Spatial sp : getApplication().getViewPort().getScenes()) {
-			Node root = (Node)sp;
-			
+		for (Node root : scenes.getArray()) {
 			click2d.set(app.getInputManager().getCursorPosition());
 			tempV2.set(click2d);
 			click3d.set(app.getCamera().getWorldCoordinates(tempV2, 0f));
@@ -2529,9 +2542,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			}
 			
 			if (testEl != null) {
-				if (testEl.getLocalTranslation().z < z) {
+				float checkDistance = getApplication().getCamera().getLocation().distance(testEl.getLocalTranslation());
+				if (checkDistance < distance) {
 					el = testEl;
-					z = el.getLocalTranslation().z;
+					distance = checkDistance;
 				}
 			}
 			
