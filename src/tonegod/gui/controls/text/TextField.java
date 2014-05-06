@@ -70,7 +70,7 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	private boolean hasTabFocus = false;
 	protected float caretX = 0;
 	private Type type = Type.DEFAULT;
-	private boolean ctrl = false, shift = false, alt = false, meta = false;
+	protected boolean ctrl = false, shift = false, alt = false, meta = false;
 	private boolean isEnabled = true;
 	private boolean forceUpperCase = false, forceLowerCase = false;
 	private int maxLength = 0;
