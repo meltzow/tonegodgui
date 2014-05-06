@@ -141,6 +141,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private boolean useToolTips = false;
 	private ToolTip toolTip = null;
 	private float toolTipMaxWidth = 250;
+	private String forcedToolTipText = "";
+	private boolean forcedToolTip = false;
 	
 	private float globalAlpha = 1.0f;
 	
@@ -1114,6 +1116,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 				hideVirtualKeyboard();
 			resetTabFocusElement();
 		}
+		
+		if (use3DSceneSupport && !evt.isConsumed()) {
+			s3dOnTouchDownEvent(evt);
+		}
 	}
 	
 	private void androidTouchMoveEvent(TouchEvent evt) {
@@ -1142,6 +1148,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					}
 				}
 			}
+		}
+		
+		if (use3DSceneSupport) {
+			s3dOnTouchMoveEvent(evt);
 		}
 	}
 	
@@ -1174,6 +1184,11 @@ public class Screen implements ElementManager, Control, RawInputListener {
 				evt.setConsumed();
 			}
 			handleMenuState();
+		
+		if (use3DSceneSupport && !evt.isConsumed()) {
+			s3dOnTouchUpEvent(evt);
+		}
+		
 		mousePressed = false;
 	}
 	//</editor-fold>
@@ -1860,6 +1875,18 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			}
 		}
 	}
+	
+	private void s3dOnTouchDownEvent(TouchEvent evt) {
+		
+	}
+	
+	private void s3dOnTouchMoveEvent(TouchEvent evt) {
+		
+	}
+	
+	private void s3dOnTouchUpEvent(TouchEvent evt) {
+		
+	}
 	//</editor-fold>
 	
 	//<editor-fold desc="JME Control Methods">
@@ -2143,22 +2170,66 @@ public class Screen implements ElementManager, Control, RawInputListener {
 						toolTip.setHeight(toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*12));
 						toolTip.getTextElement().setBox(new Rectangle(0,0,toolTip.getWidth()-(toolTip.getTextPadding()*2),toolTip.getHeight()-(toolTip.getTextPadding()*2)));
 					}
-					float nextX = mouseXY.x-(toolTip.getWidth()/2);
-					if (nextX < 0) nextX = 0;
-					else if (nextX+toolTip.getWidth() > getWidth()) nextX = getWidth()-toolTip.getWidth();
-					float nextY = mouseXY.y-toolTip.getHeight()-40;
-					if (nextY < 0) nextY = mouseXY.y+5;
-					toolTip.moveTo(nextX, nextY);
+					setToolTipLocation();
 					if (!toolTip.getIsVisible())
 						toolTip.show();
 				} else {
-					toolTip.setText("");
-					toolTip.hide();
+					if (!forcedToolTip) {
+						toolTip.setText("");
+						toolTip.hide();
+					} else {
+						setToolTipLocation();
+					}
 				}
 			} else {
-				toolTip.setText("");
-				toolTip.hide();
+				if (!forcedToolTip) {
+					toolTip.setText("");
+					toolTip.hide();
+				} else {
+					setToolTipLocation();
+				}
 			}
+		}
+	}
+	
+	private void setToolTipLocation() {
+		float nextX = mouseXY.x-(toolTip.getWidth()/2);
+		if (nextX < 0) nextX = 0;
+		else if (nextX+toolTip.getWidth() > getWidth()) nextX = getWidth()-toolTip.getWidth();
+		float nextY = mouseXY.y-toolTip.getHeight()-40;
+		if (nextY < 0) nextY = mouseXY.y+5;
+		toolTip.moveTo(nextX, nextY);
+	}
+	
+//	@Override
+	public void setForcedToolTip(String toolTipText) {
+		if (useToolTips) {
+			if (getApplication().getInputManager().isCursorVisible()) {
+				forcedToolTip = true;
+				if (!forcedToolTipText.equals(toolTipText)) {
+					forcedToolTipText = toolTipText;
+					toolTip.setText("");
+					toolTip.setHeight(25);
+					float finalWidth = BitmapTextUtil.getTextWidth(toolTip, toolTipText, toolTipMaxWidth);
+					toolTip.setText(toolTipText);
+					toolTip.setWidth(finalWidth+(toolTip.getTextPadding()*12));
+					toolTip.setHeight(toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*12));
+					toolTip.getTextElement().setBox(new Rectangle(0,0,toolTip.getWidth()-(toolTip.getTextPadding()*2),toolTip.getHeight()-(toolTip.getTextPadding()*2)));
+				}
+				setToolTipLocation();
+				if (!toolTip.getIsVisible())
+					toolTip.show();
+			}
+		}
+	}
+	
+//	@Override
+	public void releaseForcedToolTip() {
+		if (useToolTips) {
+			forcedToolTip = false;
+			forcedToolTipText = "";
+			toolTip.setText("");
+			toolTip.hide();
 		}
 	}
 	//</editor-fold>
