@@ -2503,19 +2503,16 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			scenes.remove(scene);
 	}
 	
-	
-	
 	private Node getEventNode(float x, float y) {
-	//	Node root = (Node)getApplication().getViewPort().getScenes().get(0);
-		
 		Node testEl = null, el = null;
-		float distance = 100000;
 		
-		for (Node root : scenes.getArray()) {
+		for (ViewPort vp : app.getRenderManager().getMainViews()) {
+			Node root = (Node)vp.getScenes().get(0);
+			
 			click2d.set(app.getInputManager().getCursorPosition());
 			tempV2.set(click2d);
-			click3d.set(app.getCamera().getWorldCoordinates(tempV2, 0f));
-			pickDir.set(app.getCamera().getWorldCoordinates(tempV2, 1f).subtractLocal(click3d).normalizeLocal());
+			click3d.set(vp.getCamera().getWorldCoordinates(tempV2, 0f));
+			pickDir.set(vp.getCamera().getWorldCoordinates(tempV2, 1f).subtractLocal(click3d).normalizeLocal());
 			pickRay.setOrigin(click3d);
 			pickRay.setDirection(pickDir);
 			results.clear();
@@ -2541,52 +2538,13 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					break;
 			}
 			
-			if (testEl != null) {
-				float checkDistance = getApplication().getCamera().getLocation().distance(testEl.getLocalTranslation());
-				if (checkDistance < distance) {
-					el = testEl;
-					distance = checkDistance;
-				}
-			}
-			
-		//	if (listener)
-		//		break;
+			if (testEl != null)
+				el = testEl;
 		}
-		/*
-		click2d.set(app.getInputManager().getCursorPosition());
-		tempV2.set(click2d);
-		click3d.set(app.getCamera().getWorldCoordinates(tempV2, 0f));
-		pickDir.set(app.getCamera().getWorldCoordinates(tempV2, 1f).subtractLocal(click3d).normalizeLocal());
-		pickRay.setOrigin(click3d);
-		pickRay.setDirection(pickDir);
-		results.clear();
-		root.collideWith(pickRay, results);
 		
-		float z = 0;
-		Node testEl = null, el = null;
-		for (CollisionResult result : results) {
-			boolean listener = false;
-			Node parent = result.getGeometry().getParent();
-			while (parent != root && listener == false) {
-				if (parent instanceof MouseFocusListener ||
-					parent instanceof MouseButtonListener ||
-					parent instanceof MouseMovementListener ||
-					parent instanceof MouseWheelListener ||
-					parent instanceof TouchListener) {
-					el = parent;
-					listener = true;
-					break;
-				}
-				parent = parent.getParent();
-			}
-			if (listener)
-				break;
-		}
-		*/
-		if (el != null) {
-		//	eventNode = el;
+		if (el != null)
 			return el;
-		} else
+		else
 			return null;
 	}
 	//</editor-fold>
