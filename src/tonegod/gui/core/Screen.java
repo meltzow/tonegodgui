@@ -2087,7 +2087,6 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	@Override
 	public void handleAndroidMenuState(Element target) {
 		if (target == null) {
-			System.out.println("Android Menu State: HERE");
 			for (Element el : elements.values()) {
 				if (el instanceof Menu) {
 					el.hide();
