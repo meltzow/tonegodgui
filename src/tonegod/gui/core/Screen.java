@@ -1162,7 +1162,11 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private void androidTouchUpEvent(TouchEvent evt) {
 		touchXY.set(evt.getX(),evt.getY());
 		Element target = eventElements.get(evt.getPointerId());
+		handleAndroidMenuState(target);
 		if (target != null) {
+		//	if (!(target.getAbsoluteParent() instanceof Menu)) {
+		//		handleAndroidMenuState(target);
+		//	}
 			if (target instanceof MouseButtonListener) {
 				MouseButtonEvent mbEvt = new MouseButtonEvent(0, true, (int)evt.getX(), (int)evt.getY());
 				((MouseButtonListener)target).onMouseLeftReleased(mbEvt);
@@ -1170,16 +1174,13 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			if (target instanceof TouchListener) {
 				((TouchListener)target).onTouchUp(evt);
 			}
-			if (!(target.getAbsoluteParent() instanceof Menu)) {
-				handleAndroidMenuState(target);
-			}
-			if (target != null)
-				evt.setConsumed();
+			evt.setConsumed();
 			eventElements.remove(evt.getPointerId());
 			contactElements.remove(evt.getPointerId());
 			elementOffsets.remove(evt.getPointerId());
 			eventElementResizeDirections.remove(evt.getPointerId());
 		} else
+		//	handleAndroidMenuState(target);
 			if (eventAnimElement != null) {
 				if (eventAnimElement instanceof MouseButtonListener) {
 					MouseButtonEvent mbEvt = new MouseButtonEvent(0, true, (int)evt.getX(), (int)evt.getY());
@@ -1187,7 +1188,6 @@ public class Screen implements ElementManager, Control, RawInputListener {
 				}
 				evt.setConsumed();
 			}
-			handleMenuState();
 		
 		if (use3DSceneSupport && !evt.isConsumed()) {
 			s3dOnTouchUpEvent(evt);
@@ -1531,7 +1531,6 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					}
 				}
 			}
-		//	System.out.println(testEl.getUID() + ": " + discard + ": " + testEl.getLocalTranslation().getZ() + ": " + z + ": " + result.getContactPoint().getZ());
 			if (!discard) {
 				
 				if (result.getContactPoint().getZ() > z) {
@@ -2054,29 +2053,31 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	//<editor-fold desc="Menu Handling">
 	private void handleMenuState() {
-		if (eventElement == null) {
-			for (Element el : elements.values()) {
-				if (el instanceof Menu) {
-					el.hide();
-				}
-			}
-		} else {
-			if (!(eventElement.getAbsoluteParent() instanceof Menu) && !(eventElement.getParent() instanceof ComboBox)) {
+		if (!Screen.isAndroid()) {
+			if (eventElement == null) {
 				for (Element el : elements.values()) {
 					if (el instanceof Menu) {
 						el.hide();
 					}
 				}
-			} else if (eventElement.getAbsoluteParent() instanceof Menu) {
-				for (Element el : elements.values()) {
-					if (el instanceof Menu && el != eventElement.getAbsoluteParent()) {
-						el.hide();
+			} else {
+				if (!(eventElement.getAbsoluteParent() instanceof Menu) && !(eventElement.getParent() instanceof ComboBox)) {
+					for (Element el : elements.values()) {
+						if (el instanceof Menu) {
+							el.hide();
+						}
 					}
-				}
-			} else if (eventElement.getParent() instanceof ComboBox) {
-				for (Element el : elements.values()) {
-					if (el instanceof Menu && el != ((ComboBox)eventElement.getParent()).getMenu()) {
-						el.hide();
+				} else if (eventElement.getAbsoluteParent() instanceof Menu) {
+					for (Element el : elements.values()) {
+						if (el instanceof Menu && el != eventElement.getAbsoluteParent()) {
+							el.hide();
+						}
+					}
+				} else if (eventElement.getParent() instanceof ComboBox) {
+					for (Element el : elements.values()) {
+						if (el instanceof Menu && el != ((ComboBox)eventElement.getParent()).getMenu()) {
+							el.hide();
+						}
 					}
 				}
 			}
@@ -2086,6 +2087,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	@Override
 	public void handleAndroidMenuState(Element target) {
 		if (target == null) {
+			System.out.println("Android Menu State: HERE");
 			for (Element el : elements.values()) {
 				if (el instanceof Menu) {
 					el.hide();
