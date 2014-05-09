@@ -2230,6 +2230,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 //	@Override
 	public void releaseForcedToolTip() {
+		releaseForcedToolTip(true);
+	}
+	
+	public void releaseForcedToolTip(boolean hide) {
 		if (useToolTips) {
 			forcedToolTip = false;
 			forcedToolTipText = "";
