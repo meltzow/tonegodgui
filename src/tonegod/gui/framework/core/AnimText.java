@@ -154,7 +154,7 @@ public class AnimText extends AnimElement {
 					qd = addQuad(String.valueOf(lIndex), String.valueOf(c.hashCode()), pos, align);
 					qd.setDimensions(qd.getTextureRegion().getRegionWidth()*size,qd.getTextureRegion().getRegionHeight()*size);
 					qd.setColor(fontColor);
-					qd.userIndex = textIndex;
+					qd.userIndex = lIndex;//textIndex;
 					if (hasLines) {
 						line = lineDisplay.addQuad(String.valueOf(lIndex), "trLine", pos, align);
 						line.setDimensions(bc.getXAdvance()*size,(lineSize*size < 1) ? 1 : lineSize*size);
