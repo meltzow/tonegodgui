@@ -2243,14 +2243,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	
 	public void hideToolTip() {
-		if (useToolTips) {
-			forcedToolTip = false;
-			forcedToolTipText = "";
-			toolTip.setText("");
-			toolTip.hide();
-		}
+		releaseForcedToolTip();
 	}
-	
 	//</editor-fold>
 	
 	//<editor-fold desc="Audio Support">
