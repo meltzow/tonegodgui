@@ -5,6 +5,7 @@
 package tonegod.gui.framework.animation;
 
 import com.jme3.math.Vector2f;
+import com.jme3.scene.Node;
 import java.util.List;
 
 /**
@@ -25,8 +26,20 @@ public class SplineAction extends TemporalAction {
 	protected void update(float percent) {
 		tempV.set(0,0);
 		P(percent,path);
-		quad.setPositionX(tempV.x);
-		quad.setPositionY(tempV.y);
+		if (!forceJmeTransform) {
+			quad.setPositionX(tempV.x);
+			quad.setPositionY(tempV.y);
+		} else {
+			if (quad instanceof Node) {
+				((Node)quad).setLocalTranslation(
+					tempV.x, 
+					tempV.y, 
+					quad.getPositionZ());
+			} else {
+				quad.setPositionX(tempV.x);
+				quad.setPositionY(tempV.y);
+			}
+		}
 	}
 	
 	private float fact (float k) {

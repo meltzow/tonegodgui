@@ -17,6 +17,7 @@ public abstract class TemporalAction {
 	private boolean reverse, complete;
 //	protected AnimElement batch;
 	protected Transformable quad;
+	protected boolean forceJmeTransform = false;
 	
 	public TemporalAction () {
 	}
@@ -102,5 +103,9 @@ public abstract class TemporalAction {
 	/** When true, the action's progress will go from 100% to 0%. */
 	public void setReverse (boolean reverse) {
 		this.reverse = reverse;
+	}
+	
+	public void setForceJmeTransform(boolean forceJmeTransform) {
+		this.forceJmeTransform = forceJmeTransform;
 	}
 }
