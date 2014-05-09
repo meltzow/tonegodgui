@@ -2238,7 +2238,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			forcedToolTip = false;
 			forcedToolTipText = "";
 			toolTip.setText("");
-			toolTip.hide();
+			if (hide) toolTip.hide();
 		}
 	}
 	
