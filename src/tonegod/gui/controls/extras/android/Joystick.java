@@ -30,6 +30,7 @@ public abstract class Joystick extends Element implements Control {
 	private float maxDistance;
 	private float deltaX, deltaY;
 	private Spatial spatial;
+	private Vector2f tempV2 = new Vector2f();
 	
 	public Joystick(ElementManager screen, Vector2f position, int size) {
 		super(screen, UIDUtil.getUID(),
@@ -46,9 +47,11 @@ public abstract class Joystick extends Element implements Control {
 		Texture texBG = screen.createNewTexture("tonegod/gui/style/atlasdef/android/joystick_bg.png");
 		setTextureAtlasImage(texBG, "x=0|y=0|w=128|h=128");
 		
+		tempV2.set(getWidth()/2,getHeight()/2);
+		
 		thumb = new ButtonAdapter(screen, UIDUtil.getUID(),
-			new Vector2f(getWidth()/2-25, getHeight()/2-25),
-			new Vector2f(50,50),
+			new Vector2f(getWidth()/2-(tempV2.x/2), getHeight()/2-(tempV2.y/2)),
+			tempV2,
 			new Vector4f(0,0,0,0),
 			screen.getStyle("Common").getString("blankImg")
 		) {
@@ -93,12 +96,14 @@ public abstract class Joystick extends Element implements Control {
 		addChild(thumb);
 		
 		float dist = (size/2);
-		dist -= 25;
+		dist -= tempV2.x/2;
 		centerVec.set(dist,dist);
 		
 		addControl(this);
 	}
 
+	public ButtonAdapter getThumb() { return this.thumb; }
+	
 	@Override
 	public Control cloneForSpatial(Spatial spatial) {
 		return this;
