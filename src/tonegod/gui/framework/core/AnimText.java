@@ -677,6 +677,13 @@ public class AnimText extends AnimElement {
 		fadeDuration = duration;
 	}
 	
+	public void resetFade(float finalAlpha) {
+		fadeIn = false;
+		fadeOut = false;
+		for (QuadData quad : quads.values())
+			quad.setColorA(finalAlpha);
+	}
+	
 	public boolean isAnimating() {
 		return fadeIn || fadeOut;
 	}
