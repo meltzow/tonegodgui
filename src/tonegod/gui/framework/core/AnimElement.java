@@ -73,11 +73,14 @@ public abstract class AnimElement extends Node implements Transformable {
 		flagForUpdate();
 		mesh.initialize();
 		
-		Vector4f clip = null;;
+		Vector4f clip = null;
 		boolean useClip = false;
 		boolean reset = false;
 		if (mat != null) {
-			clip = (Vector4f)mat.getParam("Clipping").getValue();
+			if (useClip)
+				clip = (Vector4f)mat.getParam("Clipping").getValue();
+			else
+				clip = null;
 			useClip = (Boolean)getMaterial().getParam("UseClipping").getValue();
 			reset = true;
 		}
@@ -85,7 +88,10 @@ public abstract class AnimElement extends Node implements Transformable {
 		mat.setTexture("ColorMap", tex);
 		mat.setBoolean("VertexColor", true);
 		if (reset) {
-			mat.setVector4("Clipping", clip);
+			if (useClip)
+				mat.setVector4("Clipping", clip);
+			else
+				mat.setVector4("Clipping", null);
 			mat.setBoolean("UseClipping", useClip);
 		}
 		mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
@@ -95,6 +101,9 @@ public abstract class AnimElement extends Node implements Transformable {
 		
 		attachChild(geom);
 		setMaterial(mat);
+		
+		flagForUpdate();
+		geom.updateModelBound();
 	}
 	
 	public void setZOrderEffect(ZOrderEffect zOrderEffect) {
@@ -370,22 +379,27 @@ public abstract class AnimElement extends Node implements Transformable {
 	@Override
 	public void setColor(ColorRGBA color) {
 		this.color.set(color);
+		mesh.buildColor = true;
 	}
 	@Override
 	public void setColorR(float r) {
 		this.color.r = r;
+		mesh.buildColor = true;
 	}
 	@Override
 	public void setColorG(float g) {
 		this.color.g = g;
+		mesh.buildColor = true;
 	}
 	@Override
 	public void setColorB(float b) {
 		this.color.b = b;
+		mesh.buildColor = true;
 	}
 	@Override
 	public void setColorA(float a) {
 		this.color.a = a;
+		mesh.buildColor = true;
 	}
 	@Override
 	public void setTCOffsetX(float x) {
@@ -398,34 +412,42 @@ public abstract class AnimElement extends Node implements Transformable {
 	@Override
 	public void setDimensions(Vector2f dim) {
 		this.dimensions.set(dim);
+		mesh.buildPosition = true;
 	}
 	@Override
 	public void setDimensions(float w, float h) {
 		this.dimensions.set(w,h);
+		mesh.buildPosition = true;
 	}
 	@Override
 	public void setWidth(float w) {
 		this.dimensions.setX(w);
+		mesh.buildPosition = true;
 	}
 	@Override
 	public void setHeight(float h) {
 		this.dimensions.setY(h);
+		mesh.buildPosition = true;
 	}
 	@Override
 	public void setSkew(Vector2f skew) {
 		this.skew.set(skew);
+		mesh.buildPosition = true;
 	}
 	@Override
 	public void setSkew(float x, float y) {
 		this.skew.set(x,y);
+		mesh.buildPosition = true;
 	}
 	@Override
 	public void setSkewX(float x) {
 		this.skew.setX(x);
+		mesh.buildPosition = true;
 	}
 	@Override
 	public void setSkewY(float y) {
 		this.skew.setY(y);
+		mesh.buildPosition = true;
 	}
 	@Override
 	public void setIgnoreMouse(boolean ignoreMouse) {

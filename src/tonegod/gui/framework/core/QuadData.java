@@ -22,19 +22,19 @@ public class QuadData implements Transformable {
 	private TextureRegion region;
 	public int userIndex;
 	public int index;
-	private Vector2f position = new Vector2f(0,0);
-	private Vector2f initPosition = new Vector2f(0,0);
+	private Vector2f position = new Vector2f(0f,0f);
+	private Vector2f initPosition = new Vector2f(0f,0f);
 	private float z = 1;
 	private Vector2f dimensions = new Vector2f();
 	private Vector2f initDimensions = new Vector2f();
 	private Vector2f scale = new Vector2f();
 	private float rotation = 0f;
 	private Vector2f tcOffset = new Vector2f();
-	private ColorRGBA color = new ColorRGBA(1,1,1,1);
-	private Vector2f origin = new Vector2f(0,0);
+	private ColorRGBA color = new ColorRGBA(1f,1f,1f,1f);
+	private Vector2f origin = new Vector2f(0f,0f);
 	private boolean visible = true;
-	private Vector2f borders = new Vector2f(4,4);
-	private Vector2f skew = new Vector2f(0,0);
+	private Vector2f borders = new Vector2f(4f,4f);
+	private Vector2f skew = new Vector2f(0f,0f);
 	private boolean ignoreMouse = false;
 	private boolean isMovable = false;
 	
@@ -45,7 +45,7 @@ public class QuadData implements Transformable {
 		this.initPosition.set(x,y);
 		this.dimensions.set(width,height);
 		this.initDimensions.set(width,height);
-		this.scale.set(1,1);
+		this.scale.set(1f,1f);
 		this.origin.set(origin);
 		this.region = region;
 	}
@@ -79,7 +79,7 @@ public class QuadData implements Transformable {
 	public void hide() {
 		if (visible) {
 			initDimensions.set(dimensions);
-			dimensions.set(0,0);
+			dimensions.set(0f,0f);
 			element.mesh.buildPosition = true;
 			visible = false;
 		}
