@@ -2123,6 +2123,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 */
 	@Override
 	public void setUseToolTips(boolean useToolTips) {
+		/*
 		this.useToolTips = useToolTips;
 		if (useToolTips) {
 			if (toolTip == null) {
@@ -2146,6 +2147,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			if (toolTip != null)
 				toolTip.removeFromParent();
 		}
+		*/
+		this.useToolTips = useToolTips;
+		updateToolTipLocation();
 	}
 	
 	/**
@@ -2162,41 +2166,61 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 */
 	@Override
 	public void updateToolTipLocation() {
-		if (useToolTips) {
-			if (this.mouseFocusElement != null && getApplication().getInputManager().isCursorVisible()) {
-				String toolTipText = this.mouseFocusElement.getToolTipText();
-				if (toolTipText != null) {
-					if (!toolTip.getText().equals(this.mouseFocusElement.getToolTipText())) {
-						toolTip.setText("");
-						toolTip.setHeight(25);
-						float finalWidth = BitmapTextUtil.getTextWidth(toolTip, toolTipText, toolTipMaxWidth);
-						toolTip.setText(toolTipText);
-						toolTip.setWidth(finalWidth+(toolTip.getTextPadding()*12));
-						toolTip.setHeight(toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*12));
-						toolTip.getTextElement().setBox(new Rectangle(0,0,toolTip.getWidth()-(toolTip.getTextPadding()*2),toolTip.getHeight()-(toolTip.getTextPadding()*2)));
-					}
-					setToolTipLocation();
-					if (!toolTip.getIsVisible())
-						toolTip.show();
-				} else {
-					if (!forcedToolTip) {
-						toolTip.setText("");
-						toolTip.hide();
-					} else {
-						setToolTipLocation();
-					}
-				}
+		if (toolTip == null) {
+			/*
+			 * Initialize the global tool tip on first invocation.
+			 */
+			toolTip = new ToolTip(this, "GlobalToolTip", new Vector2f(0, 0), new Vector2f(200, 50));
+			toolTip.setIgnoreGlobalAlpha(true);
+			toolTip.setIsGlobalModal(true);
+			toolTip.setText("");
+			toolTip.setTextPadding(2);
+			toolTip.setTextPosition(0, 0);
+			toolTip.hide();
+			addElement(toolTip);
+			toolTip.move(0, 0, 20);
+		}
+		/*
+		 * Determine what text (if any) the tool tip should display.
+		 */
+		String newText = null;
+		if (useToolTips && getApplication().getInputManager().isCursorVisible()) {
+			if (mouseFocusElement != null) {
+				newText = mouseFocusElement.getToolTipText();
 			} else {
-				if (!forcedToolTip) {
-					toolTip.setText("");
-					toolTip.hide();
-				} else {
-					setToolTipLocation();
-				}
+				newText = forcedToolTipText;
 			}
 		}
+
+		if (newText == null || newText.isEmpty()) {
+			/*
+			 * Clear and hide the old tool tip.
+			 */
+			toolTip.setText("");
+			toolTip.hide();
+			return;
+		}
+
+		String oldText = toolTip.getText();
+		if (!oldText.equals(newText)) {
+			/*
+			 * Change the tool tip text and resize the tool tip.
+			 */
+			toolTip.setText("");
+			toolTip.setHeight(25);
+			float finalWidth = BitmapTextUtil.getTextWidth(toolTip, newText, toolTipMaxWidth);
+			toolTip.setText(newText);
+			toolTip.setWidth(finalWidth + (toolTip.getTextPadding() * 12));
+			toolTip.setHeight(toolTip.getTextElement().getHeight() + (toolTip.getTextPadding() * 12));
+			toolTip.getTextElement().setBox(new Rectangle(0, 0, toolTip.getWidth() - (toolTip.getTextPadding() * 2), toolTip.getHeight() - (toolTip.getTextPadding() * 2)));
+		}
+		
+		setToolTipLocation();
+		if (!toolTip.getIsVisible()) {
+			toolTip.show();
+		}
 	}
-	
+
 	private void setToolTipLocation() {
 		float nextX = mouseXY.x-(toolTip.getWidth()/2);
 		if (nextX < 0) nextX = 0;
@@ -2206,44 +2230,13 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		toolTip.moveTo(nextX, nextY);
 	}
 	
-//	@Override
 	public void setForcedToolTip(String toolTipText) {
-		if (useToolTips) {
-			if (getApplication().getInputManager().isCursorVisible()) {
-				forcedToolTip = true;
-				if (!forcedToolTipText.equals(toolTipText)) {
-					forcedToolTipText = toolTipText;
-					toolTip.setText("");
-					toolTip.setHeight(25);
-					float finalWidth = BitmapTextUtil.getTextWidth(toolTip, toolTipText, toolTipMaxWidth);
-					toolTip.setText(toolTipText);
-					toolTip.setWidth(finalWidth+(toolTip.getTextPadding()*12));
-					toolTip.setHeight(toolTip.getTextElement().getHeight()+(toolTip.getTextPadding()*12));
-					toolTip.getTextElement().setBox(new Rectangle(0,0,toolTip.getWidth()-(toolTip.getTextPadding()*2),toolTip.getHeight()-(toolTip.getTextPadding()*2)));
-				}
-				setToolTipLocation();
-				if (!toolTip.getIsVisible())
-					toolTip.show();
-			}
-		}
+		forcedToolTipText = toolTipText;
+		updateToolTipLocation();
 	}
 	
-//	@Override
 	public void releaseForcedToolTip() {
-		releaseForcedToolTip(true);
-	}
-	
-	public void releaseForcedToolTip(boolean hide) {
-		if (useToolTips) {
-			forcedToolTip = false;
-			forcedToolTipText = "";
-			toolTip.setText("");
-			if (hide) toolTip.hide();
-		}
-	}
-	
-	public void hideToolTip() {
-		releaseForcedToolTip();
+		setForcedToolTip(null);
 	}
 	//</editor-fold>
 	
