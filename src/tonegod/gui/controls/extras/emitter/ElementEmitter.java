@@ -265,17 +265,18 @@ public class ElementEmitter implements Control, Transformable {
 			ElementParticle p = new ElementParticle();
 			String key = "sprite0";// + (FastMath.nextRandomInt(0, particles.getTextureRegions().size()-1));
 			TextureRegion region = particles.getTextureRegion(key);
-			particles.addQuad(String.valueOf(i), key,
+			p.particle = particles.addQuad(String.valueOf(i), key,
 				new Vector2f(-region.getRegionWidth(),-region.getRegionHeight()),
 				new Vector2f(region.getRegionWidth()/2,region.getRegionHeight()/2)
 			);
-			p.particle = particles.getQuads().get(String.valueOf(i)); 
 			p.particle.userIndex = i;
 			p.initialize(true);
 			quads[i] = p;
 		}
 	//	particles.centerQuads();
 		particles.initialize();
+		particles.update(0);
+		particles.updateModelBound();
 	}
 	
 	public void setParticlesPerSecond(int particlesPerSecond) {
