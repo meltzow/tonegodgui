@@ -4,6 +4,9 @@
  */
 package tonegod.gui.framework.animation;
 
+import com.jme3.scene.Node;
+
+
 /**
  *
  * @author t0neg0d
@@ -24,8 +27,11 @@ public class ScaleByAction extends TemporalAction {
 		lastPercent = 0;
 		nextPercent = 0;
 		if (autoReverse) {
-			if (initX == -1) initX = quad.getScaleX();
-			if (initY == -1) initY = quad.getScaleY();
+			if (!forceJmeTransform)			reverseQuad();
+			else {
+				if (quad instanceof Node)	reverseTransform();
+				else						reverseQuad();
+			}
 			if (initDuration == -1)	{
 				initDuration = getDuration();
 				setDuration(initDuration*.5f);
@@ -33,13 +39,39 @@ public class ScaleByAction extends TemporalAction {
 		}
 	}
 	
+	private void reverseQuad() {
+		if (initX == -1) initX = quad.getScaleX();
+		if (initY == -1) initY = quad.getScaleY();
+	}
+	
+	private void reverseTransform() {
+		if (initX == -1) initX = ((Node)quad).getLocalScale().getX();
+		if (initY == -1) initY = ((Node)quad).getLocalScale().getY();
+	}
+	
 	@Override
 	protected void update(float percent) {
 		nextPercent = percent - lastPercent;
 		lastPercent = percent;
 		
+		if (!forceJmeTransform)			updateQuad();
+		else {
+			if (quad instanceof Node)	updateTransform();
+			else						updateQuad();
+		}
+	}
+	
+	private void updateQuad() {
 		quad.setScaleX(quad.getScaleX()+(amountX * nextPercent));
 		quad.setScaleY(quad.getScaleY()+(amountY * nextPercent));
+	}
+	
+	private void updateTransform() {
+		((Node)quad).setLocalScale(
+			((Node)quad).getLocalScale().getX()+(amountX * nextPercent),
+			((Node)quad).getLocalScale().getY()+(amountY * nextPercent),
+			((Node)quad).getLocalScale().getZ()
+		);
 	}
 	
 	@Override
@@ -51,8 +83,17 @@ public class ScaleByAction extends TemporalAction {
 			amountY = -amountY;
 			cycles = 1;
 		} else if (cycles == 1) {
-			quad.setScaleX(initX);
-			quad.setScaleY(initY);
+			if (!forceJmeTransform) {
+				quad.setScaleX(initX);
+				quad.setScaleY(initY);
+			} else {
+				if (quad instanceof Node) {
+					((Node)quad).setLocalScale(initX,initY,((Node)quad).getLocalScale().z);
+				} else {
+					quad.setScaleX(initX);
+					quad.setScaleY(initY);
+				}
+			}
 			amountX = -amountX;
 			amountY = -amountY;
 			autoReverse = initAutoReverse;
