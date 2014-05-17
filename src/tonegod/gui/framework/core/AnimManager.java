@@ -18,13 +18,13 @@ import tonegod.gui.framework.core.util.GameTimer;
  * @author t0neg0d
  */
 public class AnimManager extends AbstractControl {
-	Screen screen;
-	List<ActionItem> queue = new ArrayList();
-	List<ActionItem> remove = new ArrayList();
-	List<ActionItem> active = new ArrayList();
+	private Screen screen;
+	private List<ActionItem> queue = new ArrayList();
+	private List<ActionItem> remove = new ArrayList();
+	private List<ActionItem> active = new ArrayList();
 	
-	List<GameTimer> timers = new ArrayList();
-	List<GameTimer> removeTimers = new ArrayList();
+	private List<GameTimer> timers = new ArrayList();
+	private List<GameTimer> removeTimers = new ArrayList();
 	
 	float time;
 	
