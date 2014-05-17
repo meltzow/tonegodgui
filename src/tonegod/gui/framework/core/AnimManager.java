@@ -46,6 +46,7 @@ public class AnimManager extends AbstractControl {
 	
 	public void removeGameTimer(GameTimer timer) {
 		timers.remove(timer);
+		timer.setIsManaged(false);
 		if (removeTimers.contains(timer))
 			removeTimers.remove(timer);
 	}
