@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import tonegod.gui.core.Screen;
 import tonegod.gui.framework.animation.TemporalAction;
+import tonegod.gui.framework.core.util.GameTimer;
 
 /**
  *
@@ -22,6 +23,9 @@ public class AnimManager extends AbstractControl {
 	List<ActionItem> remove = new ArrayList();
 	List<ActionItem> active = new ArrayList();
 	
+	List<GameTimer> timers = new ArrayList();
+	List<GameTimer> removeTimers = new ArrayList();
+	
 	float time;
 	
 	public AnimManager(Screen screen) {
@@ -32,6 +36,18 @@ public class AnimManager extends AbstractControl {
 	public void addQueuedAction(TemporalAction action, Transformable item, float startTime) {
 		ActionItem act = new ActionItem(action,item,time+startTime);
 		queue.add(act);
+	}
+	
+	public void addGameTimer(GameTimer timer) {
+		timer.setIsManaged(true);
+		timers.add(timer);
+		timer.startGameTimer();
+	}
+	
+	public void removeGameTimer(GameTimer timer) {
+		timers.remove(timer);
+		if (removeTimers.contains(timer))
+			removeTimers.remove(timer);
 	}
 	
 	@Override
@@ -63,17 +79,35 @@ public class AnimManager extends AbstractControl {
 			active.removeAll(remove);
 			remove.clear();
 		}
+		// GameTimers
+		for(GameTimer timer : timers) {
+			if (timer.isActive()) {
+				timer.update(tpf);
+			}
+			if (!timer.getAutoRestart() && timer.isComplete()) {
+				removeTimers.add(timer);
+				timer.setIsManaged(false);
+			}
+		}
+		if (!removeTimers.isEmpty()) {
+			timers.removeAll(removeTimers);
+			removeTimers.clear();
+		}
 	}
 
 	@Override
 	protected void controlRender(RenderManager rm, ViewPort vp) {  }
 	
+	public int getActiveTimerCount() {
+		return timers.size();
+	}
+	
 	public int getQueueCount() {
 		return this.queue.size();
 	}
 	
-	public void getIsQueueIdle() {
-		
+	public boolean getIsQueueIdle() {
+		return this.queue.isEmpty();
 	}
 	
 	public class ActionItem {

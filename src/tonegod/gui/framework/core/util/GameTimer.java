@@ -4,18 +4,21 @@
  */
 package tonegod.gui.framework.core.util;
 
+import tonegod.gui.core.Screen;
 import tonegod.gui.framework.animation.Interpolation;
 
 /**
  *
  * @author t0neg0d
  */
-public class GameTimer {
+public abstract class GameTimer {
 	private float time = 0;
 	private float duration = 1;
 	private boolean active = false;
 	private boolean complete = false;
 	private long runCount = 0;
+	private boolean autoRestart = false;
+	private boolean isManaged = false;
 	private Interpolation interpolation = Interpolation.linear;
 	
 	/**
@@ -76,6 +79,13 @@ public class GameTimer {
 	}
 	
 	/**
+	 * Call to reset the number of times the timer has run to 0
+	 */
+	public void resetRunCount() {
+		this.runCount = 0;
+	}
+	
+	/**
 	 * Sets the GameTimer to active
 	 */
 	public void startGameTimer() {
@@ -132,6 +142,32 @@ public class GameTimer {
 	}
 	
 	/**
+	 * For use with or without managed GameTimers.
+	 * Enables auto restart of the timer after calling onComplete.
+	 * @param autoRestart 
+	 */
+	public void setAutoRestart(boolean autoRestart) {
+		this.autoRestart = autoRestart;
+	}
+	
+	/**
+	 * Returns if the GameTimer will automatically reset and restart after calling onComplete.
+	 * @return 
+	 */
+	public boolean getAutoRestart() {
+		return this.autoRestart;
+	}
+	
+	/**
+	 * FOR INTERNAL USE ONLY. Do not call this method directly.
+	 */
+	public void setIsManaged(boolean isManaged) {
+		this.isManaged = isManaged;
+	}
+	
+	public boolean getIsManaged() { return this.isManaged; }
+	
+	/**
 	 * Should be called each game loop
 	 * @param tpf 
 	 */
@@ -141,7 +177,18 @@ public class GameTimer {
 			if (time >= duration) {
 				complete = true;
 				active = false;
+				validateRestart(time);
 			}
 		}
 	}
+	
+	private void validateRestart(float time) {
+		if (autoRestart) {
+			reset(true);
+			startGameTimer();
+		}
+		onComplete(time);
+	}
+	
+	public abstract void onComplete(float time);
 }
