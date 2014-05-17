@@ -28,6 +28,7 @@ public class AnimLayer extends Element implements Control {
 	private float childZOrder = -1;
 	private float zOrderStepMid = 0.001f;
 	private Spatial spatial;
+	private boolean isPaused;
 	
 	public AnimLayer(ElementManager screen) {
 		this(screen, UIDUtil.getUID());
@@ -110,11 +111,17 @@ public class AnimLayer extends Element implements Control {
 	public void setSpatial(Spatial spatial) {
 		this.spatial = spatial;
 	}
-
+	
+	public void pause() { this.isPaused = true; }
+	public void resume() { this.isPaused = false; }
+	public boolean getIsPaused() { return this.isPaused; }
+	
 	@Override
 	public void update(float tpf) {
-		for (AnimElement el : animElements.values()) {
-			el.update(tpf);
+		if (!isPaused) {
+			for (AnimElement el : animElements.values()) {
+				el.update(tpf);
+			}
 		}
 	}
 
