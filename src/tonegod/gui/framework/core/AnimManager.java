@@ -51,6 +51,10 @@ public class AnimManager extends AbstractControl {
 			removeTimers.remove(timer);
 	}
 	
+	public boolean hasGameTimer(GameTimer timer) {
+		return this.timers.contains(timer);
+	}
+	
 	@Override
 	protected void controlUpdate(float tpf) {
 		time += tpf;
