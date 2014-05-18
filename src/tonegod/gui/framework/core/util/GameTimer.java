@@ -21,6 +21,8 @@ public abstract class GameTimer {
 	private boolean isManaged = false;
 	private Interpolation interpolation = Interpolation.linear;
 	
+	private boolean updateDurationOnNextRestart = false;
+	private float nextDuration = 1;
 	/**
 	 * Creates a new instance of the GameTimer class with a default duration of 1 second
 	 */
@@ -56,6 +58,16 @@ public abstract class GameTimer {
 	}
 	
 	/**
+	 * Sets the duration to a new value on the next call to reset.
+	 * Allows for updating the duration properly from onComplete method
+	 * @param duration The duration to use on the next timer run
+	 */
+	public void setNextDuration(float duration) {
+		this.updateDurationOnNextRestart = true;
+		this.nextDuration = duration;
+	}
+	
+	/**
 	 * Return the amount of time in seconds the GameTimer should run for
 	 * before completing.
 	 * @return targetTime
@@ -74,6 +86,13 @@ public abstract class GameTimer {
 			time -= duration;
 		else
 			time = 0;
+		
+		if (this.updateDurationOnNextRestart) {
+			this.duration = nextDuration;
+			this.updateDurationOnNextRestart = false;
+			nextDuration = 1;
+		}
+		
 		active = false;
 		complete = false;
 	}
@@ -90,7 +109,6 @@ public abstract class GameTimer {
 	 */
 	public void startGameTimer() {
 		this.active = true;
-		runCount++;
 	}
 	
 	/**
@@ -183,11 +201,12 @@ public abstract class GameTimer {
 	}
 	
 	private void validateRestart(float time) {
+		runCount++;
+		onComplete(time);
 		if (autoRestart) {
 			reset(true);
 			startGameTimer();
 		}
-		onComplete(time);
 	}
 	
 	public abstract void onComplete(float time);
