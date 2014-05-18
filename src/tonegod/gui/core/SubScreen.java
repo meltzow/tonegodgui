@@ -7,9 +7,6 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.input.KeyInput;
-import com.jme3.input.RawInputListener;
-import com.jme3.input.event.JoyAxisEvent;
-import com.jme3.input.event.JoyButtonEvent;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
@@ -1261,6 +1258,16 @@ public class SubScreen implements ElementManager, Control {
 	@Override
 	public void updateToolTipLocation() {
 		screen.updateToolTipLocation();
+	}
+	
+	@Override
+	public Element getToolTipFocus() {
+		return screen.getToolTipFocus();
+	}
+	
+	@Override
+	public void hideToolTip() {
+		screen.hideToolTip();
 	}
 
 	@Override

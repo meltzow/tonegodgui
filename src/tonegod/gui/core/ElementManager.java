@@ -63,6 +63,8 @@ public interface ElementManager {
 	public boolean getUseToolTips();
 	public void setUseToolTips(boolean use);
 	public void updateToolTipLocation();
+	public Element getToolTipFocus();
+	public void hideToolTip();
 	
 	public void setUseCustomCursors(boolean use);
 	public boolean getUseCustomCursors();

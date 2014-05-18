@@ -375,6 +375,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		zOrderCurrent -= zOrderStepMajor;
 		element.removeFromParent();
 		element.cleanup();
+		
+		if (getUseToolTips())
+			if (getToolTipFocus() == element)
+				hideToolTip();
 	}
 	
 	/**
@@ -2237,6 +2241,17 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	public void releaseForcedToolTip() {
 		setForcedToolTip(null);
+	}
+	
+	@Override
+	public Element getToolTipFocus() {
+		return this.mouseFocusElement;
+	}
+	
+	@Override
+	public void hideToolTip() {
+		toolTip.setText("");
+		toolTip.hide();
 	}
 	//</editor-fold>
 	

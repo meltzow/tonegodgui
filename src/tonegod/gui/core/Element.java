@@ -27,12 +27,26 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import tonegod.gui.controls.extras.DragElement;
 import tonegod.gui.controls.form.Form;
-import tonegod.gui.controls.text.TextElement;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
 /**
- *
+ * <p>
+ * The Element class is the primitive in which all controls in the GUI portion or the library 
+ * are built upon.  Unlink the overloaded common constructor(s) you will find throughout the library, 
+ * the library, there is a single verbose constructor:<br/>
+ * </br>
+ * @see #Element(tonegod.gui.core.ElementManager, java.lang.String, com.jme3.math.Vector2f, com.jme3.math.Vector2f, com.jme3.math.Vector4f, java.lang.String)
+ * </p>
+ * <p>
+ * Element is backed by a 9-patch style Mesh and can be both movable and resizable
+ * by simply flagging them as such.  There is no need to add Listeners to leverage 
+ * this default behavior.<br/>
+ * <br/>
+ * See both:<br/>
+ * @see #setIsMovable(boolean)
+ * @see #setIsResizable(boolean)
+ * </p>
  * @author t0neg0d
  */
 public class Element extends Node {
@@ -282,6 +296,11 @@ public class Element extends Node {
 		this.setLocalTranslation(position.x, position.y, 0);
 	}
 	
+	/**
+	 * The setAsContainer only method removes the Mesh component (rendered Mesh) from the
+	 * Element, leaving only Element functionality.  Call this method to set the Element 
+	 * for use as a parent container.
+	 */
 	public void setAsContainerOnly() {
 		detachChildAt(0);
 	}
@@ -375,6 +394,14 @@ public class Element extends Node {
 		return new Vector2f( getModel().getEffectOffset( pixelWidth*coords[0], pixelHeight*(imgHeight-coords[1]-coords[3]) ));
 	}
 	
+	/**
+	 * Will set the textures WrapMode to repeat if enabled.<br/><br/>
+	 * NOTE: This only works when texture atlasing has not been enabled.
+	 * For info on texture atlas usage, see both:<br/>
+	 * @see Screen#setUseTextureAtlas(boolean enable, String path) 
+	 * @see #setTextureAtlasImage(com.jme3.texture.Texture tex, java.lang.String path) 
+	 * @param tileImage 
+	 */
 	public void setTileImage(boolean tileImage) {
 		this.tileImage = tileImage;
 		if (tileImage)
@@ -475,6 +502,10 @@ public class Element extends Node {
 			e.elementParent = null;
 			e.removeFromParent();
 			e.cleanup();
+			
+			if (screen.getUseToolTips())
+				if (screen.getToolTipFocus() == this)
+					screen.hideToolTip();
 		}
 	}
 	
@@ -2273,6 +2304,10 @@ public class Element extends Node {
 			this.wasVisible = isVisible;
 			this.isVisible = false;
 			this.isClipped = true;
+			
+			if (screen.getUseToolTips())
+				if (screen.getToolTipFocus() == this)
+					screen.hideToolTip();
 		}
 		updateClipping();
 		controlHideHook();
@@ -2290,6 +2325,10 @@ public class Element extends Node {
 			this.wasVisible = isVisible;
 			this.isVisible = false;
 			this.isClipped = true;
+			
+			if (screen.getUseToolTips())
+				if (screen.getToolTipFocus() == this)
+					screen.hideToolTip();
 		}
 		updateClipping();
 		controlHideHook();
