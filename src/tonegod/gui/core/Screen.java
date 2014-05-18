@@ -376,9 +376,14 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		element.removeFromParent();
 		element.cleanup();
 		
-		if (getUseToolTips())
+		if (getUseToolTips()) {
 			if (getToolTipFocus() == element)
 				hideToolTip();
+			else if (getToolTipFocus() != null) {
+				if (element.getChildElementById(getToolTipFocus().getUID()) != null)
+					hideToolTip();
+			}
+		}
 	}
 	
 	/**

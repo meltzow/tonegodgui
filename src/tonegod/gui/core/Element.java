@@ -503,9 +503,14 @@ public class Element extends Node {
 			e.removeFromParent();
 			e.cleanup();
 			
-			if (screen.getUseToolTips())
+			if (screen.getUseToolTips()) {
 				if (screen.getToolTipFocus() == this)
 					screen.hideToolTip();
+				else if (screen.getToolTipFocus() != null) {
+					if (getChildElementById(screen.getToolTipFocus().getUID()) != null)
+						screen.hideToolTip();
+				}
+			}
 		}
 	}
 	
