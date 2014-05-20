@@ -296,7 +296,7 @@ public class ElementEmitter implements Control, Transformable {
 	public void startEmitter(Node targetElement) {
 		this.targetElement = targetElement;
 		if (targetElement == null)	screen.getGUINode().attachChild(particles);
-		else						this.targetElement.attachChild(particles);
+		else						targetElement.attachChild(particles);
 		rootNode = screen.getGUINode();
 		rootNode.addControl(this);
 		this.isEnabled = true;
@@ -311,13 +311,18 @@ public class ElementEmitter implements Control, Transformable {
 	public void destroyEmitter() {
 		this.isEnabled = false;
 		particles.removeFromParent();
-		try { screen.getGUINode().removeControl(this); }
-		catch (Exception ex) {  }
+		rootNode.removeControl(this);
+	//	try { screen.getGUINode().removeControl(this); }
+	//	catch (Exception ex) {  }
 	}
 	
 	public void setIsActive(boolean isActive) {
 		this.isActive = isActive;
 	}
+	
+	public boolean getIsActive() { return this.isActive; }
+	
+	public boolean getIsEnabled() { return this.isEnabled; }
 	
 	private void emitNextParticle(int numParticles) {
 		boolean particleEmitted = false;
@@ -332,6 +337,19 @@ public class ElementEmitter implements Control, Transformable {
 				}
 			}
 		}
+	}
+
+	public ElementParticle emitSingleParticle() {
+		ElementParticle particleEmitted = null;
+		for (ElementParticle p : quads) {
+			if (!p.particle.getIsVisible()) {
+				p.initialize(false);
+				activeParticleCount++;
+				particleEmitted = p;
+				break;
+			}
+		}
+		return particleEmitted;
 	}
 
 	public void setUseFixedForce(boolean useFixedForce) {
