@@ -2263,11 +2263,11 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 
 	private void setToolTipLocation() {
-		float nextX = mouseXY.x-(toolTip.getWidth()/2);
+		float nextX = (Screen.isAndroid()) ? touchXY.x-(toolTip.getWidth()/2) : mouseXY.x-(toolTip.getWidth()/2);
 		if (nextX < 0) nextX = 0;
 		else if (nextX+toolTip.getWidth() > getWidth()) nextX = getWidth()-toolTip.getWidth();
-		float nextY = mouseXY.y-toolTip.getHeight()-40;
-		if (nextY < 0) nextY = mouseXY.y+5;
+		float nextY = (Screen.isAndroid()) ? touchXY.y-toolTip.getHeight()-40 : mouseXY.y-toolTip.getHeight()-40;
+		if (nextY < 0) nextY = (Screen.isAndroid()) ? touchXY.y+5 : mouseXY.y+5;
 		toolTip.moveTo(nextX, nextY);
 	}
 	
@@ -2278,6 +2278,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	public void releaseForcedToolTip() {
 		setForcedToolTip(null);
+	}
+	
+	public void forceToolTipLocationUpdate() {
+		setToolTipLocation();
 	}
 	
 	@Override
