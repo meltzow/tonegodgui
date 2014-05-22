@@ -631,14 +631,17 @@ public class AnimText extends AnimElement {
 				fadeCounter = 0;
 				fadeIn = false;
 			} else {
-				for (QuadData quad : quads.values())
+				for (QuadData quad : quads.values()) {
 					quad.setColorA(percent*alpha);
+					if (percent*alpha <= 0f)
+						quad.setColorA(0.01f);
+				}
 			}
 		} else if (fadeOut) {
 			fadeCounter += tpf;
 			float percent = 1-(fadeCounter/fadeDuration);
 			if (percent <= 0) {
-				percent = 0;
+				percent = 0.01f;
 				for (QuadData quad : quads.values())
 					quad.setColorA(percent*alpha);
 				fadeCounter = 0;

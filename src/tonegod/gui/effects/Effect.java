@@ -500,10 +500,10 @@ public class Effect implements Cloneable {
 				if (callHide) element.hide();
 				disableShaderEffect();
 				if (element.getTextElement() != null) {
-					element.getTextElement().setAlpha(0f);
+					element.getTextElement().setAlpha(0.01f);
 				}
 				if (element instanceof TextElement)
-					((TextElement)element).setAlpha(0f);
+					((TextElement)element).setAlpha(0.01f);
 				isActive = false;
 			} else {
 				destoryElement();

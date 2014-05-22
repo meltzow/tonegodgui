@@ -80,7 +80,7 @@ public abstract class AnimElement extends Node implements Transformable {
 			if (useClip)
 				clip = (Vector4f)mat.getParam("Clipping").getValue();
 			else
-				clip = null;
+				clip = new Vector4f(0,0,0,0);
 			useClip = (Boolean)getMaterial().getParam("UseClipping").getValue();
 			reset = true;
 		}
@@ -91,8 +91,11 @@ public abstract class AnimElement extends Node implements Transformable {
 			if (useClip)
 				mat.setVector4("Clipping", clip);
 			else
-				mat.setVector4("Clipping", null);
+				mat.setVector4("Clipping", new Vector4f(0,0,0,0));
 			mat.setBoolean("UseClipping", useClip);
+		} else {
+			mat.setVector4("Clipping", new Vector4f(0,0,0,0));
+			mat.setBoolean("UseClipping", false);
 		}
 		mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
 		
@@ -291,9 +294,9 @@ public abstract class AnimElement extends Node implements Transformable {
 	}
 	
 	public void update(float tpf) {
-		mesh.update(tpf);
-		if (mesh.updateCol)
-			geom.updateModelBound();
+	//	mesh.update(tpf);
+	//	if (mesh.updateCol)
+	//		geom.updateModelBound();
 		
 		for (TemporalAction a : actions) {
 			a.act(tpf);
@@ -305,6 +308,10 @@ public abstract class AnimElement extends Node implements Transformable {
 			}
 		}
 		animElementUpdate(tpf);
+		
+		mesh.update(tpf);
+		if (mesh.updateCol)
+			geom.updateModelBound();
 	}
 	
 	public abstract void animElementUpdate(float tpf);

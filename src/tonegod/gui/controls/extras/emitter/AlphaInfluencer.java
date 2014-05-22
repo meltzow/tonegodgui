@@ -15,7 +15,7 @@ import tonegod.gui.framework.animation.Interpolation;
 public class AlphaInfluencer extends InfluencerBase {
 	private boolean isEnabled = true;
 	private float startAlpha = 1.0f;
-	private float endAlpha = 0.0f;
+	private float endAlpha = 0.01f;
 	private Interpolation interpolation = Interpolation.linear;
 	private Vector2f tempV2a = new Vector2f();
 	private Vector2f tempV2b = new Vector2f();
