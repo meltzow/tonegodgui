@@ -28,7 +28,6 @@ import com.jme3.math.Ray;
 import com.jme3.math.Triangle;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
@@ -68,7 +67,6 @@ import tonegod.gui.effects.EffectManager;
 import tonegod.gui.effects.cursor.CursorEffects;
 import tonegod.gui.fonts.BitmapFontLoaderX;
 import tonegod.gui.framework.core.AnimElement;
-import tonegod.gui.framework.core.AnimElement.ZOrderEffect;
 import tonegod.gui.framework.core.AnimManager;
 import tonegod.gui.framework.core.AnimLayer;
 import tonegod.gui.framework.core.QuadData;
@@ -201,6 +199,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private Node eventNode = null;
 	private Node previousMouseFocusNode = null;
 	private SafeArrayList<Node> scenes = new SafeArrayList(Node.class);
+	private Map<Integer,Node> eventNodes = new HashMap();
 	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
@@ -1889,15 +1888,48 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	
 	private void s3dOnTouchDownEvent(TouchEvent evt) {
-		
+		Node target = getEventNode(evt.getX(), evt.getY());
+		if (target != null) {
+			if (target instanceof MouseButtonListener) {
+				MouseButtonEvent mbEvt = new MouseButtonEvent(0,true,(int)evt.getX(),(int)evt.getY());
+				((MouseButtonListener)target).onMouseLeftPressed(mbEvt);
+			}
+			if (target instanceof TouchListener) {
+				((TouchListener)target).onTouchDown(evt);
+			}
+			eventNodes.put(evt.getPointerId(),target);
+		}
 	}
 	
 	private void s3dOnTouchMoveEvent(TouchEvent evt) {
-		
+		for (Integer key : eventNodes.keySet()) {
+			if (key == evt.getPointerId()) {
+				Node target = eventNodes.get(key);
+				if (target != null) {
+					if (target instanceof MouseMovementListener) {
+						MouseMotionEvent mbEvt = new MouseMotionEvent((int)evt.getX(),(int)evt.getY(),(int)evt.getDeltaX(),(int)evt.getDeltaY(),0,0);
+						((MouseMovementListener)target).onMouseMove(mbEvt);
+					}
+					if (target instanceof TouchListener) {
+						((TouchListener)target).onTouchMove(evt);
+					}
+				}
+			}
+		}
 	}
 	
 	private void s3dOnTouchUpEvent(TouchEvent evt) {
-		
+		Node target = eventNodes.get(evt.getPointerId());
+		if (target != null) {
+			if (target instanceof MouseButtonListener) {
+				MouseButtonEvent mbEvt = new MouseButtonEvent(0,true,(int)evt.getX(),(int)evt.getY());
+				((MouseButtonListener)target).onMouseLeftReleased(mbEvt);
+			}
+			if (target instanceof TouchListener) {
+				((TouchListener)target).onTouchUp(evt);
+			}
+			eventNodes.remove(evt.getPointerId());
+		}
 	}
 	//</editor-fold>
 	
@@ -2521,7 +2553,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		for (ViewPort vp : app.getRenderManager().getMainViews()) {
 			Node root = (Node)vp.getScenes().get(0);
 			
-			click2d.set(app.getInputManager().getCursorPosition());
+			if (!Screen.isAndroid())
+				click2d.set(app.getInputManager().getCursorPosition());
+			else
+				click2d.set(touchXY);
 			tempV2.set(click2d);
 			click3d.set(vp.getCamera().getWorldCoordinates(tempV2, 0f));
 			pickDir.set(vp.getCamera().getWorldCoordinates(tempV2, 1f).subtractLocal(click3d).normalizeLocal());
