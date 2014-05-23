@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package tonegod.gui.framework.core;
 
 import com.jme3.math.FastMath;
@@ -18,12 +14,9 @@ import java.nio.ShortBuffer;
  */
 public class AnimElementMesh extends Mesh {
 	AnimElement batch;
-	private int quadCount = 0;
 	private int vCount = 0;
 	private int vIndex = 0;
-	private int iIndex = 0;
 	public boolean init = false;
-	private Vector2f pos = new Vector2f(0,0);
 	private Vector2f dim = new Vector2f(0,0);
 	private Vector2f skew = new Vector2f(0,0);
 	private Vector2f tempV = new Vector2f(0,0);
@@ -61,19 +54,16 @@ public class AnimElementMesh extends Mesh {
 	public void update(float tpf) {
 		if (init) {
 			updateCol = false;
-		//	if (buildPosition)
-				vb.rewind();
+			vb.rewind();
 			if (buildColor) cb.rewind();
 			if (buildTexCoords) tcb.rewind();
 			if (buildIndices) ib.rewind();
-			
 			updateMeshData(tpf);
 		}
 	}
 	
 	private void updateMeshData(float tpf) {
 		vIndex = 0;
-		iIndex = 0;
 		vCount = 0;
 		
 		for (QuadData qd : batch.getQuads().values()) {
@@ -87,36 +77,34 @@ public class AnimElementMesh extends Mesh {
 	
 	private void addQuad(QuadData qd) {
 		qd.index = vIndex;
-		
+                
 		dim.set(qd.getWidth(), qd.getHeight());
 		skew.set(qd.getSkew());
-		
+
 		/** VERT 1 **/
-	//	if (buildPosition) {
-			applyTransforms(qd, -skew.x, -skew.y);
-			vb	.put(tempV.x)
-				.put(tempV.y)
-				.put(qd.getPositionZ());
+		applyTransforms(qd, -skew.x, -skew.y);
+		vb	.put(tempV.x)
+			.put(tempV.y)
+			.put(qd.getPositionZ());
 
-			/** VERT 2 **/
-			applyTransforms(qd, dim.x-skew.x, -skew.y);
-			vb	.put(tempV.x)
-				.put(tempV.y)
-				.put(qd.getPositionZ());
+		/** VERT 2 **/
+		applyTransforms(qd, dim.x-skew.x, -skew.y);
+		vb	.put(tempV.x)
+			.put(tempV.y)
+			.put(qd.getPositionZ());
 
-			/** VERT 3 **/
-			applyTransforms(qd, skew.x, dim.y+skew.y);
-			vb	.put(tempV.x)
-				.put(tempV.y)
-				.put(qd.getPositionZ());
+		/** VERT 3 **/
+		applyTransforms(qd, skew.x, dim.y+skew.y);
+		vb	.put(tempV.x)
+			.put(tempV.y)
+			.put(qd.getPositionZ());
 
-			/** VERT 4 **/
-			applyTransforms(qd, dim.x+skew.x, dim.y+skew.y);
-			vb	.put(tempV.x)
-				.put(tempV.y)
-				.put(qd.getPositionZ());
-	//	}
-		
+		/** VERT 4 **/
+		applyTransforms(qd, dim.x+skew.x, dim.y+skew.y);
+		vb	.put(tempV.x)
+			.put(tempV.y)
+			.put(qd.getPositionZ());
+
 		if (buildColor) {
 			for (int i = 0; i < 4; i++) {
 				cb	.put(qd.getColorR())
@@ -125,7 +113,7 @@ public class AnimElementMesh extends Mesh {
 					.put(qd.getColorA());
 			}
 		}
-		
+
 		if (buildTexCoords) {
 			tcb	.put(qd.getTextureRegion().getU()+qd.getTCOffsetX())
 				.put(qd.getTextureRegion().getV()+qd.getTCOffsetY());
@@ -136,17 +124,82 @@ public class AnimElementMesh extends Mesh {
 			tcb	.put(qd.getTextureRegion().getU2()+qd.getTCOffsetX())
 				.put(qd.getTextureRegion().getV2()+qd.getTCOffsetY());
 		}
+
+		if (buildIndices) {
+			ib.put((short)(vCount+2));
+			ib.put((short)(vCount));
+			ib.put((short)(vCount+1));
+			ib.put((short)(vCount+1));
+			ib.put((short)(vCount+3));
+			ib.put((short)(vCount+2));
+		}
+
+		vCount += 4;
+		/*
+		 * // Test for Samsung devices... slower than above
+		qd.index = vIndex;
+		
+		dim.set(qd.getWidth(), qd.getHeight());
+		skew.set(qd.getSkew());
+		
+		int index = qd.index * 12;
+		
+		applyTransforms(qd, -skew.x, -skew.y);
+		vb.put(index,	tempV.x);
+		vb.put(index+1,	tempV.y);
+		vb.put(index+2,	qd.getPositionZ());
+
+		applyTransforms(qd, dim.x-skew.x, -skew.y);
+		vb.put(index+3,	tempV.x);
+		vb.put(index+4,	tempV.y);
+		vb.put(index+5,	qd.getPositionZ());
+
+		applyTransforms(qd, skew.x, dim.y+skew.y);
+		vb.put(index+6,	tempV.x);
+		vb.put(index+7,	tempV.y);
+		vb.put(index+8,	qd.getPositionZ());
+
+		applyTransforms(qd, dim.x+skew.x, dim.y+skew.y);
+		vb.put(index+9,	tempV.x);
+		vb.put(index+10,tempV.y);
+		vb.put(index+11,qd.getPositionZ());
+		
+		if (buildColor) {
+			index = qd.index*16;
+			int indexX = 0;
+			for (int i = 0; i < 4; i++) {
+				cb.put(index+indexX,	qd.getColorR());
+				cb.put(index+indexX+1,	qd.getColorG());
+				cb.put(index+indexX+2,	qd.getColorB());
+				cb.put(index+indexX+3,	qd.getColorA());
+				indexX += 4;
+			}
+		}
+		
+		if (buildTexCoords) {
+			index = qd.index*8;
+			tcb.put(index,	qd.getTextureRegion().getU()+qd.getTCOffsetX());
+			tcb.put(index+1,qd.getTextureRegion().getV()+qd.getTCOffsetY());
+			tcb.put(index+2,qd.getTextureRegion().getU2()+qd.getTCOffsetX());
+			tcb.put(index+3,qd.getTextureRegion().getV()+qd.getTCOffsetY());
+			tcb.put(index+4,qd.getTextureRegion().getU()+qd.getTCOffsetX());
+			tcb.put(index+5,qd.getTextureRegion().getV2()+qd.getTCOffsetY());
+			tcb.put(index+6,qd.getTextureRegion().getU2()+qd.getTCOffsetX());
+			tcb.put(index+7,qd.getTextureRegion().getV2()+qd.getTCOffsetY());
+		}
 		
 		if (buildIndices) {
-			ib.put((short)(vCount+2));	iIndex++;
-			ib.put((short)(vCount));	iIndex++;
-			ib.put((short)(vCount+1));	iIndex++;
-			ib.put((short)(vCount+1));	iIndex++;
-			ib.put((short)(vCount+3));	iIndex++;
-			ib.put((short)(vCount+2));	iIndex++;
+			index = qd.index*6;
+			ib.put(index,	(short)(vCount+2));
+			ib.put(index+1,	(short)(vCount));
+			ib.put(index+2,	(short)(vCount+1));
+			ib.put(index+3,	(short)(vCount+1));
+			ib.put(index+4,	(short)(vCount+3));
+			ib.put(index+5,	(short)(vCount+2));
 		}
 		
 		vCount += 4;
+		*/
 	}
 	
 	private void applyTransforms(QuadData qd, float x,  float y) {

@@ -481,12 +481,15 @@ public class Effect implements Cloneable {
 				((TextElement)element).setAlpha(1f);
 			isActive = false;
 		} else {
-			element.getElementMaterial().setFloat("EffectStep", pass);
+			float val = pass;
+			if (val <= 0.0f)
+				val = 0.01f;
+			element.getElementMaterial().setFloat("EffectStep", val);
 			if (element.getTextElement() != null) {
-				element.getTextElement().setAlpha(pass);
+				element.getTextElement().setAlpha(val);
 			}
 			if (element instanceof TextElement)
-				((TextElement)element).setAlpha(pass);
+				((TextElement)element).setAlpha(val);
 		}
 	}
 	
@@ -499,6 +502,7 @@ public class Effect implements Cloneable {
 			if (!destroyOnHide) {
 				if (callHide) element.hide();
 				disableShaderEffect();
+				element.getElementMaterial().setFloat("EffectStep", 0.01f);
 				if (element.getTextElement() != null) {
 					element.getTextElement().setAlpha(0.01f);
 				}
