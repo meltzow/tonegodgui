@@ -14,6 +14,7 @@ import tonegod.gui.controls.util.ModalBackground;
 import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.effects.EffectManager;
 import tonegod.gui.effects.cursor.CursorEffects;
+import tonegod.gui.framework.core.AnimLayer;
 import tonegod.gui.framework.core.AnimManager;
 
 /**
@@ -82,4 +83,10 @@ public interface ElementManager {
 	public void showVirtualKeyboard();
 	public void hideVirtualKeyboard();
 	public void handleAndroidMenuState(Element element);
+	
+	// 2D Framework
+	public AnimLayer addAnimLayer(String UID);
+	public void addAnimLayer(String UID, AnimLayer layer);
+	public AnimLayer removeAnimLayer(String UID);
+	public void removeAnimLayer(AnimLayer animLayer);
 }

@@ -25,6 +25,7 @@ import com.jme3.texture.Texture;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -40,7 +41,10 @@ import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.EffectManager;
 import tonegod.gui.effects.cursor.CursorEffects;
+import tonegod.gui.framework.core.AnimElement;
+import tonegod.gui.framework.core.AnimLayer;
 import tonegod.gui.framework.core.AnimManager;
+import tonegod.gui.framework.core.QuadData;
 import tonegod.gui.listeners.*;
 
 /**
@@ -100,6 +104,21 @@ public class SubScreen implements ElementManager, Control {
 	private boolean ALT = false;
 	
 	private ElementQuadGrid mesh;
+	
+	// AnimLayer & 2D framework support
+	private Map<String, AnimLayer> layers = new LinkedHashMap();
+	private float layerZOrderCurrent = .4999f;
+	private AnimElement eventAnimElement = null;
+	private QuadData eventQuad = null;
+	private AnimElement targetAnimElement = null;
+	private QuadData targetQuad = null;
+	private AnimElement mouseFocusAnimElement = null;
+	private AnimElement previousMouseFocusAnimElement = null;
+	private AnimElement mouseFocusQuad = null;
+	private float eventAnimOffsetX = 0;
+	private float eventAnimOffsetY = 0;
+	private float eventQuadOffsetX = 0;
+	private float eventQuadOffsetY = 0;
 	
 	/**
 	 * Creates an instance of the SubScreen control.
@@ -1339,4 +1358,117 @@ public class SubScreen implements ElementManager, Control {
 	public void hideModalBackground() {
 		screen.hideModalBackground();
 	}
+	
+	//<editor-fold dewsc="2D Framework">
+	public AnimLayer addAnimLayer() {
+		return addAnimLayer(UIDUtil.getUID());
+	}
+	
+	@Override
+	public AnimLayer addAnimLayer(String UID) {
+		if (getAnimLayerById(UID) != null) {
+			try {
+				throw new ConflictingIDException();
+			} catch (ConflictingIDException ex) {
+				Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The child layer '" + UID + "' (Element) conflicts with a previously added child layer in parent Screen.", ex);
+				System.exit(0);
+			}
+			return null;
+		} else {
+			AnimLayer layer = new AnimLayer(
+				this,
+				UID
+			);
+			
+			layer.initZOrder(layerZOrderCurrent);
+			layerZOrderCurrent += this.getZOrderStepMajor();
+			
+			layers.put(UID, layer);
+			if (!layer.getInitialized()) {
+				layer.orgPosition = layer.getPosition().clone();
+				layer.setInitialized();
+			}
+			subScreenNode.attachChild(layer);
+			subScreenNode.addControl(layer);
+			
+			return layer;
+		}
+	}
+	
+	@Override
+	public void addAnimLayer(String UID, AnimLayer layer) {
+		if (getAnimLayerById(UID) != null) {
+			try {
+				throw new ConflictingIDException();
+			} catch (ConflictingIDException ex) {
+				Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The child layer '" + UID + "' (Element) conflicts with a previously added child layer in parent Screen.", ex);
+				System.exit(0);
+			}
+		} else {
+			layer.initZOrder(layerZOrderCurrent);
+			layerZOrderCurrent += this.getZOrderStepMajor();
+			
+			layers.put(UID, layer);
+			if (!layer.getInitialized()) {
+				layer.orgPosition = layer.getPosition().clone();
+				layer.setInitialized();
+			}
+			subScreenNode.attachChild(layer);
+			subScreenNode.addControl(layer);
+		}
+	}
+	@Override
+	public AnimLayer removeAnimLayer(String UID) {
+		AnimLayer animLayer = layers.get(UID);
+		if (animLayer != null) {
+			removeAnimLayer(animLayer);
+			return animLayer;
+		} else
+			return null;
+	}
+	
+	@Override
+	public void removeAnimLayer(AnimLayer animLayer) {
+		if (layers.containsValue(animLayer)) {
+			subScreenNode.removeControl(animLayer);
+			layers.remove(animLayer.getUID());
+			float shiftZ = animLayer.getLocalTranslation().getZ();
+			for (AnimLayer el : layers.values()) {
+				if (el.getLocalTranslation().getZ() > shiftZ) {
+					el.move(0,0,-zOrderStepMajor);
+				}
+			}
+			layerZOrderCurrent -= zOrderStepMajor;
+			animLayer.removeFromParent();
+			animLayer.cleanup();
+		}
+	}
+	
+	public AnimLayer getAnimLayerById(String UID) {
+		AnimLayer ret = null;
+		if (layers.containsKey(UID)) {
+			ret = layers.get(UID);
+		} else {
+			for (AnimLayer el : layers.values()) {
+				ret = (AnimLayer)el.getChildElementById(UID);
+				if (ret != null) {
+					break;
+				}
+			}
+		}
+		return ret;
+	}
+	
+	private void setAnimElementZOrder() {
+		if (eventAnimElement != null) {
+			if (eventAnimElement.getZOrderEffect() == AnimElement.ZOrderEffect.Self ||
+				eventAnimElement.getZOrderEffect() == AnimElement.ZOrderEffect.Both)
+				if (eventAnimElement.getParentLayer() != null)
+					eventAnimElement.getParentLayer().bringAnimElementToFront(eventAnimElement);
+			if (eventAnimElement.getZOrderEffect() == AnimElement.ZOrderEffect.Child ||
+				eventAnimElement.getZOrderEffect() == AnimElement.ZOrderEffect.Both)
+				eventAnimElement.bringQuadToFront(eventQuad);
+		}
+	}
+	//</editor-fold>
 }
