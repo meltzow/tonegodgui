@@ -856,6 +856,9 @@ public class SubScreen implements ElementManager, Control {
 	 * @param y The current mouse Y coord
 	 * @return Element eventElement
 	 */
+	@Override
+	public CollisionResult getLastCollision() { return screen.getLastCollision(); }
+	
 	private Element getEventElement(float x, float y) {
 		guiRayOrigin.set(x, y, 0f);
 		

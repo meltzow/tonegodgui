@@ -1326,6 +1326,11 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		
 		return evt;
 	}
+	
+	@Override
+	public CollisionResult getLastCollision() {
+		return lastCollision;
+	}
 	//</editor-fold>
 	
 	//<editor-fold desc="Element Event Methods">

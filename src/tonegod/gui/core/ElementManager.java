@@ -6,6 +6,7 @@ package tonegod.gui.core;
 
 import tonegod.gui.style.Style;
 import com.jme3.app.Application;
+import com.jme3.collision.CollisionResult;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
@@ -28,6 +29,7 @@ public interface ElementManager {
 	public float getWidth();
 	public float getHeight();
 	public Vector2f getMouseXY();
+	public CollisionResult getLastCollision();
 	public Node getGUINode();
 	
 	public void addElement(Element element);
