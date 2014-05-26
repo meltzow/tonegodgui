@@ -33,6 +33,7 @@ public abstract class Indicator extends Element {
 	private boolean displayValues = false, displayPercentages = false;
 	private Vector2f indDimensions = new Vector2f();
 	private Vector4f indPadding = Vector4f.ZERO.clone();
+	private boolean reverseDirection = false;
 	
 	/**
 	 * Creates a new instance of the Indicator control
@@ -166,11 +167,21 @@ public abstract class Indicator extends Element {
 							clipX = getClippingLayer().getAbsoluteX();
 							clipY = getClippingLayer().getAbsoluteY();
 							if (ind.getOrientation() == Indicator.Orientation.HORIZONTAL) {
-								clipW = getClippingLayer().getAbsoluteWidth()-(getClippingLayer().getWidth()-ind.getCurrentPercentage());
+								if (reverseDirection) {
+									clipX = getClippingLayer().getAbsoluteX()+(getClippingLayer().getAbsoluteWidth()-ind.getCurrentPercentage());
+									clipW = getClippingLayer().getAbsoluteWidth();
+								} else {
+									clipW = getClippingLayer().getAbsoluteWidth()-(getClippingLayer().getWidth()-ind.getCurrentPercentage());
+								}
 								clipH = getClippingLayer().getAbsoluteHeight();
 							} else {
+								if (reverseDirection) {
+									clipY = getClippingLayer().getAbsoluteY()+(getClippingLayer().getAbsoluteHeight()-ind.getCurrentPercentage());
+									clipH = getClippingLayer().getAbsoluteHeight();
+								} else {
+									clipH = getClippingLayer().getAbsoluteHeight()-(getClippingLayer().getHeight()-ind.getCurrentPercentage());
+								}
 								clipW = getClippingLayer().getAbsoluteWidth();
-								clipH = getClippingLayer().getAbsoluteHeight()-(getClippingLayer().getHeight()-ind.getCurrentPercentage());
 							}
 						}
 						getClippingBounds().set(clipX, clipY, clipW, clipH);
@@ -189,8 +200,9 @@ public abstract class Indicator extends Element {
 		};
 		elIndicator.setClippingLayer(elIndicator);
 		elIndicator.setIgnoreMouse(true);
-		elIndicator.setDockS(true);
-		elIndicator.setDockW(true);
+	//	elIndicator.setDockS(true);
+	//	elIndicator.setDockW(true);
+		elIndicator.setDocking(Docking.SW);
 		elIndicator.setScaleEW(true);
 		elIndicator.setScaleNS(false);
 		addChild(elIndicator);
@@ -286,6 +298,10 @@ public abstract class Indicator extends Element {
 	public void setCurrentValue(float currentValue) {
 		this.currentValue = currentValue;
 		refactorIndicator();
+	}
+	
+	public void setReverseDirection(boolean reverseDirection) {
+		this.reverseDirection = reverseDirection;
 	}
 	
 	/**
