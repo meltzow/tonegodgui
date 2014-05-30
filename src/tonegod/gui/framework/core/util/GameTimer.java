@@ -192,6 +192,7 @@ public abstract class GameTimer {
 	public void update(float tpf) {
 		if (active && !complete) {
 			time += tpf;
+			timerUpdateHook(tpf);
 			if (time >= duration) {
 				complete = true;
 				active = false;
@@ -199,6 +200,8 @@ public abstract class GameTimer {
 			}
 		}
 	}
+	
+	public void timerUpdateHook(float tpf) {  }
 	
 	private void validateRestart(float time) {
 		runCount++;
