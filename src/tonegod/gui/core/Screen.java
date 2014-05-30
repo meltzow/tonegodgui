@@ -201,6 +201,11 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private SafeArrayList<Node> scenes = new SafeArrayList(Node.class);
 	private Map<Integer,Node> eventNodes = new HashMap();
 	
+	// Android input scaling
+	float inputScale = 1;
+	
+	float orWidth, orHeight;
+	boolean orDim = false;
 	/**
 	 * Creates a new instance of the Screen control using the default style information
 	 * provided with the library.
@@ -241,6 +246,34 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		scenes.add((Node)app.getViewPort().getScenes().get(0));
 	}
 	
+	public Screen(Application app, String styleMap, float width, float height) {
+		if(!initializedLoader) {
+			app.getAssetManager().registerLoader(StyleLoader.class, "gui.xml");
+			initializedLoader = true;
+		}
+		this.orWidth = width;
+		this.orHeight = height;
+		this.orDim = true;
+		this.inputScale = 1f/(app.getViewPort().getCamera().getWidth()/width);
+		
+		this.app = app;
+		this.elementZOrderRay.setDirection(Vector3f.UNIT_Z);
+		this.results = new CollisionResults();
+		try {
+			app.getAssetManager().unregisterLoader(BitmapFontLoader.class);
+			app.getAssetManager().registerLoader(BitmapFontLoaderX.class, "fnt");
+		} catch (Exception ex) {  }
+		
+		styleManager = new StyleManager(this,styleMap);
+		styleManager.parseStyles(styleMap);
+		effectManager = new EffectManager(this);
+		animManager = new AnimManager(this);
+		app.getInputManager().addRawInputListener(this);
+		layoutParser = new LayoutParser(this);
+		
+		scenes.add((Node)app.getViewPort().getScenes().get(0));
+	}
+	
 	/**
 	 * Returns the JME application associated with the Screen
 	 * @return Application app
@@ -257,7 +290,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 */
 	@Override
 	public float getWidth() {
-		return app.getViewPort().getCamera().getWidth();
+		return (orDim) ? orWidth : app.getViewPort().getCamera().getWidth();
 	}
 	
 	/**
@@ -267,7 +300,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 */
 	@Override
 	public float getHeight() {
-		return app.getViewPort().getCamera().getHeight();
+		return (orDim) ? orHeight : app.getViewPort().getCamera().getHeight();
 	}
 	
 	/**
@@ -558,7 +591,11 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 * @param y The mouse's current Y coord
 	 */
 	private void setMouseXY(float x, float y) {
-		mouseXY.set(x, y);
+		mouseXY.set(x, y).multLocal(this.inputScale);
+	}
+	
+	private void setTouchXY(float x, float y) {
+		touchXY.set(x, y).multLocal(this.inputScale);
 	}
 	
 	/**
@@ -598,18 +635,28 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	@Override
 	public void onMouseMotionEvent(MouseMotionEvent evt) {
 		setMouseXY(evt.getX(),evt.getY());
+		/*
+		MouseMotionEvent evt = new MouseMotionEvent(
+			(int)mouseXY.x,
+			(int)mouseXY.y,
+			(int)(evtIn.getDX()*inputScale),
+			(int)(evtIn.getDY()*inputScale),
+			evtIn.getWheel(),
+			evtIn.getDeltaWheel()
+		);
+		*/
 		if (this.useCursorEffects) {
 			if (app.getInputManager().isCursorVisible())
 				cursorEffects.updatePosition(mouseXY);
 		}
 		if (useToolTips) updateToolTipLocation();
 		if (!mousePressed) {
-			mouseFocusElement = getEventElement(evt.getX(), evt.getY());
+			mouseFocusElement = getEventElement(mouseXY.x, mouseXY.y);
 			if (mouseFocusElement != null) {
 				if (useCustomCursors) {
 					if (mouseFocusElement.getIsResizable()) {
-						float offsetX = evt.getX();
-						float offsetY = evt.getY();
+						float offsetX = mouseXY.x;
+						float offsetY = mouseXY.y;
 						Element el = mouseFocusElement;
 						if (offsetX > el.getAbsoluteX() && offsetX < el.getAbsoluteX()+el.getResizeBorderWestSize() &&
 							offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
@@ -679,9 +726,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 				if (mouseLeftPressed) {
 					focusElementIsMovable = contactElement.getIsMovable();
 					if (eventElementResizeDirection != null) {
-						eventElement.resize(evt.getX(), evt.getY(), eventElementResizeDirection);
+						eventElement.resize(mouseXY.x, mouseXY.y, eventElementResizeDirection);
 					} else if (focusElementIsMovable) {
-						eventElement.moveTo(evt.getX()-eventElementOffsetX, evt.getY()-eventElementOffsetY);
+						eventElement.moveTo(mouseXY.x-eventElementOffsetX, mouseXY.y-eventElementOffsetY);
 					}
 				}
 
@@ -729,8 +776,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 
 					} else if (eventQuad.getIsMovable()) {
 						eventQuad.setPosition(
-							evt.getX()-eventQuadOffsetX,
-							evt.getY()-eventQuadOffsetY
+							mouseXY.x-eventQuadOffsetX,
+							mouseXY.y-eventQuadOffsetY
 						);
 					}
 				}
@@ -744,9 +791,17 @@ public class Screen implements ElementManager, Control, RawInputListener {
 
 	@Override
 	public void onMouseButtonEvent(MouseButtonEvent evt) {
+		/*
+		MouseButtonEvent evt = new MouseButtonEvent(
+			evtIn.getButtonIndex(),
+			evtIn.isPressed(),
+			(int)mouseXY.x,
+			(int)mouseXY.y
+		);
+		*/
 		if (evt.isPressed()) {
 			mousePressed = true;
-			eventElement = getEventElement(evt.getX(), evt.getY());
+			eventElement = getEventElement(mouseXY.x, mouseXY.y);
 			if (eventElement != null) {
 				if (eventElement.getResetKeyboardFocus())
 					resetTabFocusElement();
@@ -767,8 +822,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 						if (eventElement.getIsDragDropDragElement())
 							targetElement = null;
 						if (eventElement.getIsResizable()) {
-							float offsetX = evt.getX();
-							float offsetY = evt.getY();
+							float offsetX = mouseXY.x;
+							float offsetY = mouseXY.y;
 							Element el = eventElement;
 							if (offsetX > el.getAbsoluteX() && offsetX < el.getAbsoluteX()+el.getResizeBorderWestSize()) {
 								if (offsetY > el.getAbsoluteY() && offsetY < el.getAbsoluteY()+el.getResizeBorderNorthSize()) {
@@ -896,7 +951,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					mouseLeftPressed = false;
 					eventElementResizeDirection = null;
 				//	if (eventElement.getIsDragDropDragElement())
-					targetElement = getTargetElement(evt.getX(), evt.getY());
+					targetElement = getTargetElement(mouseXY.x, mouseXY.y);
 					if (eventElement instanceof MouseButtonListener) {
 						((MouseButtonListener)eventElement).onMouseLeftReleased(evt);
 					}
@@ -1006,6 +1061,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	@Override
 	public void onTouchEvent(TouchEvent evt) {
+		setTouchXY(evt.getX(),evt.getY());
+		
+	//	evt.set(evt.getType(),touchXY.x,touchXY.y,evt.getDeltaX()*inputScale,evt.getDeltaY()*inputScale);
 		if (useMultiTouch) {
 			switch (evt.getType()) {
 				case DOWN:
@@ -1017,16 +1075,40 @@ public class Screen implements ElementManager, Control, RawInputListener {
 				case UP:
 					androidTouchUpEvent(evt);
 					break;
+				case FLING:
+					androidFlingEvent(evt);
+					break;
+			}
+		}
+	}
+	
+	/**
+	 * This scales the current event values of deltaX and deltaY to a value between 0.0f and 1.0f
+	 * @param evt 
+	 */
+	private void androidFlingEvent(TouchEvent evt) {
+		setTouchXY(evt.getX(),evt.getY());
+		float flingX = 1f/8000f*evt.getDeltaX();
+		float flingY = 1f/8000f*evt.getDeltaY();
+		evt.set(evt.getType(), touchXY.x, touchXY.y, flingX, flingY);
+		
+		Element contact = getContactElement(touchXY.x, touchXY.y);
+		Vector2f offset = tempElementOffset.clone();
+		Element target = getEventElement(touchXY.x, touchXY.y);
+		
+		if (target != null) {
+			if (target instanceof FlingListener) {
+				((FlingListener)target).onFling(evt);
 			}
 		}
 	}
 	
 	private void androidTouchDownEvent(TouchEvent evt) {
-		touchXY.set(evt.getX(),evt.getY());
+	//	setTouchXY(evt.getX(),evt.getY());
 		mousePressed = true;
-		Element contact = getContactElement(evt.getX(), evt.getY());
+		Element contact = getContactElement(touchXY.x, touchXY.y);
 		Vector2f offset = tempElementOffset.clone();
-		Element target = getEventElement(evt.getX(), evt.getY());
+		Element target = getEventElement(touchXY.x, touchXY.y);
 		
 		Borders dir = null;
 		if (target != null) {
@@ -1040,8 +1122,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			if (target.getIsDragDropDragElement())
 				targetElement = null;
 			if (target.getIsResizable()) {
-				float offsetX = evt.getX();
-				float offsetY = evt.getY();
+				float offsetX = touchXY.x;
+				float offsetY = touchXY.y;
 				Element el = target;
 				
 				if (offsetX > el.getAbsoluteX() && offsetX < el.getAbsoluteX()+el.getResizeBorderWestSize()) {
@@ -1099,7 +1181,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					keyboardElement = null;
 			}
 			if (target instanceof MouseButtonListener) {
-				MouseButtonEvent mbEvt = new MouseButtonEvent(0,true,(int)evt.getX(),(int)evt.getY());
+				MouseButtonEvent mbEvt = new MouseButtonEvent(0,true,(int)touchXY.x,(int)touchXY.y);
 				((MouseButtonListener)target).onMouseLeftPressed(mbEvt);
 			}
 			if (target instanceof TouchListener) {
@@ -1118,7 +1200,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 				if (eventAnimElement != null) {
 					setAnimElementZOrder();
 					if (eventAnimElement instanceof MouseButtonListener) {
-						MouseButtonEvent mbEvt = new MouseButtonEvent(0,true,(int)evt.getX(),(int)evt.getY());
+						MouseButtonEvent mbEvt = new MouseButtonEvent(0,true,(int)touchXY.x,(int)touchXY.y);
 						((MouseButtonListener)eventAnimElement).onMouseLeftPressed(mbEvt);
 					}
 					evt.setConsumed();
@@ -1135,7 +1217,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	
 	private void androidTouchMoveEvent(TouchEvent evt) {
-		touchXY.set(evt.getX(),evt.getY());
+	//	setTouchXY(evt.getX(),evt.getY());
 		for (Integer key : eventElements.keySet()) {
 			if (key == evt.getPointerId()) {
 				Element target = eventElements.get(key);
@@ -1146,13 +1228,13 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					
 					boolean movable = contact.getIsMovable();
 					if (dir != null) {
-						target.resize(evt.getX(), evt.getY(), dir);
+						target.resize(touchXY.x, touchXY.y, dir);
 					} else if (movable) {
-						target.moveTo(evt.getX()-offset.x, evt.getY()-offset.y);
+						target.moveTo(touchXY.x-offset.x, touchXY.y-offset.y);
 					}
 
 					if (target instanceof MouseMovementListener) {
-						MouseMotionEvent mbEvt = new MouseMotionEvent((int)evt.getX(),(int)evt.getY(),(int)evt.getDeltaX(),(int)evt.getDeltaY(),0,0);
+						MouseMotionEvent mbEvt = new MouseMotionEvent((int)touchXY.x,(int)touchXY.y,(int)evt.getDeltaX(),(int)evt.getDeltaY(),0,0);
 						((MouseMovementListener)target).onMouseMove(mbEvt);
 					}
 					if (target instanceof TouchListener) {
@@ -1168,7 +1250,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	
 	private void androidTouchUpEvent(TouchEvent evt) {
-		touchXY.set(evt.getX(),evt.getY());
+	//	setTouchXY(evt.getX(),evt.getY());
 		Element target = eventElements.get(evt.getPointerId());
 		handleAndroidMenuState(target);
 		if (target != null) {
@@ -1176,7 +1258,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		//		handleAndroidMenuState(target);
 		//	}
 			if (target instanceof MouseButtonListener) {
-				MouseButtonEvent mbEvt = new MouseButtonEvent(0, true, (int)evt.getX(), (int)evt.getY());
+				MouseButtonEvent mbEvt = new MouseButtonEvent(0, true, (int)touchXY.x, (int)touchXY.y);
 				((MouseButtonListener)target).onMouseLeftReleased(mbEvt);
 			}
 			if (target instanceof TouchListener) {
@@ -1191,7 +1273,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		//	handleAndroidMenuState(target);
 			if (eventAnimElement != null) {
 				if (eventAnimElement instanceof MouseButtonListener) {
-					MouseButtonEvent mbEvt = new MouseButtonEvent(0, true, (int)evt.getX(), (int)evt.getY());
+					MouseButtonEvent mbEvt = new MouseButtonEvent(0, true, (int)touchXY.x, (int)touchXY.y);
 					((MouseButtonListener)eventAnimElement).onMouseLeftReleased(mbEvt);
 				}
 				evt.setConsumed();
@@ -1245,7 +1327,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	
 	private void setLastCollision() {
-		click2d.set(app.getInputManager().getCursorPosition());
+		if (Screen.isAndroid())
+			click2d.set(touchXY);
+		else
+			click2d.set(mouseXY);
 		tempV2.set(click2d);
 		click3d.set(app.getCamera().getWorldCoordinates(tempV2, 0f));
 		pickDir.set(app.getCamera().getWorldCoordinates(tempV2, 1f).subtractLocal(click3d).normalizeLocal());
@@ -1820,7 +1905,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	private void s3dOnMouseMotionEvent(MouseMotionEvent evt, boolean guiFocus) {
 		if (!mousePressed) {
-			mouseFocusNode = getEventNode(evt.getX(), evt.getY());
+			float x = Screen.isAndroid() ? touchXY.x : mouseXY.x;
+			float y = Screen.isAndroid() ? touchXY.y : mouseXY.y;
+			mouseFocusNode = getEventNode(x, y);
 			if (!guiFocus) {
 				if (mouseFocusNode != previousMouseFocusNode) {
 					if (previousMouseFocusNode instanceof MouseFocusListener) {
@@ -1853,7 +1940,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	
 	private void s3dOnMouseButtonEvent(MouseButtonEvent evt) {
-		eventNode = getEventNode(evt.getX(), evt.getY());
+		float x = Screen.isAndroid() ? touchXY.x : mouseXY.x;
+		float y = Screen.isAndroid() ? touchXY.y : mouseXY.y;
+		eventNode = getEventNode(x, y);
 		if (eventNode != null) {
 			if (evt.isPressed()) {
 				switch (evt.getButtonIndex()) {
@@ -1897,10 +1986,12 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	
 	private void s3dOnTouchDownEvent(TouchEvent evt) {
-		Node target = getEventNode(evt.getX(), evt.getY());
+		float x = Screen.isAndroid() ? touchXY.x : mouseXY.x;
+		float y = Screen.isAndroid() ? touchXY.y : mouseXY.y;
+		Node target = getEventNode(x, y);
 		if (target != null) {
 			if (target instanceof MouseButtonListener) {
-				MouseButtonEvent mbEvt = new MouseButtonEvent(0,true,(int)evt.getX(),(int)evt.getY());
+				MouseButtonEvent mbEvt = new MouseButtonEvent(0,true,(int)x,(int)y);
 				((MouseButtonListener)target).onMouseLeftPressed(mbEvt);
 			}
 			if (target instanceof TouchListener) {
@@ -1911,12 +2002,14 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	
 	private void s3dOnTouchMoveEvent(TouchEvent evt) {
+		float x = Screen.isAndroid() ? touchXY.x : mouseXY.x;
+		float y = Screen.isAndroid() ? touchXY.y : mouseXY.y;
 		for (Integer key : eventNodes.keySet()) {
 			if (key == evt.getPointerId()) {
 				Node target = eventNodes.get(key);
 				if (target != null) {
 					if (target instanceof MouseMovementListener) {
-						MouseMotionEvent mbEvt = new MouseMotionEvent((int)evt.getX(),(int)evt.getY(),(int)evt.getDeltaX(),(int)evt.getDeltaY(),0,0);
+						MouseMotionEvent mbEvt = new MouseMotionEvent((int)x,(int)y,(int)evt.getDeltaX(),(int)evt.getDeltaY(),0,0);
 						((MouseMovementListener)target).onMouseMove(mbEvt);
 					}
 					if (target instanceof TouchListener) {
@@ -1928,10 +2021,12 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	}
 	
 	private void s3dOnTouchUpEvent(TouchEvent evt) {
+		float x = Screen.isAndroid() ? touchXY.x : mouseXY.x;
+		float y = Screen.isAndroid() ? touchXY.y : mouseXY.y;
 		Node target = eventNodes.get(evt.getPointerId());
 		if (target != null) {
 			if (target instanceof MouseButtonListener) {
-				MouseButtonEvent mbEvt = new MouseButtonEvent(0,true,(int)evt.getX(),(int)evt.getY());
+				MouseButtonEvent mbEvt = new MouseButtonEvent(0,true,(int)x,(int)y);
 				((MouseButtonListener)target).onMouseLeftReleased(mbEvt);
 			}
 			if (target instanceof TouchListener) {
