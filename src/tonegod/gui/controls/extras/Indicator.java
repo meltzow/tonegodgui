@@ -186,9 +186,11 @@ public abstract class Indicator extends Element {
 						}
 						getClippingBounds().set(clipX, clipY, clipW, clipH);
 						getElementMaterial().setVector4("Clipping", getClippingBounds());
-						getElementMaterial().setBoolean("UseClipping", true);
+						if (!(Boolean)getElementMaterial().getParam("UseClipping").getValue())
+							getElementMaterial().setBoolean("UseClipping", true);
 					} else {
-						getElementMaterial().setBoolean("UseClipping", false);
+						if ((Boolean)getElementMaterial().getParam("UseClipping").getValue())
+							getElementMaterial().setBoolean("UseClipping", false);
 					}
 				} else {
 					getClippingBounds().set(0,0,0,0);
