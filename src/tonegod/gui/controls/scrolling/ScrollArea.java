@@ -8,19 +8,25 @@ import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
+import com.jme3.input.event.TouchEvent;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.utils.UIDUtil;
+import tonegod.gui.framework.animation.Interpolation;
+import tonegod.gui.framework.core.util.GameTimer;
+import tonegod.gui.listeners.FlingListener;
 import tonegod.gui.listeners.MouseWheelListener;
+import tonegod.gui.listeners.TouchListener;
 
 /**
  *
  * @author t0neg0d
  */
-public class ScrollArea extends Element implements MouseWheelListener {
+public class ScrollArea extends Element implements MouseWheelListener, TouchListener, FlingListener {
 	protected Element scrollableArea;
 	private boolean isTextOnly = true;
 	private boolean isScrollable = true;
@@ -28,6 +34,10 @@ public class ScrollArea extends Element implements MouseWheelListener {
 	protected float scrollSize;
 	private boolean scrollHidden = false;
     protected float scrollBarGap = 0;
+	protected GameTimer flingTimer;
+	private boolean isFling = false;
+	private float flingDistance = 0;
+	private float lastY = 0;
 	
 	/**
 	 * Creates a new instance of the ScrollArea control
@@ -155,6 +165,18 @@ public class ScrollArea extends Element implements MouseWheelListener {
 		addChild(vScrollBar);
 		
 		setVScrollBar(vScrollBar);
+		
+		flingTimer = new GameTimer() {
+			@Override
+			public void timerUpdateHook(float tpf) {
+				scrollYTo(lastY+(flingDistance*this.getPercentComplete()));
+			}
+			@Override
+			public void onComplete(float time) {
+				isFling = false;
+			}
+		};
+		flingTimer.setInterpolation(Interpolation.exp5Out);
 	}
 	
 	public void setScrollBarWidth(float width) {
@@ -391,5 +413,42 @@ public class ScrollArea extends Element implements MouseWheelListener {
         
 	protected void onAdjustWidthForScroll() {
 		// Hook called when width adjusts because of scrollbar visibility
+	}
+
+	@Override
+	public void onFling(TouchEvent evt) {
+		if (!screen.getAnimManager().hasGameTimer(flingTimer)) {
+			flingTimer.reset(true);
+			lastY = this.scrollableArea.getY();
+			float maxDist = 500;
+			flingDistance = (this.getScrollableHeight()-this.getHeight());
+			if (flingDistance > maxDist) flingDistance = maxDist;
+			flingDistance *= -(evt.getDeltaY());
+			boolean fling = false;
+			flingDistance += -lastY;
+			
+		//	if (evt.getDeltaY() > 0)
+		//		flingDistance = -flingDistance;
+			
+			fling = true;
+			
+			if (fling)
+				screen.getAnimManager().addGameTimer(flingTimer);
+		}
+	}
+
+	@Override
+	public void onTouchDown(TouchEvent evt) {
+		
+	}
+
+	@Override
+	public void onTouchMove(TouchEvent evt) {
+		
+	}
+
+	@Override
+	public void onTouchUp(TouchEvent evt) {
+		
 	}
 }
