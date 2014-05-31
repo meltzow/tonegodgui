@@ -387,7 +387,7 @@ public class VScrollBar extends Element {
 	}
 	
 	/**
-	 * Moves the scroll area to represent the position of the scroll bar thumb
+	 * Moves the scroll area relative to the position of the scroll bar thumb
 	 */
 	public final void setByThumbPosition() {
 		float scrollLayerHeight = scrollableArea.getScrollableHeight();
@@ -409,4 +409,20 @@ public class VScrollBar extends Element {
 			}
 		}
 	}
+	
+	/**
+	 * Moves the scroll bar thumb relative to the scroll area position
+	 */
+	public final void setThumbByPosition() {
+		float scrollLayerHeight = scrollableArea.getScrollableHeight();
+		float trackHeight = btnScrollTrack.getHeight();
+		
+		float diff = btnScrollTrack.getHeight()-btnScrollThumb.getHeight();
+		float sadiff = scrollLayerHeight-scrollableArea.getHeight();
+		
+		float yLoc = btnScrollTrack.getHeight()-(diff*(scrollableArea.getScrollablePosition()/sadiff));
+		
+		btnScrollThumb.setY(yLoc);
+	}
+	
 }

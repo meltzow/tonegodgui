@@ -4,7 +4,6 @@
  */
 package tonegod.gui.framework.core.util;
 
-import tonegod.gui.core.Screen;
 import tonegod.gui.framework.animation.Interpolation;
 
 /**
@@ -109,6 +108,13 @@ public abstract class GameTimer {
 	 */
 	public void startGameTimer() {
 		this.active = true;
+	}
+	
+	/**
+	 * Forces a stop on the game timer.
+	 */
+	public void endGameTimer() {
+		this.complete = true;
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import com.jme3.input.event.TouchEvent;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
+import java.awt.event.MouseEvent;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
@@ -19,6 +20,8 @@ import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.framework.animation.Interpolation;
 import tonegod.gui.framework.core.util.GameTimer;
 import tonegod.gui.listeners.FlingListener;
+import tonegod.gui.listeners.MouseButtonListener;
+import tonegod.gui.listeners.MouseMovementListener;
 import tonegod.gui.listeners.MouseWheelListener;
 import tonegod.gui.listeners.TouchListener;
 
@@ -38,6 +41,7 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 	private boolean isFling = false;
 	private float flingDistance = 0;
 	private float lastY = 0;
+	private boolean flingEnabled = true;
 	
 	/**
 	 * Creates a new instance of the ScrollArea control
@@ -239,6 +243,12 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 		return isTextOnly;
 	}
 	
+	public void setFlingEnabled(boolean enabled) {
+		this.flingEnabled = enabled;
+	}
+	
+	public boolean getFlingEnabled() { return this.flingEnabled; }
+	
 	private void setVScrollBar(VScrollBar vScrollBar) {
 		this.vScrollBar = vScrollBar;
 		vScrollBar.setScrollableArea(this);
@@ -295,6 +305,18 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 			return textElement.getHeight()+(getTextPadding()*2);
 		} else {
 			return scrollableArea.getHeight()+(scrollableArea.getTextPadding()*2);
+		}
+	}
+	
+	/**
+	 * Returns the current y position of the scrollable area
+	 * @return float
+	 */
+	public float getScrollablePosition() {
+		if (isTextOnly) {
+			return textElement.getLocalTranslation().y;
+		} else {
+			return scrollableArea.getY();
 		}
 	}
 	
@@ -417,38 +439,97 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 
 	@Override
 	public void onFling(TouchEvent evt) {
-		if (!screen.getAnimManager().hasGameTimer(flingTimer)) {
-			flingTimer.reset(true);
-			lastY = this.scrollableArea.getY();
-			float maxDist = 500;
-			flingDistance = (this.getScrollableHeight()-this.getHeight());
-			if (flingDistance > maxDist) flingDistance = maxDist;
-			flingDistance *= -(evt.getDeltaY());
-			boolean fling = false;
-			flingDistance += -lastY;
-			
-		//	if (evt.getDeltaY() > 0)
-		//		flingDistance = -flingDistance;
-			
-			fling = true;
-			
-			if (fling)
-				screen.getAnimManager().addGameTimer(flingTimer);
+		if (flingEnabled && (evt.getDeltaY() > 0.2f || evt.getDeltaY() < -0.2f)) {
+			if (!screen.getAnimManager().hasGameTimer(flingTimer)) {
+				flingTimer.reset(true);
+				lastY = (scrollableArea == null) ?
+						textElement.getLocalTranslation().getY() :
+						this.scrollableArea.getY();
+				float maxDist = 500;
+				flingDistance = (this.getScrollableHeight()-this.getHeight());
+				if (flingDistance > maxDist) flingDistance = maxDist;
+				flingDistance *= -(evt.getDeltaY());
+				boolean fling = false;
+				flingDistance += -lastY;
+
+			//	if (evt.getDeltaY() > 0)
+			//		flingDistance = -flingDistance;
+
+				fling = true;
+
+				if (fling)
+					screen.getAnimManager().addGameTimer(flingTimer);
+			}
+		}
+	}
+
+	float offsetY = 0;
+	
+	@Override
+	public void onTouchDown(TouchEvent evt) {
+		if (screen.getAnimManager().hasGameTimer(flingTimer)) {
+			flingTimer.endGameTimer();
+			screen.getAnimManager().removeGameTimer(flingTimer);
+		}
+		if (flingEnabled) {
+			float evtY = evt.getY();
+			float sub = (scrollableArea == null) ? 
+					textElement.getLocalTranslation().getY() :
+					getScrollableArea().getY();
+			offsetY = evt.getY()-sub;
 		}
 	}
 
 	@Override
-	public void onTouchDown(TouchEvent evt) {
-		
-	}
-
-	@Override
 	public void onTouchMove(TouchEvent evt) {
-		
+		if (flingEnabled) {
+			float nextY = evt.getY()-offsetY;
+			if (nextY <= getScrollableHeight() && nextY >= getHeight()-(this.getPadding())) {
+				scrollYTo(nextY);
+				vScrollBar.setThumbByPosition();
+			}
+		}
 	}
 
 	@Override
 	public void onTouchUp(TouchEvent evt) {
 		
 	}
+	
+	/*
+	boolean isPressed = false;
+	@Override
+	public void onMouseLeftPressed(MouseButtonEvent evt) {
+		if (flingEnabled) {
+			float evtY = evt.getY();
+			float sub = (scrollableArea == null) ? 
+					textElement.getLocalTranslation().getY() :
+					getScrollableArea().getY();
+			offsetY = evt.getY()-sub;
+			
+			isPressed = true;
+		}
+	}
+
+	@Override
+	public void onMouseMove(MouseMotionEvent evt) {
+		if (flingEnabled && isPressed) {
+			float nextY = evt.getY()-offsetY;
+			if (nextY <= getScrollableHeight() && nextY >= getHeight()-(this.getPadding())) {
+				scrollYTo(nextY);
+				vScrollBar.setThumbByPosition();
+			}
+			
+		}
+	}
+	
+	@Override
+	public void onMouseLeftReleased(MouseButtonEvent evt) {
+		isPressed = false;
+	}
+	@Override
+	public void onMouseRightPressed(MouseButtonEvent evt) {  }
+	@Override
+	public void onMouseRightReleased(MouseButtonEvent evt) {  }
+	*/
 }

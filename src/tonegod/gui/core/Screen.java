@@ -607,6 +607,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		return this.mouseXY;
 	}
 	
+	@Override
 	public Vector2f getTouchXY() {
 		return this.touchXY;
 	}

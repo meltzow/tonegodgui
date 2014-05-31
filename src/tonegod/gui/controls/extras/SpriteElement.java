@@ -132,6 +132,12 @@ public class SpriteElement extends Element implements Control {
 		sprite.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
 		sprite.setWrap(Texture.WrapMode.Repeat);
 		
+		setSprite(sprite, rows, cols, framesPerSecond);
+	}
+	
+	public void setSprite(Texture sprite, int rows, int cols, float framesPerSecond) {
+		this.sprite = sprite;
+		
 		Image img = sprite.getImage();
 		imgWidth = img.getWidth();
 		imgHeight = img.getHeight();

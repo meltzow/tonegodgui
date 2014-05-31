@@ -29,6 +29,7 @@ public interface ElementManager {
 	public float getWidth();
 	public float getHeight();
 	public Vector2f getMouseXY();
+	public Vector2f getTouchXY();
 	public CollisionResult getLastCollision();
 	public Node getGUINode();
 	

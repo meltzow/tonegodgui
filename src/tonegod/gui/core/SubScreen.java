@@ -448,6 +448,11 @@ public class SubScreen implements ElementManager, Control {
 		return this.mouseXY;
 	}
 	
+	@Override
+	public Vector2f getTouchXY() {
+		return this.screen.getTouchXY();
+	}
+	
 	// Raw Input handlers
 //	public void beginInput() {  }
 //	public void endInput() {  }
