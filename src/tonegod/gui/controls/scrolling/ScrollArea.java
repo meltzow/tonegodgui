@@ -38,10 +38,13 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 	private boolean scrollHidden = false;
     protected float scrollBarGap = 0;
 	protected GameTimer flingTimer;
-	private boolean isFling = false;
-	private float flingDistance = 0;
-	private float lastY = 0;
 	private boolean flingEnabled = true;
+	float flingSpeed = 0;
+	boolean flingDir = true;
+	float touchOffsetY = 0;
+	float touchStartY = 0;
+	float touchEndY = 0;
+	
 	
 	/**
 	 * Creates a new instance of the ScrollArea control
@@ -173,11 +176,26 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 		flingTimer = new GameTimer() {
 			@Override
 			public void timerUpdateHook(float tpf) {
-				scrollYTo(lastY+(flingDistance*this.getPercentComplete()));
+				float currentY = getScrollablePosition();
+				float nextInc = 15*flingSpeed*(1f-this.getPercentComplete());
+				
+				if (flingDir) {
+					float nextY = currentY+nextInc;
+					if (nextY <= getScrollableHeight() && nextY >= getHeight()-getPadding()) {
+						scrollYTo(nextY);
+						vScrollBar.setThumbByPosition();
+					}
+				} else {
+					float nextY = currentY-nextInc;
+					if (nextY <= getScrollableHeight() && nextY >= getHeight()-getPadding()) {
+						scrollYTo(nextY);
+						vScrollBar.setThumbByPosition();
+					}
+				}
 			}
 			@Override
 			public void onComplete(float time) {
-				isFling = false;
+				
 			}
 		};
 		flingTimer.setInterpolation(Interpolation.exp5Out);
@@ -441,30 +459,14 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 	public void onFling(TouchEvent evt) {
 		if (flingEnabled && (evt.getDeltaY() > 0.2f || evt.getDeltaY() < -0.2f)) {
 			if (!screen.getAnimManager().hasGameTimer(flingTimer)) {
-				flingTimer.reset(true);
-				lastY = (scrollableArea == null) ?
-						textElement.getLocalTranslation().getY() :
-						this.scrollableArea.getY();
-				float maxDist = 500;
-				flingDistance = (this.getScrollableHeight()-this.getHeight());
-				if (flingDistance > maxDist) flingDistance = maxDist;
-				flingDistance *= -(evt.getDeltaY());
-				boolean fling = false;
-				flingDistance += -lastY;
-
-			//	if (evt.getDeltaY() > 0)
-			//		flingDistance = -flingDistance;
-
-				fling = true;
-
-				if (fling)
-					screen.getAnimManager().addGameTimer(flingTimer);
+				flingTimer.reset(false);
+				flingDir  = (evt.getDeltaY() < 0) ? true : false;
+				flingSpeed = FastMath.abs(evt.getDeltaY());
+				screen.getAnimManager().addGameTimer(flingTimer);
 			}
 		}
 	}
 
-	float offsetY = 0;
-	
 	@Override
 	public void onTouchDown(TouchEvent evt) {
 		if (screen.getAnimManager().hasGameTimer(flingTimer)) {
@@ -472,21 +474,19 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 			screen.getAnimManager().removeGameTimer(flingTimer);
 		}
 		if (flingEnabled) {
-			float evtY = evt.getY();
-			float sub = (scrollableArea == null) ? 
-					textElement.getLocalTranslation().getY() :
-					getScrollableArea().getY();
-			offsetY = evt.getY()-sub;
+			touchStartY = getScrollablePosition();
+			touchOffsetY = evt.getY()-touchStartY;
 		}
 	}
 
 	@Override
 	public void onTouchMove(TouchEvent evt) {
 		if (flingEnabled) {
-			float nextY = evt.getY()-offsetY;
+			float nextY = evt.getY()-touchOffsetY;
 			if (nextY <= getScrollableHeight() && nextY >= getHeight()-(this.getPadding())) {
 				scrollYTo(nextY);
 				vScrollBar.setThumbByPosition();
+				touchEndY = getScrollablePosition();
 			}
 		}
 	}
@@ -495,41 +495,4 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 	public void onTouchUp(TouchEvent evt) {
 		
 	}
-	
-	/*
-	boolean isPressed = false;
-	@Override
-	public void onMouseLeftPressed(MouseButtonEvent evt) {
-		if (flingEnabled) {
-			float evtY = evt.getY();
-			float sub = (scrollableArea == null) ? 
-					textElement.getLocalTranslation().getY() :
-					getScrollableArea().getY();
-			offsetY = evt.getY()-sub;
-			
-			isPressed = true;
-		}
-	}
-
-	@Override
-	public void onMouseMove(MouseMotionEvent evt) {
-		if (flingEnabled && isPressed) {
-			float nextY = evt.getY()-offsetY;
-			if (nextY <= getScrollableHeight() && nextY >= getHeight()-(this.getPadding())) {
-				scrollYTo(nextY);
-				vScrollBar.setThumbByPosition();
-			}
-			
-		}
-	}
-	
-	@Override
-	public void onMouseLeftReleased(MouseButtonEvent evt) {
-		isPressed = false;
-	}
-	@Override
-	public void onMouseRightPressed(MouseButtonEvent evt) {  }
-	@Override
-	public void onMouseRightReleased(MouseButtonEvent evt) {  }
-	*/
 }
