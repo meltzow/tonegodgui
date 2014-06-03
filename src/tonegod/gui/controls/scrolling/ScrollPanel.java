@@ -386,7 +386,6 @@ public class ScrollPanel extends Element {
 		setScaleNS(false);
 		innerBounds.setScaleNS(false);
 		scrollableArea.setScaleNS(false);
-		System.out.println(getElementParent().getElementParent().getUID());
 		scrollableArea.setControlClippingLayer(innerBounds, getElementParent().getElementParent());
 		vScrollBar.setScalingEnabled(false);
 		hScrollBar.setScalingEnabled(false);
