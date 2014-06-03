@@ -153,8 +153,8 @@ public class Element extends Node {
 	
 	protected boolean isClipped = false;
 	protected boolean wasClipped = false;
-	private Element clippingLayer;
-	private Vector4f clippingBounds = new Vector4f();
+	protected Element clippingLayer, secondaryClippingLayer;
+	protected Vector4f clippingBounds = new Vector4f();
 	private float clipPadding = 0;
 	private float textClipPadding = 0;
 	protected boolean isVisible = true;
@@ -2421,6 +2421,18 @@ public class Element extends Node {
 	}
 	
 	/**
+	 * Sets the elements clipping layer to the provided element.
+	 * @param clippingLayer The element that provides the clipping boundaries.
+	 */
+	public void setSecondaryClippingLayer(Element secondaryClippingLayer) {
+		if (secondaryClippingLayer != null) {
+			this.secondaryClippingLayer = secondaryClippingLayer;
+		} else {
+			this.secondaryClippingLayer = null;
+		}
+	}
+	
+	/**
 	 * Recursive update of all child Elements clipping layer
 	 * @param clippingLayer The clipping layer to apply
 	 */
@@ -2428,6 +2440,19 @@ public class Element extends Node {
 		setClippingLayer(clippingLayer);
 		for (Element el : elementChildren.values()) {
 			el.setControlClippingLayer(clippingLayer);
+		}
+	}
+	
+	/**
+	 * Recursive update of all child Elements clipping & secondary clipping layers
+	 * @param clippingLayer The clipping layer to apply
+	 * @param secondaryClippingLayer The clipping layer's parent clipping layer to apply
+	 */
+	public void setControlClippingLayer(Element clippingLayer, Element secondaryClippingLayer) {
+		setClippingLayer(clippingLayer);
+		setSecondaryClippingLayer(secondaryClippingLayer);
+		for (Element el : elementChildren.values()) {
+			el.setControlClippingLayer(clippingLayer, secondaryClippingLayer);
 		}
 	}
 	
@@ -2494,21 +2519,42 @@ public class Element extends Node {
 				float cPadding = 0;
 				if (clippingLayer != this)
 					cPadding = clippingLayer.getClipPadding();
-				clippingBounds.set(
-					clippingLayer.getAbsoluteX()+cPadding,
-					clippingLayer.getAbsoluteY()+cPadding,
-					clippingLayer.getAbsoluteWidth()-cPadding,
-					clippingLayer.getAbsoluteHeight()-cPadding
-				);
+				if (secondaryClippingLayer == null) {
+					clippingBounds.set(
+						clippingLayer.getAbsoluteX()+cPadding,
+						clippingLayer.getAbsoluteY()+cPadding,
+						clippingLayer.getAbsoluteWidth()-cPadding,
+						clippingLayer.getAbsoluteHeight()-cPadding
+					);
+				} else {
+					float clX = clippingLayer.getAbsoluteX();
+					float sclX = secondaryClippingLayer.getAbsoluteX();
+					float clY = clippingLayer.getAbsoluteY();
+					float sclY = secondaryClippingLayer.getAbsoluteY();
+					float clW = clippingLayer.getAbsoluteWidth();
+					float sclW = secondaryClippingLayer.getAbsoluteWidth();
+					float clH = clippingLayer.getAbsoluteHeight();
+					float sclH = secondaryClippingLayer.getAbsoluteHeight();
+					
+					clippingBounds.set(
+						(clX > sclX) ? clX+cPadding : sclX+cPadding,
+						(clY > sclY) ? clY+cPadding : sclY+cPadding,
+						(clW < sclW) ? clW-cPadding : sclW-cPadding,
+						(clH < sclH) ? clH-cPadding : sclH-cPadding
+					);
+				}
 				mat.setVector4("Clipping", clippingBounds);
-				mat.setBoolean("UseClipping", true);
+				if (!(Boolean)mat.getParam("UseClipping").getValue())
+					mat.setBoolean("UseClipping", true);
 			} else {
-				mat.setBoolean("UseClipping", false);
+				if ((Boolean)mat.getParam("UseClipping").getValue())
+					mat.setBoolean("UseClipping", false);
 			}
 		} else {
 			clippingBounds.set(0,0,0,0);
 			mat.setVector4("Clipping", clippingBounds);
-			mat.setBoolean("UseClipping", true);
+			if (!(Boolean)mat.getParam("UseClipping").getValue())
+				mat.setBoolean("UseClipping", true);
 		}
 		setFontPages();
 	}

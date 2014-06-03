@@ -12,6 +12,8 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
+import tonegod.gui.framework.animation.Interpolation;
+import tonegod.gui.framework.core.util.GameTimer;
 import tonegod.gui.listeners.FlingListener;
 import tonegod.gui.listeners.MouseWheelListener;
 import tonegod.gui.listeners.TouchListener;
@@ -20,7 +22,7 @@ import tonegod.gui.listeners.TouchListener;
  *
  * @author t0neg0d
  */
-public class ScrollPanel extends Element implements TouchListener, FlingListener {
+public class ScrollPanel extends Element {
 	protected ScrollPanelBounds innerBounds;
 	protected Element scrollableArea;
 	protected ScrollPanelBarV vScrollBar;
@@ -28,6 +30,16 @@ public class ScrollPanel extends Element implements TouchListener, FlingListener
 	private float scrollSize = 25;
 	private int buttonInc = 1;
 	private int trackInc = 10;
+	private boolean vScrollEnabled = true;
+	private boolean hScrollEnabled = true;
+	private boolean scrollChild = false;
+	private boolean flingEnabled = true;
+	private GameTimer flingTimer;
+	private float touchStartY = 0;
+	private float touchEndY = 0;
+	private float touchOffsetY = 0;
+	private boolean flingDir = true;
+	private float flingSpeed = 1;
 	
 	public ScrollPanel(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, Vector4f.ZERO, null);
@@ -53,6 +65,36 @@ public class ScrollPanel extends Element implements TouchListener, FlingListener
 		hScrollBar = new ScrollPanelBarH(this);
 		addChild(hScrollBar, true);
 		
+		initFlingTimer();
+	}
+	
+	private void initFlingTimer() {
+		flingTimer = new GameTimer() {
+			@Override
+			public void timerUpdateHook(float tpf) {
+				float currentY = getScrollableAreaVerticalPosition();
+				float nextInc = 15*flingSpeed*(1f-this.getPercentComplete());
+				
+				if (flingDir) {
+					float nextY = currentY+nextInc;
+					if (nextY <= scrollableArea.getHeight() && nextY >= innerBounds.getHeight()) {
+						scrollYTo(nextY);
+						setVThumbPositionToScrollArea();
+					}
+				} else {
+					float nextY = currentY-nextInc;
+					if (nextY <= scrollableArea.getHeight() && nextY >= innerBounds.getHeight()) {
+						scrollYTo(nextY);
+						setVThumbPositionToScrollArea();
+					}
+				}
+			}
+			@Override
+			public void onComplete(float time) {
+				
+			}
+		};
+		flingTimer.setInterpolation(Interpolation.exp5Out);
 	}
 	
 	public void addScrollableContent(Element el) {
@@ -207,7 +249,7 @@ public class ScrollPanel extends Element implements TouchListener, FlingListener
 	}
 	
 	public void scrollYTo(float y) {
-		scrollableArea.setY(0);
+		scrollableArea.setY(y);
 	}
 	
 	public void scrollYBy(float incY) {
@@ -305,17 +347,17 @@ public class ScrollPanel extends Element implements TouchListener, FlingListener
 	
 	public void setHThumbSize() {
 		float ratio = getHThumbRatio();
-		hScrollBar.thumb.setHeight(25);
-		hScrollBar.thumb.setWidth(hScrollBar.track.getWidth()*ratio);
+		hScrollBar.getScrollThumb().setHeight(25);
+		hScrollBar.getScrollThumb().setWidth(hScrollBar.getScrollTrack().getWidth()*ratio);
 	}
 	
 	public void setHThumbPositionToScrollArea() {
 		float relX = (FastMath.abs(scrollableArea.getX())/getHorizontalScrollDistance());
-		hScrollBar.thumb.setX((hScrollBar.track.getWidth()-hScrollBar.thumb.getWidth())*relX);
+		hScrollBar.getScrollThumb().setX((hScrollBar.getScrollTrack().getWidth()-hScrollBar.getScrollThumb().getWidth())*relX);
 	}
 	
 	public void setScrollAreaPositionToHThumb() {
-		float relX = (hScrollBar.thumb.getX()/(hScrollBar.track.getWidth()-hScrollBar.thumb.getWidth()));
+		float relX = (hScrollBar.getScrollThumb().getX()/(hScrollBar.getScrollTrack().getWidth()-hScrollBar.getScrollThumb().getWidth()));
 		scrollableArea.setX(-(getHorizontalScrollDistance()*relX));
 	}
 	//</editor-fold>
@@ -332,56 +374,30 @@ public class ScrollPanel extends Element implements TouchListener, FlingListener
 	
 	public ScrollPanelBarH getHorizontalScrollBar() { return this.hScrollBar; }
 	
-	//<editor-fold desc="Android Events">
-	@Override
-	public void onFling(TouchEvent evt) {
-		/*
-		if (flingEnabled && (evt.getDeltaY() > 0.2f || evt.getDeltaY() < -0.2f)) {
-			if (!screen.getAnimManager().hasGameTimer(flingTimer)) {
-				flingTimer.reset(false);
-				flingDir  = (evt.getDeltaY() < 0) ? true : false;
-				flingSpeed = FastMath.abs(evt.getDeltaY());
-				screen.getAnimManager().addGameTimer(flingTimer);
-			}
-		}
-		*/
-	}
-
-	@Override
-	public void onTouchDown(TouchEvent evt) {
-		/*
-		if (screen.getAnimManager().hasGameTimer(flingTimer)) {
-			flingTimer.endGameTimer();
-			screen.getAnimManager().removeGameTimer(flingTimer);
-		}
-		if (flingEnabled) {
-			touchStartY = getScrollablePosition();
-			touchOffsetY = evt.getY()-touchStartY;
-		}
-		*/
-	}
-
-	@Override
-	public void onTouchMove(TouchEvent evt) {
-		/*
-		if (flingEnabled) {
-			float nextY = evt.getY()-touchOffsetY;
-			if (nextY <= getScrollableHeight() && nextY >= getHeight()-(this.getPadding())) {
-				scrollYTo(nextY);
-				vScrollBar.setThumbByPosition();
-				touchEndY = getScrollablePosition();
-			}
-		}
-		*/
-	}
-
-	@Override
-	public void onTouchUp(TouchEvent evt) {
-		
-	}
-	//</editor-fold>
+	public Element getScrollBounds() { return this.innerBounds; }
 	
-	public class ScrollPanelBounds extends Element implements MouseWheelListener {
+	public Element getScrollableArea() { return this.scrollableArea; }
+	
+	public void configureAsChildOfScrollPanel() {
+		scrollChild = true;
+		setScaleEW(false);
+		innerBounds.setScaleEW(false);
+		scrollableArea.setScaleEW(false);
+		setScaleNS(false);
+		innerBounds.setScaleNS(false);
+		scrollableArea.setScaleNS(false);
+		System.out.println(getElementParent().getElementParent().getUID());
+		scrollableArea.setControlClippingLayer(innerBounds, getElementParent().getElementParent());
+		vScrollBar.setScalingEnabled(false);
+		hScrollBar.setScalingEnabled(false);
+		setDocking(Element.Docking.SW);
+	}
+	
+	public void setFlingEnabled(boolean flingEnabled) { this.flingEnabled = flingEnabled; }
+	
+	public boolean getFlingEnabled() { return this.flingEnabled; }
+	
+	public class ScrollPanelBounds extends Element implements MouseWheelListener, TouchListener, FlingListener {
 		public ScrollPanelBounds(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 			super(screen, UID, position, dimensions, resizeBorders, defaultImg);
 		}
@@ -400,5 +416,47 @@ public class ScrollPanel extends Element implements TouchListener, FlingListener
 			scrollYBy(getTrackInc());
 			evt.setConsumed();
 		}
+		//<editor-fold desc="Android Events">
+		@Override
+		public void onFling(TouchEvent evt) {
+			if (flingEnabled && (evt.getDeltaY() > 0.2f || evt.getDeltaY() < -0.2f)) {
+				if (!screen.getAnimManager().hasGameTimer(flingTimer)) {
+					flingTimer.reset(false);
+					flingDir  = (evt.getDeltaY() < 0) ? true : false;
+					flingSpeed = FastMath.abs(evt.getDeltaY());
+					screen.getAnimManager().addGameTimer(flingTimer);
+				}
+			}
+		}
+
+		@Override
+		public void onTouchDown(TouchEvent evt) {
+			if (screen.getAnimManager().hasGameTimer(flingTimer)) {
+				flingTimer.endGameTimer();
+				screen.getAnimManager().removeGameTimer(flingTimer);
+			}
+			if (flingEnabled) {
+				touchStartY = getScrollableAreaVerticalPosition();
+				touchOffsetY = evt.getY()-touchStartY;
+			}
+		}
+
+		@Override
+		public void onTouchMove(TouchEvent evt) {
+			if (flingEnabled) {
+				float nextY = evt.getY()-touchOffsetY;
+				if (nextY <= getScrollableAreaHeight() && nextY >= innerBounds.getHeight()) {
+					scrollYTo(nextY);
+					setVThumbPositionToScrollArea();
+					touchEndY = getScrollableAreaVerticalPosition();
+				}
+			}
+		}
+
+		@Override
+		public void onTouchUp(TouchEvent evt) {
+
+		}
+		//</editor-fold>
 	}
 }

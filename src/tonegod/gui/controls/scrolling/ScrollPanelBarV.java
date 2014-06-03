@@ -21,6 +21,7 @@ public class ScrollPanelBarV extends Element {
 	private ButtonAdapter btnUp, btnDown, track, thumb;
 	private MouseButtonEvent trackEvent = null;
 	private ScrollPanel scrollPanel = null;
+	private boolean scalingEnabled = true;
 	
 	public ScrollPanelBarV(ScrollPanel scrollPanel) {
 		super(
@@ -39,6 +40,7 @@ public class ScrollPanelBarV extends Element {
 		this.setScaleNS(true);
 		this.setScaleEW(false);
 		this.setDocking(Docking.NE);
+		this.setAsContainerOnly();
 		
 		initControl();
 	}
@@ -194,4 +196,21 @@ public class ScrollPanelBarV extends Element {
 	public ButtonAdapter getScrollTrack() { return this.track; }
 	
 	public ButtonAdapter getScrollThumb() { return this.thumb; }
+	
+	@Override
+	public void controlResizeHook() {
+		if (!this.scalingEnabled) {
+			scrollPanel.scrollToTop();
+		}
+	}
+	
+	public void setScalingEnabled(boolean scalingEnabled) {
+		this.scalingEnabled = scalingEnabled;
+		this.setScaleNS(scalingEnabled);
+		this.setDocking(Docking.SW);
+		this.btnUp.setDocking(Docking.SW);
+		this.thumb.setDocking(Docking.NW);
+		this.setDocking(Docking.SW);
+		this.track.setScaleNS(scalingEnabled);
+	}
 }

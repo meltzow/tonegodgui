@@ -18,9 +18,10 @@ import tonegod.gui.effects.Effect;
  * @author t0neg0d
  */
 public class ScrollPanelBarH extends Element {
-	ButtonAdapter btnLeft, btnRight, track, thumb;
-	MouseButtonEvent trackEvent = null;
-	ScrollPanel scrollPanel = null;
+	private ButtonAdapter btnLeft, btnRight, track, thumb;
+	private MouseButtonEvent trackEvent = null;
+	private ScrollPanel scrollPanel = null;
+	private boolean scalingEnabled = true;
 	
 	public ScrollPanelBarH(ScrollPanel scrollPanel) {
 		super(
@@ -36,6 +37,7 @@ public class ScrollPanelBarH extends Element {
 		this.setScaleNS(false);
 		this.setScaleEW(true);
 		this.setDocking(Element.Docking.SE);
+		this.setAsContainerOnly();
 		
 		initControl();
 	}
@@ -191,4 +193,26 @@ public class ScrollPanelBarH extends Element {
 	public ButtonAdapter getScrollTrack() { return this.track; }
 	
 	public ButtonAdapter getScrollThumb() { return this.thumb; }
+	
+	@Override
+	public void controlResizeHook() {
+		if (!this.scalingEnabled) {
+			scrollPanel.scrollToLeft();
+		}
+	}
+	
+	public void setScalingEnabled(boolean scalingEnabled) {
+	//	this.scalingEnabled = scalingEnabled;
+	//	this.setScaleEW(scalingEnabled);
+	//	this.track.setScaleEW(scalingEnabled);
+		
+		this.scalingEnabled = scalingEnabled;
+		this.setScaleEW(scalingEnabled);
+		this.track.setScaleEW(scalingEnabled);
+		this.setDocking(Docking.SW);
+		this.btnRight.setDocking(Docking.SW);
+		this.thumb.setDocking(Docking.SW);
+		this.setDocking(Docking.SW);
+		this.track.setScaleNS(scalingEnabled);
+	}
 }
