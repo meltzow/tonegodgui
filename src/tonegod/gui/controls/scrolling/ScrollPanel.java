@@ -30,6 +30,7 @@ public class ScrollPanel extends Element {
 	private float scrollSize = 25;
 	private int buttonInc = 1;
 	private int trackInc = 10;
+	private boolean verticalWrap = false;
 	private boolean vScrollEnabled = true;
 	private boolean hScrollEnabled = true;
 	private boolean scrollChild = false;
@@ -40,6 +41,7 @@ public class ScrollPanel extends Element {
 	private float touchOffsetY = 0;
 	private boolean flingDir = true;
 	private float flingSpeed = 1;
+	private float clipPadding = 5;
 	
 	public ScrollPanel(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, Vector4f.ZERO, null);
@@ -64,6 +66,8 @@ public class ScrollPanel extends Element {
 		addChild(vScrollBar, true);
 		hScrollBar = new ScrollPanelBarH(this);
 		addChild(hScrollBar, true);
+		
+		setTextPadding(10);
 		
 		initFlingTimer();
 	}
@@ -112,11 +116,28 @@ public class ScrollPanel extends Element {
 	
 	private void reshape() {
 		scrollableArea.sizeToContent();
-		scrollableArea.setY(innerBounds.getHeight()-scrollableArea.getHeight());
+	//	scrollableArea.setY(innerBounds.getHeight()-scrollableArea.getHeight());
 		setVThumbSize();
 		setHThumbSize();
-		innerBounds.setClipPadding(5);
+		innerBounds.setClipPadding(clipPadding);
 		scrollableArea.setControlClippingLayer(innerBounds);
+		scrollToTop();
+		scrollToLeft();
+	}
+	
+	public void setUseVerticalWrap(boolean verticalWrap) {
+		this.verticalWrap = verticalWrap;
+		if (this.verticalWrap) {
+			scrollableArea.setScaleEW(true);
+			scrollableArea.setWidth(innerBounds.getWidth());
+		} else {
+			scrollableArea.setScaleEW(false);
+			reshape();
+		}
+	}
+	
+	public boolean getUseVerticalWrap() {
+		return this.verticalWrap;
 	}
 	
 	public void setScrollSize(float scrollSize) {
@@ -128,6 +149,13 @@ public class ScrollPanel extends Element {
 	}
 	
 	@Override
+	public void setText(String text) {
+		scrollableArea.setText(text);
+		scrollableArea.setTextPadding(textPadding);
+		scrollableArea.setTextClipPadding(clipPadding);
+	}
+	
+	@Override
 	public void controlResizeHook() {
 		boolean vHide = false,
 				vShow = false,
@@ -135,7 +163,13 @@ public class ScrollPanel extends Element {
 				hShow = false;
 		boolean vResize = false,
 				hResize = false;
-		boolean vDir, hDir;
+		boolean vDir = true, hDir = true;
+		
+		if (verticalWrap) {
+			if (scrollableArea.getTextElement() != null)
+				scrollableArea.setHeight(scrollableArea.getTextElement().getLineHeight()*scrollableArea.getTextElement().getLineCount()+(textPadding*2));
+			scrollToTop();
+		}
 		
 		if (getHeight() < scrollableArea.getHeight()) {
 			if (innerBounds.getWidth() == getWidth())
@@ -150,19 +184,20 @@ public class ScrollPanel extends Element {
 				vHide = true;
 			vDir = true;
 		}
-		
-		if (getWidth() < scrollableArea.getWidth()) {
-			if (innerBounds.getHeight() == getHeight())
-				hResize = true;
-			if (!hScrollBar.getIsVisible())
-				hShow = true;
-			hDir = false;
-		} else {
-			if (innerBounds.getHeight() == getHeight()-scrollSize)
-				hResize = true;
-			if (hScrollBar.getIsVisible())
-				hHide = true;
-			hDir = true;
+		if (!verticalWrap) {
+			if (getWidth() < scrollableArea.getWidth()) {
+				if (innerBounds.getHeight() == getHeight())
+					hResize = true;
+				if (!hScrollBar.getIsVisible())
+					hShow = true;
+				hDir = false;
+			} else {
+				if (innerBounds.getHeight() == getHeight()-scrollSize)
+					hResize = true;
+				if (hScrollBar.getIsVisible())
+					hHide = true;
+				hDir = true;
+			}
 		}
 		
 		if (vResize) {
@@ -171,35 +206,46 @@ public class ScrollPanel extends Element {
 			} else {
 				innerBounds.setWidth(getWidth());
 			}
+			if (verticalWrap)
+				scrollableArea.setWidth(innerBounds.getWidth());
 		}
-		if (hResize) {
-			if (!hDir) {
-				innerBounds.setHeight(getHeight()-scrollSize);
-				innerBounds.setY(scrollSize);
-			} else {
-				innerBounds.setHeight(getHeight());
-				innerBounds.setY(0);
+		if (!verticalWrap) {
+			if (hResize) {
+				if (!hDir) {
+					innerBounds.setHeight(getHeight()-scrollSize);
+					innerBounds.setY(scrollSize);
+				} else {
+					innerBounds.setHeight(getHeight());
+					innerBounds.setY(0);
+				}
 			}
 		}
 		if (vShow)		vScrollBar.show();
 		else if (vHide)	vScrollBar.hide();
-		if (hShow)		{
-			hScrollBar.show();
-			scrollableArea.setY(scrollableArea.getY()-scrollSize);
-		}
-		else if (hHide)	{
-			hScrollBar.hide();
-			scrollableArea.setY(scrollableArea.getY()+scrollSize);
+		
+		if (!verticalWrap) {
+			if (hShow)		{
+				hScrollBar.show();
+				scrollableArea.setY(scrollableArea.getY()-scrollSize);
+			}
+			else if (hHide)	{
+				hScrollBar.hide();
+				scrollableArea.setY(scrollableArea.getY()+scrollSize);
+			}
 		}
 		
 		setVThumbSize();
-		setHThumbSize();
-		if (scrollableArea.getWidth() > innerBounds.getWidth() && scrollableArea.getX() < 0) {
-			scrollToRight();
-		} else if (scrollableArea.getWidth() < innerBounds.getWidth()) {
-			scrollToLeft();
+		if (!verticalWrap)
+			setHThumbSize();
+		
+		if (!verticalWrap) {
+			if (scrollableArea.getWidth() > innerBounds.getWidth() && scrollableArea.getX() < 0) {
+				scrollToRight();
+			} else if (scrollableArea.getWidth() < innerBounds.getWidth()) {
+				scrollToLeft();
+			}
+			setHThumbPositionToScrollArea();
 		}
-		setHThumbPositionToScrollArea();
 		if (scrollableArea.getHeight() > innerBounds.getHeight() && scrollableArea.getY() > 0) {
 			scrollToBottom();
 		} else if (scrollableArea.getHeight() < innerBounds.getHeight()) {
