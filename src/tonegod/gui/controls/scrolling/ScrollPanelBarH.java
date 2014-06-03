@@ -19,7 +19,6 @@ import tonegod.gui.effects.Effect;
  */
 public class ScrollPanelBarH extends Element {
 	ButtonAdapter btnLeft, btnRight, track, thumb;
-	int btnInc = 1, trackInc = 10;
 	MouseButtonEvent trackEvent = null;
 	ScrollPanel scrollPanel = null;
 	
@@ -52,15 +51,15 @@ public class ScrollPanelBarH extends Element {
 			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				trackEvent = evt;
 				if (trackEvent.getY()-getAbsoluteY() < thumb.getY()) {
-					if (thumb.getX()-trackInc > 0) {
-						thumb.setX(thumb.getX()-trackInc);
+					if (thumb.getX()-scrollPanel.getTrackInc() > 0) {
+						thumb.setX(thumb.getX()-scrollPanel.getTrackInc());
 					} else {
 						thumb.setX(0);
 					}
 					scrollScrollableArea();
 				} else if (trackEvent.getX()-getAbsoluteX() > thumb.getX()+thumb.getWidth()) {
-					if (thumb.getX()+trackInc < track.getWidth()-thumb.getWidth()) {
-						thumb.setX(thumb.getX()+trackInc);
+					if (thumb.getX()+scrollPanel.getTrackInc() < track.getWidth()-thumb.getWidth()) {
+						thumb.setX(thumb.getX()+scrollPanel.getTrackInc());
 					} else {
 						thumb.setX(track.getWidth()-thumb.getWidth());
 					}
@@ -70,15 +69,15 @@ public class ScrollPanelBarH extends Element {
 			@Override
 			public void onButtonStillPressedInterval() {
 				if (trackEvent.getX()-getAbsoluteX() < thumb.getX()) {
-					if (thumb.getX()-trackInc > 0) {
-						thumb.setX(thumb.getX()-trackInc);
+					if (thumb.getX()-scrollPanel.getTrackInc() > 0) {
+						thumb.setX(thumb.getX()-scrollPanel.getTrackInc());
 					} else {
 						thumb.setX(0);
 					}
 					scrollScrollableArea();
 				} else if (trackEvent.getX()-getAbsoluteX() > thumb.getX()+thumb.getWidth()) {
-					if (thumb.getX()+trackInc < thumb.getWidth()-thumb.getWidth()) {
-						thumb.setX(thumb.getX()+trackInc);
+					if (thumb.getX()+scrollPanel.getTrackInc() < thumb.getWidth()-thumb.getWidth()) {
+						thumb.setX(thumb.getX()+scrollPanel.getTrackInc());
 					} else {
 						thumb.setX(track.getWidth()-thumb.getWidth());
 					}
@@ -125,14 +124,14 @@ public class ScrollPanelBarH extends Element {
 			@Override
 			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				if (thumb.getX() > 0) {
-					thumb.setX(thumb.getX()-btnInc);
+					thumb.setX(thumb.getX()-scrollPanel.getButtonInc());
 				}
 				scrollScrollableArea();
 			}
 			@Override
 			public void onButtonStillPressedInterval() {
 				if (thumb.getX() > 0) {
-					thumb.setX(thumb.getX()-btnInc);
+					thumb.setX(thumb.getX()-scrollPanel.getButtonInc());
 				}
 				scrollScrollableArea();
 			}
@@ -157,14 +156,14 @@ public class ScrollPanelBarH extends Element {
 			@Override
 			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				if (thumb.getX() < (track.getWidth()-thumb.getWidth())) {
-					thumb.setX(thumb.getX()+btnInc);
+					thumb.setX(thumb.getX()+scrollPanel.getButtonInc());
 				}
 				scrollScrollableArea();
 			}
 			@Override
 			public void onButtonStillPressedInterval() {
 				if (thumb.getX() < (track.getWidth()-thumb.getWidth())) {
-					thumb.setX(thumb.getX()+btnInc);
+					thumb.setX(thumb.getX()+scrollPanel.getButtonInc());
 				}
 				scrollScrollableArea();
 			}
@@ -184,4 +183,12 @@ public class ScrollPanelBarH extends Element {
 	private void scrollScrollableArea() {
 		scrollPanel.setScrollAreaPositionToHThumb();
 	}
+	
+	public ButtonAdapter getButtonScrollLeft() { return this.btnLeft; }
+	
+	public ButtonAdapter getButtonScrollRight() { return this.btnRight; }
+	
+	public ButtonAdapter getScrollTrack() { return this.track; }
+	
+	public ButtonAdapter getScrollThumb() { return this.thumb; }
 }

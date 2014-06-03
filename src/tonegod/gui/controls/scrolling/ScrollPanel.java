@@ -4,27 +4,36 @@
  */
 package tonegod.gui.controls.scrolling;
 
+import com.jme3.input.event.MouseButtonEvent;
+import com.jme3.input.event.MouseMotionEvent;
+import com.jme3.input.event.TouchEvent;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
+import tonegod.gui.listeners.FlingListener;
+import tonegod.gui.listeners.MouseWheelListener;
+import tonegod.gui.listeners.TouchListener;
 
 /**
  *
  * @author t0neg0d
  */
-public class ScrollPanel extends Element {
-	public Element innerBounds, scrollableArea;
-	public ScrollPanelBarV vScrollBar;
-	public ScrollPanelBarH hScrollBar;
+public class ScrollPanel extends Element implements TouchListener, FlingListener {
+	protected ScrollPanelBounds innerBounds;
+	protected Element scrollableArea;
+	protected ScrollPanelBarV vScrollBar;
+	protected ScrollPanelBarH hScrollBar;
 	private float scrollSize = 25;
+	private int buttonInc = 1;
+	private int trackInc = 10;
 	
 	public ScrollPanel(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, Vector4f.ZERO, null);
 		setAsContainerOnly();
 		
-		innerBounds = new Element(screen, UID + "innerBounds", Vector2f.ZERO, dimensions, resizeBorders, defaultImg);	
+		innerBounds = new ScrollPanelBounds(screen, UID + "innerBounds", Vector2f.ZERO, dimensions, resizeBorders, defaultImg);	
 		innerBounds.setScaleEW(true);
 		innerBounds.setScaleNS(true);
 		innerBounds.setDocking(Docking.SW);
@@ -202,7 +211,21 @@ public class ScrollPanel extends Element {
 	}
 	
 	public void scrollYBy(float incY) {
-		
+		if (incY < 0) {
+			if (vScrollBar.getScrollThumb().getY() > 0) {
+				if (vScrollBar.getScrollThumb().getY()+incY < 0)
+					incY -= vScrollBar.getScrollThumb().getY()+incY;
+				vScrollBar.getScrollThumb().setY(vScrollBar.getScrollThumb().getY()+incY);
+			}
+		} else {
+			float scrollHeight = vScrollBar.getScrollTrack().getHeight()-vScrollBar.getScrollThumb().getHeight();
+			if (vScrollBar.getScrollThumb().getY() < scrollHeight) {
+				if (vScrollBar.getScrollThumb().getY()+incY > scrollHeight)
+					incY -= vScrollBar.getScrollThumb().getY()+incY-scrollHeight;
+				vScrollBar.getScrollThumb().setY(vScrollBar.getScrollThumb().getY()+incY);
+			}
+		}
+		setScrollAreaPositionToVThumb();
 	}
 	
 	private float getVThumbRatio() {
@@ -214,17 +237,17 @@ public class ScrollPanel extends Element {
 	
 	public void setVThumbSize() {
 		float ratio = getVThumbRatio();
-		vScrollBar.thumb.setWidth(25);
-		vScrollBar.thumb.setHeight(vScrollBar.track.getHeight()*ratio);
+		vScrollBar.getScrollThumb().setWidth(25);
+		vScrollBar.getScrollThumb().setHeight(vScrollBar.getScrollTrack().getHeight()*ratio);
 	}
 	
 	public void setVThumbPositionToScrollArea() {
 		float relY = (FastMath.abs(scrollableArea.getY())/getVerticalScrollDistance());
-		vScrollBar.thumb.setY((vScrollBar.track.getHeight()-vScrollBar.thumb.getHeight())*relY);
+		vScrollBar.getScrollThumb().setY((vScrollBar.getScrollTrack().getHeight()-vScrollBar.getScrollThumb().getHeight())*relY);
 	}
 	
 	public void setScrollAreaPositionToVThumb() {
-		float relY = (vScrollBar.thumb.getY()/(vScrollBar.track.getHeight()-vScrollBar.thumb.getHeight()));
+		float relY = (vScrollBar.getScrollThumb().getY()/(vScrollBar.getScrollTrack().getHeight()-vScrollBar.getScrollThumb().getHeight()));
 		scrollableArea.setY(-(getVerticalScrollDistance()*relY));
 	}
 	//</editor-fold>
@@ -296,4 +319,86 @@ public class ScrollPanel extends Element {
 		scrollableArea.setX(-(getHorizontalScrollDistance()*relX));
 	}
 	//</editor-fold>
+	
+	public void setButtonInc(int buttonInc) { this.buttonInc = buttonInc; }
+	
+	public int getButtonInc() { return this.buttonInc; }
+	
+	public void setTrackInc(int trackInc) { this.trackInc = trackInc; }
+	
+	public int getTrackInc() { return this.trackInc; }
+
+	public ScrollPanelBarV getVerticalScrollBar() { return this.vScrollBar; }
+	
+	public ScrollPanelBarH getHorizontalScrollBar() { return this.hScrollBar; }
+	
+	//<editor-fold desc="Android Events">
+	@Override
+	public void onFling(TouchEvent evt) {
+		/*
+		if (flingEnabled && (evt.getDeltaY() > 0.2f || evt.getDeltaY() < -0.2f)) {
+			if (!screen.getAnimManager().hasGameTimer(flingTimer)) {
+				flingTimer.reset(false);
+				flingDir  = (evt.getDeltaY() < 0) ? true : false;
+				flingSpeed = FastMath.abs(evt.getDeltaY());
+				screen.getAnimManager().addGameTimer(flingTimer);
+			}
+		}
+		*/
+	}
+
+	@Override
+	public void onTouchDown(TouchEvent evt) {
+		/*
+		if (screen.getAnimManager().hasGameTimer(flingTimer)) {
+			flingTimer.endGameTimer();
+			screen.getAnimManager().removeGameTimer(flingTimer);
+		}
+		if (flingEnabled) {
+			touchStartY = getScrollablePosition();
+			touchOffsetY = evt.getY()-touchStartY;
+		}
+		*/
+	}
+
+	@Override
+	public void onTouchMove(TouchEvent evt) {
+		/*
+		if (flingEnabled) {
+			float nextY = evt.getY()-touchOffsetY;
+			if (nextY <= getScrollableHeight() && nextY >= getHeight()-(this.getPadding())) {
+				scrollYTo(nextY);
+				vScrollBar.setThumbByPosition();
+				touchEndY = getScrollablePosition();
+			}
+		}
+		*/
+	}
+
+	@Override
+	public void onTouchUp(TouchEvent evt) {
+		
+	}
+	//</editor-fold>
+	
+	public class ScrollPanelBounds extends Element implements MouseWheelListener {
+		public ScrollPanelBounds(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+			super(screen, UID, position, dimensions, resizeBorders, defaultImg);
+		}
+		
+		@Override
+		public void onMouseWheelPressed(MouseButtonEvent evt) { evt.setConsumed(); }
+		@Override
+		public void onMouseWheelReleased(MouseButtonEvent evt) { evt.setConsumed(); }
+		@Override
+		public void onMouseWheelUp(MouseMotionEvent evt) {
+			scrollYBy(-getTrackInc());
+			evt.setConsumed();
+		}
+		@Override
+		public void onMouseWheelDown(MouseMotionEvent evt) {
+			scrollYBy(getTrackInc());
+			evt.setConsumed();
+		}
+	}
 }

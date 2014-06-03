@@ -18,10 +18,9 @@ import tonegod.gui.effects.Effect;
  * @author t0neg0d
  */
 public class ScrollPanelBarV extends Element {
-	ButtonAdapter btnUp, btnDown, track, thumb;
-	int btnInc = 1, trackInc = 10;
-	MouseButtonEvent trackEvent = null;
-	ScrollPanel scrollPanel = null;
+	private ButtonAdapter btnUp, btnDown, track, thumb;
+	private MouseButtonEvent trackEvent = null;
+	private ScrollPanel scrollPanel = null;
 	
 	public ScrollPanelBarV(ScrollPanel scrollPanel) {
 		super(
@@ -55,15 +54,15 @@ public class ScrollPanelBarV extends Element {
 			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				trackEvent = evt;
 				if (trackEvent.getY()-getAbsoluteY() < thumb.getY()) {
-					if (thumb.getY()-trackInc > 0) {
-						thumb.setY(thumb.getY()-trackInc);
+					if (thumb.getY()-scrollPanel.getTrackInc() > 0) {
+						thumb.setY(thumb.getY()-scrollPanel.getTrackInc());
 					} else {
 						thumb.setY(0);
 					}
 					scrollScrollableArea();
 				} else if (trackEvent.getY()-getAbsoluteY() > thumb.getY()+thumb.getHeight()) {
-					if (thumb.getY()+trackInc < track.getHeight()-thumb.getHeight()) {
-						thumb.setY(thumb.getY()+trackInc);
+					if (thumb.getY()+scrollPanel.getTrackInc() < track.getHeight()-thumb.getHeight()) {
+						thumb.setY(thumb.getY()+scrollPanel.getTrackInc());
 					} else {
 						thumb.setY(track.getHeight()-thumb.getHeight());
 					}
@@ -73,15 +72,15 @@ public class ScrollPanelBarV extends Element {
 			@Override
 			public void onButtonStillPressedInterval() {
 				if (trackEvent.getY()-getAbsoluteY() < thumb.getY()) {
-					if (thumb.getY()-trackInc > 0) {
-						thumb.setY(thumb.getY()-trackInc);
+					if (thumb.getY()-scrollPanel.getTrackInc() > 0) {
+						thumb.setY(thumb.getY()-scrollPanel.getTrackInc());
 					} else {
 						thumb.setY(0);
 					}
 					scrollScrollableArea();
 				} else if (trackEvent.getY()-getAbsoluteY() > thumb.getY()+thumb.getHeight()) {
-					if (thumb.getY()+trackInc < thumb.getHeight()-thumb.getHeight()) {
-						thumb.setY(thumb.getY()+trackInc);
+					if (thumb.getY()+scrollPanel.getTrackInc() < thumb.getHeight()-thumb.getHeight()) {
+						thumb.setY(thumb.getY()+scrollPanel.getTrackInc());
 					} else {
 						thumb.setY(track.getHeight()-thumb.getHeight());
 					}
@@ -128,14 +127,14 @@ public class ScrollPanelBarV extends Element {
 			@Override
 			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				if (thumb.getY() < (track.getHeight()-thumb.getHeight())) {
-					thumb.setY(thumb.getY()+btnInc);
+					thumb.setY(thumb.getY()+scrollPanel.getButtonInc());
 				}
 				scrollScrollableArea();
 			}
 			@Override
 			public void onButtonStillPressedInterval() {
 				if (thumb.getY() < (track.getHeight()-thumb.getHeight())) {
-					thumb.setY(thumb.getY()+btnInc);
+					thumb.setY(thumb.getY()+scrollPanel.getButtonInc());
 				}
 				scrollScrollableArea();
 			}
@@ -160,14 +159,14 @@ public class ScrollPanelBarV extends Element {
 			@Override
 			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
 				if (thumb.getY() > 0) {
-					thumb.setY(thumb.getY()-btnInc);
+					thumb.setY(thumb.getY()-scrollPanel.getButtonInc());
 				}
 				scrollScrollableArea();
 			}
 			@Override
 			public void onButtonStillPressedInterval() {
 				if (thumb.getY() > 0) {
-					thumb.setY(thumb.getY()-btnInc);
+					thumb.setY(thumb.getY()-scrollPanel.getButtonInc());
 				}
 				scrollScrollableArea();
 			}
@@ -187,4 +186,12 @@ public class ScrollPanelBarV extends Element {
 	private void scrollScrollableArea() {
 		scrollPanel.setScrollAreaPositionToVThumb();
 	}
+	
+	public ButtonAdapter getButtonScrollUp() { return this.btnUp; }
+	
+	public ButtonAdapter getButtonScrollDown() { return this.btnDown; }
+	
+	public ButtonAdapter getScrollTrack() { return this.track; }
+	
+	public ButtonAdapter getScrollThumb() { return this.thumb; }
 }
