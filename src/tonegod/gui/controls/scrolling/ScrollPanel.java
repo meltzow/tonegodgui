@@ -12,6 +12,7 @@ import com.jme3.input.event.TouchEvent;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
+import com.jme3.scene.Spatial;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.utils.UIDUtil;
@@ -26,6 +27,13 @@ import tonegod.gui.listeners.TouchListener;
  * @author t0neg0d
  */
 public class ScrollPanel extends Element {
+	public static enum ScrollDirection {
+		Up,
+		Down,
+		Left,
+		Right
+	}
+	
 	protected ScrollPanelBounds innerBounds;
 	protected Element scrollableArea;
 	protected ScrollPanelBarV vScrollBar;
@@ -37,6 +45,7 @@ public class ScrollPanel extends Element {
 	private boolean vScrollEnabled = true;
 	private boolean hScrollEnabled = true;
 	private boolean scrollChild = false;
+	private boolean pagingEnabled = false;
 	private boolean flingEnabled = true;
 	private GameTimer flingTimer;
 	private float touchStartY = 0;
@@ -384,15 +393,22 @@ public class ScrollPanel extends Element {
 	public void scrollToTop() {
 		scrollableArea.setY(-getVerticalScrollDistance());
 		setVThumbPositionToScrollArea();
+		onScrollContent(ScrollDirection.Up);
 	}
 	
 	public void scrollToBottom() {
 		scrollableArea.setY(0);
 		setVThumbPositionToScrollArea();
+		onScrollContent(ScrollDirection.Down);
 	}
 	
 	public void scrollYTo(float y) {
+		float lastY = scrollableArea.getY();
 		scrollableArea.setY(y);
+		if (lastY > y)
+			onScrollContent(ScrollDirection.Down);
+		else
+			onScrollContent(ScrollDirection.Up);
 	}
 	
 	public void scrollYBy(float incY) {
@@ -432,8 +448,14 @@ public class ScrollPanel extends Element {
 	}
 	
 	public void setScrollAreaPositionToVThumb() {
+		float lastY = scrollableArea.getY();
 		float relY = (vScrollBar.getScrollThumb().getY()/(vScrollBar.getScrollTrack().getHeight()-vScrollBar.getScrollThumb().getHeight()));
 		scrollableArea.setY(-(getVerticalScrollDistance()*relY));
+		if (lastY > -(getVerticalScrollDistance()*relY))
+			onScrollContent(ScrollDirection.Up);
+		else
+			onScrollContent(ScrollDirection.Down);
+		
 	}
 	//</editor-fold>
 	
@@ -466,19 +488,31 @@ public class ScrollPanel extends Element {
 	public void scrollToLeft() {
 		scrollableArea.setX(0);
 		setHThumbPositionToScrollArea();
+		onScrollContent(ScrollDirection.Left);
 	}
 	
 	public void scrollToRight() {
 		scrollableArea.setX(-getHorizontalScrollDistance());
 		setHThumbPositionToScrollArea();
+		onScrollContent(ScrollDirection.Right);
 	}
 	
 	public void scrollXTo(float x) {
-		scrollableArea.setX(0);
+		float lastX = scrollableArea.getX();
+		scrollableArea.setX(x);
+		if (lastX > x)
+			onScrollContent(ScrollDirection.Left);
+		else
+			onScrollContent(ScrollDirection.Right);
 	}
 	
 	public void scrollXBy(float incX) {
-		
+		float lastX = scrollableArea.getX();
+		scrollableArea.setX(lastX+incX);
+		if (lastX > lastX+incX)
+			onScrollContent(ScrollDirection.Left);
+		else
+			onScrollContent(ScrollDirection.Right);
 	}
 	
 	private float getHThumbRatio() {
@@ -500,10 +534,50 @@ public class ScrollPanel extends Element {
 	}
 	
 	public void setScrollAreaPositionToHThumb() {
+		float lastX = scrollableArea.getX();
 		float relX = (hScrollBar.getScrollThumb().getX()/(hScrollBar.getScrollTrack().getWidth()-hScrollBar.getScrollThumb().getWidth()));
 		scrollableArea.setX(-(getHorizontalScrollDistance()*relX));
+		if (lastX < -(getHorizontalScrollDistance()*relX))
+			onScrollContent(ScrollDirection.Left);
+		else
+			onScrollContent(ScrollDirection.Right);
 	}
 	//</editor-fold>
+	
+	public void setUseContentPaging(boolean pagingEnabled) {
+		this.pagingEnabled = pagingEnabled;
+	}
+	
+	public boolean getUseContentPaging() {
+		return pagingEnabled;
+	}
+	
+	private void onScrollContent(ScrollDirection direction) {
+		if (pagingEnabled) {
+			for (Element el : scrollableArea.getElementsAsMap().values()) {
+				if (direction == ScrollDirection.Up || direction == ScrollDirection.Down) {
+					if (el.getY()+el.getHeight()+scrollableArea.getY() < 0 || el.getY()+scrollableArea.getY() > innerBounds.getHeight()) {
+						if (el.getIsVisible())
+							el.hide();
+					} else {
+						if (!el.getIsVisible())
+							el.show();
+					}
+				} else {
+					if (el.getX()+el.getWidth()+scrollableArea.getX() < 0 || el.getX()+scrollableArea.getX() > innerBounds.getWidth()) {
+						if (el.getIsVisible())
+							el.hide();
+					} else {
+						if (!el.getIsVisible())
+							el.show();
+					}
+				}
+			}
+		}
+		onScrollContentHook(direction);
+	}
+	
+	public void onScrollContentHook(ScrollDirection direction) {  }
 	
 	public void setButtonInc(int buttonInc) { this.buttonInc = buttonInc; }
 	
@@ -521,6 +595,10 @@ public class ScrollPanel extends Element {
 	
 	public Element getScrollableArea() { return this.scrollableArea; }
 	
+	public void setFlingEnabled(boolean flingEnabled) { this.flingEnabled = flingEnabled; }
+	
+	public boolean getFlingEnabled() { return this.flingEnabled; }
+	
 	public void configureAsChildOfScrollPanel() {
 		scrollChild = true;
 		setScaleEW(false);
@@ -534,10 +612,6 @@ public class ScrollPanel extends Element {
 		hScrollBar.setScalingEnabled(false);
 		setDocking(Element.Docking.SW);
 	}
-	
-	public void setFlingEnabled(boolean flingEnabled) { this.flingEnabled = flingEnabled; }
-	
-	public boolean getFlingEnabled() { return this.flingEnabled; }
 	
 	public class ScrollPanelBounds extends Element implements MouseWheelListener, TouchListener, FlingListener {
 		public ScrollPanelBounds(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
