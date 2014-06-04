@@ -27,8 +27,8 @@ public class ScrollPanelBarH extends Element {
 		super(
 			scrollPanel.getScreen(),
 			UIDUtil.getUID(),
-			new Vector2f(0,scrollPanel.getDimensions().y-25),
-			new Vector2f(scrollPanel.getDimensions().x-25, 25),
+			new Vector2f(0,scrollPanel.getDimensions().y-scrollPanel.getScrollSize()),
+			new Vector2f(scrollPanel.getDimensions().x-scrollPanel.getScrollSize(), scrollPanel.getScrollSize()),
 			Vector4f.ZERO,
 			null
 		);
@@ -214,5 +214,19 @@ public class ScrollPanelBarH extends Element {
 		this.thumb.setDocking(Docking.SW);
 		this.setDocking(Docking.SW);
 		this.track.setScaleNS(scalingEnabled);
+	}
+	
+	public void updateScrollSize() {
+		setHeight(scrollPanel.getScrollSize());
+		setWidth(scrollPanel.getWidth()-scrollPanel.getScrollSize());
+		btnLeft.setDimensions(scrollPanel.getScrollSize(),scrollPanel.getScrollSize());
+		btnLeft.getButtonIcon().centerToParent();
+		btnRight.setDimensions(scrollPanel.getScrollSize(),scrollPanel.getScrollSize());
+		btnRight.getButtonIcon().centerToParent();
+		track.setX(scrollPanel.getScrollSize());
+		track.setWidth(getWidth()-(scrollPanel.getScrollSize()*2));
+		track.setHeight(scrollPanel.getScrollSize());
+		thumb.setHeight(scrollPanel.getScrollSize());
+		btnRight.setX(getWidth()-scrollPanel.getScrollSize());
 	}
 }

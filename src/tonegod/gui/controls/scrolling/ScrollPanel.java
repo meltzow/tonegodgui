@@ -4,6 +4,8 @@
  */
 package tonegod.gui.controls.scrolling;
 
+import com.jme3.font.BitmapFont;
+import com.jme3.font.LineWrapMode;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.input.event.TouchEvent;
@@ -12,6 +14,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
+import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.framework.animation.Interpolation;
 import tonegod.gui.framework.core.util.GameTimer;
 import tonegod.gui.listeners.FlingListener;
@@ -43,9 +46,94 @@ public class ScrollPanel extends Element {
 	private float flingSpeed = 1;
 	private float clipPadding = 5;
 	
+	/**
+	 * Creates a new instance of the ScrollPanel control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
+	public ScrollPanel(ElementManager screen, Vector2f position) {
+		this(screen, UIDUtil.getUID(), position,
+			screen.getStyle("ScrollArea").getVector2f("defaultSize"),
+			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
+			screen.getStyle("ScrollArea").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the ScrollPanel control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
+	public ScrollPanel(ElementManager screen, Vector2f position, Vector2f dimensions) {
+		this(screen, UIDUtil.getUID(), position, dimensions,
+			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
+			screen.getStyle("ScrollArea").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the ScrollPanel control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containing the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the ScrollPanel's background
+	 */
+	public ScrollPanel(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+		this(screen, UIDUtil.getUID(), position, dimensions, resizeBorders, defaultImg);
+	}
+	
+	/**
+	 * Creates a new instance of the ScrollPanel control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
+	public ScrollPanel(ElementManager screen, String UID, Vector2f position) {
+		this(screen, UID, position,
+			screen.getStyle("ScrollArea").getVector2f("defaultSize"),
+			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
+			screen.getStyle("ScrollArea").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the ScrollPanel control
+	 * 
+	 * @param screen The screen control
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
+	public ScrollPanel(ElementManager screen, String UID, Vector2f position, Vector2f dimensions) {
+		this(screen, UID, position, dimensions,
+			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
+			screen.getStyle("ScrollArea").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the ScrollPanel control
+	 * 
+	 * @param screen The screen control
+	 * @param UID A unique String identifier for the Element
+	 * @param position A Vector2f containing the x/y position of the Element
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 * @param resizeBorders A Vector4f containing the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the ScrollPanel's background
+	 */
 	public ScrollPanel(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, Vector4f.ZERO, null);
 		setAsContainerOnly();
+		
+		// Load defaults
+		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
+		clipPadding = screen.getStyle("ScrollArea").getFloat("textPadding");
 		
 		innerBounds = new ScrollPanelBounds(screen, UID + "innerBounds", Vector2f.ZERO, dimensions, resizeBorders, defaultImg);	
 		innerBounds.setScaleEW(true);
@@ -57,6 +145,12 @@ public class ScrollPanel extends Element {
 		scrollableArea.setScaleNS(false);
 		scrollableArea.setDocking(Docking.NW);
 		scrollableArea.setAsContainerOnly();
+		
+		scrollableArea.setFontColor(screen.getStyle("ScrollArea").getColorRGBA("fontColor"));
+		scrollableArea.setFontSize(screen.getStyle("ScrollArea").getFloat("fontSize"));
+		scrollableArea.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("ScrollArea").getString("textAlign")));
+		scrollableArea.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("ScrollArea").getString("textVAlign")));
+		scrollableArea.setTextWrap(LineWrapMode.valueOf(screen.getStyle("ScrollArea").getString("textWrap")));
 		
 		innerBounds.addChild(scrollableArea);
 		scrollableArea.setClippingLayer(innerBounds);
@@ -142,6 +236,9 @@ public class ScrollPanel extends Element {
 	
 	public void setScrollSize(float scrollSize) {
 		this.scrollSize = scrollSize;
+		vScrollBar.updateScrollSize();
+		vScrollBar.setX(getWidth()-scrollSize);
+		hScrollBar.updateScrollSize();
 	}
 	
 	public float getScrollSize() {
@@ -325,7 +422,7 @@ public class ScrollPanel extends Element {
 	
 	public void setVThumbSize() {
 		float ratio = getVThumbRatio();
-		vScrollBar.getScrollThumb().setWidth(25);
+		vScrollBar.getScrollThumb().setWidth(scrollSize);
 		vScrollBar.getScrollThumb().setHeight(vScrollBar.getScrollTrack().getHeight()*ratio);
 	}
 	
@@ -393,7 +490,7 @@ public class ScrollPanel extends Element {
 	
 	public void setHThumbSize() {
 		float ratio = getHThumbRatio();
-		hScrollBar.getScrollThumb().setHeight(25);
+		hScrollBar.getScrollThumb().setHeight(scrollSize);
 		hScrollBar.getScrollThumb().setWidth(hScrollBar.getScrollTrack().getWidth()*ratio);
 	}
 	

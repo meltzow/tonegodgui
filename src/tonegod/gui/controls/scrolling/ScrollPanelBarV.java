@@ -213,4 +213,19 @@ public class ScrollPanelBarV extends Element {
 		this.setDocking(Docking.SW);
 		this.track.setScaleNS(scalingEnabled);
 	}
+	
+	public void updateScrollSize() {
+		setY(scrollPanel.getScrollSize());
+		setWidth(scrollPanel.getScrollSize());
+		setHeight(scrollPanel.getHeight()-scrollPanel.getScrollSize());
+		btnUp.setDimensions(scrollPanel.getScrollSize(),scrollPanel.getScrollSize());
+		btnUp.getButtonIcon().centerToParent();
+		btnDown.setDimensions(scrollPanel.getScrollSize(),scrollPanel.getScrollSize());
+		btnDown.getButtonIcon().centerToParent();
+		track.setY(scrollPanel.getScrollSize());
+		track.setHeight(getHeight()-(scrollPanel.getScrollSize()*2));
+		track.setWidth(scrollPanel.getScrollSize());
+		thumb.setWidth(scrollPanel.getScrollSize());
+		btnUp.setY(getHeight()-scrollPanel.getScrollSize());
+	}
 }
