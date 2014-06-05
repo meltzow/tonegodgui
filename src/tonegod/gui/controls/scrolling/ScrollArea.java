@@ -320,7 +320,7 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 	 */
 	public float getScrollableHeight() {
 		if (isTextOnly) {
-			return textElement.getHeight()+(getTextPadding()*2);
+			return textElement.getHeight()+(getTextPadding()*2)+12;
 		} else {
 			return scrollableArea.getHeight()+(scrollableArea.getTextPadding()*2);
 		}
@@ -345,7 +345,7 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 		}
 		adjustWidthForScroll();
 		if (scrollableArea != null)
-			if (scrollableArea.getY() > 0 && getScrollableHeight() > getHeight())
+			if (scrollableArea.getY() > getResizeBorderNorthSize() && getScrollableHeight()+getResizeBorderNorthSize() > getHeight())
 				scrollToBottom();
 	}
 	

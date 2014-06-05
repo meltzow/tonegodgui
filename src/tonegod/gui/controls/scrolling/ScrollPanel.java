@@ -12,7 +12,6 @@ import com.jme3.input.event.TouchEvent;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import com.jme3.scene.Spatial;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.utils.UIDUtil;

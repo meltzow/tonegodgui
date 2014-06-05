@@ -392,20 +392,20 @@ public class VScrollBar extends Element {
 	public final void setByThumbPosition() {
 		float scrollLayerHeight = scrollableArea.getScrollableHeight();
 		float diff = btnScrollTrack.getHeight()-btnScrollThumb.getHeight();
-		float sadiff = scrollLayerHeight-scrollableArea.getHeight()+(scrollableArea.getPadding());
+		float sadiff = scrollLayerHeight-scrollableArea.getHeight()+(scrollableArea.getPadding())-scrollableArea.getResizeBorderNorthSize();
 		float yLoc = sadiff*(btnScrollThumb.getY()/diff);
 		
 		if (scrollableArea.getIsTextOnly()) {
 			if (yLoc < sadiff) {
-				scrollableArea.scrollYTo(scrollLayerHeight-yLoc);
+				scrollableArea.scrollYTo(scrollLayerHeight-yLoc-scrollableArea.getResizeBorderNorthSize());
 			} else {
-				scrollableArea.scrollYTo(scrollLayerHeight-sadiff);
+				scrollableArea.scrollYTo(scrollLayerHeight-sadiff-scrollableArea.getResizeBorderNorthSize());
 			}
 		} else {
 			if (yLoc < sadiff) {
-				scrollableArea.scrollYTo(-yLoc);
+				scrollableArea.scrollYTo(-(yLoc-scrollableArea.getResizeBorderNorthSize()));
 			} else {
-				scrollableArea.scrollYTo(-sadiff);
+				scrollableArea.scrollYTo(-sadiff-scrollableArea.getResizeBorderNorthSize());
 			}
 		}
 	}
