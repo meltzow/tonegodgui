@@ -422,12 +422,12 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	protected void runResetEffect() {
 		Effect effect = getEffect(Effect.EffectEvent.Press);
 		if (effect != null) {
-				effect.setBlendImage(getElementTexture());
-				if (screen.getUseTextureAtlas() || getUseLocalAtlas()) effect.setBlendImageOffset(new Vector2f(0,0));
-				screen.getEffectManager().applyEffect(effect);
+			effect.setBlendImage(getElementTexture());
+			if (screen.getUseTextureAtlas() || getUseLocalAtlas()) effect.setBlendImageOffset(new Vector2f(0,0));
+			screen.getEffectManager().applyEffect(effect);
 		}
 		if (originalFontColor != null) {
-				setFontColor(originalFontColor);
+			setFontColor(originalFontColor);
 		}
 	}
 	
@@ -728,10 +728,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		}
 	}
 	
-	@Override
-	public void setFontColor(ColorRGBA fontColor) {
+	public void setFontColor(ColorRGBA fontColor, boolean makeDefault) {
 		super.setFontColor(fontColor);
-		originalFontColor = fontColor.clone();
+		if (makeDefault)
+			originalFontColor = fontColor.clone();
 	}
 	
 	/**
