@@ -12,6 +12,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
+import java.util.ArrayList;
+import java.util.List;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.utils.UIDUtil;
@@ -29,7 +31,11 @@ public class SpriteElement extends Element implements Control {
 	protected float trackInterval = (1/framesPerSecond), currentTrack = 0;
 	private Texture sprite;
 	private int spriteCols, spriteRows;
-	private float imgWidth, imgHeight, spriteWidth, spriteHeight, currentX = 0, currentY = 0;
+	private float imgWidth, imgHeight, spriteWidth, spriteHeight;
+	private int currentIndex = 0;
+	private int[] frames;
+	private int currentFramesIndex = 0;
+	private List<String> sprites = new ArrayList();
 	
 	/**
 	 * Creates a new instance of the Menu control
@@ -125,8 +131,6 @@ public class SpriteElement extends Element implements Control {
 	}
 	
 	public void setSprite(String imgPath, int rows, int cols, float framesPerSecond) {
-		this.spriteRows = rows;
-		this.spriteCols = cols;
 		sprite = screen.getApplication().getAssetManager().loadTexture(imgPath);
 		sprite.setMagFilter(Texture.MagFilter.Bilinear);
 		sprite.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
@@ -138,6 +142,9 @@ public class SpriteElement extends Element implements Control {
 	public void setSprite(Texture sprite, int rows, int cols, float framesPerSecond) {
 		this.sprite = sprite;
 		
+		this.spriteRows = rows;
+		this.spriteCols = cols;
+		
 		Image img = sprite.getImage();
 		imgWidth = img.getWidth();
 		imgHeight = img.getHeight();
@@ -145,14 +152,19 @@ public class SpriteElement extends Element implements Control {
 		spriteWidth = imgWidth/cols;
 		spriteHeight = imgHeight/rows;
 		
-		currentX = 0;
-		currentY = 0;
+		sprites.clear();
+		for (int y = rows-1; y > -1; y--) {
+			for (int x = 0; x < cols; x++) {
+				sprites.add("x=" + (x*spriteWidth) + "|y=" + (y*spriteHeight) + "|w=" + spriteWidth + "|h=" + spriteHeight);
+			}
+		}
 		
-		this.setTextureAtlasImage(sprite, "x=" + currentX + "|y=" + currentY + "|w=" + spriteWidth + "|h=" + spriteHeight);
+		this.setTextureAtlasImage(sprite, sprites.get(currentIndex));
 		
 		this.useInterval = true;
 		this.framesPerSecond = framesPerSecond;
 		this.trackInterval = (float)(1/framesPerSecond);
+		
 		setIsEnabled(true);
 	}
 	
@@ -173,6 +185,14 @@ public class SpriteElement extends Element implements Control {
 	public float getSpriteWidth() { return this.spriteWidth; }
 	
 	public float getSpriteHeight() { return this.spriteHeight; }
+	
+	public void setFrames(int[] frames) {
+		this.frames = frames;
+		if (frames != null)
+			updateTextureAtlasImage(sprites.get(frames[currentFramesIndex]));
+		else
+			updateTextureAtlasImage(sprites.get(currentIndex));
+	}
 	
 	@Override
 	public Control cloneForSpatial(Spatial spatial) {
@@ -198,21 +218,31 @@ public class SpriteElement extends Element implements Control {
 	}
 	
 	private void updateSprite() {
-		currentX += spriteWidth;
-		if (currentX >= imgWidth) {
-			currentX = 0;
-			currentY += spriteHeight;
-			if (currentY >= imgHeight) {
-				currentY = 0;
-			}
+		if (frames == null) {
+			currentIndex++;
+			if (currentIndex == sprites.size())
+				currentIndex = 0;
+			updateTextureAtlasImage(sprites.get(currentIndex));
+		} else {
+			currentFramesIndex++;
+			if (currentFramesIndex == frames.length)
+				currentFramesIndex = 0;
+			updateTextureAtlasImage(sprites.get(frames[currentFramesIndex]));
 		}
-		updateTextureAtlasImage("x=" + currentX + "|y=" + currentY + "|w=" + spriteWidth + "|h=" + spriteHeight);
+		updateSpriteHook();
 	}
 	
+	public void updateSpriteHook() {  }
+	
 	public void setCurrentFrame(int row, int col) {
-		currentX = row*spriteWidth;
-		currentY = col*spriteHeight;
-		this.setTextureAtlasImage(sprite, "x=" + currentX + "|y=" + currentY + "|w=" + spriteWidth + "|h=" + spriteHeight);
+		int frameIndex = spriteRows*row;
+		frameIndex += col;
+		setCurrentFrame(frameIndex);
+	}
+	
+	public void setCurrentFrame(int frameIndex) {
+		if (frameIndex >= 0 && frameIndex < sprites.size())
+			this.setTextureAtlasImage(sprite, sprites.get(frameIndex));
 	}
 	
 	@Override

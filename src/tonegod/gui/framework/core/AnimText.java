@@ -127,6 +127,7 @@ public class AnimText extends AnimElement {
 	}
 	
 	public final void setText(String text) {
+		lineCount = 0;
 		hasLines = false;
 		lineDisplay.quads.clear();
 		lineDisplay.detachAllChildren();
@@ -241,7 +242,7 @@ public class AnimText extends AnimElement {
 			return TagType.StrikeThrough;
 		else if (tagName.indexOf("<b>") != -1 || tagName.indexOf("</b>") != -1)
 			return TagType.Bold;
-		else if (tagName.indexOf("</br>") != -1 || tagName.indexOf("<br>") != -1)
+		else if (tagName.indexOf("</br>") != -1 || tagName.indexOf("<br>") != -1 || tagName.indexOf("<br/>") != -1)
 			return TagType.NewLine;
 		else if (tagName.indexOf("<p") != -1 || tagName.indexOf("</p>") != -1)
 			return TagType.Paragraph;
@@ -331,7 +332,7 @@ public class AnimText extends AnimElement {
 		
 		updateLineForAlignment(0,lIndex,lnWidth);
 		
-		lineCount = 1;
+	//	lineCount = 1;
 		updateForAlign();
 		setOrigin(getWidth()/2,getHeight()/2);
 		mesh.update(0);
@@ -549,6 +550,7 @@ public class AnimText extends AnimElement {
 			lineSIndex = wordSIndex;
 			
 			lnWidth = wordWidth;
+			lineCount++;
 		}
 		x = 0;
 		wordWidth = 0;
@@ -578,6 +580,7 @@ public class AnimText extends AnimElement {
 		} else {
 			currentAlign = textAlign;
 		}
+		lineCount++;
 	}
 	private void formatItalic() {
 		for (int xi = italicSIndex; xi < italicEIndex; xi++) {
@@ -668,6 +671,14 @@ public class AnimText extends AnimElement {
 	
 	public float getLineHeight() {
 		return lineHeight;
+	}
+	
+	public float getTotalWidth() {
+		return bounds.x;
+	}
+	
+	public float getTotalHeight() {
+		return lineHeight*(lineCount+1);
 	}
 	
 	public void fadeTextIn(float duration) {
@@ -778,6 +789,8 @@ public class AnimText extends AnimElement {
 		this.textWrap = textWrap;
 	}
 	
+	public LineWrapMode getTextWrap() { return this.textWrap; }
+	
 	private void updateForAlign() {
 		switch (textAlign) {
 			case Left:
@@ -811,10 +824,14 @@ public class AnimText extends AnimElement {
 		}
 	}
 	
+	public Align getTextAlign() { return this.textAlign; }
+	
 	public void setTextVAlign(VAlign textVAlign) {
 		this.textVAlign = textVAlign;
 		alignToBoundsV();
 	}
+	
+	public VAlign getTextVAlign() { return this.textVAlign; }
 	
 	public void setFont(BitmapFont font) {
 		this.font = font;

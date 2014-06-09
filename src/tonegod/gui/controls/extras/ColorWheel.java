@@ -25,6 +25,7 @@ import tonegod.gui.core.utils.UIDUtil;
  * @author t0neg0d
  */
 public abstract class ColorWheel extends Window {
+	Element content;
 	Dial primarySelector;
 	Element colorSwatch;
 	Slider secondarySelector, sR, sG, sB, sH, sL, sS, sA;
@@ -37,6 +38,11 @@ public abstract class ColorWheel extends Window {
 	int R = 255, G = 0, B = 0, A = 100, H = 100, S = 100, L = 100;
 	float red = 1.0f, green = 0.0f, blue = 0.0f, alpha = 1.0f, hue = 1.0f, saturation = 1.0f, light = 1.0f;
 	float finalRed = 1.0f, finalGreen = 0.0f, finalBlue = 0.0f, finalAlpha = 1.0f, finalHue = 1.0f, finalSaturation = 1.0f, finalLight = 1.0f;
+	
+	
+	Vector2f sliderDim = new Vector2f(150, 15);
+	Vector2f textDim = new Vector2f(60, 15);
+	Vector2f labelDim = new Vector2f(30, 15);
 	
 	/**
 	 * Creates a new instance of the ColorWheel control
@@ -126,78 +132,28 @@ public abstract class ColorWheel extends Window {
 		setScaleNS(false);
 		setIsResizable(false);
 		
-		float sX = 194;
-		float lX = 343;
-		float tfX = 370;
+		float contentPadding = screen.getStyle("ColorWheel").getFloat("contentPadding");
+		float labelYOffset = screen.getStyle("ColorWheel").getFloat("labelYOffset");
+		
+		float psSize = 200;
+		float sX = 210;
+		float tfX = 390;
+		float lX = 360;
 		float yInc = 20;
-		float tfY = 38;
-		float lY = 32;
-		float sY = 38;
+		float tfY = labelYOffset;
+		float lY = 0;
+		float sY = labelYOffset;
 		float hexX = 242;
 		float hexY = getHeight()-34;
 		
-		tfR = new TextField(screen, UID + ":tfR", new Vector2f(tfX, tfY), new Vector2f(60, 15)) {
-			
-		};
-		tfR.setType(TextField.Type.NUMERIC);
-		tfR.setMaxLength(5);
-		tfR.setFontSize(16);
-		tfR.setIsEnabled(false);
-		tfR.setScaleEW(false);
-		tfR.setScaleNS(false);
-		addChild(tfR);
+		content = new Element(screen, UID + ":Content", Vector2f.ZERO, dimensions, Vector4f.ZERO, null);
+		content.setAsContainerOnly();
+		content.setIsMovable(false);
+		content.setIsResizable(false);
+		content.setIgnoreMouse(true);
+		content.setDocking(Docking.NW);
 		
-		tfY += yInc;
-		
-		tfG = new TextField(screen, UID + ":tfG", new Vector2f(tfX, tfY), new Vector2f(60, 15)) {
-			
-		};
-		tfG.setType(TextField.Type.NUMERIC);
-		tfG.setMaxLength(5);
-		tfG.setFontSize(16);
-		tfG.setIsEnabled(false);
-		tfG.setScaleEW(false);
-		tfG.setScaleNS(false);
-		addChild(tfG);
-		
-		tfY += yInc;
-		
-		tfB = new TextField(screen, UID + ":tfB", new Vector2f(tfX, tfY), new Vector2f(60, 15)) {
-			
-		};
-		tfB.setType(TextField.Type.NUMERIC);
-		tfB.setMaxLength(5);
-		tfB.setFontSize(16);
-		tfB.setIsEnabled(false);
-		tfB.setScaleEW(false);
-		tfB.setScaleNS(false);
-		addChild(tfB);
-		
-		tfY += yInc*4;
-		
-		tfA = new TextField(screen, UID + ":tfA", new Vector2f(tfX, tfY), new Vector2f(60, 15)) {
-			
-		};
-		tfA.setType(TextField.Type.NUMERIC);
-		tfA.setMaxLength(5);
-		tfA.setFontSize(16);
-		tfA.setIsEnabled(false);
-		tfA.setScaleEW(false);
-		tfA.setScaleNS(false);
-		addChild(tfA);
-		
-		tfHex = new TextField(screen, UID + ":tfHex", new Vector2f(hexX, hexY), new Vector2f(60, 15)) {
-			
-		};
-		tfHex.setType(TextField.Type.ALPHANUMERIC_NOSPACE);
-		tfHex.setMaxLength(6);
-		tfHex.setFontSize(16);
-		tfHex.setIsEnabled(false);
-		tfHex.setScaleEW(false);
-		tfHex.setScaleNS(false);
-		addChild(tfHex);
-		
-		primarySelector = new Dial(screen, UID + ":primarySelector", new Vector2f(10,35), new Vector2f(getHeight()-45,getHeight()-45), Vector4f.ZERO, screen.getStyle("ColorWheel").getString("colorWheelImg")) {
+		primarySelector = new Dial(screen, UID + ":primarySelector", new Vector2f(0,0), new Vector2f(psSize,psSize), Vector4f.ZERO, screen.getStyle("ColorWheel").getString("colorWheelImgTC")) {
 			@Override
 			public void onChange(int selectedIndex, Object value) {
 				setHFromWheel();
@@ -213,24 +169,83 @@ public abstract class ColorWheel extends Window {
 				displayFactoredColor();
 			}
 		};
-		primarySelector.setDialImageIndicator(screen.getStyle("ColorWheel").getString("colorWheelSelectorImg"));
+		if (screen.getUseTextureAtlas()) {
+			primarySelector.setTextureAtlasImage(
+				screen.createNewTexture(
+					screen.getStyle("ColorWheel").getString("colorWheelImg")
+				), screen.getStyle("ColorWheel").getString("colorWheelImgTC")
+			);
+		}
+		if (screen.getUseTextureAtlas())
+			primarySelector.setDialImageIndicator(screen.getStyle("ColorWheel").getString("colorWheelSelectorImgTC"));
+		else
+			primarySelector.setDialImageIndicator(screen.getStyle("ColorWheel").getString("colorWheelSelectorImg"));
+			
+		if (screen.getUseTextureAtlas()) {
+			primarySelector.getDialCenter().setTextureAtlasImage(
+				screen.createNewTexture(
+					screen.getStyle("ColorWheel").getString("colorWheelSelectorImg")
+				), screen.getStyle("ColorWheel").getString("colorWheelSelectorImgTC")
+			);
+			primarySelector.getDialIndicator().setColorMap(screen.getStyle("Common").getString("blankImg"));
+		}
 		primarySelector.setIsMovable(false);
 		primarySelector.setIsResizable(false);
 		primarySelector.setDocking(Docking.NW);
-		addChild(primarySelector);
+		content.addChild(primarySelector);
 		
-		float csX = 10+(primarySelector.getWidth()/2)-38;
-		float csY = 35+(primarySelector.getHeight()/2)-38;
-		float csW = 76;
-		float csH = 76;
-		colorSwatch = new Element(screen, UID + ":colorSwatch", new Vector2f(csX, csY), new Vector2f(csW, csH), Vector4f.ZERO, null);
+		float csSize = 76;
+		float csPos = (primarySelector.getWidth()/2)-(csSize/2);
+		
+		colorSwatch = new Element(screen, UID + ":colorSwatch", new Vector2f(csPos, csPos), new Vector2f(csSize,csSize), Vector4f.ZERO, null);
 		colorSwatch.getElementMaterial().setColor("Color", new ColorRGBA(1.0f, 0.0f, 0.0f, 1.0f));
 		colorSwatch.setScaleEW(false);
 		colorSwatch.setScaleNS(false);
 		colorSwatch.setIsMovable(false);
 		colorSwatch.setIsResizable(false);
-		addChild(colorSwatch);
+		content.addChild(colorSwatch);
 		
+		// Add textfields
+		tfR = getTextField("tfR", tfX, tfY);
+		content.addChild(tfR);
+		tfY += yInc;
+		tfG = getTextField("tfG", tfX, tfY);
+		content.addChild(tfG);
+		tfY += yInc;
+		tfB = getTextField("tfB", tfX, tfY);
+		content.addChild(tfB);
+		tfY += yInc*4;
+		tfA = getTextField("tfA", tfX, tfY);
+		content.addChild(tfA);
+		
+		// Add labels
+		content.addChild(getLabel("lR", lX, lY, "  R  "));
+		lY += yInc;
+		content.addChild(getLabel("lG", lX, lY, "  G  "));
+		lY += yInc;
+		content.addChild(getLabel("lB", lX, lY, "  B  "));
+		lY += yInc;
+		content.addChild(getLabel("lH", lX, lY, "  H  "));
+		lY += yInc;
+		content.addChild(getLabel("lS", lX, lY, "  S  "));
+		lY += yInc;
+		content.addChild(getLabel("lL", lX, lY, "  L  "));
+		lY += yInc;
+		content.addChild(getLabel("lA", lX, lY, "  A  "));
+		
+		Label lHex = new Label(screen, UID + ":lHex", new Vector2f(sX, hexY-labelYOffset), textDim);
+		lHex.setFontSize(screen.getStyle("ColorWheel").getFloat("labelFontSize"));
+		lHex.setTextVAlign(BitmapFont.VAlign.Center);
+		lHex.setText("HEX: #");
+		lHex.setScaleEW(false);
+		lHex.setScaleNS(false);
+		content.addChild(lHex);
+		
+		tfHex = getTextField("tfHex", sX+lHex.getWidth(), hexY);
+		tfHex.setType(TextField.Type.ALPHANUMERIC_NOSPACE);
+		content.addChild(tfHex);
+		
+		// Add sliders
 		sR = new Slider(screen, UID + ":sR", new Vector2f(sX, sY), new Vector2f(150, 15), Vector4f.ZERO, null, Slider.Orientation.HORIZONTAL, true) {
 			@Override
 			public void onChange(int selectedIndex, Object value) {
@@ -247,15 +262,7 @@ public abstract class ColorWheel extends Window {
 			}
 		};
 		sR.getElementMaterial().setColor("Color", new ColorRGBA(1.0f, 0.0f, 0.0f, 1.0f));
-		addChild(sR);
-		
-		Label lR = new Label(screen, UID + ":lR", new Vector2f(lX, lY), new Vector2f(30, 15));
-		lR.setFontSize(18);
-		lR.setTextVAlign(BitmapFont.VAlign.Center);
-		lR.setText("  R  ");
-		addChild(lR);
-		
-		lY += yInc;
+		content.addChild(sR);
 		sY += yInc;
 		
 		sG = new Slider(screen, UID + ":sG", new Vector2f(sX, sY), new Vector2f(150, 15), Vector4f.ZERO, null, Slider.Orientation.HORIZONTAL, true) {
@@ -274,15 +281,7 @@ public abstract class ColorWheel extends Window {
 			}
 		};
 		sG.getElementMaterial().setColor("Color", new ColorRGBA(0.0f, 1.0f, 0.0f, 1.0f));
-		addChild(sG);
-		
-		Label lG = new Label(screen, UID + ":lG", new Vector2f(lX, lY), new Vector2f(30, 15));
-		lG.setFontSize(18);
-		lG.setTextVAlign(BitmapFont.VAlign.Center);
-		lG.setText("  G  ");
-		addChild(lG);
-		
-		lY += yInc;
+		content.addChild(sG);
 		sY += yInc;
 		
 		sB = new Slider(screen, UID + ":sB", new Vector2f(sX, sY), new Vector2f(150, 15), Vector4f.ZERO, null, Slider.Orientation.HORIZONTAL, true) {
@@ -301,15 +300,7 @@ public abstract class ColorWheel extends Window {
 			}
 		};
 		sB.getElementMaterial().setColor("Color", new ColorRGBA(0.0f, 0.0f, 1.0f, 1.0f));
-		addChild(sB);
-		
-		Label lB = new Label(screen, UID + ":lB", new Vector2f(lX, lY), new Vector2f(30, 15));
-		lB.setFontSize(18);
-		lB.setTextVAlign(BitmapFont.VAlign.Center);
-		lB.setText("  B  ");
-		addChild(lB);
-		
-		lY += yInc;
+		content.addChild(sB);
 		sY += yInc;
 		
 		addHueSliderBG(sX, sY, 150, 15);
@@ -330,15 +321,7 @@ public abstract class ColorWheel extends Window {
 				displayFactoredColor();
 			}
 		};
-		addChild(sH);
-		
-		Label lH = new Label(screen, UID + ":lH", new Vector2f(lX, lY), new Vector2f(30, 15));
-		lH.setFontSize(18);
-		lH.setTextVAlign(BitmapFont.VAlign.Center);
-		lH.setText("  H  ");
-		addChild(lH);
-		
-		lY += yInc;
+		content.addChild(sH);
 		sY += yInc;
 		
 		sS = new Slider(screen, UID + ":sS", new Vector2f(sX, sY), new Vector2f(150,15), Vector4f.ZERO, screen.getStyle("ColorWheel").getString("colorSImg"), Slider.Orientation.HORIZONTAL, true) {
@@ -356,15 +339,7 @@ public abstract class ColorWheel extends Window {
 		sS.getElementMaterial().setColor("Color", new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
 		sS.getElementMaterial().setBoolean("VertexColor", true);
 		sS.getModel().setGradientFillHorizontal(ColorRGBA.Gray, new ColorRGBA(red, green, blue, 1.0f));
-		addChild(sS);
-		
-		Label lS = new Label(screen, UID + ":lS", new Vector2f(lX, lY), new Vector2f(30, 15));
-		lS.setFontSize(18);
-		lS.setTextVAlign(BitmapFont.VAlign.Center);
-		lS.setText("  S  ");
-		addChild(lS);
-		
-		lY += yInc;
+		content.addChild(sS);
 		sY += yInc;
 		
 		sL = new Slider(screen, UID + ":sL", new Vector2f(sX, sY), new Vector2f(150,15), Vector4f.ZERO, screen.getStyle("ColorWheel").getString("colorLImg"), Slider.Orientation.HORIZONTAL, true) {
@@ -382,15 +357,7 @@ public abstract class ColorWheel extends Window {
 		sL.getElementMaterial().setColor("Color", new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
 		sL.getElementMaterial().setBoolean("VertexColor", true);
 		sL.getModel().setGradientFillHorizontal(ColorRGBA.Black, new ColorRGBA(red, green, blue, 1.0f));
-		addChild(sL);
-		
-		Label lL = new Label(screen, UID + ":lL", new Vector2f(lX, lY), new Vector2f(30, 15));
-		lL.setFontSize(18);
-		lL.setTextVAlign(BitmapFont.VAlign.Center);
-		lL.setText("  L  ");
-		addChild(lL);
-		
-		lY += yInc;
+		content.addChild(sL);
 		sY += yInc;
 		
 		sA = new Slider(screen, UID + ":sA", new Vector2f(sX, sY), new Vector2f(150,15), Vector4f.ZERO, screen.getStyle("ColorWheel").getString("colorLImg"), Slider.Orientation.HORIZONTAL, true) {
@@ -404,21 +371,9 @@ public abstract class ColorWheel extends Window {
 		sA.getElementMaterial().setColor("Color", new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
 		sA.getElementMaterial().setBoolean("VertexColor", true);
 		sA.getModel().setGradientFillHorizontal(new ColorRGBA(finalRed, finalGreen, finalBlue, 0.0f), new ColorRGBA(finalRed, finalGreen, finalBlue, 1.0f));
-		addChild(sA);
+		content.addChild(sA);
 		
-		Label lA = new Label(screen, UID + ":lA", new Vector2f(lX, lY), new Vector2f(30, 15));
-		lA.setFontSize(18);
-		lA.setTextVAlign(BitmapFont.VAlign.Center);
-		lA.setText("  A  ");
-		addChild(lA);
-		
-		Label lHex = new Label(screen, UID + ":lHex", new Vector2f(sX, hexY-5), new Vector2f(60, 15));
-		lHex.setFontSize(18);
-		lHex.setTextVAlign(BitmapFont.VAlign.Center);
-		lHex.setText("HEX: #");
-		addChild(lHex);
-		
-		bFinish = new ButtonAdapter(screen, UID + ":bFiniah", new Vector2f(getWidth()-110, getHeight()-40)) {
+		bFinish = new ButtonAdapter(screen, UID + ":bFiniah", new Vector2f(getWidth()-contentPadding-screen.getStyle("Button").getVector2f("defaultSize").x, getHeight()-contentPadding-screen.getStyle("Button").getVector2f("defaultSize").y)) {
 			@Override
 			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean isToggled) {
 				onComplete(new ColorRGBA(finalRed, finalGreen, finalBlue, finalAlpha));
@@ -426,6 +381,7 @@ public abstract class ColorWheel extends Window {
 			}
 		};
 		bFinish.setText("Done");
+		bFinish.setDocking(Docking.SE);
 		addChild(bFinish);
 		
 		sR.setSelectedIndex(100);
@@ -434,6 +390,35 @@ public abstract class ColorWheel extends Window {
 		sL.setSelectedIndex(100);
 		sA.setSelectedIndex(100);
 		
+		content.sizeToContent();
+		content.setPosition(contentPadding, contentPadding+getDragBarHeight());
+		addChild(content);
+		
+		resize(getX()+content.getWidth()+(contentPadding*2),getY()+content.getHeight()+(contentPadding*2)+getDragBarHeight(), Borders.SE);
+		setWindowTitle("Color Selector");
+	}
+	
+	private TextField getTextField(String id, float x, float y) {
+		TextField ret = new TextField(screen, getUID() + ":" + id, new Vector2f(x, y), textDim);
+		ret.setType(TextField.Type.NUMERIC);
+		ret.setMaxLength(5);
+		ret.setFontSize(screen.getStyle("ColorWheel").getFloat("fontSize"));
+		ret.setIsEnabled(false);
+		ret.setScaleEW(false);
+		ret.setScaleNS(false);
+		ret.setDocking(Docking.NW);
+		return ret;
+	}
+	
+	private Label getLabel(String id, float x, float y, String text) {
+		Label ret = new Label(screen, getUID() + ":" + id, new Vector2f(x, y), labelDim);
+		ret.setFontSize(screen.getStyle("ColorWheel").getFloat("labelFontSize"));
+		ret.setTextVAlign(BitmapFont.VAlign.Center);
+		ret.setText(text);
+		ret.setScaleEW(false);
+		ret.setScaleNS(false);
+		ret.setDocking(Docking.NW);
+		return ret;
 	}
 	
 	private void addHueSliderBG(float x, float y ,float w, float h) {
@@ -441,37 +426,49 @@ public abstract class ColorWheel extends Window {
 		bg1.getModel().setGradientFillHorizontal(new ColorRGBA(1,0,0,1), new ColorRGBA(1,0,1,1));
 		bg1.getElementMaterial().setColor("Color", ColorRGBA.White);
 		bg1.getElementMaterial().setBoolean("VertexColor", true);
-		addChild(bg1);
+		bg1.setScaleEW(false);
+		bg1.setScaleNS(false);
+		content.addChild(bg1);
 		
 		Element bg2 = new Element(screen, ":HSBG2", new Vector2f(x+(w/6),y), new Vector2f(w/6,h), Vector4f.ZERO,null);
 		bg2.getModel().setGradientFillHorizontal(new ColorRGBA(1,0,1,1), new ColorRGBA(0,0,1,1));
 		bg2.getElementMaterial().setColor("Color", ColorRGBA.White);
 		bg2.getElementMaterial().setBoolean("VertexColor", true);
-		addChild(bg2);
+		bg2.setScaleEW(false);
+		bg2.setScaleNS(false);
+		content.addChild(bg2);
 		
 		Element bg3 = new Element(screen, ":HSBG3", new Vector2f(x+(w/6*2),y), new Vector2f(w/6,h), Vector4f.ZERO,null);
 		bg3.getModel().setGradientFillHorizontal(new ColorRGBA(0,0,1,1), new ColorRGBA(0,1,1,1));
 		bg3.getElementMaterial().setColor("Color", ColorRGBA.White);
 		bg3.getElementMaterial().setBoolean("VertexColor", true);
-		addChild(bg3);
+		bg3.setScaleEW(false);
+		bg3.setScaleNS(false);
+		content.addChild(bg3);
 		
 		Element bg4 = new Element(screen, ":HSBG4", new Vector2f(x+(w/6*3),y), new Vector2f(w/6,h), Vector4f.ZERO,null);
 		bg4.getModel().setGradientFillHorizontal(new ColorRGBA(0,1,1,1), new ColorRGBA(0,1,0,1));
 		bg4.getElementMaterial().setColor("Color", ColorRGBA.White);
 		bg4.getElementMaterial().setBoolean("VertexColor", true);
-		addChild(bg4);
+		bg4.setScaleEW(false);
+		bg4.setScaleNS(false);
+		content.addChild(bg4);
 		
 		Element bg5 = new Element(screen, ":HSBG5", new Vector2f(x+(w/6*4),y), new Vector2f(w/6,h), Vector4f.ZERO,null);
 		bg5.getModel().setGradientFillHorizontal(new ColorRGBA(0,1,0,1), new ColorRGBA(1,1,0,1));
 		bg5.getElementMaterial().setColor("Color", ColorRGBA.White);
 		bg5.getElementMaterial().setBoolean("VertexColor", true);
-		addChild(bg5);
+		bg5.setScaleEW(false);
+		bg5.setScaleNS(false);
+		content.addChild(bg5);
 		
 		Element bg6 = new Element(screen, ":HSBG6", new Vector2f(x+(w/6*5),y), new Vector2f(w/6,h), Vector4f.ZERO,null);
 		bg6.getModel().setGradientFillHorizontal(new ColorRGBA(1,1,0,1), new ColorRGBA(1,0,0,1));
 		bg6.getElementMaterial().setColor("Color", ColorRGBA.White);
 		bg6.getElementMaterial().setBoolean("VertexColor", true);
-		addChild(bg6);
+		bg6.setScaleEW(false);
+		bg6.setScaleNS(false);
+		content.addChild(bg6);
 	}
 	
 	private void addLightSliderBG(float x, float y ,float w, float h) {
@@ -479,13 +476,17 @@ public abstract class ColorWheel extends Window {
 		blackToColor.getModel().setGradientFillHorizontal(new ColorRGBA(0,0,0,1), new ColorRGBA(1,0,0,1));
 		blackToColor.getElementMaterial().setColor("Color", ColorRGBA.White);
 		blackToColor.getElementMaterial().setBoolean("VertexColor", true);
-		addChild(blackToColor);
+		blackToColor.setScaleEW(false);
+		blackToColor.setScaleNS(false);
+		content.addChild(blackToColor);
 		
 		colorToWhite = new Element(screen, ":colorToWhite", new Vector2f(x+(w/2),y), new Vector2f(w/2,h), Vector4f.ZERO, null);
 		colorToWhite.getModel().setGradientFillHorizontal(new ColorRGBA(1,0,0,1), new ColorRGBA(1,1,1,1));
 		colorToWhite.getElementMaterial().setColor("Color", ColorRGBA.White);
 		colorToWhite.getElementMaterial().setBoolean("VertexColor", true);
-		addChild(colorToWhite);
+		colorToWhite.setScaleEW(false);
+		colorToWhite.setScaleNS(false);
+		content.addChild(colorToWhite);
 	}
 	
 	private void setHFromWheel() {

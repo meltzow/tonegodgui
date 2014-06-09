@@ -471,8 +471,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		
 		if (texturePath != null) {
 			atlasTexture = app.getAssetManager().loadTexture(texturePath);
-			atlasTexture.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
-			atlasTexture.setMagFilter(Texture.MagFilter.Nearest);
+			atlasTexture.setMinFilter(Texture.MinFilter.BilinearNearestMipMap);
+			atlasTexture.setMagFilter(Texture.MagFilter.Bilinear);
 			atlasTexture.setWrap(Texture.WrapMode.Clamp);
 		} else {
 			atlasTexture = null;
@@ -488,8 +488,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	@Override
 	public Texture createNewTexture(String texturePath) {
 		Texture newTex = app.getAssetManager().loadTexture(texturePath);
-		newTex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
-		newTex.setMagFilter(Texture.MagFilter.Nearest);
+		newTex.setMinFilter(Texture.MinFilter.BilinearNearestMipMap);
+		newTex.setMagFilter(Texture.MagFilter.Bilinear);
 		newTex.setWrap(Texture.WrapMode.Clamp);
 		return newTex;
 	}
@@ -1436,7 +1436,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		
 		lastCollision = results.getClosestCollision();
 		
-		float z = 0;
+		float z = 10;
 		Element testEl = null, el = null;
 		for (CollisionResult result : results) {
 			boolean discard = false;
@@ -1453,12 +1453,14 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					}
 				}
 			}
+			
 			if (!discard) {
 				if (result.getGeometry().getParent() instanceof Element) {
 					el = testEl;
 				}
 			}
 		}
+		
 		if (el != null) {
 			contactElement = el;
 			Element parent = null;
@@ -2060,7 +2062,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			t0neg0dGUI.addControl(effectManager);
 			t0neg0dGUI.addControl(animManager);
 			initModalBackground();
-			addElement(modalBackground);
+			addElement(modalBackground, true);
 		//	t0neg0dGUI.attachChild(modalBackground);
 			if (isAndroid()) initVirtualKeys();
 		}

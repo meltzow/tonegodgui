@@ -169,7 +169,7 @@ public class ScrollPanel extends Element {
 		hScrollBar = new ScrollPanelBarH(this);
 		addChild(hScrollBar, true);
 		
-		setTextPadding(10);
+		setTextPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
 		
 		initFlingTimer();
 	}
@@ -216,7 +216,7 @@ public class ScrollPanel extends Element {
 		reshape();
 	}
 	
-	private void reshape() {
+	public void reshape() {
 		scrollableArea.sizeToContent();
 	//	scrollableArea.setY(innerBounds.getHeight()-scrollableArea.getHeight());
 		setVThumbSize();

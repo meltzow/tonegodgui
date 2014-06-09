@@ -168,6 +168,14 @@ public abstract class Dial extends ButtonAdapter {
 		setInterval(100);
 	}
 	
+	public Element getDialCenter() {
+		return this.elCenter;
+	}
+	
+	public Element getDialIndicator() {
+		return this.elIndicator;
+	}
+	
 	/**
 	 * Sets the angle at which the minimum rotation of the dial will start (0 being the bottom)
 	 * @param angle float

@@ -458,6 +458,7 @@ public class Element extends Node {
 			elementChildren.put(child.getUID(), child);
 			this.attachChild(child);
 		}
+		resetChildZOrder();
 	}
 	
 	/**
@@ -490,6 +491,7 @@ public class Element extends Node {
 			if (hide)
 				child.hide();
 		}
+		resetChildZOrder();
 	}
 	
 	/**
@@ -512,6 +514,7 @@ public class Element extends Node {
 				}
 			}
 		}
+		resetChildZOrder();
 	}
 	
 	/**
@@ -549,6 +552,15 @@ public class Element extends Node {
 	}
 	
 	// Z-ORDER 
+	
+	private void resetChildZOrder() {
+		float step = screen.getZOrderStepMinor();
+		for (Element el : elementChildren.values()) {
+			el.setLocalTranslation(el.getLocalTranslation().setZ(step));
+			step += screen.getZOrderStepMinor();
+		}
+	}
+	
 	/**
 	 * Recursive call made by the screen control to properly initialize z-order (depth) placement
 	 * @param zOrder The depth to place the Element at. (Relative to the parent's z-order)

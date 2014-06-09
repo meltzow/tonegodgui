@@ -3,7 +3,14 @@
 	<element name="ColorWheel">
 		<font>
 			<property name="fontSize" type="float" value="16" />
+			<property name="labelFontSize" type="float" value="16" />
 			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="labelFontColor" type="ColorRGBA">
 				<r value="1" />
 				<g value="1" />
 				<b value="1" />
@@ -13,8 +20,10 @@
 			<property name="textVAlign" type="String" value="Center" />
 			<property name="textWrap" type="String" value="NoWrap" />
 			<property name="textPadding" type="float" value="0" />
+			<property name="labelYOffset" type="float" value="4" />
 		</font>
 		<attributes>
+			<property name="contentPadding" type="float" value="14" />
 			<property name="resizeBorders" type="Vector4f">
 				<x value="0" />
 				<y value="0" />
@@ -27,7 +36,7 @@
 			</property>
 			<property name="defaultSize" type="Vector2f">
 				<x value="440" />
-				<y value="220" />
+				<y value="200" />
 			</property>
 		</attributes>
 		<images>

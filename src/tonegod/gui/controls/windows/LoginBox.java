@@ -148,6 +148,7 @@ public abstract class LoginBox extends Window {
 		responseMsg.setScaleNS(true);
 		responseMsg.setFontColor(ColorRGBA.Red);
 		responseMsg.setTextAlign(BitmapFont.Align.Center);
+		responseMsg.setFontSize(screen.getStyle("Label").getFloat("fontSize"));
 		
 		addChild(responseMsg);
 		
