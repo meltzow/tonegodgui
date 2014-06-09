@@ -50,6 +50,10 @@ public class GravityInfluencer extends InfluencerBase {
 		this.gravity.set(gravity.mult(100));
 	}
 	
+	public void setGravity(float x, float y) {
+		this.gravity.set(x,y).multLocal(100);
+	}
+	
 	public Vector2f getGravity() {
 		return this.gravity.mult(0.001f);
 	}

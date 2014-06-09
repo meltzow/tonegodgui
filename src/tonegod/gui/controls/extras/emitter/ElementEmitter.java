@@ -208,8 +208,16 @@ public class ElementEmitter implements Control, Transformable {
 		this.emitterShape = null;
 	}
 	
+	public void setEmitterWidth(float emitterWidth) {
+		this.emitterWidth = emitterWidth;
+	}
+	
 	public float getEmitterWidth() {
 		return this.emitterWidth;
+	}
+	
+	public void setEmitterHeight(float emitterHeight) {
+		this.emitterHeight = emitterHeight;
 	}
 	
 	public float getEmitterHeight() {

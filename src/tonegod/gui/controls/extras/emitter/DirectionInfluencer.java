@@ -51,6 +51,10 @@ public class DirectionInfluencer extends InfluencerBase {
 		this.direction.set(direction);
 	}
 	
+	public void setDirection(float x, float y) {
+		this.direction.set(x, y);
+	}
+	
 	public Vector2f getDirection() {
 		return this.direction;
 	}
