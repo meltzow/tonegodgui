@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package tonegod.gui.controls.extras;
 
 import com.jme3.font.LineWrapMode;
@@ -42,23 +38,23 @@ public abstract class ChatBoxExt extends Panel {
 	private boolean showFilterButton = true;
 	private boolean showChannelLabels = true;
 	private Form chatForm;
-	
+
 	private Window filters = null;
 	private ScrollArea filtersScrollArea = null;
 	float filterLineHeight;
-	
+
 	float controlSpacing, controlSize, buttonWidth, scrollSize;
 	Vector4f indents;
-	
+
 	private int sendKey;
 	private int chatHistorySize = 30;
 	protected List<ChatMessage> chatMessages = new ArrayList();
-	
+
 	protected List<ChatChannel> channels = new ArrayList();
 	private String defaultCommand;
-	
+
 	List<Label> displayMessages = new ArrayList();
-	
+
 	/**
 	 * Creates a new instance of the ChatBoxExt control
 	 * 
@@ -72,7 +68,7 @@ public abstract class ChatBoxExt extends Panel {
 			screen.getStyle("Window").getString("defaultImg")
 		);
 	}
-	
+
 	/**
 	 * Creates a new instance of the ChatBoxExt control
 	 * 
@@ -86,7 +82,7 @@ public abstract class ChatBoxExt extends Panel {
 			screen.getStyle("Window").getString("defaultImg")
 		);
 	}
-	
+
 	/**
 	 * Creates a new instance of the ChatBoxExt control
 	 * 
@@ -99,7 +95,7 @@ public abstract class ChatBoxExt extends Panel {
 	public ChatBoxExt(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		this(screen, UIDUtil.getUID(), position, dimensions,resizeBorders,defaultImg);
 	}
-	
+
 	/**
 	 * Creates a new instance of the ChatBoxExt control
 	 * 
@@ -114,7 +110,7 @@ public abstract class ChatBoxExt extends Panel {
 			screen.getStyle("Window").getString("defaultImg")
 		);
 	}
-	
+
 	/**
 	 * Creates a new instance of the ChatBoxExt control
 	 * 
@@ -129,7 +125,7 @@ public abstract class ChatBoxExt extends Panel {
 			screen.getStyle("Window").getString("defaultImg")
 		);
 	}
-	
+
 	/**
 	 * Creates a new instance of the ChatBoxExt control
 	 * 
@@ -142,21 +138,21 @@ public abstract class ChatBoxExt extends Panel {
 	 */
 	public ChatBoxExt(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
-		
+
 		this.setIsMovable(true);
 		this.setIsResizable(true);
 		this.setScaleNS(false);
 		this.setScaleEW(false);
-		
+
 		chatForm = new Form(screen);
 		saContentPadding = screen.getStyle("ChatBox").getFloat("contentPadding");
-		
+
 		indents = screen.getStyle("Window").getVector4f("contentIndents");
 		controlSpacing = screen.getStyle("Common").getFloat("defaultControlSpacing");
 		controlSize = screen.getStyle("Common").getFloat("defaultControlSize");
 		buttonWidth = screen.getStyle("Button").getVector2f("defaultSize").x;
 		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
-		
+
 		saChatArea = new ScrollArea(screen, UID + ":ChatArea",
 			new Vector2f(
 				indents.y,
@@ -202,8 +198,8 @@ public abstract class ChatBoxExt extends Panel {
 		saChatArea.setPadding(2);
 		saChatArea.setText("");
 		addChild(saChatArea);
-		
-		
+
+
 		btnChatFilter = new ButtonAdapter(
 			screen,
 			UID + ":ChatFilter",
@@ -221,7 +217,7 @@ public abstract class ChatBoxExt extends Panel {
 					);
 					filters.setWindowTitle("Chat Filters");
 					filters.setIsResizable(false);
-					
+
 					filtersScrollArea = new ScrollArea(
 						screen,
 						filters.getUID() + ":ScrollArea",
@@ -237,7 +233,7 @@ public abstract class ChatBoxExt extends Panel {
 					);
 					filtersScrollArea.getScrollableArea().setIgnoreMouse(true);
 					filters.addChild(filtersScrollArea);
-					
+
 					ButtonAdapter btnFiltersClose = new ButtonAdapter(
 						screen,
 						filters.getUID() + ":btnClose",
@@ -261,10 +257,10 @@ public abstract class ChatBoxExt extends Panel {
 		btnChatFilter.setScaleEW(false);
 		btnChatFilter.setScaleNS(false);
 		btnChatFilter.setText("F");
-		
+
 		chatForm.addFormElement(btnChatFilter);
 		addChild(btnChatFilter);
-		
+
 		sbDefaultChannel = new SelectBox(
 			screen,
 			UID + ":DefaultChannel",
@@ -277,10 +273,10 @@ public abstract class ChatBoxExt extends Panel {
 		sbDefaultChannel.setDocking(Docking.SW);
 		sbDefaultChannel.setScaleEW(false);
 		sbDefaultChannel.setScaleNS(false);
-		
+
 		chatForm.addFormElement(sbDefaultChannel);
 		addChild(sbDefaultChannel);
-		
+
 		tfChatInput = new TextField(
 			screen,
 			UID + ":ChatInput",
@@ -299,7 +295,7 @@ public abstract class ChatBoxExt extends Panel {
 		tfChatInput.setScaleEW(true);
 		tfChatInput.setScaleNS(false);
 		tfChatInput.setDocking(Docking.SW);
-		
+
 		btnChatSendMsg = new ButtonAdapter(
 			screen,
 			UID + ":ChatSendMsg",
@@ -315,18 +311,46 @@ public abstract class ChatBoxExt extends Panel {
 		btnChatSendMsg.setScaleNS(false);
 		btnChatSendMsg.setDocking(Docking.SE);
 		btnChatSendMsg.setText("Send");
-		
-		
+
+
 		chatForm.addFormElement(btnChatSendMsg);
 		addChild(btnChatSendMsg);
 		chatForm.addFormElement(tfChatInput);
 		addChild(tfChatInput);
-		
+
 		populateEffects("Window");
 	}
-	
+
+	/**
+	 * Returns the chat display area (ScrollArea)
+	 * @return 
+	 */
 	public ScrollArea getChatArea() {
 		return saChatArea;
+	}
+
+	/**
+	 * Returns the chat input TextField
+	 * @return 
+	 */
+	public TextField getChatInput() {
+		return this.tfChatInput;
+	}
+	
+	/**
+	 * Sets the default validation type for the chat input TextField
+	 * @param type 
+	 */
+	public void setValidationType(TextField.Type type) {
+		this.tfChatInput.setType(type);
+	}
+	
+	/**
+	 * Sets the validation string for the chat input TextField
+	 * @param grabBag 
+	 */
+	public void setCustomValidation(String grabBag) {
+		this.tfChatInput.setCustomValidation(grabBag);
 	}
 	
 	private void sendMsg() {
@@ -338,7 +362,7 @@ public abstract class ChatBoxExt extends Panel {
 			}
 		}
 	}
-	
+
 	/**
 	 * Call this method to display a message
 	 * @param command The object associated with the appropriate ChatChannel
@@ -353,14 +377,14 @@ public abstract class ChatBoxExt extends Panel {
 		chatMessages.add(new ChatMessage(channel, msg));
 		updateChatHistory();
 	}
-	
+
 	private void updateChatHistory() {
 		if (chatMessages.size() > chatHistorySize) {
 			chatMessages.remove(0);
 		}
 		rebuildChat();
 	}
-	
+
 	private void rebuildChat() {
 		String displayText = "";
 		int index = 0;
@@ -368,7 +392,7 @@ public abstract class ChatBoxExt extends Panel {
 		saChatArea.getScrollableArea().setY(0);
 		saChatArea.getScrollableArea().setHeight(saChatArea.getHeight());
 		displayMessages.clear();
-		
+
 		float totalHeight = 0;
 		for (ChatMessage cm : chatMessages) {
 			if (!cm.getChannel().getIsFiltered()) {
@@ -390,7 +414,7 @@ public abstract class ChatBoxExt extends Panel {
 		}
 		saChatArea.scrollToBottom();
 	}
-	
+
 	private Label createMessageLabel(int index, ChatMessage cm) {
 		String s = cm.getMsg();
 		Label l = new Label(
@@ -415,14 +439,10 @@ public abstract class ChatBoxExt extends Panel {
 		l.setText(channelLabel + s);
 		l.setHeight(l.getTextElement().getHeight());
 		l.setIgnoreMouse(true);
-		
+
 		return l;
 	}
-	
-	public TextField getChatInput() {
-		return this.tfChatInput;
-	}
-	
+
 	/**
 	 * Sets the keyboard key code to send messages (in place of the send button)
 	 * @param sendKey 
@@ -430,14 +450,14 @@ public abstract class ChatBoxExt extends Panel {
 	public void setSendKey(int sendKey) {
 		this.sendKey = sendKey;
 	}
-	
+
 	/**
 	 * Abstract event method called when the user sends a message
 	 * @param command The Object associated with the appropriate ChatChannel for the message
 	 * @param msg The String message to display
 	 */
 	public abstract void onSendMsg(Object command, String msg);
-	
+
 	/**
 	 * Adds a ChatChannel that messages are display under and are filtered by
 	 * @param UID The unique string identifier of the ChatChannel
@@ -454,7 +474,7 @@ public abstract class ChatBoxExt extends Panel {
 			this.sbDefaultChannel.pack();
 		}
 	}
-	
+
 	public void removeChatChannel(String name) {
 		ChatChannel channel = getChannelByName(name);
 		if (channel != null) {
@@ -463,7 +483,7 @@ public abstract class ChatBoxExt extends Panel {
 			this.sbDefaultChannel.pack();
 		}
 	}
-	
+
 	private ChatChannel getChannelByCommand(Object command) {
 		ChatChannel c = null;
 		for (ChatChannel channel : channels) {
@@ -474,7 +494,7 @@ public abstract class ChatBoxExt extends Panel {
 		}
 		return c;
 	}
-	
+
 	private ChatChannel getChannelByStringCommand(String command) {
 		ChatChannel c = null;
 		for (ChatChannel channel : channels) {
@@ -485,7 +505,7 @@ public abstract class ChatBoxExt extends Panel {
 		}
 		return c;
 	}
-	
+
 	private ChatChannel getChannelByName(String name) {
 		ChatChannel c = null;
 		for (ChatChannel channel : channels) {
@@ -496,7 +516,7 @@ public abstract class ChatBoxExt extends Panel {
 		}
 		return c;
 	}
-	
+
 	/**
 	 * Hides/Shows the Filter Window button
 	 * @param showFilterButton 
@@ -527,7 +547,7 @@ public abstract class ChatBoxExt extends Panel {
 		}
 		this.showFilterButton = showFilterButton;
 	}
-	
+
 	/**
 	 * Hides/Shows the Send Button
 	 * @param showSendButton 
@@ -548,11 +568,11 @@ public abstract class ChatBoxExt extends Panel {
 		}
 		this.showSendButton = showSendButton;
 	}
-	
+
 	public void setShowChannelLabels(boolean showChannelLabels) {
 		this.showChannelLabels = showChannelLabels;
 	}
-	
+
 	public class ChatMessage {
 		private ChatChannel channel;
 		private String msg;
@@ -560,7 +580,7 @@ public abstract class ChatBoxExt extends Panel {
 			this.channel = channel;
 			this.msg = msg;
 		}
-		
+
 		public ChatChannel getChannel() {
 			return channel;
 		}
@@ -568,7 +588,7 @@ public abstract class ChatBoxExt extends Panel {
 			return this.msg;
 		}
 	}
-	
+
 	public class ChatChannel {
 		private String UID;
 		private String name;
@@ -577,7 +597,7 @@ public abstract class ChatBoxExt extends Panel {
 		private ColorRGBA color;
 		private boolean visibleToUser;
 		private boolean isFiltered = false;
-		
+
 		public ChatChannel(String UID, String name, Object command, String filterDisplayText, ColorRGBA color, boolean visibleToUser) {
 			this.UID = UID;
 			this.name = name;
@@ -586,7 +606,7 @@ public abstract class ChatBoxExt extends Panel {
 			this.color = color;
 			this.visibleToUser = visibleToUser;
 		}
-		
+
 		public String getUID() { return this.UID; }
 		public String getName() {
 			return this.name;
@@ -602,7 +622,7 @@ public abstract class ChatBoxExt extends Panel {
 		public boolean getIsFiltered() { return this.isFiltered; }
 		public String getFilterDisplayText() { return filterDisplayText; }
 	}
-	
+
 	/**
 	 * Called by the Chat Filter Window.
 	 * @param channel
@@ -612,22 +632,22 @@ public abstract class ChatBoxExt extends Panel {
 		channel.setIsFiltered(filter);
 		rebuildChat();
 	}
-	
+
 	protected void showFiltersWindow() {
 		Element scrollableArea = filtersScrollArea.getScrollableArea();
 		filtersScrollArea.setPadding(2);
-		
+
 		scrollableArea.removeAllChildren();
 		scrollableArea.setY(filtersScrollArea.getHeight());
 		scrollableArea.setHeight(0);
-		
+
 		boolean init = true;
 		String finalString = "";
 		float currentHeight = 0;
 		int index = 0;
-		
+
 		filterLineHeight = BitmapTextUtil.getTextLineHeight(scrollableArea, "Xg");
-		
+
 		for (ChatChannel channel : channels) {
 			if (!channel.getFilterDisplayText().equals("")) {
 				if (init) {
@@ -639,22 +659,22 @@ public abstract class ChatBoxExt extends Panel {
 				currentHeight += filterLineHeight;
 			}
 		}
-		
+
 		currentHeight += scrollableArea.getTextPadding()*2;
 		scrollableArea.setHeight(currentHeight);
 		scrollableArea.setWidth(getWidth());
 		scrollableArea.setText(finalString);
-		
+
 		index = 0;
 		for (ChatChannel channel : channels) {
-			this.addCheckBox(index, channel);
-			index++;
+				this.addCheckBox(index, channel);
+				index++;
 		}
-		
+
 		filtersScrollArea.scrollToTop();
 		filters.showWindow();
 	}
-	
+
 	private void addCheckBox(int index, ChatChannel channel) {
 		CheckBox checkbox = new CheckBox(screen, filtersScrollArea.getUID() + ":CheckBox:" + index,
 			new Vector2f(8,filtersScrollArea.getTextPadding()+(index*filterLineHeight))
@@ -678,7 +698,7 @@ public abstract class ChatBoxExt extends Panel {
 			checkbox.setIsChecked(true);
 		filtersScrollArea.addScrollableChild(checkbox);
 	}
-	
+
 	/**
 	 * Sets the ToolTip text to display for mouse focus of the TextField input
 	 * @param tip 
@@ -686,7 +706,7 @@ public abstract class ChatBoxExt extends Panel {
 	public void setToolTipTextInput(String tip) {
 		this.tfChatInput.setToolTipText(tip);
 	}
-	
+
 	/**
 	 * Sets the ToolTip text to display for mouse focus of the Send button
 	 * @param tip 
