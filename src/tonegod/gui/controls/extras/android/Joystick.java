@@ -39,8 +39,9 @@ public abstract class Joystick extends Element implements Control {
 		);
 		setIsMovable(false);
 		setIsResizable(false);
-		setDockS(true);
-		setDockW(true);
+		setScaleEW(false);
+		setScaleNS(false);
+		setDocking(Docking.SW);
 		
 		maxDistance = getDimensions().x/2;
 		
