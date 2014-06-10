@@ -585,6 +585,13 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	//</editor-fold>
 	
 	//<editor-fold desc="Input Handlers">
+	public void forceFocusElementRefresh() {
+		mouseFocusElement = getEventElement(mouseXY.x, mouseXY.y);
+		eventElement = mouseFocusElement;
+		if (getUseToolTips())
+			updateToolTipLocation();
+	}
+	
 	/**
 	 * Stored the current mouse position as a Vector2f
 	 * @param x The mouse's current X coord

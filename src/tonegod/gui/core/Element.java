@@ -553,11 +553,20 @@ public class Element extends Node {
 	
 	// Z-ORDER 
 	
-	private void resetChildZOrder() {
+	public void resetChildZOrder() {
 		float step = screen.getZOrderStepMinor();
 		for (Element el : elementChildren.values()) {
 			el.setLocalTranslation(el.getLocalTranslation().setZ(step));
 			step += screen.getZOrderStepMinor();
+		}
+	}
+	
+	public void bringToFront() {
+		if (getElementParent() != null) {
+			Element p = getElementParent();
+			p.removeChild(this);
+			p.addChild(this);
+			p.resetChildZOrder();
 		}
 	}
 	
