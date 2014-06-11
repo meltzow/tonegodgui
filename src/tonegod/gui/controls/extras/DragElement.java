@@ -155,28 +155,18 @@ public abstract class DragElement extends Element implements MouseButtonListener
 		this.parentDroppable = null;
 	}
 	
-	public void bindToDroppable(Element el) {
-		if (el.getIsDragDropDropElement()) {
-			if (getElementParent() != null)
-				getElementParent().removeChild(this);
-			if (screen.getElementById(getUID()) == null)
-				screen.addElement(this);
-			
-			float x = el.getAbsoluteX()+(el.getWidth()/2);
-			float y = el.getAbsoluteY()+(el.getHeight()/2);
-			MouseButtonEvent evt = new MouseButtonEvent(0, false, (int)x, (int)y);
-			if (screen instanceof Screen) {
-				((Screen)screen).forceEventElement(this);
-				((Screen)screen).onMouseButtonEvent(evt);
-			}
+	public void bindToDroppable(Element dropEl) {
+		if (dropEl.getIsDragDropDropElement()) {
+			handleSuccess(dropEl);
+			centerToDropElement(dropEl);
 		}
 	}
 	
 	@Override
 	public void onMouseLeftPressed(MouseButtonEvent evt) {
-		
 		onDragStart(evt);
 	}
+	
 	@Override
 	public void onMouseLeftReleased(MouseButtonEvent evt) {
 		Element dropEl = screen.getDropElement();
@@ -185,54 +175,67 @@ public abstract class DragElement extends Element implements MouseButtonListener
 		boolean success = onDragEnd(evt, dropEl);
 		
 		if (success) {
-			if (parentDroppable != null && parentDroppable != dropEl) {
-				parentDroppable.removeChild(this);
-				parentDroppable = null;
-			}
-			parentDroppable = dropEl;
-			Vector2f pos = new Vector2f(getAbsoluteX(),getAbsoluteY());
-			Element parent = getElementParent();
-			if (parent != dropEl) {
-				if (parent != null) {
-					parent.removeChild(this);
-				} else {
-					screen.removeElement(this);
-				}
-				float nextY = (pos.y-dropEl.getAbsoluteY());
-				nextY = -nextY;
-				setPosition(pos.x-dropEl.getAbsoluteX(), nextY);
-				dropEl.addChild(this);
-				this.setZOrder(screen.getZOrderStepMinor());
-			}
-			if (lockToDropElementCenter) {
-				Vector2f destination = new Vector2f(
-					(dropEl.getWidth()/2)-(getWidth()/2),
-					(dropEl.getHeight()/2)-(getHeight()/2)
-				);
-				if (useLockToDropElementEffect) {
-					slideTo = new Effect(Effect.EffectType.SlideTo, Effect.EffectEvent.Release, .15f);
-					slideTo.setElement(this);
-					slideTo.setEffectDestination(destination);
-					screen.getEffectManager().applyEffect(slideTo);
-				} else {
-					setPosition(destination);
-				}
-				originalPosition = destination.clone();
-			}
+			handleSuccess(dropEl);
+			centerToDropElement(dropEl);
 		} else {
-			if (useSpringBack) {
-				Vector2f destination = originalPosition.clone();
-				if (useSpringBackEffect) {
-					slideTo = new Effect(Effect.EffectType.SlideTo, Effect.EffectEvent.Release, .15f);
-					slideTo.setElement(this);
-					slideTo.setEffectDestination(destination);
-					screen.getEffectManager().applyEffect(slideTo);
-				} else {
-					setPosition(destination);
-				}
+			springBack();
+		}
+	}
+	
+	private void handleSuccess(Element dropEl) {
+		if (parentDroppable != null && parentDroppable != dropEl) {
+			parentDroppable.removeChild(this);
+			parentDroppable = null;
+		}
+		parentDroppable = dropEl;
+		Vector2f pos = new Vector2f(getAbsoluteX(),getAbsoluteY());
+		Element p = getElementParent();
+		if (p != dropEl) {
+			if (p != null) {
+				p.removeChild(this);
+			} else {
+				screen.removeElement(this);
+			}
+			float nextY = (pos.y-dropEl.getAbsoluteY());
+			nextY = -nextY;
+			setPosition(pos.x-dropEl.getAbsoluteX(), nextY);
+			dropEl.addChild(this);
+			this.setZOrder(screen.getZOrderStepMinor());
+		}
+	}
+	
+	private void centerToDropElement(Element dropEl) {
+		if (lockToDropElementCenter) {
+			Vector2f destination = new Vector2f(
+				(dropEl.getWidth()/2)-(getWidth()/2),
+				(dropEl.getHeight()/2)-(getHeight()/2)
+			);
+			if (useLockToDropElementEffect) {
+				slideTo = new Effect(Effect.EffectType.SlideTo, Effect.EffectEvent.Release, .15f);
+				slideTo.setElement(this);
+				slideTo.setEffectDestination(destination);
+				screen.getEffectManager().applyEffect(slideTo);
+			} else {
+				setPosition(destination);
+			}
+			originalPosition = destination.clone();
+		}
+	}
+	
+	private void springBack() {
+		if (useSpringBack) {
+			Vector2f destination = originalPosition.clone();
+			if (useSpringBackEffect) {
+				slideTo = new Effect(Effect.EffectType.SlideTo, Effect.EffectEvent.Release, .15f);
+				slideTo.setElement(this);
+				slideTo.setEffectDestination(destination);
+				screen.getEffectManager().applyEffect(slideTo);
+			} else {
+				setPosition(destination);
 			}
 		}
 	}
+	
 	@Override
 	public void onMouseRightPressed(MouseButtonEvent evt) {  }
 	@Override

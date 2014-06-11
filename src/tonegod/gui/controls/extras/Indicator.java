@@ -33,6 +33,7 @@ public abstract class Indicator extends Element {
 	private boolean displayValues = false, displayPercentages = false;
 	private Vector2f indDimensions = new Vector2f();
 	private Vector4f indPadding = Vector4f.ZERO.clone();
+	private Vector4f clipTest = Vector4f.ZERO.clone();
 	private boolean reverseDirection = false;
 	
 	/**
@@ -134,9 +135,9 @@ public abstract class Indicator extends Element {
 		elIndicator = new Element(
 			screen,
 			UID + ":Indicator",
-			new Vector2f(0,0),
-			dimensions.clone(),
-			resizeBorders.clone(),
+			Vector2f.ZERO,
+			dimensions,
+			resizeBorders,
 			null
 		) {
 			@Override
@@ -152,7 +153,7 @@ public abstract class Indicator extends Element {
 				Indicator ind = ((Indicator)this.getElementParent());
 				if (getIsVisible()) {
 					if (getClippingLayer() != null) {
-						float clipX = 0, clipY = 0, clipW = 0, clipH = 0;
+						float clipX = 0f, clipY = 0f, clipW = 0f, clipH = 0f;
 						if (getElementParent().getClippingLayer() != null) {
 							clipX = (getElementParent().getClippingBounds().x > getClippingLayer().getAbsoluteX()) ? getElementParent().getClippingBounds().x : getClippingLayer().getAbsoluteX();
 							clipY = (getElementParent().getClippingBounds().y > getClippingLayer().getAbsoluteY()) ? getElementParent().getClippingBounds().y : getClippingLayer().getAbsoluteY();
@@ -184,16 +185,22 @@ public abstract class Indicator extends Element {
 								clipW = getClippingLayer().getAbsoluteWidth();
 							}
 						}
-						getClippingBounds().set(clipX, clipY, clipW, clipH);
-						getElementMaterial().setVector4("Clipping", getClippingBounds());
-						if (!(Boolean)getElementMaterial().getParam("UseClipping").getValue())
-							getElementMaterial().setBoolean("UseClipping", true);
+						clipTest.set(clipX, clipY, clipW, clipH);
+						if (clipTest.x != getClippingBounds().x ||
+							clipTest.y != getClippingBounds().y ||
+							clipTest.z != getClippingBounds().z ||
+							clipTest.w != getClippingBounds().w) {
+							getClippingBounds().set(clipX, clipY, clipW, clipH);
+							getElementMaterial().setVector4("Clipping", getClippingBounds());
+							if (!(Boolean)getElementMaterial().getParam("UseClipping").getValue())
+								getElementMaterial().setBoolean("UseClipping", true);
+						}
 					} else {
 						if ((Boolean)getElementMaterial().getParam("UseClipping").getValue())
 							getElementMaterial().setBoolean("UseClipping", false);
 					}
 				} else {
-					getClippingBounds().set(0,0,0,0);
+					getClippingBounds().set(Vector4f.ZERO);
 					getElementMaterial().setVector4("Clipping", getClippingBounds());
 					getElementMaterial().setBoolean("UseClipping", true);
 				}
@@ -212,9 +219,9 @@ public abstract class Indicator extends Element {
 		elOverlay = new Element(
 			screen,
 			UID + ":Overlay",
-			new Vector2f(0,0),
-			dimensions.clone(),
-			resizeBorders.clone(),
+			Vector2f.ZERO,
+			dimensions,
+			resizeBorders,
 			overlayImg
 		);
 		elOverlay.setIgnoreMouse(true);
@@ -317,8 +324,8 @@ public abstract class Indicator extends Element {
 	private void refactorIndicator() {
 		if (currentValue > maxValue) {
 			currentValue = maxValue;
-		} else if (currentValue < 0) {
-			currentValue = 0;
+		} else if (currentValue < 0f) {
+			currentValue = 0f;
 		}
 		percentage = currentValue/maxValue;
 	//	if (alphaMapPath == null) {
@@ -341,12 +348,12 @@ public abstract class Indicator extends Element {
 		if (this.displayValues) {
 			elOverlay.setText(String.valueOf((int)this.currentValue) + "/" + String.valueOf((int)this.maxValue));
 		} else if (this.displayPercentages) {
-			elOverlay.setText(String.valueOf((int)((this.currentValue/this.maxValue)*100)) + "%");
+			elOverlay.setText(String.valueOf((int)((this.currentValue/this.maxValue)*100f)) + "%");
 		} else {
-			elOverlay.setText("");
+		//	elOverlay.setText("");
 		}
 		
-		onChange(currentValue, currentValue/maxValue*100);
+		onChange(currentValue, currentValue/maxValue*100f);
 	}
 	
 	/**
