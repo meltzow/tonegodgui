@@ -439,26 +439,31 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	 * @param texturePath The path of the image to use as the icon overlay
 	 */
 	public void setButtonIcon(float width, float height, String texturePath) {
+		/*
 		if (icon != null) {
 			if (icon.getParent() != null) {
 				elementChildren.remove(icon.getUID());
 				icon.removeFromParent();
 			}
 		}
-		
-		icon = new Element(
-			screen,
-			this.getUID() + ":btnIcon",
-			new Vector2f((getWidth()/2)-(width/2),(getHeight()/2)-(height/2)),
-			new Vector2f(width,height),
-			new Vector4f(0,0,0,0),
-			texturePath
-		);
-		icon.setIgnoreMouse(true);
-		icon.setDocking(Docking.SW);
-		icon.setScaleEW(false);
-		icon.setScaleNS(false);
-		this.addChild(icon);
+		*/
+		if (icon == null) {
+			icon = new Element(
+				screen,
+				this.getUID() + ":btnIcon",
+				new Vector2f((getWidth()/2)-(width/2),(getHeight()/2)-(height/2)),
+				new Vector2f(width,height),
+				new Vector4f(0,0,0,0),
+				texturePath
+			);
+			icon.setIgnoreMouse(true);
+			icon.setDocking(Docking.SW);
+			icon.setScaleEW(false);
+			icon.setScaleNS(false);
+			this.addChild(icon);
+		}
+		if (screen.getUseTextureAtlas() || this.getUseLocalAtlas())
+			icon.setTextureAtlasImage(icon.getElementTexture(), texturePath);
 	}
 	
 	public Element getButtonIcon() {
