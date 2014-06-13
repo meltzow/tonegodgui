@@ -12,6 +12,7 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.cursors.plugins.JmeCursor;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
+import com.jme3.font.BitmapFont;
 import com.jme3.font.Rectangle;
 import com.jme3.font.plugins.BitmapFontLoader;
 import com.jme3.input.KeyInput;
@@ -158,6 +159,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
         
 	private ElementQuadGrid mesh;
 	
+	private BitmapFont defaultGUIFont;
+	
 	private ModalBackground modalBackground;
 	private Keyboard virtualKeys;
 	
@@ -242,6 +245,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		animManager = new AnimManager(this);
 		app.getInputManager().addRawInputListener(this);
 		layoutParser = new LayoutParser(this);
+		
+		defaultGUIFont = app.getAssetManager().loadFont(styleManager.getStyle("Font").getString("defaultFont"));
 		
 		scenes.add((Node)app.getViewPort().getScenes().get(0));
 	}
@@ -2203,6 +2208,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	@Override
 	public float getGlobalAlpha() {
 		return this.globalAlpha;
+	}
+	
+	public BitmapFont getDefaultGUIFont() {
+		return this.defaultGUIFont;
 	}
 	//</editor-fold>
 	

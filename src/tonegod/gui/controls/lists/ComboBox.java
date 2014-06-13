@@ -137,6 +137,8 @@ public abstract class ComboBox extends TextField {
 		
 		setWidth(getWidth()-btnHeight);
 		
+		layoutHints.setElementPadX(btnHeight);
+		
 		btnArrowDown = new ButtonAdapter(screen, UID + ":ArrowDown",
 			new Vector2f(
 				getWidth(),

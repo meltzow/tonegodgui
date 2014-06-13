@@ -27,6 +27,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import tonegod.gui.controls.extras.DragElement;
 import tonegod.gui.controls.form.Form;
+import tonegod.gui.core.layouts.Layout;
+import tonegod.gui.core.layouts.LayoutHints;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
@@ -184,6 +186,10 @@ public class Element extends Node {
 	
 	private Docking docking = Docking.NW;
 	private Orientation orientation = Orientation.HORIZONTAL;
+	
+	// Layouts
+	protected Layout layout = null;
+	protected LayoutHints layoutHints = new LayoutHints();
 	
 	/**
 	 * The Element class is the single primitive for all controls in the gui library.
@@ -1763,6 +1769,22 @@ public class Element extends Node {
 		}
 	}
 	
+	public void centerToParentV() {
+		if (elementParent == null) {
+			setPosition(getX(),screen.getHeight()/2-(getHeight()/2));
+		} else {
+			setPosition(getX(),elementParent.getHeight()/2-(getHeight()/2));
+		}
+	}
+	
+	public void centerToParentH() {
+		if (elementParent == null) {
+			setPosition(screen.getWidth()/2-(getWidth()/2),getY());
+		} else {
+			setPosition(elementParent.getWidth()/2-(getWidth()/2),getY());
+		}
+	}
+	
 	/**
 	 * Set the north, west, east and south borders in number of pixels
 	 * @param borderSize 
@@ -2849,4 +2871,13 @@ public class Element extends Node {
 	public Vector2f getOrigin() {
 		return this.origin;
 	}
+	
+	public void setLayout(Layout layout) {
+		this.layout = layout;
+		this.layout.setOwner(this);
+	}
+	
+	public Layout getLayout() { return this.layout; }
+	
+	public LayoutHints getLayoutHints() { return this.layoutHints; }
 }
