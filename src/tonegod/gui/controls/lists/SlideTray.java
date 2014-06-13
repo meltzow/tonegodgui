@@ -21,10 +21,12 @@ import tonegod.gui.effects.Effect;
  * @author t0neg0d
  */
 public class SlideTray extends Element {
+	/*
 	public static enum Orientation {
 		VERTICAL,
 		HORIZONTAL
 	}
+	*/
 	private Orientation orientation;
 	
 	private ButtonAdapter btnPrevElement, btnNextElement;
@@ -39,6 +41,21 @@ public class SlideTray extends Element {
 	private Effect slideEffect;
 	
 	private BatchEffect batch = null;
+	
+	/**
+	 * Creates a new instance of the SlideTray control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param orientation The orientation of the SlideTray
+	 */
+	public SlideTray(ElementManager screen, Orientation orientation) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Menu").getVector2f("defaultSize"),
+			screen.getStyle("Menu").getVector4f("resizeBorders"),
+			screen.getStyle("Menu").getString("defaultImg"),
+			orientation
+		);
+	}
 	
 	/**
 	 * Creates a new instance of the SlideTray control

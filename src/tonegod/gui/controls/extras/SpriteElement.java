@@ -42,7 +42,19 @@ public class SpriteElement extends Element implements Control {
 	 * 
 	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
-	 * @param isScrollable Boolean defining if the menu is a scrollable list
+	 */
+	public SpriteElement(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Menu").getVector2f("defaultSize"),
+			screen.getStyle("Menu").getVector4f("resizeBorders"),
+			screen.getStyle("Menu").getString("defaultImg")
+		);
+	}
+	/**
+	 * Creates a new instance of the Menu control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
 	 */
 	public SpriteElement(ElementManager screen, Vector2f position) {
 		this(screen, UIDUtil.getUID(), position,

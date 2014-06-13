@@ -45,6 +45,20 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 	float touchStartY = 0;
 	float touchEndY = 0;
 	
+	/**
+	 * Creates a new instance of the ScrollArea control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param isTextOnly Boolean defining if the scroll area will contain other Elements or use formatted text
+	 */
+	public ScrollArea(ElementManager screen, boolean isTextOnly) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("ScrollArea").getVector2f("defaultSize"),
+			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
+			screen.getStyle("ScrollArea").getString("defaultImg"),
+			isTextOnly
+		);
+	}
 	
 	/**
 	 * Creates a new instance of the ScrollArea control

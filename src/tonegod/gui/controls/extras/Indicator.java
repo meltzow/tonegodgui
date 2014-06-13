@@ -18,12 +18,6 @@ import tonegod.gui.core.utils.UIDUtil;
  * @author t0neg0d
  */
 public abstract class Indicator extends Element {
-	/*
-	public static enum Orientation {
-		HORIZONTAL,
-		VERTICAL
-	}
-	*/
 	private float maxValue = 0, currentValue = 0, percentage = 0;
 	private Orientation orientation;
 	private ColorRGBA indicatorColor;
@@ -35,6 +29,20 @@ public abstract class Indicator extends Element {
 	private Vector4f indPadding = Vector4f.ZERO.clone();
 	private Vector4f clipTest = Vector4f.ZERO.clone();
 	private boolean reverseDirection = false;
+	
+	/**
+	 * Creates a new instance of the Indicator control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 */
+	public Indicator(ElementManager screen, Orientation orientation) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Indicator").getVector2f("defaultSize"),
+			screen.getStyle("Indicator").getVector4f("resizeBorders"),
+			screen.getStyle("Indicator").getString("defaultImg"),
+			orientation
+		);
+	}
 	
 	/**
 	 * Creates a new instance of the Indicator control
@@ -72,7 +80,7 @@ public abstract class Indicator extends Element {
 	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
-	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param resizeBorders A Vector4f containing the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Element
 	 */
 	public Indicator(ElementManager screen, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
@@ -118,8 +126,8 @@ public abstract class Indicator extends Element {
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
-	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
-	 * @param defaultImg The default image to use for the Slider's track
+	 * @param resizeBorders A Vector4f containing the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param defaultImg The default image to use for the Indicator
 	 */
 	public Indicator(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg, Orientation orientation) {
 		super(screen, UID, position, dimensions, resizeBorders, null);

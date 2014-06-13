@@ -43,6 +43,19 @@ public abstract class Dial extends ButtonAdapter {
 	 * Creates a new instance of the Dial control
 	 * 
 	 * @param screen The screen control the Element is to be added to
+	 */
+	public Dial(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Dial").getVector2f("defaultSize"),
+			screen.getStyle("Dial").getVector4f("resizeBorders"),
+			screen.getStyle("Dial").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the Dial control
+	 * 
+	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
 	public Dial(ElementManager screen, Vector2f position) {

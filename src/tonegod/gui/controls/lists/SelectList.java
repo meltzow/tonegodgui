@@ -48,6 +48,19 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 	 * Creates a new instance of the SelectList control
 	 * 
 	 * @param screen The screen control the Element is to be added to
+	 */
+	public SelectList(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Menu").getVector2f("defaultSize"),
+			screen.getStyle("Menu").getVector4f("resizeBorders"),
+			screen.getStyle("Menu").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the SelectList control
+	 * 
+	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
 	public SelectList(ElementManager screen, Vector2f position) {

@@ -2210,6 +2210,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		return this.globalAlpha;
 	}
 	
+	@Override
 	public BitmapFont getDefaultGUIFont() {
 		return this.defaultGUIFont;
 	}

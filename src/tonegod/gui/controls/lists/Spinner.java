@@ -43,6 +43,23 @@ public abstract class Spinner extends TextField {
 	 * Creates a new instance of the Spinner control
 	 * 
 	 * @param screen The screen control the Element is to be added to
+	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param cycle Boolean used to determine if the spinner should cycle back through values
+	 */
+	public Spinner(ElementManager screen, Spinner.Orientation orientation, boolean cycle) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("TextField").getVector2f("defaultSize"),
+			screen.getStyle("TextField").getVector4f("resizeBorders"),
+			screen.getStyle("TextField").getString("defaultImg"),
+			orientation,
+			cycle
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the Spinner control
+	 * 
+	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param cycle Boolean used to determine if the spinner should cycle back through values
@@ -81,7 +98,7 @@ public abstract class Spinner extends TextField {
 	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
-	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param resizeBorders A Vector4f containing the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Spinner
 	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param cycle Boolean used to determine if the spinner should cycle back through values
@@ -135,7 +152,7 @@ public abstract class Spinner extends TextField {
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
-	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param resizeBorders A Vector4f containing the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Spinner
 	 * @param orientation Spinner.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param cycle Boolean used to determine if the spinner should cycle back through values

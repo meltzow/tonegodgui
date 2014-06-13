@@ -40,6 +40,20 @@ public class OSRViewPort extends Element implements MouseButtonListener, MouseMo
 	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
+	public OSRViewPort(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Window").getVector2f("defaultSize"),
+			screen.getStyle("Window").getVector4f("resizeBorders"),
+			screen.getStyle("Window").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the OSRViewPort control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param position A Vector2f containing the x/y position of the Element
+	 */
 	public OSRViewPort(ElementManager screen, Vector2f position) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("Window").getVector2f("defaultSize"),

@@ -22,6 +22,19 @@ public class Label extends Element {
 	 * Creates a new instance of the Label control
 	 * 
 	 * @param screen The screen control the Element is to be added to
+	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+	 */
+	public Label(ElementManager screen, Vector2f dimensions) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO, dimensions,
+			screen.getStyle("Label").getVector4f("resizeBorders"),
+			screen.getStyle("Label").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the Label control
+	 * 
+	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
 	 */

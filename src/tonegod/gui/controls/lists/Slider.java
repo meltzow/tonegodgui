@@ -23,12 +23,6 @@ import tonegod.gui.effects.Effect;
  * @author t0neg0d
  */
 public abstract class Slider extends ButtonAdapter {
-	/*
-	public static enum Orientation {
-		VERTICAL,
-		HORIZONTAL
-	}
-	*/
 	protected List<Object> stepValues = new ArrayList();
 	private Element elThumbLock;
 	private ButtonAdapter elThumb;
@@ -46,6 +40,23 @@ public abstract class Slider extends ButtonAdapter {
 	private Vector2f evalDimensions = new Vector2f();
 	private MouseButtonEvent trackEvt;
 	private Vector2f startPosition;
+	
+	/**
+	 * Creates a new instance of the Slider control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
+	 * @param trackSurroundsThumb Boolean used to determine thumb placement when control is configured
+	 */
+	public Slider(ElementManager screen, Orientation orientation, boolean trackSurroundsThumb) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Slider").getVector2f("defaultSize"),
+			screen.getStyle("Slider").getVector4f("resizeBorders"),
+			screen.getStyle("Slider").getString("defaultImg"),
+			orientation,
+			trackSurroundsThumb
+		);
+	}
 	
 	/**
 	 * Creates a new instance of the Slider control
@@ -89,7 +100,7 @@ public abstract class Slider extends ButtonAdapter {
 	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
-	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param resizeBorders A Vector4f containing the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Slider's track
 	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param trackSurroundsThumb  Boolean used to determine thumb placement when control is configured
@@ -143,7 +154,7 @@ public abstract class Slider extends ButtonAdapter {
 	 * @param UID A unique String identifier for the Element
 	 * @param position A Vector2f containing the x/y position of the Element
 	 * @param dimensions A Vector2f containing the width/height dimensions of the Element
-	 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+	 * @param resizeBorders A Vector4f containing the border information used when resizing the default image (x = N, y = W, z = E, w = S)
 	 * @param defaultImg The default image to use for the Slider's track
 	 * @param orientation Slider.Orientation used to establish Horizontal/Vertical layout during control configuration
 	 * @param trackSurroundsThumb  Boolean used to determine thumb placement when control is configured

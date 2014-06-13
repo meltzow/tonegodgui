@@ -18,6 +18,14 @@ public class Password extends TextField {
 	char mask = '*';
 	String maskedText = "";
 	
+	public Password(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("TextField").getVector2f("defaultSize"),
+			screen.getStyle("TextField").getVector4f("resizeBorders"),
+			screen.getStyle("TextField").getString("defaultImg")
+		);
+	}
+	
 	public Password(ElementManager screen, Vector2f position) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("TextField").getVector2f("defaultSize"),

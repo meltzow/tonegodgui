@@ -58,6 +58,19 @@ public class ScrollPanel extends Element {
 	 * Creates a new instance of the ScrollPanel control
 	 * 
 	 * @param screen The screen control the Element is to be added to
+	 */
+	public ScrollPanel(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("ScrollArea").getVector2f("defaultSize"),
+			screen.getStyle("ScrollArea").getVector4f("resizeBorders"),
+			screen.getStyle("ScrollArea").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the ScrollPanel control
+	 * 
+	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
 	public ScrollPanel(ElementManager screen, Vector2f position) {

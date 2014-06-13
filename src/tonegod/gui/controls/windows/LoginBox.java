@@ -30,6 +30,14 @@ public abstract class LoginBox extends Window {
 	private Password password;
 	private Form form;
 	
+	public LoginBox(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Window").getVector2f("defaultSize"),
+			screen.getStyle("Window").getVector4f("resizeBorders"),
+			screen.getStyle("Window").getString("defaultImg")
+		);
+	}
+	
 	public LoginBox(ElementManager screen, Vector2f position) {
 		this(screen, UIDUtil.getUID(), position,
 			screen.getStyle("Window").getVector2f("defaultSize"),

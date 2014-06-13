@@ -39,6 +39,19 @@ public class TabControl extends Element {
 	 * Creates a new instance of the TabControl control
 	 * 
 	 * @param screen The screen control the Element is to be added to
+	 */
+	public TabControl(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Window").getVector2f("defaultSize"),
+			screen.getStyle("Window").getVector4f("resizeBorders"),
+			null
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the TabControl control
+	 * 
+	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
 	public TabControl(ElementManager screen, Vector2f position) {

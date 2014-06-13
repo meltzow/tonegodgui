@@ -187,4 +187,14 @@ public class DefaultLayout implements Layout {
 	public float getLineFeedHeight() {
 		return this.lineFeedHeight;
 	}
+	
+	@Override
+	public DefaultLayout clone() {
+		DefaultLayout clone = new DefaultLayout(screen);
+		clone.setMode(mode);
+		clone.setMargins(margins.x, margins.y);
+		clone.setPadding(padding);
+		clone.setLineFeedHeight(lineFeedHeight);
+		return clone;
+	}
 }

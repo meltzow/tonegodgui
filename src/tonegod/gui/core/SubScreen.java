@@ -6,6 +6,7 @@ import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
+import com.jme3.font.BitmapFont;
 import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
@@ -1315,6 +1316,11 @@ public class SubScreen implements ElementManager, Control {
 	@Override
 	public void setGlobalAlpha(float alpha) {
 		screen.setGlobalAlpha(alpha);
+	}
+	
+	@Override
+	public BitmapFont getDefaultGUIFont() {
+		return screen.getDefaultGUIFont();
 	}
 
 	@Override

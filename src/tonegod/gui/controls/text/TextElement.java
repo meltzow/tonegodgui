@@ -15,7 +15,6 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
-import com.jme3.texture.Texture.WrapMode;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.utils.UIDUtil;
@@ -35,6 +34,34 @@ public abstract class TextElement extends Element implements Control {
 	
 	
 	int qdIndex = 0;
+	
+	/**
+	 * Creates a new instance of the TextElement control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 */
+	public TextElement(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Label").getVector2f("defaultSize"),
+			Vector4f.ZERO,
+			null,
+			screen.getDefaultGUIFont()
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the TextElement control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 */
+	public TextElement(ElementManager screen, BitmapFont font) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Label").getVector2f("defaultSize"),
+			Vector4f.ZERO,
+			null,
+			font
+		);
+	}
 	
 	/**
 	 * Creates a new instance of the TextElement control

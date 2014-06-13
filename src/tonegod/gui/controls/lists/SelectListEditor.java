@@ -17,6 +17,14 @@ public abstract class SelectListEditor extends Element {
 	public SelectList items;
 	private ButtonAdapter editItem, removeItem, moveUp, moveDown;
 	
+	public SelectListEditor(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			new Vector2f(100,100),
+			Vector4f.ZERO,
+			null
+		);
+	}
+	
 	public SelectListEditor(ElementManager screen, Vector2f position) {
 		this(screen, UIDUtil.getUID(), position,
 			new Vector2f(100,100),

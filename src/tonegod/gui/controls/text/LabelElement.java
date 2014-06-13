@@ -22,6 +22,19 @@ public class LabelElement extends TextElement {
 	 * Creates a new instance of the TextElement control
 	 * 
 	 * @param screen The screen control the Element is to be added to
+	 */
+	public LabelElement(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Label").getVector2f("defaultSize"),
+			Vector4f.ZERO,
+			null
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the TextElement control
+	 * 
+	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
 	public LabelElement(ElementManager screen, Vector2f position) {

@@ -87,6 +87,19 @@ public class TextField extends Element implements Control, KeyboardListener, Tab
 	 * Creates a new instance of the TextField control
 	 * 
 	 * @param screen The screen control the Element is to be added to
+	 */
+	public TextField(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("TextField").getVector2f("defaultSize"),
+			screen.getStyle("TextField").getVector4f("resizeBorders"),
+			screen.getStyle("TextField").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the TextField control
+	 * 
+	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
 	public TextField(ElementManager screen, Vector2f position) {

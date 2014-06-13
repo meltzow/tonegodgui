@@ -26,6 +26,19 @@ public abstract class AlertBox extends Window {
 	 * Creates a new instance of the AlertBox control
 	 * 
 	 * @param screen The screen control the Element is to be added to
+	 */
+	public AlertBox(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Window").getVector2f("defaultSize"),
+			screen.getStyle("Window").getVector4f("resizeBorders"),
+			screen.getStyle("Window").getString("defaultImg")
+		);
+	}
+	
+	/**
+	 * Creates a new instance of the AlertBox control
+	 * 
+	 * @param screen The screen control the Element is to be added to
 	 * @param position A Vector2f containing the x/y position of the Element
 	 */
 	public AlertBox(ElementManager screen, Vector2f position) {
