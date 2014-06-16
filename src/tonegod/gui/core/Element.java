@@ -333,29 +333,7 @@ public class Element extends Node {
 	 * @param child The Element to add as a child
 	 */
 	public void addChild(Element child) {
-		child.elementParent = this;
-		
-		if (!child.getInitialized()) {
-			child.setY(this.getHeight()-child.getHeight()-child.getY());
-			child.orgPosition = position.clone();
-			child.orgPosition.setY(child.getY());
-			child.setInitialized();
-		}
-		child.orgRelDimensions.set(child.getWidth()/getWidth(),child.getHeight()/getHeight());
-		child.setQueueBucket(RenderQueue.Bucket.Gui);
-		
-		if (screen.getElementById(child.getUID()) != null) {
-			try {
-				throw new ConflictingIDException();
-			} catch (ConflictingIDException ex) {
-				Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The child element '" + child.getUID() + "' (" + child.getClass() + ") conflicts with a previously added child element in parent element '" + getUID() + "'.", ex);
-				System.exit(0);
-			}
-		} else {
-			elementChildren.put(child.getUID(), child);
-			this.attachChild(child);
-		}
-		resetChildZOrder();
+		addChild(child, false);
 	}
 	
 	/**
@@ -364,6 +342,15 @@ public class Element extends Node {
 	 */
 	public void addChild(Element child, boolean hide) {
 		child.elementParent = this;
+		
+		for (ClippingDefine def : clippingLayers) {
+			if (def.getClipping() == null) {
+			//	if (child.getX() >= 0 && child.getX()+child.getWidth() <= def.getElement().getWidth() &&
+			//		child.getY() >= 0 && child.getY()+child.getHeight() <= def.getElement().getHeight())
+						child.addClippingLayer(def.getElement());
+			}// else
+			//	child.addClippingLayer(def.getElement(),def.getClipping());
+		}
 		
 		if (!child.getInitialized()) {
 			child.setY(this.getHeight()-child.getHeight()-child.getY());
@@ -401,6 +388,8 @@ public class Element extends Node {
 			e.elementParent = null;
 			e.removeFromParent();
 			e.removeClippingLayer(this);
+			for (ClippingDefine def : clippingLayers)
+				e.removeClippingLayer(def.getElement());
 			e.cleanup();
 			
 			if (screen.getUseToolTips()) {
@@ -422,6 +411,8 @@ public class Element extends Node {
 		for (Element e : elementChildren.values()) {
 			e.removeFromParent();
 			e.removeClippingLayer(this);
+			for (ClippingDefine def : clippingLayers)
+				e.removeClippingLayer(def.getElement());
 		}
 		elementChildren.clear();
 	}
@@ -1456,7 +1447,9 @@ public class Element extends Node {
 		}
 	}
 	
+	// TODO: enforce minimum size
 	private void childResize(float diffX, float diffY, Borders dir) {
+		boolean minSize = !(minDimensions == null);
 		if (dir == Borders.NW || dir == Borders.N || dir == Borders.NE) {
 			if (getScaleNS()) setHeight(getHeight()-diffY);
 			if ((getDocking() == Docking.NW || getDocking() == Docking.NE) && !getScaleNS()) setY(getY()-diffY);
@@ -2611,6 +2604,9 @@ public class Element extends Node {
 			if (def.clip == null) def.clip = new Vector4f();
 			def.clip.set(clip);
 		}
+		for (Element c : elementChildren.values()) {
+			c.updateClippingLayer(el, clip);
+		}
 	}
 	
 	public void propigateClippingLayerAdd(ClippingDefine def) {
@@ -2663,6 +2659,7 @@ public class Element extends Node {
 		
 		for (ClippingDefine def : clippingLayers) {
 			clipTest.set(def.getClipping());
+			
 			if (clipTest.x > cX)	cX = clipTest.x;
 			if (clipTest.y > cY)	cY = clipTest.y;
 			if (clipTest.z < cW)	cW = clipTest.z;

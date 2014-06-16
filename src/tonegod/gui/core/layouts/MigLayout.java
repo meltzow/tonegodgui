@@ -383,14 +383,12 @@ public class MigLayout implements Layout {
 					el.addClippingLayer(owner,Vector4f.ZERO);
 				}
 				tempV4.set(
-					cells[r][c].pos.x,
 					cells[r][c].pos.y,
+					cells[r][c].pos.x,
 					(cells[r][c].pos.x+totalW),
 					(cells[r][c].pos.y+totalH)
 				);
-			//	System.out.println(tempV4);
 				el.updateClippingLayer(owner, tempV4);
-				System.out.println(el.getClippingDefine(owner).clip);
 				/*
 				el.setClipPadding(
 					cells[r][c].pos.x,

@@ -192,6 +192,8 @@ public abstract class LoginBox extends Window {
 		addChild(btnCancel);
 		form.addFormElement(btnCancel);
 		
+		addClippingLayer(this);
+		
 		this.setWindowTitle("Login");
 	}
 	

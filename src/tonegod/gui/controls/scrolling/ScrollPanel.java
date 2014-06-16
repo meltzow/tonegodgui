@@ -153,7 +153,7 @@ public class ScrollPanel extends Element {
 		setAsContainerOnly();
 		
 		// Load defaults
-		setMinDimensions(screen.getStyle("ScrollArea").getVector2f("minimumSize"));
+	//	setMinDimensions(screen.getStyle("ScrollArea").getVector2f("minimumSize"));
 		
 		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 		clipPadding = screen.getStyle("ScrollArea").getFloat("textPadding");
