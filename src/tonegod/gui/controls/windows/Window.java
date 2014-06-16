@@ -10,6 +10,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
+import tonegod.gui.core.layouts.Layout;
 import tonegod.gui.core.utils.ControlUtil;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
@@ -151,7 +152,6 @@ public class Window extends Element {
 		dragBar.setIsMovable(true);
 		dragBar.setEffectParent(true);
 		dragBar.setClippingLayer(this);
-		addChild(dragBar);
 		
 	//	this.setTextVAlign(BitmapFont.VAlign.Center);
 	//	this.setTextAlign(BitmapFont.Align.Center);
@@ -162,7 +162,9 @@ public class Window extends Element {
 		contentArea.setPosition(0,dragBar.getHeight());
 		contentArea.setScaleEW(true);
 		contentArea.setScaleNS(true);
+		
 		addChild(contentArea);
+		addChild(dragBar);
 		
 		showSound = screen.getStyle("Window").getString("showSound");
 		useShowSound = screen.getStyle("Window").getBoolean("useShowSound");
@@ -253,4 +255,18 @@ public class Window extends Element {
 	public boolean getWindowIsMovable() {
 		return this.dragBar.getIsMovable();
 	}
+	
+	public void addWindowContent(Element el) {
+		contentArea.addChild(el);
+	}
+	
+	public void removeWindowContent(Element el) {
+		contentArea.removeChild(el);
+	}
+	
+	public void setContentLayout(Layout layout) {
+		contentArea.setLayout(layout);;
+	}
+	
+	public Element getContentArea() { return contentArea; }
 }

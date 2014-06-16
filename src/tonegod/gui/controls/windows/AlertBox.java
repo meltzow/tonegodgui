@@ -128,29 +128,25 @@ public abstract class AlertBox extends Window {
 		dlg = new ScrollPanel(screen, UID + ":dialog",
 			new Vector2f(
 				indents.y,
-				indents.x+getDragBarHeight()+controlSpacing
+				indents.x+controlSpacing
 			),
 			new Vector2f(
-				getWidth()-indents.y-indents.z,
-				getHeight()-indents.x-indents.w-getDragBarHeight()-screen.getStyle("Window").getFloat("buttonAreaHeight")-(controlSpacing*2)
+				contentArea.getWidth()-indents.y-indents.z,
+				contentArea.getHeight()-indents.x-indents.w-screen.getStyle("Window").getFloat("buttonAreaHeight")-(controlSpacing*2)
 			)
 		);
-	//	dlg.setFontColor(ColorRGBA.LightGray);
-	//	dlg.setTextAlign(BitmapFont.Align.Left);
-	//	dlg.setTextPosition(5,5);
-	//	dlg.setTextWrap(LineWrapMode.Word);
 		dlg.setIsResizable(false);
 		dlg.setScaleEW(true);
 		dlg.setScaleNS(true);
 		dlg.addClippingLayer(dlg);
 		dlg.setUseVerticalWrap(true);
 	//	dlg.setPadding(5);
-		addChild(dlg);
+		addWindowContent(dlg);
 		
 		btnOk = new ButtonAdapter(screen,  UID + ":btnOk",
 			new Vector2f(
-				getWidth()-screen.getStyle("Button").getVector2f("defaultSize").x-indents.z,
-				getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
+				contentArea.getWidth()-screen.getStyle("Button").getVector2f("defaultSize").x-indents.z,
+				contentArea.getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
 			)
 		) {
 			@Override
@@ -161,7 +157,7 @@ public abstract class AlertBox extends Window {
 		btnOk.setText("Ok");
 		btnOk.setDockS(true);
 		btnOk.setDockE(true);
-		addChild(btnOk);
+		addWindowContent(btnOk);
 		form.addFormElement(btnOk);
 	}
 	

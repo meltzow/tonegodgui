@@ -84,7 +84,7 @@ public abstract class LoginBox extends Window {
 		lblUserName = new Label(screen, UID + ":Lbl:UserName",
 			new Vector2f(
 				indents.y,
-				getDragBarHeight()+indents.x+controlSpacing
+				indents.x+controlSpacing
 			),
 			new Vector2f(
 				(getWidth()/3)-indents.y-indents.z,
@@ -93,25 +93,25 @@ public abstract class LoginBox extends Window {
 		);
 		lblUserName.setTextAlign(BitmapFont.Align.Right);
 		lblUserName.setText("User ID:");
-		this.addChild(lblUserName);
+		this.addWindowContent(lblUserName);
 		
 		userName = new TextField(screen, UID + ":userName",
 			new Vector2f(
 				getWidth()/3,
-				getDragBarHeight()+indents.x+controlSpacing
+				indents.x+controlSpacing
 			),
 			new Vector2f(
 				getWidth()-(getWidth()/3)-indents.z,
 				controlSize
 			)
 		);
-		this.addChild(userName);
+		this.addWindowContent(userName);
 		form.addFormElement(userName);
 		
 		lblPassword = new Label(screen, UID + ":Lbl:Password",
 			new Vector2f(
 				indents.y,
-				getDragBarHeight()+indents.x+controlSize+(controlSpacing*2)
+				indents.x+controlSize+(controlSpacing*2)
 			),
 			new Vector2f(
 				(getWidth()/3)-indents.y-indents.z,
@@ -120,19 +120,19 @@ public abstract class LoginBox extends Window {
 		);
 		lblPassword.setTextAlign(BitmapFont.Align.Right);
 		lblPassword.setText("Password:");
-		this.addChild(lblPassword);
+		this.addWindowContent(lblPassword);
 		
 		password = new Password(screen, UID + "password",
 			new Vector2f(
 				getWidth()/3,
-				getDragBarHeight()+indents.x+controlSize+(controlSpacing*2)
+				indents.x+controlSize+(controlSpacing*2)
 			),
 			new Vector2f(
 				getWidth()-(getWidth()/3)-indents.z,
 				controlSize
 			)
 		);
-		this.addChild(password);
+		this.addWindowContent(password);
 		form.addFormElement(password);
 		
 		responseMsg = new Element(
@@ -140,11 +140,11 @@ public abstract class LoginBox extends Window {
 			UID+":resonse",
 			new Vector2f(
 				indents.y,
-				getDragBarHeight()+password.getHeight()+indents.x+controlSize+(controlSpacing*3)
+				password.getHeight()+indents.x+controlSize+(controlSpacing*3)
 			),
 			new Vector2f(
-				getWidth()-indents.y-indents.z,
-				getHeight()-(getDragBarHeight()+password.getHeight()+indents.x+controlSize+(controlSpacing*3))-getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
+				contentArea.getWidth()-indents.y-indents.z,
+				contentArea.getHeight()-(password.getHeight()+indents.x+controlSize+(controlSpacing*3))-getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
 			),
 			new Vector4f(0,0,0,0),
 			null
@@ -158,12 +158,12 @@ public abstract class LoginBox extends Window {
 		responseMsg.setTextAlign(BitmapFont.Align.Center);
 		responseMsg.setFontSize(screen.getStyle("Label").getFloat("fontSize"));
 		
-		addChild(responseMsg);
+		addWindowContent(responseMsg);
 		
 		btnLogin = new ButtonAdapter(screen,  UID + ":btnOk",
 			new Vector2f(
-				getWidth()-screen.getStyle("Button").getVector2f("defaultSize").x-indents.z,
-				getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
+				contentArea.getWidth()-screen.getStyle("Button").getVector2f("defaultSize").x-indents.z,
+				contentArea.getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
 			)
 		) {
 			@Override
@@ -173,13 +173,13 @@ public abstract class LoginBox extends Window {
 		};
 		btnLogin.setText("Login");
 		btnLogin.setDocking(Docking.SE);
-		addChild(btnLogin);
+		addWindowContent(btnLogin);
 		form.addFormElement(btnLogin);
 		
 		btnCancel = new ButtonAdapter(screen, UID + ":btnCancel",
 			new Vector2f(
 				indents.y,
-				getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
+				contentArea.getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
 			)
 		) {
 			@Override
@@ -189,7 +189,7 @@ public abstract class LoginBox extends Window {
 		};
 		btnCancel.setText("Cancel");
 		btnCancel.setDocking(Docking.SW);
-		addChild(btnCancel);
+		addWindowContent(btnCancel);
 		form.addFormElement(btnCancel);
 		
 		addClippingLayer(this);

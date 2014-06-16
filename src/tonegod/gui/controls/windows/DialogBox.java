@@ -120,7 +120,7 @@ public abstract class DialogBox extends AlertBox {
 		btnCancel = new ButtonAdapter(screen, UID + ":btnCancel",
 			new Vector2f(
 				indents.y,
-				getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
+				contentArea.getHeight()-screen.getStyle("Button").getVector2f("defaultSize").y-indents.w
 			)
 		) {
 			@Override
@@ -131,7 +131,7 @@ public abstract class DialogBox extends AlertBox {
 		btnCancel.setText("Cancel");
 		btnCancel.setDockS(true);
 		btnCancel.setDockW(true);
-		addChild(btnCancel);
+		addWindowContent(btnCancel);
 		form.addFormElement(btnCancel);
 	}
 	
