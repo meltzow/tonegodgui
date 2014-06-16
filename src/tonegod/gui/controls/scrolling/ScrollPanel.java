@@ -249,7 +249,6 @@ public class ScrollPanel extends Element {
 		setVThumbSize();
 		setHThumbSize();
 		innerBounds.setClipPadding(clipPadding);
-		scrollableArea.setControlClippingLayer(innerBounds);
 		scrollToTop();
 		scrollToLeft();
 	}
