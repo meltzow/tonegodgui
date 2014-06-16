@@ -2505,6 +2505,10 @@ public class Element extends Node {
 		return clipPadding.x;
 	}
 	
+	public Vector4f getClipPaddingVec() {
+		return clipPadding;
+	}
+	
 	/**
 	 * Shrinks the clipping area by set number of pixels
 	 * 
@@ -2661,10 +2665,10 @@ public class Element extends Node {
 			clipTest.set(def.getClipping());
 			if (def.getElement() != this) {
 				clipTest.addLocal(
-					def.getElement().getClipPadding(),
-					def.getElement().getClipPadding(),
-					-def.getElement().getClipPadding(),
-					-def.getElement().getClipPadding()
+					def.getElement().getClipPaddingVec().x,
+					def.getElement().getClipPaddingVec().y,
+					-def.getElement().getClipPaddingVec().z,
+					-def.getElement().getClipPaddingVec().w
 				);
 			}
 			if (clipTest.x > cX)	cX = clipTest.x;
