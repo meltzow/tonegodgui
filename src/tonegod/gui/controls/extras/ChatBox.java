@@ -146,7 +146,8 @@ public abstract class ChatBox extends Panel {
 		saChatArea.setIsResizable(false);
 		saChatArea.setScaleEW(true);
 		saChatArea.setScaleNS(true);
-		saChatArea.setClippingLayer(saChatArea);
+	//	saChatArea.setClippingLayer(saChatArea);
+	//	saChatArea.addClippingLayer(saChatArea);
 		saChatArea.setText("");
 		addChild(saChatArea);
 		

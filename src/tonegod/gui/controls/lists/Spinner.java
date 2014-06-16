@@ -180,7 +180,7 @@ public abstract class Spinner extends TextField {
 			btnDecY = 0;
 			btnDecH = getHeight();
 			btnDecIcon = screen.getStyle("Common").getString("arrowLeft");
-			layoutHints.setElementPadX(btnWidth*2);
+		//	layoutHints.setElementPadX(btnWidth*2);
 		} else {
 			setWidth(getWidth()-btnWidth);
 			btnIncX = getWidth();
@@ -191,7 +191,7 @@ public abstract class Spinner extends TextField {
 			btnDecY = getHeight()/2;
 			btnDecH = getHeight()/2;
 			btnDecIcon = screen.getStyle("Common").getString("arrowDown");
-			layoutHints.setElementPadX(btnWidth);
+		//	layoutHints.setElementPadX(btnWidth);
 		}
 		btnIncIconSize = getHeight()/2;
 		btnDecIconSize = getHeight()/2;

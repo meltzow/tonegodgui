@@ -31,7 +31,7 @@ import tonegod.gui.listeners.TabFocusListener;
  *
  * @author t0neg0d
  */
-public abstract class SelectList extends ScrollArea implements MouseMovementListener, MouseWheelListener, MouseButtonListener, TabFocusListener, KeyboardListener {
+public abstract class SelectList extends ScrollArea implements MouseMovementListener, MouseButtonListener, TabFocusListener, KeyboardListener {
 	private List<ListItem> listItems = new ArrayList();
 	private List<Integer> selectedIndexes = new ArrayList();
 	private List<Element> highlights = new ArrayList();
@@ -490,7 +490,8 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 				highlight.setWidth( getWidth()-(listPadding*2) );
 				highlight.setHeight(listItemHeight);
 				highlight.getElementMaterial().setColor("Color", highlightColor);
-				highlight.setClippingLayer(this);
+			//	highlight.setClippingLayer(this);
+				highlight.addClippingLayer(this);
 				highlight.setClipPadding(listPadding);
 				highlight.setY(scrollableArea.getHeight()-((listItems.size()-index)*listItemHeight) + listPadding);
 				scrollableArea.addChild(highlight);
@@ -527,7 +528,8 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 				highlight.setWidth( getWidth()-(listPadding*2) );
 				highlight.setHeight(listItemHeight);
 				highlight.getElementMaterial().setColor("Color", highlightColor);
-				highlight.setClippingLayer(this);
+			//	highlight.setClippingLayer(this);
+				highlight.addClippingLayer(this);
 				highlight.setClipPadding(listPadding);
 				highlight.setY(scrollableArea.getHeight()-((listItems.size()-index)*listItemHeight) + listPadding);
 				scrollableArea.addChild(highlight);

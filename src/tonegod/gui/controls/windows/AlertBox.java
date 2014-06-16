@@ -10,6 +10,7 @@ import com.jme3.math.Vector4f;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.scrolling.ScrollArea;
+import tonegod.gui.controls.scrolling.ScrollPanel;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.utils.UIDUtil;
 
@@ -18,7 +19,7 @@ import tonegod.gui.core.utils.UIDUtil;
  * @author t0neg0d
  */
 public abstract class AlertBox extends Window {
-	private ScrollArea dlg;
+	private ScrollPanel dlg;
 	private ButtonAdapter btnOk;
 	protected Form form;
 	
@@ -124,7 +125,7 @@ public abstract class AlertBox extends Window {
 		Vector4f indents = screen.getStyle("Window").getVector4f("contentIndents");
 		float controlSpacing = screen.getStyle("Common").getFloat("defaultControlSpacing");
 		
-		dlg = new ScrollArea(screen, UID + ":dialog",
+		dlg = new ScrollPanel(screen, UID + ":dialog",
 			new Vector2f(
 				indents.y,
 				indents.x+getDragBarHeight()+controlSpacing
@@ -132,8 +133,7 @@ public abstract class AlertBox extends Window {
 			new Vector2f(
 				getWidth()-indents.y-indents.z,
 				getHeight()-indents.x-indents.w-getDragBarHeight()-screen.getStyle("Window").getFloat("buttonAreaHeight")-(controlSpacing*2)
-			),
-			true
+			)
 		);
 	//	dlg.setFontColor(ColorRGBA.LightGray);
 	//	dlg.setTextAlign(BitmapFont.Align.Left);
@@ -142,7 +142,8 @@ public abstract class AlertBox extends Window {
 		dlg.setIsResizable(false);
 		dlg.setScaleEW(true);
 		dlg.setScaleNS(true);
-		dlg.setClippingLayer(dlg);
+		dlg.addClippingLayer(dlg);
+		dlg.setUseVerticalWrap(true);
 	//	dlg.setPadding(5);
 		addChild(dlg);
 		
@@ -164,7 +165,7 @@ public abstract class AlertBox extends Window {
 		form.addFormElement(btnOk);
 	}
 	
-	public ScrollArea getMessageArea() {
+	public ScrollPanel getMessageArea() {
 		return this.dlg;
 	}
 	
@@ -177,14 +178,14 @@ public abstract class AlertBox extends Window {
 	 * @param text String The message
 	 */
 	public void setMsg(String text) {
-		dlg.setText(text);
+		dlg.getScrollableArea().setText(text);
 	}
 	
 	/**
 	 * Returns the ScrollArea containing the window message text.
 	 * @return 
 	 */
-	public ScrollArea getTextArea() { return this.dlg; }
+	public ScrollPanel getTextArea() { return this.dlg; }
 	
 	/**
 	 * Sets the text of the Ok button

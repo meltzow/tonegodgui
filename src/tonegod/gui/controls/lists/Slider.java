@@ -314,7 +314,7 @@ public abstract class Slider extends ButtonAdapter {
 				thumbLockPosition.set(0, 0);
 				thumbSize.set(controlSize/3*2, controlSize);
 				thumbPosition.set(-(controlSize/4), -(controlSize/3));
-				layoutHints.setElementPadY(controlSize/3);
+			//	layoutHints.setElementPadY(controlSize/3);
 			}
 		} else {
 			if (trackSurroundsThumb) {
@@ -329,7 +329,7 @@ public abstract class Slider extends ButtonAdapter {
 				thumbLockPosition.set(0,0);
 				thumbSize.set(controlSize, controlSize/3*2);
 				thumbPosition.set(-(controlSize/3), -(controlSize/4));
-				layoutHints.setElementPadX(controlSize/3);
+			//	layoutHints.setElementPadX(controlSize/3);
 			}
 		}
 	}

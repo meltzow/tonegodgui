@@ -330,8 +330,10 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 */
 	@Override
 	public void addElement(Element element) {
-		if (element instanceof Menu)
-			element.hide();
+		if (element instanceof Menu) {
+			addElement(element, true);
+			return;
+		}
 		
 		if (getElementById(element.getUID()) != null) {
 			try {
@@ -364,7 +366,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	@Override
 	public void addElement(Element element, boolean hide) {
 		if (element instanceof Menu)
-			element.hide();
+			hide = true;
 		
 		if (getElementById(element.getUID()) != null) {
 			try {
@@ -2365,7 +2367,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			toolTip.hide();
 			return;
 		}
-
+		
 		String oldText = toolTip.getText();
 		if (!oldText.equals(newText)) {
 			/*
@@ -2379,7 +2381,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			toolTip.setHeight(toolTip.getTextElement().getHeight() + (toolTip.getTextPadding() * 12));
 			toolTip.getTextElement().setBox(new Rectangle(0, 0, toolTip.getWidth() - (toolTip.getTextPadding() * 2), toolTip.getHeight() - (toolTip.getTextPadding() * 2)));
 		}
-		
+
 		setToolTipLocation();
 		if (!toolTip.getIsVisible()) {
 			toolTip.show();
@@ -2415,7 +2417,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	@Override
 	public void hideToolTip() {
-		toolTip.setText("");
+		toolTip.setText(" ");
 		toolTip.hide();
 	}
 	//</editor-fold>

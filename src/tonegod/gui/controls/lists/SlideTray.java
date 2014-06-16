@@ -244,7 +244,8 @@ public class SlideTray extends Element {
 			element.setPosition(getNextPosition(),0);
 		else
 			element.setPosition(0,getNextPosition());
-		element.setClippingLayer(elTray);
+	//	element.setClippingLayer(elTray);
+		element.addClippingLayer(elTray);
 		element.setDocking(Docking.SW);
 		element.setScaleEW(false);
 		element.setScaleNS(false);
@@ -342,7 +343,8 @@ public class SlideTray extends Element {
 	
 	@Override
 	public void setControlClippingLayer(Element clippingLayer) {
-		setClippingLayer(clippingLayer);
+	//	setClippingLayer(clippingLayer);
+		addClippingLayer(clippingLayer);
 		for (Element el : elementChildren.values()) {
 			if (!trayElements.contains(el))
 				el.setControlClippingLayer(clippingLayer);

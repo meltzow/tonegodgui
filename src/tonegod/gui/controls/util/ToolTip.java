@@ -70,16 +70,20 @@ public class ToolTip extends Label {
 	public void show() {
 		isVisible = true;
 		isClipped = wasClipped;
-		updateClipping();
+		if ((Boolean)getElementMaterial().getParam("UseClipping").getValue())
+			getElementMaterial().setBoolean("UseClipping", false);
 	}
 	
 	@Override
 	public void hide() {
-		if (isVisible) {
+		if (isVisible)
 			wasVisible = isVisible;
-			isVisible = false;
-			isClipped = true;
-			updateClipping();
-		}
+		isVisible = false;
+		isClipped = true;
+		clippingBounds.set(0,0,0,0);
+		getElementMaterial().setVector4("Clipping", clippingBounds);
+		if (!(Boolean)getElementMaterial().getParam("UseClipping").getValue())
+			getElementMaterial().setBoolean("UseClipping", true);
 	}
+	
 }

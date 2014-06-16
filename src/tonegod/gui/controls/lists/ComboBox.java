@@ -7,6 +7,7 @@ package tonegod.gui.controls.lists;
 import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
+import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
@@ -150,7 +151,7 @@ public abstract class ComboBox extends TextField {
 		
 		setWidth(getWidth()-btnHeight);
 		
-		layoutHints.setElementPadX(btnHeight);
+	//	layoutHints.setElementPadX(btnHeight);
 		
 		btnArrowDown = new ButtonAdapter(screen, UID + ":ArrowDown",
 			new Vector2f(

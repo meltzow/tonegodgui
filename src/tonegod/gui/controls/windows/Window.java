@@ -10,6 +10,11 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
+import tonegod.gui.core.layouts.DefaultLayout;
+import tonegod.gui.core.layouts.FlowLayout;
+import tonegod.gui.core.layouts.Layout;
+import tonegod.gui.core.layouts.MigLayout;
+import tonegod.gui.core.utils.ControlUtil;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 
@@ -19,9 +24,24 @@ import tonegod.gui.effects.Effect;
  */
 public class Window extends Element {
 	protected Element dragBar;
+	protected Element contentArea;
 	private boolean useShowSound, useHideSound;
 	private String showSound, hideSound;
 	private float showSoundVolume, hideSoundVolume;
+	private Vector4f dbIndents = new Vector4f();
+	
+	/**
+	 * Creates a new instance of the Window control
+	 * 
+	 * @param screen The screen control the Element is to be added to
+	 */
+	public Window(ElementManager screen) {
+		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
+			screen.getStyle("Window").getVector2f("defaultSize"),
+			screen.getStyle("Window").getVector4f("resizeBorders"),
+			screen.getStyle("Window").getString("defaultImg")
+		);
+	}
 	
 	/**
 	 * Creates a new instance of the Window control
@@ -114,7 +134,7 @@ public class Window extends Element {
 		this.setMinDimensions(screen.getStyle("Window").getVector2f("minSize"));
 	//	this.setClippingLayer(this);
 		
-		Vector4f dbIndents = screen.getStyle("Window#Dragbar").getVector4f("indents");
+		dbIndents.set(screen.getStyle("Window#Dragbar").getVector4f("indents"));
 		
 		dragBar = new Element(screen, UID + ":DragBar",
 			new Vector2f(dbIndents.y, dbIndents.x),
@@ -135,11 +155,18 @@ public class Window extends Element {
 		dragBar.setIsMovable(true);
 		dragBar.setEffectParent(true);
 		dragBar.setClippingLayer(this);
-		
 		addChild(dragBar);
+		
 	//	this.setTextVAlign(BitmapFont.VAlign.Center);
 	//	this.setTextAlign(BitmapFont.Align.Center);
 	//	this.setTextWrap(LineWrapMode.Clip);
+		
+		contentArea = ControlUtil.getContainer(screen);
+		contentArea.setDimensions(dimensions.subtract(0, dragBar.getHeight()));
+		contentArea.setPosition(0,dragBar.getHeight());
+		contentArea.setScaleEW(true);
+		contentArea.setScaleNS(true);
+		addChild(contentArea);
 		
 		showSound = screen.getStyle("Window").getString("showSound");
 		useShowSound = screen.getStyle("Window").getBoolean("useShowSound");

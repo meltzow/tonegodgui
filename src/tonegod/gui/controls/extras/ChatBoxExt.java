@@ -192,7 +192,8 @@ public abstract class ChatBoxExt extends Panel {
 		saChatArea.setIsResizable(false);
 		saChatArea.setScaleEW(true);
 		saChatArea.setScaleNS(true);
-		saChatArea.setClippingLayer(saChatArea);
+	//	saChatArea.setClippingLayer(saChatArea);
+	//	saChatArea.addClippingLayer(saChatArea);
 		saChatArea.getScrollableArea().setIgnoreMouse(true);
 		saChatArea.getScrollableArea().setDocking(Docking.SW);
 		saChatArea.setPadding(2);
@@ -430,7 +431,8 @@ public abstract class ChatBoxExt extends Panel {
 		l.setIsResizable(false);
 		l.setIsMovable(false);
 		l.setIgnoreMouse(true);
-		l.setClippingLayer(saChatArea);
+	//	l.setClippingLayer(saChatArea);
+		l.addClippingLayer(saChatArea);
 		l.setClipPadding(saContentPadding);
 		l.setFontColor(cm.getChannel().getColor());
 		l.setFontSize(saChatArea.getFontSize());
@@ -692,7 +694,8 @@ public abstract class ChatBoxExt extends Panel {
 		checkbox.setIsResizable(false);
 		checkbox.setIsMovable(false);
 		checkbox.setIgnoreMouse(false);
-		checkbox.setClippingLayer(filtersScrollArea);
+	//	checkbox.setClippingLayer(filtersScrollArea);
+		checkbox.addClippingLayer(filtersScrollArea);
 		checkbox.setClipPadding(filtersScrollArea.getScrollableArea().getTextPadding());
 		if (!channel.getIsFiltered())
 			checkbox.setIsChecked(true);

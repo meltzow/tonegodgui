@@ -46,8 +46,8 @@ public class ScrollPanelBarH extends Element {
 		track = new ButtonAdapter(screen, getUID() + ":hTrack",
 			new Vector2f(getHeight(),0),
 			new Vector2f(getWidth()-(getHeight()*2), getHeight()),
-			screen.getStyle("ScrollArea#VScrollBar").getVector4f("trackResizeBorders"),
-			screen.getStyle("ScrollArea#VScrollBar").getString("trackImg")
+			screen.getStyle("ScrollArea#HScrollBar").getVector4f("trackResizeBorders"),
+			screen.getStyle("ScrollArea#HScrollBar").getString("trackImg")
 		) {
 			@Override
 			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
@@ -100,16 +100,16 @@ public class ScrollPanelBarH extends Element {
 		thumb = new ButtonAdapter(screen, getUID() + ":hThumb",
 			new Vector2f(0, 0),
 			new Vector2f(getHeight(), getHeight()),
-			screen.getStyle("ScrollArea#VScrollBar").getVector4f("thumbResizeBorders"),
-			screen.getStyle("ScrollArea#VScrollBar").getString("thumbImg")
+			screen.getStyle("ScrollArea#HScrollBar").getVector4f("thumbResizeBorders"),
+			screen.getStyle("ScrollArea#HScrollBar").getString("thumbImg")
 		) {
 			@Override
 			public void controlMoveHook() {
 				scrollScrollableArea();
 			}
 		};
-		thumb.setButtonHoverInfo(screen.getStyle("ScrollArea#VScrollBar").getString("thumbHoverImg"), ColorRGBA.White);
-		thumb.setButtonPressedInfo(screen.getStyle("ScrollArea#VScrollBar").getString("thumbPressedImg"), ColorRGBA.Gray);
+		thumb.setButtonHoverInfo(screen.getStyle("ScrollArea#HScrollBar").getString("thumbHoverImg"), ColorRGBA.White);
+		thumb.setButtonPressedInfo(screen.getStyle("ScrollArea#HScrollBar").getString("thumbPressedImg"), ColorRGBA.Gray);
 		thumb.setIsMovable(true);
 		thumb.setLockToParentBounds(true);
 		thumb.setScaleEW(true);
@@ -120,8 +120,8 @@ public class ScrollPanelBarH extends Element {
 		btnLeft = new ButtonAdapter(screen, getUID() + ":hBtnLeft",
 			new Vector2f(0, 0),
 			new Vector2f(getHeight(), getHeight()),
-			screen.getStyle("ScrollArea#VScrollBar").getVector4f("btnUpResizeBorders"),
-			screen.getStyle("ScrollArea#VScrollBar").getString("btnUpImg")
+			screen.getStyle("ScrollArea#HScrollBar").getVector4f("btnLeftResizeBorders"),
+			screen.getStyle("ScrollArea#HScrollBar").getString("btnLeftImg")
 		) {
 			@Override
 			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
@@ -138,13 +138,13 @@ public class ScrollPanelBarH extends Element {
 				scrollScrollableArea();
 			}
 		};
-		btnLeft.setButtonHoverInfo(screen.getStyle("ScrollArea#VScrollBar").getString("btnUpHoverImg"), ColorRGBA.White);
-		btnLeft.setButtonPressedInfo(screen.getStyle("ScrollArea#VScrollBar").getString("btnUpPressedImg"), ColorRGBA.Gray);
+		btnLeft.setButtonHoverInfo(screen.getStyle("ScrollArea#HScrollBar").getString("btnLeftHoverImg"), ColorRGBA.White);
+		btnLeft.setButtonPressedInfo(screen.getStyle("ScrollArea#HScrollBar").getString("btnLeftPressedImg"), ColorRGBA.Gray);
 		btnLeft.setScaleEW(false);
 		btnLeft.setScaleNS(false);
 		btnLeft.setDocking(Element.Docking.SW);
 		btnLeft.setInterval(100);
-		if (screen.getStyle("ScrollArea#VScrollBar").getBoolean("useBtnUpArrowIcon")) {
+		if (screen.getStyle("ScrollArea#HScrollBar").getBoolean("useBtnLeftArrowIcon")) {
 			btnLeft.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowLeft"));
 		}
 		this.addChild(btnLeft);
@@ -152,8 +152,8 @@ public class ScrollPanelBarH extends Element {
 		btnRight = new ButtonAdapter(screen, getUID() + ":hBtnRight",
 			new Vector2f(getWidth()-getHeight(),0),
 			new Vector2f(getHeight(), getHeight()),
-			screen.getStyle("ScrollArea#VScrollBar").getVector4f("btnDownResizeBorders"),
-			screen.getStyle("ScrollArea#VScrollBar").getString("btnDownImg")
+			screen.getStyle("ScrollArea#HScrollBar").getVector4f("btnRightResizeBorders"),
+			screen.getStyle("ScrollArea#HScrollBar").getString("btnRightImg")
 		) {
 			@Override
 			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean toggled) {
@@ -170,13 +170,13 @@ public class ScrollPanelBarH extends Element {
 				scrollScrollableArea();
 			}
 		};
-		btnRight.setButtonHoverInfo(screen.getStyle("ScrollArea#VScrollBar").getString("btnDownHoverImg"), ColorRGBA.White);
-		btnRight.setButtonPressedInfo(screen.getStyle("ScrollArea#VScrollBar").getString("btnDownPressedImg"), ColorRGBA.Gray);
+		btnRight.setButtonHoverInfo(screen.getStyle("ScrollArea#HScrollBar").getString("btnRightHoverImg"), ColorRGBA.White);
+		btnRight.setButtonPressedInfo(screen.getStyle("ScrollArea#HScrollBar").getString("btnRightPressedImg"), ColorRGBA.Gray);
 		btnRight.setScaleEW(false);
 		btnRight.setScaleNS(false);
 		btnRight.setDocking(Element.Docking.SE);
 		btnRight.setInterval(100);
-		if (screen.getStyle("ScrollArea#VScrollBar").getBoolean("useBtnDownArrowIcon")) {
+		if (screen.getStyle("ScrollArea#HScrollBar").getBoolean("useBtnRightArrowIcon")) {
 			btnRight.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowRight"));
 		}
 		this.addChild(btnRight);

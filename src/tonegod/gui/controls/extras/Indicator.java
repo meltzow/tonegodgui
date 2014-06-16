@@ -29,6 +29,7 @@ public abstract class Indicator extends Element {
 	private Vector4f indPadding = Vector4f.ZERO.clone();
 	private Vector4f clipTest = Vector4f.ZERO.clone();
 	private boolean reverseDirection = false;
+	private ClippingDefine def = null;
 	
 	/**
 	 * Creates a new instance of the Indicator control
@@ -149,76 +150,37 @@ public abstract class Indicator extends Element {
 			null
 		) {
 			@Override
-			public void setControlClippingLayer(Element clippingLayer) {
-			//	setClippingLayer(clippingLayer);
-			//	Set<String> keys = elementChildren.keySet();
-				for (Element el : elementChildren.values()) {
-					el.setControlClippingLayer(clippingLayer);
-				}
-			}
-			@Override
-			public void updateLocalClipping() {
+			public void updateLocalClippingLayer() {
 				Indicator ind = ((Indicator)this.getElementParent());
+				if (def == null) def = elIndicator.getClippingDefine(elIndicator);
+				
 				if (getIsVisible()) {
-					if (getClippingLayer() != null) {
-						float clipX = 0f, clipY = 0f, clipW = 0f, clipH = 0f;
-						if (getElementParent().getClippingLayer() != null) {
-							clipX = (getElementParent().getClippingBounds().x > getClippingLayer().getAbsoluteX()) ? getElementParent().getClippingBounds().x : getClippingLayer().getAbsoluteX();
-							clipY = (getElementParent().getClippingBounds().y > getClippingLayer().getAbsoluteY()) ? getElementParent().getClippingBounds().y : getClippingLayer().getAbsoluteY();
-							if (ind.getOrientation() == Indicator.Orientation.HORIZONTAL) {
-								clipW = (getElementParent().getClippingBounds().z < getClippingLayer().getAbsoluteWidth()-(getClippingLayer().getWidth()-ind.getCurrentPercentage())) ? getElementParent().getClippingBounds().z : getClippingLayer().getAbsoluteWidth()-(getClippingLayer().getWidth()-ind.getCurrentPercentage());
-								clipH = (getElementParent().getClippingBounds().w < getClippingLayer().getAbsoluteHeight()) ? getElementParent().getClippingBounds().w : getClippingLayer().getAbsoluteHeight();
-							} else {
-								clipW = (getElementParent().getClippingBounds().z < getClippingLayer().getAbsoluteWidth()) ? getElementParent().getClippingBounds().z : getClippingLayer().getAbsoluteWidth();
-								clipH = (getElementParent().getClippingBounds().w < getClippingLayer().getAbsoluteHeight()-(getClippingLayer().getHeight()-ind.getCurrentPercentage())) ? getElementParent().getClippingBounds().w : getClippingLayer().getAbsoluteHeight()-(getClippingLayer().getHeight()-ind.getCurrentPercentage());
-							}
+					float clipX = 0, clipY = 0, clipW = 0, clipH = 0;
+					if (ind.getOrientation() == Indicator.Orientation.HORIZONTAL) {
+						if (reverseDirection) {
+							clipX = def.getElement().getWidth()-ind.getCurrentPercentage();
+							clipW = def.getElement().getWidth();
 						} else {
-							clipX = getClippingLayer().getAbsoluteX();
-							clipY = getClippingLayer().getAbsoluteY();
-							if (ind.getOrientation() == Indicator.Orientation.HORIZONTAL) {
-								if (reverseDirection) {
-									clipX = getClippingLayer().getAbsoluteX()+(getClippingLayer().getAbsoluteWidth()-ind.getCurrentPercentage());
-									clipW = getClippingLayer().getAbsoluteWidth();
-								} else {
-									clipW = getClippingLayer().getAbsoluteWidth()-(getClippingLayer().getWidth()-ind.getCurrentPercentage());
-								}
-								clipH = getClippingLayer().getAbsoluteHeight();
-							} else {
-								if (reverseDirection) {
-									clipY = getClippingLayer().getAbsoluteY()+(getClippingLayer().getAbsoluteHeight()-ind.getCurrentPercentage());
-									clipH = getClippingLayer().getAbsoluteHeight();
-								} else {
-									clipH = getClippingLayer().getAbsoluteHeight()-(getClippingLayer().getHeight()-ind.getCurrentPercentage());
-								}
-								clipW = getClippingLayer().getAbsoluteWidth();
-							}
+							clipW = def.getElement().getWidth()-(def.getElement().getWidth()-ind.getCurrentPercentage());
 						}
-						clipTest.set(clipX, clipY, clipW, clipH);
-						if (clipTest.x != getClippingBounds().x ||
-							clipTest.y != getClippingBounds().y ||
-							clipTest.z != getClippingBounds().z ||
-							clipTest.w != getClippingBounds().w) {
-							getClippingBounds().set(clipX, clipY, clipW, clipH);
-							getElementMaterial().setVector4("Clipping", getClippingBounds());
-							if (!(Boolean)getElementMaterial().getParam("UseClipping").getValue())
-								getElementMaterial().setBoolean("UseClipping", true);
-						}
+						clipH = def.getElement().getHeight();
 					} else {
-						if ((Boolean)getElementMaterial().getParam("UseClipping").getValue())
-							getElementMaterial().setBoolean("UseClipping", false);
+						if (reverseDirection) {
+							clipY = def.getElement().getHeight()-ind.getCurrentPercentage();
+							clipH = def.getElement().getHeight();
+						} else {
+							clipH = def.getElement().getHeight()-(def.getElement().getHeight()-ind.getCurrentPercentage());
+						}
+						clipW = def.getElement().getWidth();
 					}
-				} else {
-					getClippingBounds().set(Vector4f.ZERO);
-					getElementMaterial().setVector4("Clipping", getClippingBounds());
-					getElementMaterial().setBoolean("UseClipping", true);
+					def.clip.set(clipX, clipY, clipW, clipH);
+					super.updateLocalClippingLayer();
+					
 				}
-				//setFontPages();
 			}
 		};
-		elIndicator.setClippingLayer(elIndicator);
+		elIndicator.addClippingLayer(elIndicator, new Vector4f(0,0,elIndicator.getWidth(),elIndicator.getHeight()));
 		elIndicator.setIgnoreMouse(true);
-	//	elIndicator.setDockS(true);
-	//	elIndicator.setDockW(true);
 		elIndicator.setDocking(Docking.SW);
 		elIndicator.setScaleEW(true);
 		elIndicator.setScaleNS(false);
@@ -233,13 +195,9 @@ public abstract class Indicator extends Element {
 			overlayImg
 		);
 		elOverlay.setIgnoreMouse(true);
-		elOverlay.setDockS(true);
-		elOverlay.setDockW(true);
+		elOverlay.setDocking(Docking.SW);
 		elOverlay.setScaleEW(true);
 		elOverlay.setScaleNS(false);
-		
-	//	elOverlay.setTextAlign(BitmapFont.Align.Center);
-	//	elOverlay.setTextVAlign(BitmapFont.VAlign.Center);
 		
 		// Load default font info
 		elOverlay.setFontColor(screen.getStyle("Indicator").getColorRGBA("fontColor"));
@@ -336,22 +294,12 @@ public abstract class Indicator extends Element {
 			currentValue = 0f;
 		}
 		percentage = currentValue/maxValue;
-	//	if (alphaMapPath == null) {
-	//		if (orientation == Orientation.HORIZONTAL) {
-	//			percentage *= getWidth();
-	//			elIndicator.setWidth(percentage);
-	//		} else {
-	//			percentage *= getHeight();
-	//			elIndicator.setHeight(percentage);
-	//		}
-	//	} else {
-			if (orientation == Orientation.HORIZONTAL) {
-				percentage *= indDimensions.x;
-			} else {
-				percentage *= indDimensions.y;
-			}
-			elIndicator.updateLocalClipping();
-	//	}
+		if (orientation == Orientation.HORIZONTAL) {
+			percentage *= indDimensions.x;
+		} else {
+			percentage *= indDimensions.y;
+		}
+		elIndicator.updateLocalClippingLayer();
 		
 		if (this.displayValues) {
 			elOverlay.setText(String.valueOf((int)this.currentValue) + "/" + String.valueOf((int)this.maxValue));

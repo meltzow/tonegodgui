@@ -153,6 +153,8 @@ public class ScrollPanel extends Element {
 		setAsContainerOnly();
 		
 		// Load defaults
+		setMinDimensions(screen.getStyle("ScrollArea").getVector2f("minimumSize"));
+		
 		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 		clipPadding = screen.getStyle("ScrollArea").getFloat("textPadding");
 		
@@ -161,7 +163,16 @@ public class ScrollPanel extends Element {
 		innerBounds.setScaleNS(true);
 		innerBounds.setDocking(Docking.SW);
 		
-		scrollableArea = new Element(screen, UID + "scrollableArea", Vector2f.ZERO, dimensions, Vector4f.ZERO, null);	
+		scrollableArea = new Element(screen, UID + "scrollableArea", Vector2f.ZERO, dimensions, Vector4f.ZERO, null) {
+			@Override
+			public void setControlClippingLayer(Element clippingLayer) {
+				for (Element el : elementChildren.values()) {
+					el.setControlClippingLayer(clippingLayer);
+				}
+			}
+		};
+		scrollableArea.setTextClipPadding(screen.getStyle("ScrollArea").getFloat("scrollAreaPadding"));
+		
 		scrollableArea.setScaleEW(false);
 		scrollableArea.setScaleNS(false);
 		scrollableArea.setDocking(Docking.NW);
@@ -172,9 +183,11 @@ public class ScrollPanel extends Element {
 		scrollableArea.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("ScrollArea").getString("textAlign")));
 		scrollableArea.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("ScrollArea").getString("textVAlign")));
 		scrollableArea.setTextWrap(LineWrapMode.valueOf(screen.getStyle("ScrollArea").getString("textWrap")));
+		scrollableArea.setTextPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
+		scrollableArea.setTextClipPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
 		
 		innerBounds.addChild(scrollableArea);
-		scrollableArea.setClippingLayer(innerBounds);
+		scrollableArea.addClippingLayer(innerBounds);
 		addChild(innerBounds);
 		
 		vScrollBar = new ScrollPanelBarV(this);
@@ -218,7 +231,8 @@ public class ScrollPanel extends Element {
 	
 	public void addScrollableContent(Element el) {
 		scrollableArea.addChild(el);
-		el.setClippingLayer(innerBounds);
+	//	el.setClippingLayer(innerBounds);
+		el.addClippingLayer(innerBounds);
 		el.setClipPadding(innerBounds.getClipPadding());
 		el.setDocking(Docking.SW);
 		reshape();
@@ -636,13 +650,17 @@ public class ScrollPanel extends Element {
 		public void onMouseWheelReleased(MouseButtonEvent evt) { evt.setConsumed(); }
 		@Override
 		public void onMouseWheelUp(MouseMotionEvent evt) {
-			scrollYBy(-getTrackInc());
-			evt.setConsumed();
+			if (getVerticalScrollDistance() > 0) {
+				scrollYBy(-getTrackInc());
+				evt.setConsumed();
+			}
 		}
 		@Override
 		public void onMouseWheelDown(MouseMotionEvent evt) {
-			scrollYBy(getTrackInc());
-			evt.setConsumed();
+			if (getVerticalScrollDistance() > 0) {
+				scrollYBy(getTrackInc());
+				evt.setConsumed();
+			}
 		}
 		//<editor-fold desc="Android Events">
 		@Override
