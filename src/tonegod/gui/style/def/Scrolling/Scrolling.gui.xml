@@ -98,7 +98,7 @@
 				<z value="4" />
 				<w value="4" />
 			</property>
-			<property name="btnRightResizeBorders" type="Vector4f">
+			<property name="btnLeftResizeBorders" type="Vector4f">
 				<x value="4" />
 				<y value="4" />
 				<z value="4" />
