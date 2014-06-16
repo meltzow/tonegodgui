@@ -319,6 +319,8 @@ public abstract class ChatBoxExt extends Panel {
 		chatForm.addFormElement(tfChatInput);
 		addChild(tfChatInput);
 
+		addClippingLayer(this);
+		
 		populateEffects("Window");
 	}
 

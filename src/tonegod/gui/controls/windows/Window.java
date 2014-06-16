@@ -6,8 +6,10 @@ package tonegod.gui.controls.windows;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
+import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
+import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.layouts.Layout;
@@ -22,10 +24,14 @@ import tonegod.gui.effects.Effect;
 public class Window extends Element {
 	protected Element dragBar;
 	protected Element contentArea;
+	protected ButtonAdapter close, collapse;
 	private boolean useShowSound, useHideSound;
 	private String showSound, hideSound;
 	private float showSoundVolume, hideSoundVolume;
 	private Vector4f dbIndents = new Vector4f();
+	private Window self;
+	private boolean useClose = false, useCollapse = false, isCollapsed = false;
+	private float winDif = 0;
 	
 	/**
 	 * Creates a new instance of the Window control
@@ -123,6 +129,7 @@ public class Window extends Element {
 	 */
 	public Window(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg);
+		self = this;
 		
 		this.setIsResizable(true);
 		this.setScaleNS(false);
@@ -153,9 +160,47 @@ public class Window extends Element {
 		dragBar.setEffectParent(true);
 		dragBar.setClippingLayer(this);
 		
-	//	this.setTextVAlign(BitmapFont.VAlign.Center);
-	//	this.setTextAlign(BitmapFont.Align.Center);
-	//	this.setTextWrap(LineWrapMode.Clip);
+		addChild(dragBar);
+		
+		float buttonHeight = (dragBar.getHeight() > 24) ? 24 : dragBar.getHeight();
+		buttonHeight -= 2;
+		
+		close = new ButtonAdapter(screen, Vector2f.ZERO, new Vector2f(buttonHeight,buttonHeight)) {
+			@Override
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
+				self.hideWindow();
+			}
+		};
+		close.setText("X");
+		close.setDocking(Docking.SE);
+		
+		collapse = new ButtonAdapter(screen, Vector2f.ZERO, new Vector2f(buttonHeight,buttonHeight)) {
+			@Override
+			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
+				if (!isCollapsed) {
+					isCollapsed = true;
+					contentArea.hide();
+					winDif = self.getHeight();
+					self.setHeight(getDragBarHeight()+(dbIndents.y*2));
+					winDif -= self.getHeight();
+					dragBar.setY(self.getHeight()-dragBar.getHeight()-dbIndents.x);
+					self.setY(self.getY()+winDif);
+					setButtonIcon(getWidth(), getHeight(), screen.getStyle("Common").getString("arrowDown"));
+					self.setResizeN(false);
+					self.setResizeS(false);
+				} else {
+					isCollapsed = false;
+					contentArea.show();
+					self.setHeight(getDragBarHeight()+contentArea.getHeight());
+					dragBar.setY(self.getHeight()-dragBar.getHeight()-dbIndents.x);
+					self.setY(self.getY()-winDif);setButtonIcon(getWidth(), getHeight(), screen.getStyle("Common").getString("arrowUp"));
+					self.setResizeN(self.getIsResizable());
+					self.setResizeS(self.getIsResizable());
+				}
+			}
+		};
+		collapse.setButtonIcon(collapse.getWidth(), collapse.getHeight(), screen.getStyle("Common").getString("arrowUp"));
+		collapse.setDocking(Docking.SE);
 		
 		contentArea = ControlUtil.getContainer(screen);
 		contentArea.setDimensions(dimensions.subtract(0, dragBar.getHeight()));
@@ -164,7 +209,6 @@ public class Window extends Element {
 		contentArea.setScaleNS(true);
 		
 		addChild(contentArea);
-		addChild(dragBar);
 		
 		showSound = screen.getStyle("Window").getString("showSound");
 		useShowSound = screen.getStyle("Window").getBoolean("useShowSound");
@@ -269,4 +313,39 @@ public class Window extends Element {
 	}
 	
 	public Element getContentArea() { return contentArea; }
+	
+	public void setUseCloseButton(boolean use) {
+		if (use) {
+			this.useClose = true;
+			dragBar.addChild(close);
+			close.centerToParentV();
+			close.setX(dragBar.getWidth()-close.getWidth()-close.getY());
+			if (useCollapse) {
+				close.centerToParentV();
+				close.setX(dragBar.getWidth()-close.getWidth()-collapse.getWidth()-collapse.getY()-5);
+			}
+		} else {
+			this.useClose = false;
+			dragBar.removeChild(close);
+			if (useCollapse) {
+				close.centerToParentV();
+				close.setX(dragBar.getWidth()-collapse.getWidth()-collapse.getY());
+			}
+		}
+	}
+	
+	public void setUseCollapseButton(boolean use) {
+		if (use) {
+			this.useCollapse = true;
+			dragBar.addChild(collapse);
+			collapse.centerToParentV();
+			if (useClose)
+				collapse.setX(dragBar.getWidth()-collapse.getWidth()-close.getWidth()-collapse.getY()-5);
+			else
+				collapse.setX(dragBar.getWidth()-collapse.getWidth()-collapse.getY());
+		} else {
+			this.useCollapse = false;
+			dragBar.removeChild(collapse);
+		}
+	}
 }

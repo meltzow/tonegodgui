@@ -15,7 +15,7 @@
 			</property>
 			<property name="defaultSize" type="Vector2f">
 				<x value="350" />
-				<y value="200" />
+				<y value="250" />
 			</property>
 			<property name="contentIndents" type="Vector4f">
 				<x value="12" />
