@@ -2659,7 +2659,14 @@ public class Element extends Node {
 		
 		for (ClippingDefine def : clippingLayers) {
 			clipTest.set(def.getClipping());
-			
+			if (def.getElement() != this) {
+				clipTest.addLocal(
+					def.getElement().getClipPadding(),
+					def.getElement().getClipPadding(),
+					-def.getElement().getClipPadding(),
+					-def.getElement().getClipPadding()
+				);
+			}
 			if (clipTest.x > cX)	cX = clipTest.x;
 			if (clipTest.y > cY)	cY = clipTest.y;
 			if (clipTest.z < cW)	cW = clipTest.z;
