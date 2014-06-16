@@ -400,6 +400,7 @@ public class Element extends Node {
 		if (e != null) {
 			e.elementParent = null;
 			e.removeFromParent();
+			e.removeClippingLayer(this);
 			e.cleanup();
 			
 			if (screen.getUseToolTips()) {
@@ -420,6 +421,7 @@ public class Element extends Node {
 	public void removeAllChildren() {
 		for (Element e : elementChildren.values()) {
 			e.removeFromParent();
+			e.removeClippingLayer(this);
 		}
 		elementChildren.clear();
 	}
