@@ -20,11 +20,14 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.texture.Texture;
+import tonegod.gui.controls.text.LabelElement;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
+import tonegod.gui.core.layouts.LayoutHelper;
 import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.core.utils.BitmapTextUtil;
+import tonegod.gui.core.utils.ControlUtil;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
 import tonegod.gui.listeners.KeyboardListener;
@@ -57,6 +60,9 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	private boolean isEnabled = true;
 	protected ColorRGBA originalFontColor;
 	protected Vector2f hoverImgOffset, pressedImgOffset;
+	// Optional LabelElement
+	protected boolean useOptionalLabel = false;
+	protected LabelElement buttonLabel;
 	
 	/**
 	 * Creates a new instance of the Button control
@@ -192,6 +198,17 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			removeEffect(Effect.EffectEvent.TabFocus);
 			removeEffect(Effect.EffectEvent.LoseTabFocus);
 		}
+		
+		buttonLabel = new LabelElement(screen, Vector2f.ZERO, LayoutHelper.dimensions(getWidth(),getHeight()));
+		buttonLabel.setScaleEW(true);
+		buttonLabel.setScaleNS(true);
+		buttonLabel.setFontSize(fontSize);
+		buttonLabel.setFontColor(fontColor);
+		buttonLabel.setTextAlign(textAlign);
+		buttonLabel.setTextVAlign(textVAlign);
+		buttonLabel.setTextWrap(textWrap);
+		buttonLabel.setDocking(Docking.SW);
+		buttonLabel.addClippingLayer(this);
 	}
 	
 	/**
@@ -363,7 +380,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			}
 		}
 		if (hoverFontColor != null) {
-			setFontColor(hoverFontColor);
+			if (!useOptionalLabel)
+				setFontColor(hoverFontColor);
+			else
+				buttonLabel.setFontColor(hoverFontColor);
 		}
 	}
 	
@@ -416,7 +436,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			}
 		}
 		if (pressedFontColor != null) {
-			setFontColor(pressedFontColor);
+			if (!useOptionalLabel)
+				setFontColor(pressedFontColor);
+			else
+				buttonLabel.setFontColor(pressedFontColor);
 		}
 	}
 	
@@ -428,7 +451,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			screen.getEffectManager().applyEffect(effect);
 		}
 		if (originalFontColor != null) {
-			setFontColor(originalFontColor);
+			if (!useOptionalLabel)
+				setFontColor(originalFontColor);
+			else
+				buttonLabel.setFontColor(originalFontColor);
 		}
 	}
 	
@@ -440,7 +466,10 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			screen.getEffectManager().applyEffect(effect);
 		}
 		if (originalFontColor != null) {
-			setFontColor(originalFontColor);
+			if (!useOptionalLabel)
+				setFontColor(originalFontColor);
+			else
+				buttonLabel.setFontColor(originalFontColor);
 		}
 	}
 	
@@ -746,8 +775,27 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		}
 	}
 	
+	public void setLabelText(String text) {
+		this.useOptionalLabel = true;
+	//	buttonLabel.setSizeToText(true);
+		buttonLabel.setText(text);
+		if (buttonLabel.getParent() == null) {
+			addChild(buttonLabel);
+		//	for (ClippingDefine def : clippingLayers) {
+		//		if(def.clip != null)
+		//			buttonLabel.addClippingLayer(def.getElement(),def.clip);
+		//		else
+		//			buttonLabel.addClippingLayer(def.getElement());
+		//	}
+		}
+	//	buttonLabel.centerToParent();
+	}
+	
 	public void setFontColor(ColorRGBA fontColor, boolean makeDefault) {
-		super.setFontColor(fontColor);
+		if (!useOptionalLabel)
+			super.setFontColor(fontColor);
+		else
+			buttonLabel.setFontColor(fontColor);
 		if (makeDefault)
 			originalFontColor = fontColor.clone();
 	}
