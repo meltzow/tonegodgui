@@ -329,6 +329,7 @@ public abstract class TextElement extends Element implements Control {
 	@Override
 	protected void validateClipSettings() {
 		super.validateClipSettings();
+		/*
 		if (this.useTextClipping) {
 			if (!clippingLayers.isEmpty()) {
 				if (!(Boolean)animText.getMaterial().getParam("UseClipping").getValue())
@@ -339,6 +340,7 @@ public abstract class TextElement extends Element implements Control {
 			}
 			animText.getMaterial().setVector4("Clipping", clippingBounds);
 		}
+		*/
 	}
 	
 	@Override
