@@ -163,7 +163,7 @@ public class Element extends Node {
 	private float textClipPadding = 0;
 	
 	// New Clipping
-	private List<ClippingDefine> clippingLayers = new ArrayList();
+	protected List<ClippingDefine> clippingLayers = new ArrayList();
 	private List<ClippingDefine> remClippingLayers = new ArrayList();
 	private Vector4f clipTest = new Vector4f();
 	
