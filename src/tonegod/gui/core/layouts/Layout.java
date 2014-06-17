@@ -12,6 +12,9 @@ import tonegod.gui.core.ElementManager;
  * @author t0neg0d
  */
 public interface Layout {
+	public Layout define(String... params);
+	public Layout set(String param);
+	public LayoutParam get(String key);
 	public void resize();
 	public void setHandlesResize(boolean handleResize);
 	public boolean getHandlesResize();

@@ -5,6 +5,7 @@
 package tonegod.gui.core.layouts;
 
 import com.jme3.math.Vector2f;
+import com.jme3.math.Vector4f;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 
@@ -13,7 +14,7 @@ import tonegod.gui.core.ElementManager;
  * @author t0neg0d
  */
 public class LayoutHelper {
-	private static float	padding = 5;
+	private static Vector4f	padding = new Vector4f(5,5,5,5);
 	private static float	lfHeight = 20;
 	private static Vector2f	absPos = new Vector2f(0,0),
 							pos = new Vector2f(0,0),
@@ -27,7 +28,15 @@ public class LayoutHelper {
 	 * Sets the default padding between Elements
 	 * @param pad 
 	 */
-	public static void setPadding(float pad) { padding = pad; }
+	public static void setPadding(float pad) { padding.set(pad,pad,pad,pad); }
+	/**
+	 * Sets the default padding between Elements
+	 * @param padLeft
+	 * @param padRight
+	 * @param padTop
+	 * @param padBottom 
+	 */
+	public static void setPadding(float padLeft, float padRight, float padTop, float padBottom) { padding.set(padLeft,padRight,padTop,padBottom); }
 	/**
 	 * Sets the size of the line feed
 	 * @param feed 
@@ -58,7 +67,7 @@ public class LayoutHelper {
 	public static void advanceX(Element el, boolean pad) {
 		pos.addLocal(el.getWidth(),0);
 		if (pad)
-			pos.addLocal(padding,0);
+			pos.addLocal(padding.x,0);
 	}
 	/**
 	 * Advances the x position by the specified number of pixels
@@ -87,7 +96,7 @@ public class LayoutHelper {
 		if (lineFeed)
 			pos.addLocal(0, lfHeight);
 		else if (pad)
-			pos.addLocal(0, padding);
+			pos.addLocal(0, padding.y);
 	}
 	/**
 	 * Advances the y position by the specified number of pixels
@@ -123,7 +132,7 @@ public class LayoutHelper {
 	 * Returns the default padding between elements
 	 * @return 
 	 */
-	public static float pad() { return padding; }
+	public static float pad() { return padding.x; }
 	/**
 	 * Returns the default line feed height
 	 * @return 

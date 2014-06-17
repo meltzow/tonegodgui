@@ -7,6 +7,8 @@ package tonegod.gui.core.layouts;
 import com.jme3.font.BitmapFont;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Element.Borders;
@@ -20,6 +22,7 @@ import tonegod.gui.core.layouts.LayoutHint.VAlign;
  * @author t0neg0d
  */
 public class MigLayout implements Layout {
+	public Map<String,LayoutParam> params = new HashMap();
 	private ElementManager screen;
 	private Element owner;
 	private String cols, rows;
@@ -28,7 +31,6 @@ public class MigLayout implements Layout {
 	private StringTokenizer[] st = new StringTokenizer[2];
 	private Vector4f margins = new Vector4f(10,10,10,10);
 	private Vector4f tempV4 = new Vector4f();
-	private float padding = 5;
 	private boolean handlesResize = true;
 	private boolean props = false;
 	private boolean clip = false;
@@ -45,14 +47,44 @@ public class MigLayout implements Layout {
 		this.screen = screen;
 		this.cols = cols;
 		this.rows = rows;
+		for (String param : constraints) {
+			LayoutParam lp = new LayoutParam(param);
+			this.params.put(lp.type.name(),lp);
+		}
+		LayoutParam m = params.get("margins");
+		if (m != null) {
+			margins.set(
+				(Float)m.getValues().get("left").getValue(),
+				(Float)m.getValues().get("top").getValue(),
+				(Float)m.getValues().get("right").getValue(),
+				(Float)m.getValues().get("bottom").getValue()
+			);
+		}
+		LayoutParam c = params.get("clip");
+		if (c != null) {
+			clip = (Boolean)c.getValues().get("clip").getValue();
+		}
 	}
 	
-	public void setUseClipping(boolean clip) {
-		this.clip = clip;
+	@Override
+	public Layout define(String... params) {
+		for (String param : params) {
+			LayoutParam lp = new LayoutParam(param);
+			this.params.put(lp.type.name(),lp);
+		}
+		return this;
 	}
 	
-	public void setMargins(float left, float right, float top, float bottom) {
-		margins.set(left, right, top, bottom);
+	@Override
+	public Layout set(String param) {
+		LayoutParam lp = new LayoutParam(param);
+		this.params.put(lp.type.name(),lp);
+		return this;
+	}
+	
+	@Override
+	public LayoutParam get(String key) {
+		return params.get(key);
 	}
 	
 	private int parseCount(int index, String id, String str) {
