@@ -5,9 +5,6 @@
 package tonegod.gui.core.layouts;
 
 import com.jme3.math.Vector2f;
-import com.jme3.math.Vector4f;
-import java.util.HashMap;
-import java.util.Map;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.layouts.LayoutHint.SizeUnit;
@@ -18,74 +15,10 @@ import static tonegod.gui.core.layouts.LayoutHint.SizeUnit.percent;
  *
  * @author t0neg0d
  */
-public class FlowLayout implements Layout {
-	public Map<String,LayoutParam> params = new HashMap();
-	private ElementManager screen;
-	private Element owner;
-	private boolean handlesResize = true;
-	private Vector4f margins = new Vector4f(10,10,10,10);
-	private Vector4f padding = new Vector4f(5,5,5,5);
-	private boolean clip = false;
+public class FlowLayout extends AbstractLayout {
 	
 	public FlowLayout(ElementManager screen, String... constraints) {
-		this.screen = screen;
-		for (String param : constraints) {
-			LayoutParam lp = new LayoutParam(param);
-			this.params.put(lp.type.name(),lp);
-		}
-		LayoutParam m = params.get("margins");
-		if (m != null) {
-			margins.set(
-				(Float)m.getValues().get("left").getValue(),
-				(Float)m.getValues().get("top").getValue(),
-				(Float)m.getValues().get("right").getValue(),
-				(Float)m.getValues().get("bottom").getValue()
-			);
-		}
-		LayoutParam p = params.get("pad");
-		if (p != null) {
-			padding.set(
-				(Float)p.getValues().get("left").getValue(),
-				(Float)p.getValues().get("top").getValue(),
-				(Float)p.getValues().get("right").getValue(),
-				(Float)p.getValues().get("bottom").getValue()
-			);
-		}
-		LayoutParam c = params.get("clip");
-		if (c != null) {
-			clip = (Boolean)c.getValues().get("clip").getValue();
-		}
-	}
-	
-	@Override
-	public Layout define(String... params) {
-		for (String param : params) {
-			LayoutParam lp = new LayoutParam(param);
-			this.params.put(lp.type.name(),lp);
-		}
-		return this;
-	}
-	
-	@Override
-	public Layout set(String param) {
-		LayoutParam lp = new LayoutParam(param);
-		this.params.put(lp.type.name(),lp);
-		return this;
-	}
-	
-	@Override
-	public LayoutParam get(String key) {
-		return params.get(key);
-	}
-	
-	@Override
-	public void setHandlesResize(boolean handleResize) {
-		this.handlesResize = handleResize;
-	}
-	
-	@Override
-	public boolean getHandlesResize() {
-		return handlesResize;
+		super(screen, constraints);
 	}
 	
 	@Override
@@ -96,11 +29,6 @@ public class FlowLayout implements Layout {
 	@Override
 	public void setOwner(Element el) {
 		this.owner = el;
-	}
-
-	@Override
-	public ElementManager getScreen() {
-		return this.screen;
 	}
 
 	@Override
@@ -123,13 +51,9 @@ public class FlowLayout implements Layout {
 				if (advanceY) {
 					LayoutHelper.resetX();
 					LayoutHelper.advanceX(margins.x);
-					LayoutHelper.advanceY(lastEl,true);//lastEl.getLayoutHints().getUseLayoutPadY());
+					LayoutHelper.advanceY(lastEl,true);
 					LayoutHelper.advanceX(padX);
 					LayoutHelper.advanceY(padY);
-				//	if (lastEl.getLayoutHints().getLayoutLineFeed()) {
-				//		for (int lf = 0; lf < lastEl.getLayoutHints().getLayoutNumLineFeeds(); lf++)
-				//			LayoutHelper.advanceY(LayoutHelper.feed());
-				//	}
 				} else {
 					if (LayoutHelper.position().x + el.getWidth() > owner.getWidth()-margins.x) {
 						LayoutHelper.resetX();

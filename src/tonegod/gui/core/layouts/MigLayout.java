@@ -4,11 +4,8 @@
  */
 package tonegod.gui.core.layouts;
 
-import com.jme3.font.BitmapFont;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.StringTokenizer;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.Element.Borders;
@@ -21,19 +18,11 @@ import tonegod.gui.core.layouts.LayoutHint.VAlign;
  *
  * @author t0neg0d
  */
-public class MigLayout implements Layout {
-	public Map<String,LayoutParam> params = new HashMap();
-	private ElementManager screen;
-	private Element owner;
+public class MigLayout extends AbstractLayout {
 	private String cols, rows;
 	private Cell[][] oldcells;
 	private Cell[][] cells;
 	private StringTokenizer[] st = new StringTokenizer[2];
-	private Vector4f margins = new Vector4f(10,10,10,10);
-	private Vector4f tempV4 = new Vector4f();
-	private boolean handlesResize = true;
-	private boolean props = false;
-	private boolean clip = false;
 	
 	/**
 	 * Creates a new instance of MigLayout
@@ -44,47 +33,9 @@ public class MigLayout implements Layout {
 	 * @param constraints 
 	 */
 	public MigLayout(ElementManager screen, String cols, String rows, String... constraints) {
-		this.screen = screen;
+		super(screen, constraints);
 		this.cols = cols;
 		this.rows = rows;
-		for (String param : constraints) {
-			LayoutParam lp = new LayoutParam(param);
-			this.params.put(lp.type.name(),lp);
-		}
-		LayoutParam m = params.get("margins");
-		if (m != null) {
-			margins.set(
-				(Float)m.getValues().get("left").getValue(),
-				(Float)m.getValues().get("top").getValue(),
-				(Float)m.getValues().get("right").getValue(),
-				(Float)m.getValues().get("bottom").getValue()
-			);
-		}
-		LayoutParam c = params.get("clip");
-		if (c != null) {
-			clip = (Boolean)c.getValues().get("clip").getValue();
-		}
-	}
-	
-	@Override
-	public Layout define(String... params) {
-		for (String param : params) {
-			LayoutParam lp = new LayoutParam(param);
-			this.params.put(lp.type.name(),lp);
-		}
-		return this;
-	}
-	
-	@Override
-	public Layout set(String param) {
-		LayoutParam lp = new LayoutParam(param);
-		this.params.put(lp.type.name(),lp);
-		return this;
-	}
-	
-	@Override
-	public LayoutParam get(String key) {
-		return params.get(key);
 	}
 	
 	private int parseCount(int index, String id, String str) {
@@ -265,16 +216,6 @@ public class MigLayout implements Layout {
 	}
 	
 	@Override
-	public void setHandlesResize(boolean handlesResize) {
-		this.handlesResize = handlesResize;
-	}
-	
-	@Override
-	public boolean getHandlesResize() {
-		return handlesResize;
-	}
-	
-	@Override
 	public void resize() {
 		oldcells = cells;
 		cells = new Cell[parseCount(0,"row",rows)][parseCount(1,"col",cols)];
@@ -287,11 +228,6 @@ public class MigLayout implements Layout {
 		this.owner = el;
 		cells = new Cell[parseCount(0,"row",rows)][parseCount(1,"col",cols)];
 		layoutCells();
-	}
-	
-	@Override
-	public ElementManager getScreen() {
-		return screen;
 	}
 	
 	private void convertElementProperties(Element el) {
@@ -314,6 +250,7 @@ public class MigLayout implements Layout {
 			}
 		}
 	}
+	
 	@Override
 	public void layoutChildren() {
 		float x, y, w, h;

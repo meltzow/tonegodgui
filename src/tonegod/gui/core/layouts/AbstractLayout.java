@@ -4,10 +4,9 @@
  */
 package tonegod.gui.core.layouts;
 
-import com.jme3.math.Vector2f;
-import tonegod.gui.controls.lists.ComboBox;
-import tonegod.gui.controls.lists.SelectBox;
-import tonegod.gui.controls.lists.Spinner;
+import com.jme3.math.Vector4f;
+import java.util.HashMap;
+import java.util.Map;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 
@@ -15,7 +14,86 @@ import tonegod.gui.core.ElementManager;
  *
  * @author t0neg0d
  */
-public class DefaultLayout implements Layout {
+public abstract class AbstractLayout implements Layout {
+	public Map<String,LayoutParam> params = new HashMap();
+	protected ElementManager screen;
+	protected Element owner;
+	protected Vector4f margins = new Vector4f(10,10,10,10);
+	protected Vector4f padding = new Vector4f(5,5,5,5);
+	protected Vector4f tempV4 = new Vector4f();
+	protected boolean handlesResize = true;
+	protected boolean props = false;
+	protected boolean clip = false;
+	
+	public AbstractLayout(ElementManager screen, String... constraints) {
+		this.screen = screen;
+		for (String param : constraints) {
+			LayoutParam lp = new LayoutParam(param);
+			this.params.put(lp.type.name(),lp);
+		}
+		LayoutParam m = params.get("margins");
+		if (m != null) {
+			margins.set(
+				(Float)m.getValues().get("left").getValue(),
+				(Float)m.getValues().get("top").getValue(),
+				(Float)m.getValues().get("right").getValue(),
+				(Float)m.getValues().get("bottom").getValue()
+			);
+		}
+		LayoutParam p = params.get("pad");
+		if (p != null) {
+			padding.set(
+				(Float)p.getValues().get("left").getValue(),
+				(Float)p.getValues().get("top").getValue(),
+				(Float)p.getValues().get("right").getValue(),
+				(Float)p.getValues().get("bottom").getValue()
+			);
+		}
+		LayoutParam c = params.get("clip");
+		if (c != null) {
+			clip = (Boolean)c.getValues().get("clip").getValue();
+		}
+	}
+	
+	@Override
+	public Layout define(String... params) {
+		for (String param : params) {
+			LayoutParam lp = new LayoutParam(param);
+			this.params.put(lp.type.name(),lp);
+		}
+		return this;
+	}
+	
+	@Override
+	public Layout set(String param) {
+		LayoutParam lp = new LayoutParam(param);
+		this.params.put(lp.type.name(),lp);
+		return this;
+	}
+	
+	@Override
+	public LayoutParam get(String key) {
+		return params.get(key);
+	}
+	
+	@Override
+	public ElementManager getScreen() {
+		return screen;
+	}
+	
+	@Override
+	public void setHandlesResize(boolean handlesResize) {
+		this.handlesResize = handlesResize;
+	}
+	
+	@Override
+	public boolean getHandlesResize() {
+		return handlesResize;
+	}
+	
+	
+	
+	/*
 	private ElementManager screen;
 	private Element owner;
 	private LayoutMode mode = LayoutMode.Flow;
@@ -27,7 +105,6 @@ public class DefaultLayout implements Layout {
 		this.screen = screen;
 	}
 	
-	@Override
 	public void setMode(LayoutMode mode) {
 		this.mode = mode;
 	}
@@ -72,6 +149,8 @@ public class DefaultLayout implements Layout {
 	private void verticalLayout() {
 		Element lastEl = null;
 		
+		fill();
+		
 		for (Element el : owner.getElements()) {
 			if (lastEl != null) {
 				LayoutHelper.resetX();
@@ -92,6 +171,8 @@ public class DefaultLayout implements Layout {
 	
 	private void horizontalLayout() {
 		Element lastEl = null;
+		
+		fill();
 		
 		for (Element el : owner.getElements()) {
 			if (lastEl != null) {
@@ -148,6 +229,38 @@ public class DefaultLayout implements Layout {
 		}
 	}
 	
+	private void fill() {
+		Element lastEl = null;
+		for (Element el : owner.getElements()) {
+			if (owner.getDimensions() != Vector2f.ZERO) {
+				switch (el.getLayoutHints().getFillTypeX()) {
+					case Fill:
+						float lWidth = 0;
+						if (lastEl != null)
+							lWidth = lastEl.getX()+lastEl.getWidth();
+						el.setWidth(owner.getWidth()-(margins.x*2)-lWidth);
+						break;
+					case Percent:
+						el.setWidth((owner.getWidth()-(margins.x*2))*el.getLayoutHints().getFillX());
+						break;
+				}
+				switch (el.getLayoutHints().getFillTypeY()) {
+					case Fill:
+						float lHeight = 0;
+						if (lastEl != null)
+							lHeight = lastEl.getY()+lastEl.getHeight();
+						System.out.println(lHeight);
+						el.setHeight(owner.getHeight()-(margins.y*2)-lHeight);
+						break;
+					case Percent:
+						el.setHeight((owner.getHeight()-(margins.y*2))*el.getLayoutHints().getFillY());
+						break;
+				}
+				lastEl = el;
+			}
+		}
+	}
+	
 	@Override
 	public void setMargins(float vMargin, float hMargin) {
 		this.margins.set(vMargin, hMargin);
@@ -197,4 +310,5 @@ public class DefaultLayout implements Layout {
 		clone.setLineFeedHeight(lineFeedHeight);
 		return clone;
 	}
+	*/
 }
