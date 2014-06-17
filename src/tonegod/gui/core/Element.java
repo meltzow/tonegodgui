@@ -2436,9 +2436,9 @@ public class Element extends Node {
 	@Deprecated
 	public void setControlClippingLayer(Element clippingLayer) {
 		setClippingLayer(clippingLayer);
-		for (Element el : elementChildren.values()) {
-			el.setControlClippingLayer(clippingLayer);
-		}
+	//	for (Element el : elementChildren.values()) {
+	//		el.setControlClippingLayer(clippingLayer);
+	//	}
 	}
 	
 	/**
