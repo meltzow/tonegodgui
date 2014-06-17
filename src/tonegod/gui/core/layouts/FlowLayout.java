@@ -35,7 +35,7 @@ public class FlowLayout extends AbstractLayout {
 	public void layoutChildren() {
 		Element lastEl = null;
 		LayoutHelper.reset();
-		LayoutHelper.setPadding(padding.x);
+		LayoutHelper.setPadding(padding.x,padding.y,padding.x,padding.w);
 		LayoutHelper.advanceX(margins.x);
 		LayoutHelper.advanceY(margins.y);
 		
@@ -73,6 +73,8 @@ public class FlowLayout extends AbstractLayout {
 			el.setY(owner.getHeight()-el.getY()-el.getHeight());
 			lastEl = el;
 		}
+		
+		LayoutHelper.reset();
 	}
 	
 	private void fill() {
