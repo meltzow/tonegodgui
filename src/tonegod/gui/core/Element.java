@@ -2493,7 +2493,7 @@ public class Element extends Node {
 	
 	public void setClipPadding(float clipLeft, float clipRight, float clipTop, float clipBottom) {
 		this.clipPadding.set(
-			clipLeft, clipRight, clipTop, clipBottom
+			clipLeft, clipTop, clipRight, clipBottom
 		);
 	}
 	
@@ -2608,6 +2608,7 @@ public class Element extends Node {
 			if (def.clip == null) def.clip = new Vector4f();
 			def.clip.set(clip);
 		}
+		validateClipSettings();
 		for (Element c : elementChildren.values()) {
 			c.updateClippingLayer(el, clip);
 		}
@@ -2676,8 +2677,8 @@ public class Element extends Node {
 			if (clipTest.z < cW)	cW = clipTest.z;
 			if (clipTest.w < cH)	cH = clipTest.w;
 		}
-		
 		clippingBounds.set(cX,cY,cW,cH);
+			
 		
 	//	System.out.println((Boolean)mat.getParam("UseClipping").getValue());
 	//	System.out.println(clippingBounds);
@@ -2696,6 +2697,39 @@ public class Element extends Node {
 				mat.setBoolean("UseClipping", false);
 		}
 		mat.setVector4("Clipping", clippingBounds);
+	}
+	
+	public class ClippingDefine {
+		public Element owner;
+		public Vector4f clip = null;
+		private Vector4f tempV4 = new Vector4f();
+		
+		public ClippingDefine(Element owner) {
+			this.owner = owner;
+		}
+		public ClippingDefine(Element owner, Vector4f clip) {
+			this.owner = owner;
+			this.clip = new Vector4f(clip);
+		}
+		public Element getElement() { return owner; }
+		public Vector4f getClipping() {
+			if (clip == null) {
+				tempV4.setX(owner.getAbsoluteX());
+				tempV4.setY(owner.getAbsoluteY());
+				tempV4.setZ(tempV4.getX()+owner.getWidth());
+				tempV4.setW(tempV4.getY()+owner.getHeight());
+			} else {
+				float x = owner.getAbsoluteX();
+				float y = owner.getAbsoluteY();
+				tempV4.set(
+					x+clip.x,
+					y+clip.y,
+					x+clip.z,
+					y+clip.w
+				);
+			}
+			return tempV4;
+		}
 	}
 	//</editor-fold>
 	
@@ -2982,38 +3016,4 @@ public class Element extends Node {
 		}
 	}
 	//</editor-fold>
-	
-	public class ClippingDefine {
-		public Element owner;
-		public Vector4f clip = null;
-		private Vector4f tempV4 = new Vector4f();
-		
-		public ClippingDefine(Element owner) {
-			this.owner = owner;
-		}
-		public ClippingDefine(Element owner, Vector4f clip) {
-			this.owner = owner;
-			this.clip = clip;
-		}
-		public Element getElement() { return owner; }
-		public Vector4f getClipping() {
-			if (clip == null) {
-				tempV4.setX(owner.getAbsoluteX());
-				tempV4.setY(owner.getAbsoluteY());
-				tempV4.setZ(tempV4.getX()+owner.getWidth());
-				tempV4.setW(tempV4.getY()+owner.getHeight());
-				return tempV4;
-			} else {
-				float x = owner.getAbsoluteX();
-				float y = owner.getAbsoluteY();
-				tempV4.set(
-					x+clip.x,
-					y+clip.y,
-					x+clip.z,
-					y+clip.w
-				);
-				return tempV4;
-			}
-		}
-	}
 }

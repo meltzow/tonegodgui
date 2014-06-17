@@ -20,19 +20,27 @@ import tonegod.gui.core.layouts.LayoutHint.VAlign;
  * @author t0neg0d
  */
 public class MigLayout implements Layout {
-	ElementManager screen;
-	Element owner;
-	String cols, rows;
-	Cell[][] oldcells;
-	Cell[][] cells;
-	StringTokenizer[] st = new StringTokenizer[2];
-	Vector4f margins = new Vector4f(10,10,10,10);
-	Vector4f tempV4 = new Vector4f();
-	float padding = 5;
-	boolean handlesResize = true;
-	boolean props = false;
-	boolean clip = false;
+	private ElementManager screen;
+	private Element owner;
+	private String cols, rows;
+	private Cell[][] oldcells;
+	private Cell[][] cells;
+	private StringTokenizer[] st = new StringTokenizer[2];
+	private Vector4f margins = new Vector4f(10,10,10,10);
+	private Vector4f tempV4 = new Vector4f();
+	private float padding = 5;
+	private boolean handlesResize = true;
+	private boolean props = false;
+	private boolean clip = false;
 	
+	/**
+	 * Creates a new instance of MigLayout
+	 * 
+	 * @param screen
+	 * @param cols
+	 * @param rows
+	 * @param constraints 
+	 */
 	public MigLayout(ElementManager screen, String cols, String rows, String... constraints) {
 		this.screen = screen;
 		this.cols = cols;
@@ -378,25 +386,18 @@ public class MigLayout implements Layout {
 			}
 			
 			el.setY(owner.getHeight()-el.getY()-el.getHeight());
+			
 			if (clip) {
 				if (el.getClippingDefine(owner) == null) {
 					el.addClippingLayer(owner,Vector4f.ZERO);
 				}
 				tempV4.set(
-					cells[r][c].pos.y,
-					cells[r][c].pos.x,
-					(cells[r][c].pos.x+totalW),
-					(cells[r][c].pos.y+totalH)
+					cells[r][c].pos.x-owner.getClipPaddingVec().x,
+					owner.getHeight()-(cells[r][c].pos.y+totalH)-owner.getClipPaddingVec().y,
+					(cells[r][c].pos.x+totalW)+owner.getClipPaddingVec().z,
+					owner.getHeight()-cells[r][c].pos.y+owner.getClipPaddingVec().w
 				);
 				el.updateClippingLayer(owner, tempV4);
-				/*
-				el.setClipPadding(
-					cells[r][c].pos.x,
-					owner.getHeight()-(cells[r][c].pos.y+totalH),
-					owner.getWidth()-(cells[r][c].pos.x+totalW),
-					cells[r][c].pos.y
-				);
-				*/
 			}
 		}
 		props = true;
