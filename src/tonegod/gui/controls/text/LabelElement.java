@@ -131,6 +131,8 @@ public class LabelElement extends TextElement {
 		setIsResizable(false);
 		setIsMovable(false);
 		setDocking(Docking.NW);
+		
+		setUseTextClipping(true);
 	}
 	
 	/**

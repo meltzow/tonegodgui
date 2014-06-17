@@ -348,4 +348,14 @@ public class Window extends Element {
 			dragBar.removeChild(collapse);
 		}
 	}
+	
+	public void sizeWindowToContent() {
+		contentArea.sizeToContent();
+		setDimensions(
+			contentArea.getWidth()+(dbIndents.x+dbIndents.z),
+			contentArea.getHeight()+getDragBarHeight()+(dbIndents.y+dbIndents.w)
+		);
+		dragBar.setY(dbIndents.y+contentArea.getHeight());
+		dragBar.setWidth(getWidth()-(dbIndents.x+dbIndents.z));
+	}
 }

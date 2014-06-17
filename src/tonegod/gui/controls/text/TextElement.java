@@ -327,6 +327,21 @@ public abstract class TextElement extends Element implements Control {
 	public abstract void onEffectStop();
 	
 	@Override
+	protected void validateClipSettings() {
+		super.validateClipSettings();
+		if (this.useTextClipping) {
+			if (!clippingLayers.isEmpty()) {
+				if (!(Boolean)animText.getMaterial().getParam("UseClipping").getValue())
+					animText.getMaterial().setBoolean("UseClipping", true);
+			} else {
+				if ((Boolean)animText.getMaterial().getParam("UseClipping").getValue())
+					animText.getMaterial().setBoolean("UseClipping", false);
+			}
+			animText.getMaterial().setVector4("Clipping", clippingBounds);
+		}
+	}
+	
+	@Override
 	public void update(float tpf) {
 		onUpdate(tpf);
 		updateAnimText(tpf);

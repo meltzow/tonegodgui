@@ -2639,6 +2639,7 @@ public class Element extends Node {
 	public boolean getHasClippingLayers() {
 		return !clippingLayers.isEmpty();
 	}
+	
 	public void updateClippingLayers() {
 		updateLocalClippingLayer();
 		validateClipSettings();
@@ -2678,13 +2679,9 @@ public class Element extends Node {
 			if (clipTest.w < cH)	cH = clipTest.w;
 		}
 		clippingBounds.set(cX,cY,cW,cH);
-			
-		
-	//	System.out.println((Boolean)mat.getParam("UseClipping").getValue());
-	//	System.out.println(clippingBounds);
 	}
 	
-	private void validateClipSettings() {
+	protected void validateClipSettings() {
 		if (!clippingLayers.isEmpty()) {
 			this.isClipped = true;
 			this.wasClipped = true;
