@@ -129,8 +129,7 @@ public abstract class DialogBox extends AlertBox {
 			}
 		};
 		btnCancel.setText("Cancel");
-		btnCancel.setDockS(true);
-		btnCancel.setDockW(true);
+		btnCancel.setDocking(Docking.SW);
 		addWindowContent(btnCancel);
 		form.addFormElement(btnCancel);
 	}

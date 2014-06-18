@@ -9,7 +9,6 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.form.Form;
-import tonegod.gui.controls.scrolling.ScrollArea;
 import tonegod.gui.controls.scrolling.ScrollPanel;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.utils.UIDUtil;
@@ -138,9 +137,7 @@ public abstract class AlertBox extends Window {
 		dlg.setIsResizable(false);
 		dlg.setScaleEW(true);
 		dlg.setScaleNS(true);
-		dlg.addClippingLayer(dlg);
 		dlg.setUseVerticalWrap(true);
-	//	dlg.setPadding(5);
 		addWindowContent(dlg);
 		
 		btnOk = new ButtonAdapter(screen,  UID + ":btnOk",
@@ -155,8 +152,7 @@ public abstract class AlertBox extends Window {
 			}
 		};
 		btnOk.setText("Ok");
-		btnOk.setDockS(true);
-		btnOk.setDockE(true);
+		btnOk.setDocking(Docking.SE);
 		addWindowContent(btnOk);
 		form.addFormElement(btnOk);
 	}

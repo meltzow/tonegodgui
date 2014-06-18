@@ -183,7 +183,7 @@ public class Window extends Element {
 					winDif = self.getHeight();
 					self.setHeight(getDragBarHeight()+(dbIndents.y*2));
 					winDif -= self.getHeight();
-					dragBar.setY(self.getHeight()-dragBar.getHeight()-dbIndents.x);
+					dragBar.setY(self.getHeight()-dragBar.getHeight()-dbIndents.y);
 					self.setY(self.getY()+winDif);
 					setButtonIcon(getWidth(), getHeight(), screen.getStyle("Common").getString("arrowDown"));
 					self.setResizeN(false);
@@ -191,8 +191,8 @@ public class Window extends Element {
 				} else {
 					isCollapsed = false;
 					contentArea.show();
-					self.setHeight(getDragBarHeight()+contentArea.getHeight());
-					dragBar.setY(self.getHeight()-dragBar.getHeight()-dbIndents.x);
+					self.setHeight(getDragBarHeight()+contentArea.getHeight()+dbIndents.y+2);
+					dragBar.setY(self.getHeight()-dragBar.getHeight()-dbIndents.y);
 					self.setY(self.getY()-winDif);setButtonIcon(getWidth(), getHeight(), screen.getStyle("Common").getString("arrowUp"));
 					self.setResizeN(self.getIsResizable());
 					self.setResizeS(self.getIsResizable());
@@ -203,8 +203,8 @@ public class Window extends Element {
 		collapse.setDocking(Docking.SE);
 		
 		contentArea = ControlUtil.getContainer(screen);
-		contentArea.setDimensions(dimensions.subtract(0, dragBar.getHeight()));
-		contentArea.setPosition(0,dragBar.getHeight());
+		contentArea.setDimensions(dimensions.subtract(dbIndents.x, dragBar.getHeight()+dbIndents.y+2));
+		contentArea.setPosition(0,dragBar.getHeight()+dbIndents.y+2);
 		contentArea.setScaleEW(true);
 		contentArea.setScaleNS(true);
 		
@@ -302,6 +302,7 @@ public class Window extends Element {
 	
 	public void addWindowContent(Element el) {
 		contentArea.addChild(el);
+		contentArea.addClippingLayer(contentArea);
 	}
 	
 	public void removeWindowContent(Element el) {

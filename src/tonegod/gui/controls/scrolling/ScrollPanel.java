@@ -197,6 +197,8 @@ public class ScrollPanel extends Element {
 		
 		setTextPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
 		
+		addClippingLayer(this);
+		
 		initFlingTimer();
 	}
 	

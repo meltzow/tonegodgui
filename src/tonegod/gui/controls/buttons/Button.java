@@ -57,7 +57,6 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	protected float initClickInterval = 0.25f, currentInitClickTrack = 0;
 	protected RadioButtonGroup radioButtonGroup = null;
 	protected boolean isRadioButton = false;
-	private boolean isEnabled = true;
 	protected ColorRGBA originalFontColor;
 	protected Vector2f hoverImgOffset, pressedImgOffset;
 	// Optional LabelElement
@@ -211,25 +210,13 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		buttonLabel.addClippingLayer(this);
 	}
 	
-	/**
-	 * Allows for dynamically enabling/disabling the button
-	 * @param isEnabled boolean
-	 */
-	public void setIsEnabled(boolean isEnabled) {
-		this.isEnabled = isEnabled;
+	@Override
+	public void controlIsEnabledHook(boolean isEnabled) {
 		if (!isEnabled) {
 			runPressedEffect(false);
 		} else {
 			runLoseFocusEffect();
 		}
-	}
-	
-	/**
-	 * Returns if the button is currently enabled
-	 * @return boolean
-	 */
-	public boolean getIsEnabled() {
-		return this.isEnabled;
 	}
 	
 	/**
@@ -738,14 +725,16 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	@Override
 	public void onKeyPress(KeyInputEvent evt) {
 		if (evt.getKeyCode() == KeyInput.KEY_SPACE) {
-			onMouseLeftPressed(new MouseButtonEvent(0,true,0,0));
+			if (isEnabled && getParent() != null)
+				onMouseLeftPressed(new MouseButtonEvent(0,true,0,0));
 		}
 	}
 	
 	@Override
 	public void onKeyRelease(KeyInputEvent evt) {
 		if (evt.getKeyCode() == KeyInput.KEY_SPACE) {
-			onMouseLeftReleased(new MouseButtonEvent(0,false,0,0));
+			if (isEnabled && getParent() != null)
+				onMouseLeftReleased(new MouseButtonEvent(0,false,0,0));
 		}
 	}
 	

@@ -189,6 +189,7 @@ public class Element extends Node {
 	private Object elementUserData;
 	
 	private boolean initialized = false;
+	protected boolean isEnabled = true;
 	
 	private boolean isDragElement = false, isDropElement = false;
 	
@@ -960,6 +961,28 @@ public class Element extends Node {
 			el.setFontSize(el.getFontSize()*heightPercent);
 			el.setGlobalUIScale(widthPercent, heightPercent);
 		}
+	}
+	
+	/**
+	 * Allows for dynamically enabling/disabling the element
+	 * @param isEnabled boolean
+	 */
+	public void setIsEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+		controlIsEnabledHook(isEnabled);
+		for (Element el : elementChildren.values()) {
+			el.setIsEnabled(isEnabled);
+		}
+	}
+	
+	public void controlIsEnabledHook(boolean isEnabled) {  }
+	
+	/**
+	 * Returns if the element is currently enabled
+	 * @return boolean
+	 */
+	public boolean getIsEnabled() {
+		return this.isEnabled;
 	}
 	//</editor-fold>
 	
@@ -2615,7 +2638,8 @@ public class Element extends Node {
 	}
 	
 	public void propigateClippingLayerAdd(ClippingDefine def) {
-		clippingLayers.add(def);
+		if (!clippingLayers.contains(def))
+			clippingLayers.add(def);
 		validateClipSettings();
 		for (Element c : elementChildren.values()) {
 			c.propigateClippingLayerAdd(def);
