@@ -31,7 +31,7 @@ public abstract class AbstractLayout implements Layout {
 			LayoutParam lp = new LayoutParam(param);
 			this.params.put(lp.type.name(),lp);
 		}
-		LayoutParam m = params.get("margins");
+		LayoutParam m = params.get("margin");
 		if (m != null) {
 			margins.set(
 				(Float)m.getValues().get("left").getValue(),

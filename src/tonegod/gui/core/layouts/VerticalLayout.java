@@ -16,11 +16,12 @@ public class VerticalLayout extends AbstractLayout {
 	
 	public VerticalLayout(ElementManager screen, String... constraints) {
 		super(screen, constraints);
+		handlesResize = true;
 	}
 
 	@Override
 	public void resize() {
-		
+		layoutChildren();
 	}
 
 	@Override

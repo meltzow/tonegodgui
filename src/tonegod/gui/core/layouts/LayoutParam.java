@@ -52,8 +52,6 @@ public class LayoutParam {
 			type = ParamType.clip;
 		else if (name.indexOf("margin") != -1)
 			type = ParamType.margin;
-		else if (name.indexOf("margin") != -1)
-			type = ParamType.margin;
 		else if (name.indexOf("min") != -1)
 			type = ParamType.min;
 		else if (name.indexOf("max") != -1)
