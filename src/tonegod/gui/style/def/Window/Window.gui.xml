@@ -10,8 +10,8 @@
 				<w value="14" />
 			</property>
 			<property name="minSize" type="Vector2f">
-				<x value="150" />
-				<y value="50" />
+				<x value="230" />
+				<y value="40" />
 			</property>
 			<property name="defaultSize" type="Vector2f">
 				<x value="350" />
