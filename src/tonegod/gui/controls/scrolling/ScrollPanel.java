@@ -184,7 +184,7 @@ public class ScrollPanel extends Element {
 		scrollableArea.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("ScrollArea").getString("textVAlign")));
 		scrollableArea.setTextWrap(LineWrapMode.valueOf(screen.getStyle("ScrollArea").getString("textWrap")));
 		scrollableArea.setTextPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
-		scrollableArea.setTextClipPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
+	//	scrollableArea.setTextClipPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
 		
 		innerBounds.addChild(scrollableArea);
 		scrollableArea.addClippingLayer(innerBounds);

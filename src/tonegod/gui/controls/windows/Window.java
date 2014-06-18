@@ -158,7 +158,7 @@ public class Window extends Element {
 		dragBar.setScaleNS(false);
 		dragBar.setIsMovable(true);
 		dragBar.setEffectParent(true);
-		dragBar.setClippingLayer(this);
+		dragBar.addClippingLayer(this);
 		
 		addChild(dragBar);
 		
@@ -203,7 +203,7 @@ public class Window extends Element {
 		collapse.setDocking(Docking.SE);
 		
 		contentArea = ControlUtil.getContainer(screen);
-		contentArea.setDimensions(dimensions.subtract(dbIndents.x, dragBar.getHeight()+dbIndents.y+2));
+		contentArea.setDimensions(dimensions.subtract(0, dragBar.getHeight()+dbIndents.y+2));
 		contentArea.setPosition(0,dragBar.getHeight()+dbIndents.y+2);
 		contentArea.setScaleEW(true);
 		contentArea.setScaleNS(true);
