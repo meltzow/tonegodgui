@@ -618,6 +618,7 @@ public class Element extends Node {
 		this.ignoreMouse = ignoreMouse;
 		setIgnoreMouseButtons(ignoreMouse);
 		setIgnoreMouseWheel(ignoreMouse);
+		setIgnoreMouseFocus(ignoreMouse);
 	}
 	
 	/**
