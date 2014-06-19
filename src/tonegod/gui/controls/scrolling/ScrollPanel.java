@@ -644,6 +644,7 @@ public class ScrollPanel extends Element {
 	public class ScrollPanelBounds extends Element implements MouseWheelListener, TouchListener, FlingListener {
 		public ScrollPanelBounds(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 			super(screen, UID, position, dimensions, resizeBorders, defaultImg);
+			setIgnoreMouseWheelMove(false);
 		}
 		
 		@Override

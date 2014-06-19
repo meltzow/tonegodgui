@@ -78,6 +78,17 @@ import tonegod.gui.listeners.*;
  * @author t0neg0d
  */
 public class Screen implements ElementManager, Control, RawInputListener {
+	private enum EventCheckType {
+		MouseLeft,
+		MouseRight,
+		MouseFocus,
+		WheelClick,
+		WheelMove,
+		Touch,
+		TouchMove,
+		Fling,
+		None
+	}
 	private Application app;
 	protected Spatial spatial;
 	private Map<String, Element> elements = new LinkedHashMap();
@@ -105,6 +116,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private float targetElementOffsetY = 0;
 	private Borders eventElementResizeDirection = null;
 	private Element mouseFocusElement = null;
+	private Element mouseWheelElement = null;
 	private Element contactElement = null;
 	private Element previousMouseFocusElement = null;
 	private boolean focusElementIsMovable = false;
@@ -174,6 +186,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private AnimElement mouseFocusAnimElement = null;
 	private AnimElement previousMouseFocusAnimElement = null;
 	private AnimElement mouseFocusQuad = null;
+	private AnimElement mouseWheelAnimElement = null;
 	private float eventAnimOffsetX = 0;
 	private float eventAnimOffsetY = 0;
 	private float eventQuadOffsetX = 0;
@@ -593,7 +606,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	//<editor-fold desc="Input Handlers">
 	public void forceFocusElementRefresh() {
-		mouseFocusElement = getEventElement(mouseXY.x, mouseXY.y);
+		mouseFocusElement = getEventElement(mouseXY.x, mouseXY.y, EventCheckType.None);
 		eventElement = mouseFocusElement;
 		if (getUseToolTips())
 			updateToolTipLocation();
@@ -666,7 +679,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		}
 		if (useToolTips) updateToolTipLocation();
 		if (!mousePressed) {
-			mouseFocusElement = getEventElement(mouseXY.x, mouseXY.y);
+			mouseFocusElement = getEventElement(mouseXY.x, mouseXY.y, EventCheckType.MouseFocus);
 			if (mouseFocusElement != null) {
 				if (useCustomCursors) {
 					if (mouseFocusElement.getIsResizable()) {
@@ -725,16 +738,17 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			if (mouseFocusElement != null) {
 				focusElementIsMovable = mouseFocusElement.getIsMovable();
 				
-				if (mouseFocusElement instanceof MouseWheelListener) {
-					if (evt.getDeltaWheel() > 0) {
-						((MouseWheelListener)mouseFocusElement).onMouseWheelDown(evt);
-					} else if (evt.getDeltaWheel() < 0) {
-						((MouseWheelListener)mouseFocusElement).onMouseWheelUp(evt);
-					}
-				}
 			}
 			if (mouseFocusElement instanceof MouseMovementListener) {
 				((MouseMovementListener)mouseFocusElement).onMouseMove(evt);
+			}
+			mouseWheelElement = getEventElement(mouseXY.x, mouseXY.y, EventCheckType.WheelMove);
+			if (mouseWheelElement instanceof MouseWheelListener) {
+				if (evt.getDeltaWheel() > 0) {
+					((MouseWheelListener)mouseWheelElement).onMouseWheelDown(evt);
+				} else if (evt.getDeltaWheel() < 0) {
+					((MouseWheelListener)mouseWheelElement).onMouseWheelUp(evt);
+				}
 			}
 		} else {
 			if (eventElement != null) {
@@ -814,9 +828,17 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			(int)mouseXY.y
 		);
 		*/
+		EventCheckType check = null;
+		if (evt.getButtonIndex() == 0)
+			check = EventCheckType.MouseLeft;
+		else if (evt.getButtonIndex() == 1)
+			check = EventCheckType.MouseRight;
+		else
+			check = EventCheckType.WheelClick;
+		
 		if (evt.isPressed()) {
 			mousePressed = true;
-			eventElement = getEventElement(mouseXY.x, mouseXY.y);
+			eventElement = getEventElement(mouseXY.x, mouseXY.y, check);
 			if (eventElement != null) {
 				if (eventElement.getResetKeyboardFocus())
 					resetTabFocusElement();
@@ -1107,9 +1129,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		float flingY = 1f/8000f*evt.getDeltaY();
 		evt.set(evt.getType(), touchXY.x, touchXY.y, flingX, flingY);
 		
-		Element contact = getContactElement(touchXY.x, touchXY.y);
+		Element contact = getContactElement(touchXY.x, touchXY.y, EventCheckType.Fling);
 		Vector2f offset = tempElementOffset.clone();
-		Element target = getEventElement(touchXY.x, touchXY.y);
+		Element target = getEventElement(touchXY.x, touchXY.y, EventCheckType.Fling);
 		
 		if (target != null) {
 			if (target instanceof FlingListener) {
@@ -1121,9 +1143,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private void androidTouchDownEvent(TouchEvent evt) {
 	//	setTouchXY(evt.getX(),evt.getY());
 		mousePressed = true;
-		Element contact = getContactElement(touchXY.x, touchXY.y);
+		Element contact = getContactElement(touchXY.x, touchXY.y, EventCheckType.Touch);
 		Vector2f offset = tempElementOffset.clone();
-		Element target = getEventElement(touchXY.x, touchXY.y);
+		Element target = getEventElement(touchXY.x, touchXY.y, EventCheckType.Touch);
 		
 		Borders dir = null;
 		if (target != null) {
@@ -1434,13 +1456,36 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	//</editor-fold>
 	
 	//<editor-fold desc="Element Event Methods">
+	private boolean getIgnoreEvent(Element el, EventCheckType check) {
+		switch (check) {
+			case MouseLeft:
+				return el.getIgnoreMouseLeftButton();
+			case MouseRight:
+				return el.getIgnoreMouseRightButton();
+			case WheelClick:
+				return el.getIgnoreMouseWheelClick();
+			case WheelMove:
+				return el.getIgnoreMouseWheelMove();
+			case MouseFocus:
+				return el.getIgnoreMouseFocus();
+			case Touch:
+				return el.getIgnoreTouch();
+			case TouchMove:
+				return el.getIgnoreTouchMove();
+			case Fling:
+				return el.getIgnoreFling();
+			default:
+				return false;
+		}
+	}
+	
 	/**
 	 * Determines and returns the current mouse focus Element
 	 * @param x The current mouse X coord
 	 * @param y The current mouse Y coord
 	 * @return Element eventElement
 	 */
-	private Element getEventElement(float x, float y) {
+	private Element getEventElement(float x, float y, EventCheckType check) {
 		guiRayOrigin.set(x, y, 0f);
 		
 		elementZOrderRay.setOrigin(guiRayOrigin);
@@ -1456,7 +1501,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			boolean discard = false;
 			if (result.getGeometry().getParent() instanceof Element) {
 				testEl = ((Element)(result.getGeometry().getParent()));
-				if (testEl.getIgnoreMouse()) {
+				if (getIgnoreEvent(testEl,check)) {
 					discard = true;
 				} else if (testEl.getIsClipped()) {
 					if (result.getContactPoint().getX() < testEl.getClippingBounds().getX() ||
@@ -1516,7 +1561,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		}
 	}
 	
-	private Element getContactElement(float x, float y) {
+	private Element getContactElement(float x, float y, EventCheckType check) {
 		guiRayOrigin.set(x, y, 0f);
 		
 		elementZOrderRay.setOrigin(guiRayOrigin);
@@ -1530,7 +1575,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 			boolean discard = false;
 			if (result.getGeometry().getParent() instanceof Element) {
 				testEl = ((Element)(result.getGeometry().getParent()));
-				if (testEl.getIgnoreMouse()) {
+				if (getIgnoreEvent(testEl, check)) {
 					discard = true;
 				} else if (testEl.getIsClipped()) {
 					if (result.getContactPoint().getX() < testEl.getClippingBounds().getX() ||
@@ -1569,7 +1614,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	public void forceEventElement(Element element) {
 		float x = element.getAbsoluteX()+1;
 		float y = element.getAbsoluteY()+1;
-		eventElement = getEventElement(x,y);
+		eventElement = getEventElement(x,y, EventCheckType.None);
 		if (eventElement != null) {
 			if (eventElement.getAbsoluteParent().getEffectZOrder())
 				updateZOrder(eventElement.getAbsoluteParent());

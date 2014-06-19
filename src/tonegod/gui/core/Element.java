@@ -110,6 +110,14 @@ public class Element extends Node {
 	private Vector2f minDimensions = new Vector2f(10, 10);
 	
 	private boolean ignoreMouse = false;
+	private boolean ignoreMouseLeftButton = false;
+	private boolean ignoreMouseRightButton = false;
+	private boolean ignoreMouseWheelClick = true;
+	private boolean ignoreMouseWheelMove = true;
+	private boolean ignoreMouseFocus = false;
+	private boolean ignoreTouch = false;
+	private boolean ignoreTouchMove = false;
+	private boolean ignoreFling = false;
 	protected boolean isMovable = false;
 	private boolean lockToParentBounds = false;
 	private boolean isResizable = false;
@@ -608,6 +616,8 @@ public class Element extends Node {
 	 */
 	public void setIgnoreMouse(boolean ignoreMouse) {
 		this.ignoreMouse = ignoreMouse;
+		setIgnoreMouseButtons(ignoreMouse);
+		setIgnoreMouseWheel(ignoreMouse);
 	}
 	
 	/**
@@ -618,6 +628,163 @@ public class Element extends Node {
 	public boolean getIgnoreMouse() {
 		return this.ignoreMouse;
 	}
+	
+	/**
+	 * Element will ignore mouse left & right button events
+	 * @param ignoreMouseButtons 
+	 */
+	public void setIgnoreMouseButtons(boolean ignoreMouseButtons) {
+		setIgnoreMouseLeftButton(ignoreMouseButtons);
+		setIgnoreMouseRightButton(ignoreMouseButtons);
+	}
+	
+	/**
+	 * Returns true if both left and right mouse buttons are being ignored
+	 * @return 
+	 */
+	public boolean getIgnoreMouseButtons() { return (getIgnoreMouseLeftButton() && getIgnoreMouseRightButton()); }
+	
+	/**
+	 * Element will ignore mouse left button events
+	 * @param ignoreMouseLeftButton 
+	 */
+	public void setIgnoreMouseLeftButton(boolean ignoreMouseLeftButton) {
+		this.ignoreMouseLeftButton = ignoreMouseLeftButton;
+	}
+	
+	/**
+	 * Returns if the left mouse button is being ignored
+	 * @return 
+	 */
+	public boolean getIgnoreMouseLeftButton() { return this.ignoreMouseLeftButton; }
+	
+	/**
+	 * Element will ignore mouse right button events
+	 * @param ignoreMouseRightButton 
+	 */
+	public void setIgnoreMouseRightButton(boolean ignoreMouseRightButton) {
+		this.ignoreMouseRightButton = ignoreMouseRightButton;
+	}
+	
+	/**
+	 * Returns if the right mouse button is being ignored
+	 * @return 
+	 */
+	public boolean getIgnoreMouseRightButton() { return this.ignoreMouseRightButton; }
+	
+	/**
+	 * Element will ignore mouse focus
+	 * @param ignoreMouseFocus 
+	 */
+	public void setIgnoreMouseFocus(boolean ignoreMouseFocus) {
+		this.ignoreMouseFocus = ignoreMouseFocus;
+	}
+	
+	/**
+	 * Returns if the element ignores mouse focus
+	 * @return 
+	 */
+	public boolean getIgnoreMouseFocus() { return this.ignoreMouseFocus; }
+	
+	/**
+	 * Element will ignore mouse wheel click and move events
+	 * @param ignoreMouseWheel 
+	 */
+	public void setIgnoreMouseWheel(boolean ignoreMouseWheel) {
+		setIgnoreMouseWheelClick(ignoreMouseWheel);
+		setIgnoreMouseWheelMove(ignoreMouseWheel);
+	}
+	
+	/**
+	 * Returns if the element is ignoring both mouse wheel click and move events
+	 * @return 
+	 */
+	public boolean getIgnoreMouseWheel() { return (getIgnoreMouseWheelClick() && getIgnoreMouseWheelMove()); }
+	
+	/**
+	 * Element will ignore mouse wheel click events
+	 * @param ignoreMouseWheelClick 
+	 */
+	public void setIgnoreMouseWheelClick(boolean ignoreMouseWheelClick) {
+		this.ignoreMouseWheelClick = ignoreMouseWheelClick;
+	}
+	
+	/**
+	 * Returns if the element ignores mouse wheel clicks
+	 * @return 
+	 */
+	public boolean getIgnoreMouseWheelClick() { return this.ignoreMouseWheelClick; }
+	
+	/**
+	 * Element will ignore mouse wheel mouse events;
+	 * @param ignoreMouseWheelMove 
+	 */
+	public void setIgnoreMouseWheelMove(boolean ignoreMouseWheelMove) {
+		this.ignoreMouseWheelMove = ignoreMouseWheelMove;
+	}
+	
+	/**
+	 * Returns if the element is ignoring mouse wheel moves
+	 * @return 
+	 */
+	public boolean getIgnoreMouseWheelMove() { return this.ignoreMouseWheelMove; }
+	
+	/**
+	 * Element will ignore touch down up move and fling events
+	 * @param ignoreTouchEvents 
+	 */
+	public void setIgnoreTouchEvents(boolean ignoreTouchEvents) {
+		setIgnoreTouch(ignoreTouchEvents);
+		setIgnoreTouchMove(ignoreTouchEvents);
+		setIgnoreFling(ignoreTouchEvents);
+	}
+	
+	/**
+	 * Returns if the element ignores touch down, up, move & fling events
+	 * @return 
+	 */
+	public boolean getIgnoreTouchEvents() { return (getIgnoreTouch() && getIgnoreTouchMove() && getIgnoreFling()); }
+	
+	/**
+	 * Element will ignore touch down and up events
+	 * @param ignoreTouch 
+	 */
+	public void setIgnoreTouch(boolean ignoreTouch) {
+		this.ignoreTouch = ignoreTouch;
+	}
+	
+	/**
+	 * Returns if the element ignores touch down and up events
+	 * @return 
+	 */
+	public boolean getIgnoreTouch() { return ignoreTouch; }
+	/**
+	 * element will ignore touch move events
+	 * @param ignoreTouchMove 
+	 */
+	public void setIgnoreTouchMove(boolean ignoreTouchMove) {
+		this.ignoreTouchMove = ignoreTouchMove;
+	}
+	
+	/**
+	 * Returns if the element ignores touch move events
+	 * @return 
+	 */
+	public boolean getIgnoreTouchMove() { return this.ignoreTouchMove; }
+	
+	/**
+	 * Element will ignore touch fling events
+	 * @param ignoreFling 
+	 */
+	public void setIgnoreFling(boolean ignoreFling) {
+		this.ignoreFling = ignoreFling;
+	}
+	
+	/**
+	 * Returns if the element ignores fling events
+	 * @return 
+	 */
+	public boolean getIgnoreFling() { return this.ignoreFling; }
 	
 	/**
 	 * Enables draggable behavior for this element

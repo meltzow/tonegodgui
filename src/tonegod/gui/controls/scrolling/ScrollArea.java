@@ -12,7 +12,6 @@ import com.jme3.input.event.TouchEvent;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
-import java.awt.event.MouseEvent;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
@@ -20,8 +19,6 @@ import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.framework.animation.Interpolation;
 import tonegod.gui.framework.core.util.GameTimer;
 import tonegod.gui.listeners.FlingListener;
-import tonegod.gui.listeners.MouseButtonListener;
-import tonegod.gui.listeners.MouseMovementListener;
 import tonegod.gui.listeners.MouseWheelListener;
 import tonegod.gui.listeners.TouchListener;
 
@@ -155,6 +152,8 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 		super (screen, UID, position, dimensions, resizeBorders, defaultImg);
 		
 		this.isTextOnly = isTextOnly;
+		
+		setIgnoreMouseWheelMove(false);
 		
 		// Load default font info
 		setFontColor(screen.getStyle("ScrollArea").getColorRGBA("fontColor"));
