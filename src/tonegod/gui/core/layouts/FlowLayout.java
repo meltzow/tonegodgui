@@ -40,43 +40,69 @@ public class FlowLayout extends AbstractLayout {
 		LayoutHelper.advanceY(margins.y);
 		
 		for (Element el : owner.getElements()) {
+			LayoutHint grow = el.getLayoutHints().get("grow");
+			boolean growx = (grow == null) ? true : (Boolean)grow.getValues().get("x").getValue();
+			boolean growy = (grow == null) ? true : (Boolean)grow.getValues().get("y").getValue();
+
+			LayoutHint fill = el.getLayoutHints().get("fill");
+			boolean fillx = (fill == null) ? false : (Boolean)fill.getValues().get("x").getValue();
+			boolean filly = (fill == null) ? false : (Boolean)fill.getValues().get("y").getValue();
+
+			LayoutHint pad = el.getLayoutHints().get("pad");
+			float padLeft = (pad == null) ? 0 : (Float)pad.getValues().get("left").getValue();
+			float padTop = (pad == null) ? 0 : (Float)pad.getValues().get("top").getValue();
+			float padRight = (pad == null) ? 0 : (Float)pad.getValues().get("right").getValue();
+			float padBottom = (pad == null) ? 0 : (Float)pad.getValues().get("bottom").getValue();
+			
+			boolean advanceY = false;
+			
 			if (lastEl != null) {
-				boolean advanceY = (lastEl.getLayoutHints().get("wrap") == null) ? false : true;
-				float padX = 0, padY = 0;
-				if (el.getLayoutHints().get("pad") != null) {
-					padX = (Float)el.getLayoutHints().get("pad").getValues().get("left").getValue();
-					padY = (Float)el.getLayoutHints().get("pad").getValues().get("top").getValue();
-				}
-				
+				advanceY = (lastEl.getLayoutHints().get("wrap") == null) ? false : true;
+
 				if (advanceY) {
 					LayoutHelper.resetX();
 					LayoutHelper.advanceX(margins.x);
 					LayoutHelper.advanceY(lastEl,true);
-					LayoutHelper.advanceX(padX);
-					LayoutHelper.advanceY(padY);
+					LayoutHelper.advanceX(padLeft);
+					LayoutHelper.advanceY(padTop);
 				} else {
 					if (LayoutHelper.position().x + el.getWidth() > owner.getWidth()-margins.x) {
 						LayoutHelper.resetX();
 						LayoutHelper.advanceX(margins.x);
 						LayoutHelper.advanceY(lastEl,true);
-						LayoutHelper.advanceX(padX);
-						LayoutHelper.advanceY(padY);
+						LayoutHelper.advanceX(padLeft);
+						LayoutHelper.advanceY(padTop);
 					} else {
 						LayoutHelper.advanceX(lastEl,true);
-						LayoutHelper.advanceX(padX);
-						LayoutHelper.advanceX(padY);
+						LayoutHelper.advanceX(padLeft);
+						LayoutHelper.advanceY(padTop);
 					}
 				}
 			}
 			
 			el.setPosition(LayoutHelper.position());
 			el.setY(owner.getHeight()-el.getY()-el.getHeight());
+			
+			if (fillx) {
+				float resizeW = 0;
+				if (fillx)	resizeW = el.getAbsoluteX()+(owner.getWidth()-margins.x);
+				else		resizeW = el.getWidth();
+				el.resize(
+					resizeW,
+					el.getAbsoluteHeight(),
+					Element.Borders.SE
+				);
+			}
+			
+			LayoutHelper.advanceX(padRight);
+			LayoutHelper.advanceY(padBottom);
+			
 			lastEl = el;
 		}
 		
 		LayoutHelper.reset();
 	}
-	
+	/*
 	private void fill() {
 		Element lastEl = null;
 		for (Element el : owner.getElements()) {
@@ -113,4 +139,5 @@ public class FlowLayout extends AbstractLayout {
 			}
 		}
 	}
+	*/
 }

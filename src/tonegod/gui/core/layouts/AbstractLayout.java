@@ -4,6 +4,7 @@
  */
 package tonegod.gui.core.layouts;
 
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ public abstract class AbstractLayout implements Layout {
 	protected boolean handlesResize = true;
 	protected boolean props = false;
 	protected boolean clip = false;
+	protected Vector2f tempV2 = new Vector2f();
 	
 	public AbstractLayout(ElementManager screen, String... constraints) {
 		this.screen = screen;
@@ -93,222 +95,24 @@ public abstract class AbstractLayout implements Layout {
 	
 	
 	
-	/*
-	private ElementManager screen;
-	private Element owner;
-	private LayoutMode mode = LayoutMode.Flow;
-	private Vector2f margins = new Vector2f(10,10);
-	private float padding = 5;
-	private float lineFeedHeight = 25;
-	
-	public DefaultLayout(ElementManager screen) {
-		this.screen = screen;
-	}
-	
-	public void setMode(LayoutMode mode) {
-		this.mode = mode;
-	}
-	
-	@Override
-	public void setOwner(Element el) {
-		this.owner = el;
-	}
-	
-	@Override
-	public ElementManager getScreen() {
-		return this.screen;
-	}
-	
-	@Override
-	public void layoutChildren() {
-		// Reset LayoutHelper
-		LayoutHelper.reset();
-		LayoutHelper.setPadding(padding);
-		LayoutHelper.setLineFeedHeight(lineFeedHeight);
-		
-		// Advance for Margins
-		LayoutHelper.advanceX(margins.x);
-		LayoutHelper.advanceY(margins.y);
-		
-		switch (mode) {
-			case Vertical:
-				verticalLayout();
-				break;
-			case Horizontal:
-				horizontalLayout();
-				break;
-			case Absolute:
-				absoluteLayout();
-				break;
-			case Flow:
-				flowLayout();
-				break;
-		}
-	}
-	
-	private void verticalLayout() {
-		Element lastEl = null;
-		
-		fill();
-		
-		for (Element el : owner.getElements()) {
-			if (lastEl != null) {
-				LayoutHelper.resetX();
-				LayoutHelper.advanceX(margins.x);
-				LayoutHelper.advanceY(lastEl, lastEl.getLayoutHints().getUseLayoutPadY());
-				LayoutHelper.advanceY(lastEl.getLayoutHints().getElementPadY());
-				if (lastEl.getLayoutHints().getLayoutLineFeed()) {
-					for (int lf = 0; lf < lastEl.getLayoutHints().getLayoutNumLineFeeds(); lf++)
-						LayoutHelper.advanceY(LayoutHelper.feed());
-				}
+	protected void convertElementProperties(Element el) {
+		if (!props) {
+			LayoutHint min = el.getLayoutHints().get("min");
+			if (min == null) {
+				el.getLayoutHints().set("min " + (el.getResizeBorderEastSize()+el.getResizeBorderWestSize()) + " " + (el.getResizeBorderNorthSize()+el.getResizeBorderSouthSize()));
+				el.setMinDimensions(
+					tempV2.set(
+						el.getResizeBorderEastSize()+el.getResizeBorderWestSize(),
+						el.getResizeBorderNorthSize()+el.getResizeBorderSouthSize()
+					)
+				);
+			} else {
+				el.setMinDimensions(tempV2.set((Float)min.getValues().get("x").getValue(),(Float)min.getValues().get("y").getValue()));
 			}
-			
-			el.setPosition(LayoutHelper.position());
-			el.setY(owner.getHeight()-el.getY()-el.getHeight());
-			lastEl = el;
-		}
-	}
-	
-	private void horizontalLayout() {
-		Element lastEl = null;
-		
-		fill();
-		
-		for (Element el : owner.getElements()) {
-			if (lastEl != null) {
-				if (LayoutHelper.position().x + el.getWidth() > owner.getWidth()-margins.x) {
-					LayoutHelper.resetX();
-					LayoutHelper.advanceX(margins.x);
-					LayoutHelper.advanceY(lastEl, lastEl.getLayoutHints().getUseLayoutPadY());
-					LayoutHelper.advanceY(lastEl.getLayoutHints().getElementPadY());
-				} else {
-					LayoutHelper.advanceX(lastEl, lastEl.getLayoutHints().getUseLayoutPadX());
-					LayoutHelper.advanceX(lastEl.getLayoutHints().getElementPadX());
-				}
-			}
-			
-			el.setPosition(LayoutHelper.position());
-			el.setY(owner.getHeight()-el.getY()-el.getHeight());
-			lastEl = el;
-		}
-	}
-	
-	private void absoluteLayout() {  }
-	
-	private void flowLayout() {
-		Element lastEl = null;
-		
-		for (Element el : owner.getElements()) {
-			if (lastEl != null) {
-				boolean advanceY = lastEl.getLayoutHints().getLayoutAdvanceY();
-				if (advanceY) {
-					LayoutHelper.resetX();
-					LayoutHelper.advanceX(margins.x);
-					LayoutHelper.advanceY(lastEl, lastEl.getLayoutHints().getUseLayoutPadY());
-					LayoutHelper.advanceY(lastEl.getLayoutHints().getElementPadY());
-					if (lastEl.getLayoutHints().getLayoutLineFeed()) {
-						for (int lf = 0; lf < lastEl.getLayoutHints().getLayoutNumLineFeeds(); lf++)
-							LayoutHelper.advanceY(LayoutHelper.feed());
-					}
-				} else {
-					if (LayoutHelper.position().x + el.getWidth() > owner.getWidth()-margins.x) {
-						LayoutHelper.resetX();
-						LayoutHelper.advanceX(margins.x);
-						LayoutHelper.advanceY(lastEl, lastEl.getLayoutHints().getUseLayoutPadY());
-						LayoutHelper.advanceY(lastEl.getLayoutHints().getElementPadY());
-					} else {
-						LayoutHelper.advanceX(lastEl, lastEl.getLayoutHints().getUseLayoutPadX());
-						LayoutHelper.advanceX(lastEl.getLayoutHints().getElementPadX());
-					}
-				}
-			}
-			
-			el.setPosition(LayoutHelper.position());
-			el.setY(owner.getHeight()-el.getY()-el.getHeight());
-			lastEl = el;
-		}
-	}
-	
-	private void fill() {
-		Element lastEl = null;
-		for (Element el : owner.getElements()) {
-			if (owner.getDimensions() != Vector2f.ZERO) {
-				switch (el.getLayoutHints().getFillTypeX()) {
-					case Fill:
-						float lWidth = 0;
-						if (lastEl != null)
-							lWidth = lastEl.getX()+lastEl.getWidth();
-						el.setWidth(owner.getWidth()-(margins.x*2)-lWidth);
-						break;
-					case Percent:
-						el.setWidth((owner.getWidth()-(margins.x*2))*el.getLayoutHints().getFillX());
-						break;
-				}
-				switch (el.getLayoutHints().getFillTypeY()) {
-					case Fill:
-						float lHeight = 0;
-						if (lastEl != null)
-							lHeight = lastEl.getY()+lastEl.getHeight();
-						System.out.println(lHeight);
-						el.setHeight(owner.getHeight()-(margins.y*2)-lHeight);
-						break;
-					case Percent:
-						el.setHeight((owner.getHeight()-(margins.y*2))*el.getLayoutHints().getFillY());
-						break;
-				}
-				lastEl = el;
+			LayoutHint grow = el.getLayoutHints().get("grow");
+			if (grow == null) {
+				el.getLayoutHints().set("grow " + el.getScaleEW() + " " + el.getScaleNS());
 			}
 		}
 	}
-	
-	@Override
-	public void setMargins(float vMargin, float hMargin) {
-		this.margins.set(vMargin, hMargin);
-	}
-
-	@Override
-	public float getVMargin() {
-		return this.margins.x;
-	}
-
-	@Override
-	public float getHMargin() {
-		return this.margins.y;
-	}
-
-	@Override
-	public Vector2f getMargins() {
-		return this.margins;
-	}
-	
-	@Override
-	public void setPadding(float padding) {
-		this.padding = padding;
-	}
-
-	@Override
-	public float getPadding() {
-		return this.padding;
-	}
-
-	@Override
-	public void setLineFeedHeight(float lineFeedHeight) {
-		this.lineFeedHeight = lineFeedHeight;
-	}
-
-	@Override
-	public float getLineFeedHeight() {
-		return this.lineFeedHeight;
-	}
-	
-	@Override
-	public DefaultLayout clone() {
-		DefaultLayout clone = new DefaultLayout(screen);
-		clone.setMode(mode);
-		clone.setMargins(margins.x, margins.y);
-		clone.setPadding(padding);
-		clone.setLineFeedHeight(lineFeedHeight);
-		return clone;
-	}
-	*/
 }

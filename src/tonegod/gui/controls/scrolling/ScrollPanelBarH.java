@@ -43,8 +43,8 @@ public class ScrollPanelBarH extends Element {
 	}
 	
 	private void initControl() {
-		System.out.println(screen.getStyle("ScrollArea#HScrollBar"));
-		System.out.println(screen.getStyle("ScrollArea#HScrollBar").getString("trackImg"));
+	//	System.out.println(screen.getStyle("ScrollArea#HScrollBar"));
+	//	System.out.println(screen.getStyle("ScrollArea#HScrollBar").getString("trackImg"));
 		
 		track = new ButtonAdapter(screen, getUID() + ":hTrack",
 			new Vector2f(getHeight(),0),

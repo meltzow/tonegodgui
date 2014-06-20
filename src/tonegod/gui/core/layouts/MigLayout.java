@@ -23,6 +23,8 @@ public class MigLayout extends AbstractLayout {
 	private Cell[][] oldcells;
 	private Cell[][] cells;
 	private StringTokenizer[] st = new StringTokenizer[2];
+	private float[] widths, heights;
+	private SizeUnit hUnit, wUnit;
 	
 	/**
 	 * Creates a new instance of MigLayout
@@ -56,10 +58,6 @@ public class MigLayout extends AbstractLayout {
 		st[index] = new StringTokenizer(str, token);
 		return st[index].countTokens();
 	}
-	
-	Vector2f tempV2 = new Vector2f();
-	float[] widths, heights;
-	SizeUnit hUnit, wUnit;
 	
 	private void layoutCells() {
 		getCellWidths();
@@ -228,27 +226,6 @@ public class MigLayout extends AbstractLayout {
 		this.owner = el;
 		cells = new Cell[parseCount(0,"row",rows)][parseCount(1,"col",cols)];
 		layoutCells();
-	}
-	
-	private void convertElementProperties(Element el) {
-		if (!props) {
-			LayoutHint min = el.getLayoutHints().get("min");
-			if (min == null) {
-				el.getLayoutHints().set("min " + (el.getResizeBorderEastSize()+el.getResizeBorderWestSize()) + " " + (el.getResizeBorderNorthSize()+el.getResizeBorderSouthSize()));
-				el.setMinDimensions(
-					tempV2.set(
-						el.getResizeBorderEastSize()+el.getResizeBorderWestSize(),
-						el.getResizeBorderNorthSize()+el.getResizeBorderSouthSize()
-					)
-				);
-			} else {
-				el.setMinDimensions(tempV2.set((Float)min.getValues().get("x").getValue(),(Float)min.getValues().get("y").getValue()));
-			}
-			LayoutHint grow = el.getLayoutHints().get("grow");
-			if (grow == null) {
-				el.getLayoutHints().set("grow " + el.getScaleEW() + " " + el.getScaleNS());
-			}
-		}
 	}
 	
 	@Override
