@@ -40,6 +40,8 @@ public class FlowLayout extends AbstractLayout {
 		LayoutHelper.advanceY(margins.y);
 		
 		for (Element el : owner.getElements()) {
+			this.convertElementProperties(el);
+			
 			LayoutHint grow = el.getLayoutHints().get("grow");
 			boolean growx = (grow == null) ? true : (Boolean)grow.getValues().get("x").getValue();
 			boolean growy = (grow == null) ? true : (Boolean)grow.getValues().get("y").getValue();

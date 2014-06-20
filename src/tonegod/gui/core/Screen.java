@@ -538,9 +538,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	private void throwParserException() {
 		try {
-			throw new java.text.ParseException("The provided texture information does not conform to the expected standard of ?x=(int)&y=(int)&w=(int)&h=(int)", 0);
+			throw new java.text.ParseException("The provided texture information does not conform to the expected standard of x=(int)|y=(int)|w=(int)|h=(int)", 0);
 		} catch (ParseException ex) {
-			Logger.getLogger(Screen.class.getName()).log(Level.SEVERE, "The provided texture information does not conform to the expected standard of ?x=(int)&y=(int)&w=(int)&h=(int)", ex);
+			Logger.getLogger(Screen.class.getName()).log(Level.SEVERE, "The provided texture information does not conform to the expected standard of x=(int)|y=(int)|w=(int)|h=(int)", ex);
 		}
 	}
 	//</editor-fold>

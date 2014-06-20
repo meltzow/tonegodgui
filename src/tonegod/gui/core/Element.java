@@ -2106,9 +2106,9 @@ public class Element extends Node {
 	//<editor-fold desc="Materials, Textures & Atlas">
 	private void throwParserException() {
 		try {
-			throw new java.text.ParseException("The provided texture information does not conform to the expected standard of ?x=(int)&y=(int)&w=(int)&h=(int)", 0);
+			throw new java.text.ParseException("The provided texture information does not conform to the expected standard of x=(int)|y=(int)|w=(int)|h=(int)", 0);
 		} catch (ParseException ex) {
-			Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The provided texture information does not conform to the expected standard of ?x=(int)&y=(int)&w=(int)&h=(int)", ex);
+			Logger.getLogger(Element.class.getName()).log(Level.SEVERE, "The provided texture information does not conform to the expected standard of x=(int)|y=(int)|w=(int)|h=(int)", ex);
 		}
 	}
 	
@@ -2159,7 +2159,7 @@ public class Element extends Node {
 		float textureAtlasY = coords[1];
 		float textureAtlasW = coords[2];
 		float textureAtlasH = coords[3];
-
+		
 		float imgWidth = defaultTex.getImage().getWidth();
 		float imgHeight = defaultTex.getImage().getHeight();
 		float pixelWidth = 1f/imgWidth;
