@@ -4,6 +4,7 @@
  */
 package tonegod.gui.controls.extras;
 
+import com.jme3.font.Rectangle;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
@@ -13,7 +14,7 @@ import java.util.List;
 import tonegod.gui.controls.buttons.ButtonAdapter;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.lists.Spinner;
-import tonegod.gui.controls.scrolling.ScrollArea;
+import tonegod.gui.controls.scrolling.ScrollPanel;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.controls.windows.Panel;
 import tonegod.gui.core.ElementManager;
@@ -24,7 +25,7 @@ import tonegod.gui.core.utils.UIDUtil;
  * @author t0neg0d
  */
 public abstract class ChatBox extends Panel {
-	private ScrollArea saChatArea;
+	private ScrollPanel saChatArea;
 	private TextField tfChatInput;
 	private ButtonAdapter btnChatSendMsg;
 	private Spinner spnChannels;
@@ -132,7 +133,7 @@ public abstract class ChatBox extends Panel {
 		float buttonWidth = screen.getStyle("Button").getVector2f("defaultSize").x;
 		float scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 		
-		saChatArea = new ScrollArea(screen, UID + ":ChatArea",
+		saChatArea = new ScrollPanel(screen, UID + ":ChatArea",
 			new Vector2f(
 				indents.y,
 				indents.x
@@ -140,15 +141,14 @@ public abstract class ChatBox extends Panel {
 			new Vector2f(
 				getWidth()-indents.y-indents.z,
 				getHeight()-controlSize-(controlSpacing*2)-indents.x-indents.w
-			),
-			true
+			)
 		);
 		saChatArea.setIsResizable(false);
 		saChatArea.setScaleEW(true);
 		saChatArea.setScaleNS(true);
 	//	saChatArea.setClippingLayer(saChatArea);
-	//	saChatArea.addClippingLayer(saChatArea);
-		saChatArea.setText("");
+		saChatArea.addClippingLayer(saChatArea);
+		saChatArea.setUseVerticalWrap(true);
 		addChild(saChatArea);
 		
 		tfChatInput = new TextField(
@@ -231,7 +231,9 @@ public abstract class ChatBox extends Panel {
 			index++;
 		}
 		saChatArea.setText(displayText);
-		saChatArea.scrollToBottom();
+		saChatArea.reshape();
+		if (saChatArea.getVerticalScrollDistance() > 0)
+			saChatArea.scrollToBottom();
 	}
 	
 	/**

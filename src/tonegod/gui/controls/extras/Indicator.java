@@ -205,8 +205,8 @@ public abstract class Indicator extends Element {
 		elOverlay.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Indicator").getString("textAlign")));
 		elOverlay.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("Indicator").getString("textVAlign")));
 		elOverlay.setTextWrap(LineWrapMode.valueOf(screen.getStyle("Indicator").getString("textWrap")));
-		elOverlay.setTextClipPadding(screen.getStyle("Indicator").getFloat("textPadding"));
-		elOverlay.setTextPadding(screen.getStyle("Indicator").getFloat("textPadding"));
+		elOverlay.setTextClipPaddingByKey("Indicator","textPadding");
+		elOverlay.setTextPaddingByKey("Indicator","textPadding");
 		
 		addChild(elOverlay);
 		

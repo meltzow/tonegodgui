@@ -28,10 +28,10 @@ public class ScrollPanelBarV extends Element {
 			scrollPanel.getScreen(),
 			UIDUtil.getUID(),
 			new Vector2f(
-				scrollPanel.getDimensions().x-25,
+				scrollPanel.getDimensions().x-scrollPanel.getScrollSize(),
 				0
 			),
-			new Vector2f(25, scrollPanel.getDimensions().y-25),
+			new Vector2f(scrollPanel.getScrollSize(), scrollPanel.getDimensions().y-scrollPanel.getScrollSize()),
 			Vector4f.ZERO,
 			null
 		);
@@ -94,6 +94,7 @@ public class ScrollPanelBarV extends Element {
 		track.setScaleNS(true);
 		track.setDocking(Docking.SW);
 		track.setInterval(100);
+		track.setTileImageByKey("ScrollArea#VScrollBar","tileTrackImg");
 		this.addChild(track);
 		
 		track.removeEffect(Effect.EffectEvent.Hover);

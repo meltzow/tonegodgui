@@ -161,9 +161,8 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 		setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("ScrollArea").getString("textAlign")));
 		setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("ScrollArea").getString("textVAlign")));
 		setTextWrap(LineWrapMode.valueOf(screen.getStyle("ScrollArea").getString("textWrap")));
-		setTextClipPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
 		
-	//	scrollBarGap = screen.getStyle("ScrollArea#VScrollBar").getFloat("gap");
+		scrollBarGap = screen.getStyle("ScrollArea#VScrollBar").getFloat("gap");
 		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 		
 	//	orgWidth = getWidth();
@@ -173,8 +172,9 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 		if (!isTextOnly) {
 			createScrollableArea();
 		} else {
-			setTextPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
-			setText("");
+			setTextPaddingByKey("ScrollArea","textPadding");
+			setTextClipPaddingByKey("ScrollArea","textPadding");
+			setText(" ");
 		}
 		
 		vScrollBar = new VScrollBar(screen, UID + ":vScroll",
@@ -249,11 +249,11 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 		scrollableArea.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("ScrollArea").getString("textAlign")));
 		scrollableArea.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("ScrollArea").getString("textVAlign")));
 		scrollableArea.setTextWrap(LineWrapMode.valueOf(screen.getStyle("ScrollArea").getString("textWrap")));
-		scrollableArea.setTextPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
-		scrollableArea.setTextClipPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
+		scrollableArea.setTextPaddingByKey("ScrollArea","textPadding");
+		scrollableArea.setTextClipPaddingByKey("ScrollArea","textPadding");
 		
-		scrollableArea.setClippingLayer(this);
-		scrollableArea.setTextClipPadding(screen.getStyle("ScrollArea").getFloat("scrollAreaPadding"));
+		scrollableArea.addClippingLayer(this);
+	//	scrollableArea.setTextClipPadding(screen.getStyle("ScrollArea").getFloat("scrollAreaPadding"));
 		
 		this.addChild(scrollableArea);
 	}
@@ -299,6 +299,7 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 	 */
 	public void addScrollableChild(Element child) {
 		scrollableArea.addChild(child);
+		child.setIgnoreMouseWheel(true);
 	}
 	
 	/**
@@ -333,7 +334,7 @@ public class ScrollArea extends Element implements MouseWheelListener, TouchList
 	 */
 	public float getScrollableHeight() {
 		if (isTextOnly) {
-			return textElement.getHeight()+(getTextPadding()*2)+12;
+			return textElement.getHeight()+getTextPaddingVec().z+getTextPaddingVec().w;
 		} else {
 			return scrollableArea.getHeight()+(scrollableArea.getTextPadding()*2);
 		}

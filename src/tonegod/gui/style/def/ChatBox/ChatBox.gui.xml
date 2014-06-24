@@ -4,10 +4,10 @@
 		<font></font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">
-				<x value="14" />
-				<y value="14" />
-				<z value="14" />
-				<w value="14" />
+				<x value="8" />
+				<y value="8" />
+				<z value="8" />
+				<w value="8" />
 			</property>
 			<property name="minSize" type="Vector2f">
 				<x value="150" />
@@ -17,7 +17,7 @@
 				<x value="350" />
 				<y value="200" />
 			</property>
-			<property name="contentPadding" type="float" value="6" />
+			<property name="contentPadding" type="float" value="3" />
 		</attributes>
 		<images></images>
 		<effects></effects>

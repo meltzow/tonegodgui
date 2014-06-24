@@ -12,14 +12,19 @@
 			<property name="textAlign" type="String" value="Center" />
 			<property name="textVAlign" type="String" value="Center" />
 			<property name="textWrap" type="String" value="NoWrap" />
-			<property name="textPadding" type="float" value="0" />
+			<property name="textPadding" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="-2" />
+				<w value="0" />
+			</property>
 		</font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">
-				<x value="4" />
-				<y value="4" />
-				<z value="4" />
-				<w value="4" />
+				<x value="7" />
+				<y value="7" />
+				<z value="7" />
+				<w value="7" />
 			</property>
 			<property name="minSize" type="Vector2f">
 				<x value="40" />
@@ -31,8 +36,8 @@
 			</property>
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=109|y=19|w=11|h=11" />
-			<property name="alphaImg" type="String" value="x=109|y=1|w=11|h=11" />
+			<property name="defaultImg" type="String" value="x=153|y=55|w=16|h=16" />
+			<property name="alphaImg" type="String" value="x=135|y=55|w=16|h=16" />
 		</images>
 		<effects></effects>
 	</element>

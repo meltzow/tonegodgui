@@ -4,6 +4,8 @@
  */
 package tonegod.gui.controls.lists;
 
+import com.jme3.font.BitmapFont;
+import com.jme3.font.LineWrapMode;
 import com.jme3.input.KeyInput;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
@@ -48,9 +50,9 @@ public abstract class Spinner extends TextField {
 	 */
 	public Spinner(ElementManager screen, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UIDUtil.getUID(), Vector2f.ZERO,
-			screen.getStyle("TextField").getVector2f("defaultSize"),
-			screen.getStyle("TextField").getVector4f("resizeBorders"),
-			screen.getStyle("TextField").getString("defaultImg"),
+			screen.getStyle("Spinner").getVector2f("defaultSize"),
+			screen.getStyle("Spinner").getVector4f("resizeBorders"),
+			screen.getStyle("Spinner").getString("defaultImg"),
 			orientation,
 			cycle
 		);
@@ -66,9 +68,9 @@ public abstract class Spinner extends TextField {
 	 */
 	public Spinner(ElementManager screen, Vector2f position, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UIDUtil.getUID(), position,
-			screen.getStyle("TextField").getVector2f("defaultSize"),
-			screen.getStyle("TextField").getVector4f("resizeBorders"),
-			screen.getStyle("TextField").getString("defaultImg"),
+			screen.getStyle("Spinner").getVector2f("defaultSize"),
+			screen.getStyle("Spinner").getVector4f("resizeBorders"),
+			screen.getStyle("Spinner").getString("defaultImg"),
 			orientation,
 			cycle
 		);
@@ -85,8 +87,8 @@ public abstract class Spinner extends TextField {
 	 */
 	public Spinner(ElementManager screen, Vector2f position, Vector2f dimensions, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UIDUtil.getUID(), position, dimensions,
-			screen.getStyle("TextField").getVector4f("resizeBorders"),
-			screen.getStyle("TextField").getString("defaultImg"),
+			screen.getStyle("Spinner").getVector4f("resizeBorders"),
+			screen.getStyle("Spinner").getString("defaultImg"),
 			orientation,
 			cycle
 		);
@@ -118,9 +120,9 @@ public abstract class Spinner extends TextField {
 	 */
 	public Spinner(ElementManager screen, String UID, Vector2f position, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UID, position,
-			screen.getStyle("TextField").getVector2f("defaultSize"),
-			screen.getStyle("TextField").getVector4f("resizeBorders"),
-			screen.getStyle("TextField").getString("defaultImg"),
+			screen.getStyle("Spinner").getVector2f("defaultSize"),
+			screen.getStyle("Spinner").getVector4f("resizeBorders"),
+			screen.getStyle("Spinner").getString("defaultImg"),
 			orientation,
 			cycle
 		);
@@ -138,8 +140,8 @@ public abstract class Spinner extends TextField {
 	 */
 	public Spinner(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Spinner.Orientation orientation, boolean cycle) {
 		this(screen, UID, position, dimensions,
-			screen.getStyle("TextField").getVector4f("resizeBorders"),
-			screen.getStyle("TextField").getString("defaultImg"),
+			screen.getStyle("Spinner").getVector4f("resizeBorders"),
+			screen.getStyle("Spinner").getString("defaultImg"),
 			orientation,
 			cycle
 		);
@@ -168,6 +170,12 @@ public abstract class Spinner extends TextField {
 		this.setDocking(Docking.NW);
 		
 		btnWidth = getHeight();
+		
+		this.setFontSize(screen.getStyle("Spinner").getFloat("fontSize"));
+		this.setTextPaddingByKey("Spinner","textPadding");
+		this.setTextWrap(LineWrapMode.valueOf(screen.getStyle("Spinner").getString("textWrap")));
+		this.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Spinner").getString("textAlign")));
+		this.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("Spinner").getString("textVAlign")));
 		
 		if (orientation == Orientation.HORIZONTAL) {
 			setWidth(getWidth()-(btnWidth*2));

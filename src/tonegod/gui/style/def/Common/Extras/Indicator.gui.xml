@@ -12,7 +12,12 @@
 			<property name="textAlign" type="String" value="Center" />
 			<property name="textVAlign" type="String" value="Center" />
 			<property name="textWrap" type="String" value="NoWrap" />
-			<property name="textPadding" type="float" value="0" />
+			<property name="textPadding" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="-2" />
+				<w value="0" />
+			</property>
 		</font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">

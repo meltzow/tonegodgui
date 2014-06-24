@@ -12,14 +12,19 @@
 			<property name="textAlign" type="String" value="Left" />
 			<property name="textVAlign" type="String" value="Top" />
 			<property name="textWrap" type="String" value="Word" />
-			<property name="textPadding" type="float" value="8" />
+			<property name="textPadding" type="Vector4f">
+				<x value="8" />
+				<y value="8" />
+				<z value="4" />
+				<w value="4" />
+			</property>
 		</font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">
-				<x value="14" />
-				<y value="14" />
-				<z value="14" />
-				<w value="14" />
+				<x value="8" />
+				<y value="8" />
+				<z value="8" />
+				<w value="8" />
 			</property>
 			<property name="defaultSize" type="Vector2f">
 				<x value="320" />
@@ -29,7 +34,7 @@
 				<x value="96" />
 				<y value="96" />
 			</property>
-			<property name="scrollAreaPadding" type="float" value="0" />
+			<property name="scrollAreaPadding" type="float" value="4" />
 		</attributes>
 		<images>
 			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Window/panel_x_inner.png" />

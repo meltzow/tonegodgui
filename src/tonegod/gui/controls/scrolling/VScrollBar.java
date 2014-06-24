@@ -109,6 +109,7 @@ public class VScrollBar extends Element {
 		btnScrollTrack.setScaleNS(true);
 		btnScrollTrack.setDocking(Docking.SW);
 		btnScrollTrack.setInterval(100);
+		btnScrollTrack.setTileImageByKey("ScrollArea#VScrollBar","tileTrackImg");
 		this.addChild(btnScrollTrack);
 		
 		btnScrollTrack.removeEffect(Effect.EffectEvent.Hover);

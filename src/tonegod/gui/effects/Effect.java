@@ -262,7 +262,7 @@ public class Effect implements Cloneable {
 						element.getElementMaterial().setBoolean("EffectPulseColor", false);
 						element.getElementMaterial().setBoolean("EffectImageSwap", false);
 						element.getElementMaterial().setTexture("EffectMap", blendImage);
-						if (element.getScreen().getUseTextureAtlas() || element.getUseLocalAtlas())
+						if ((element.getScreen().getUseTextureAtlas() || element.getUseLocalAtlas()) && !element.getUseLocalTexture())
 							element.getElementMaterial().setVector2("OffsetTexCoord", blendImageOffset);
 						init = true;
 					}
@@ -578,7 +578,7 @@ public class Effect implements Cloneable {
 			element.getElementMaterial().setFloat("EffectStep", 1.0f);
 		//	element.getElementMaterial().setBoolean("UseEffectTexCoords", true);
 			element.getElementMaterial().setBoolean("EffectImageSwap", true);
-			if (element.getScreen().getUseTextureAtlas() || element.getUseLocalAtlas())
+			if ((element.getScreen().getUseTextureAtlas() || element.getUseLocalAtlas()) && !element.getUseLocalTexture())
 				element.getElementMaterial().setVector2("OffsetTexCoord", blendImageOffset);
 			init = true;
 			isActive = false;
@@ -593,7 +593,7 @@ public class Effect implements Cloneable {
 			element.getElementMaterial().setBoolean("EffectPulseColor", false);
 			element.getElementMaterial().setBoolean("EffectImageSwap", false);
 			element.getElementMaterial().setTexture("EffectMap", blendImage);
-			if (element.getScreen().getUseTextureAtlas() || element.getUseLocalAtlas())
+			if ((element.getScreen().getUseTextureAtlas() || element.getUseLocalAtlas()) && !element.getUseLocalTexture())
 				element.getElementMaterial().setVector2("OffsetTexCoord", blendImageOffset);
 			init = true;
 		}
@@ -608,7 +608,7 @@ public class Effect implements Cloneable {
 			element.getElementMaterial().setBoolean("EffectPulseColor", false);
 			element.getElementMaterial().setBoolean("EffectImageSwap", false);
 			element.getElementMaterial().setTexture("EffectMap", blendImage);
-			if (element.getScreen().getUseTextureAtlas() || element.getUseLocalAtlas())
+			if ((element.getScreen().getUseTextureAtlas() || element.getUseLocalAtlas()) && !element.getUseLocalTexture())
 				element.getElementMaterial().setVector2("OffsetTexCoord", blendImageOffset);
 			init = true;
 		}

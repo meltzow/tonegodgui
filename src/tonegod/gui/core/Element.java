@@ -141,6 +141,7 @@ public class Element extends Node {
 	private Material mat;
 	private Texture defaultTex;
 	private boolean useLocalAtlas = false;
+	private boolean useLocalTexture = false;
 	private String atlasCoords = "";
 	private Texture alphaMap = null;
 	
@@ -155,7 +156,7 @@ public class Element extends Node {
 	
 	protected BitmapFont font;
 	protected float fontSize = 20;
-	protected float textPadding = 0;
+	protected Vector4f textPadding = new Vector4f(0,0,0,0);
 	protected ColorRGBA fontColor = ColorRGBA.White;
 	private ColorRGBA defaultColor = new ColorRGBA(1,1,1,0);
 	
@@ -168,7 +169,7 @@ public class Element extends Node {
 	protected Element clippingLayer, secondaryClippingLayer;
 	protected Vector4f clippingBounds = new Vector4f();
 	private Vector4f clipPadding = new Vector4f(0,0,0,0);
-	private float textClipPadding = 0;
+	private Vector4f textClipPadding = new Vector4f(0,0,0,0);
 	
 	// New Clipping
 	protected List<ClippingDefine> clippingLayers = new ArrayList();
@@ -257,7 +258,7 @@ public class Element extends Node {
 		boolean useAtlas = screen.getUseTextureAtlas();
 		
 		if (texturePath != null) {
-			if (useAtlas) {
+			if (useAtlas && texturePath.indexOf("|") != -1 && texturePath.indexOf("=") != -1) {
 				float[] coords = screen.parseAtlasCoords(texturePath);
 				textureAtlasX = coords[0];
 				textureAtlasY = coords[1];
@@ -275,6 +276,8 @@ public class Element extends Node {
 
 				textureAtlasY = imgHeight-textureAtlasY-textureAtlasH;
 			} else {
+				if (useAtlas) useLocalTexture = true;
+				
 				defaultTex = app.getAssetManager().loadTexture(texturePath);
 				defaultTex.setMinFilter(Texture.MinFilter.BilinearNoMipMaps);
 				defaultTex.setMagFilter(Texture.MagFilter.Nearest);
@@ -2010,7 +2013,15 @@ public class Element extends Node {
 	 * @param textPadding 
 	 */
 	public void setTextPadding(float textPadding) {
-		this.textPadding = textPadding;
+		setTextPadding(textPadding,textPadding,textPadding,textPadding);
+	}
+	
+	public void setTextPadding(float left, float right, float top, float bottom) {
+		this.textPadding.set(left,right,top,bottom);
+	}
+	
+	public void setTextPadding(Vector4f textPadding) {
+		this.textPadding.set(textPadding);
 	}
 	
 	/**
@@ -2018,6 +2029,10 @@ public class Element extends Node {
 	 * @return float textPadding
 	 */
 	public float getTextPadding() {
+		return this.textPadding.x;
+	}
+	
+	public Vector4f getTextPaddingVec() {
 		return this.textPadding;
 	}
 	
@@ -2026,12 +2041,22 @@ public class Element extends Node {
 	 */
 	protected void updateTextElement() {
 		if (textElement != null) {
-			textElement.setLocalTranslation(textPosition.x+textPadding, getHeight()-(textPosition.y+textPadding), textElement.getLocalTranslation().z);
-			textElement.setBox(new Rectangle(0,0,dimensions.x-(textPadding*2),dimensions.y-(textPadding*2)));
-		//	textElement.setPosition(textPadding, textPadding);
-		//	textElement.setDimensions(dimensions.x-(textPadding*2),dimensions.y-(textPadding*2));
-		//	textElement.controlResizeHook();
-		//	textElement.updateAnimText(0);
+			textElement.setLocalTranslation(textPosition.x+textPadding.x, getHeight()-(textPosition.y+textPadding.z), textElement.getLocalTranslation().z);
+			textElement.setBox(new Rectangle(0,0,dimensions.x-(textPadding.x+textPadding.y),dimensions.y-(textPadding.z+textPadding.w)));
+		}
+	}
+	
+	public void resetTextElement() {
+		if (textElement != null) {
+			textElement.setLocalTranslation(textPosition.x+textPadding.x, getHeight()-(textPosition.y+textPadding.z), textElement.getLocalTranslation().z);
+			textElement.setBox(new Rectangle(0,0,dimensions.x-(textPadding.x+textPadding.y),25));
+		}
+	}
+	
+	public void removeTextElement() {
+		if (textElement != null) {
+			textElement.removeFromParent();
+			textElement = null;
 		}
 	}
 	
@@ -2090,7 +2115,7 @@ public class Element extends Node {
 			} else {
 				if (isClipped) {
 					for (int i = 0; i < font.getPageSize(); i++) {
-						this.font.getPage(i).setVector4("Clipping", clippingBounds.add(textClipPadding, textClipPadding, -textClipPadding, -textClipPadding));
+						this.font.getPage(i).setVector4("Clipping", clippingBounds.add(textClipPadding.x, textClipPadding.y, -textClipPadding.z, -textClipPadding.w));
 						this.font.getPage(i).setBoolean("UseClipping", true);
 					}
 				} else {
@@ -2118,6 +2143,8 @@ public class Element extends Node {
 	 * @param queryString The position of the desire atlas image (e.g. "x=0|y=0|w=50|h=50")
 	 */
 	public void setTextureAtlasImage(Texture tex, String queryString) {
+		this.useLocalTexture = false;
+		
 		this.defaultTex = tex;
 		mat.setTexture("ColorMap", tex);
 		mat.setColor("Color", new ColorRGBA(1,1,1,1));
@@ -2193,6 +2220,12 @@ public class Element extends Node {
 		return new Vector2f( getModel().getEffectOffset( pixelWidth*coords[0], pixelHeight*(imgHeight-coords[1]-coords[3]) ));
 	}
 	
+	public void setUseLocalTexture(boolean useLocalTexture) {
+		this.useLocalTexture = useLocalTexture;
+	}
+	
+	public boolean getUseLocalTexture() { return this.useLocalTexture; }
+	
 	/**
 	 * Will set the textures WrapMode to repeat if enabled.<br/><br/>
 	 * NOTE: This only works when texture atlasing has not been enabled.
@@ -2202,6 +2235,8 @@ public class Element extends Node {
 	 * @param tileImage 
 	 */
 	public void setTileImage(boolean tileImage) {
+		this.useLocalTexture = true;
+		
 		this.tileImage = tileImage;
 		if (tileImage)
 			((Texture)mat.getParam("ColorMap").getValue()).setWrap(Texture.WrapMode.Repeat);
@@ -2212,6 +2247,41 @@ public class Element extends Node {
 	
 	public boolean getTileImage() {
 		return this.tileImage;
+	}
+	
+	public void setTileImageByKey(String style, String key) {
+		boolean tile = false;
+		try {
+			tile = screen.getStyle(style).getBoolean(key);
+		} catch (Exception ex) {  }
+		setTileImage(tile);
+	}
+	
+	public void setClipPaddingByKey(String style, String key) {
+		try {
+			setClipPadding(screen.getStyle(style).getFloat(key));
+		} catch (Exception ex) {  }
+		try {
+			setClipPadding(screen.getStyle(style).getVector4f(key));
+		} catch (Exception ex) {  }
+	}
+	
+	public void setTextPaddingByKey(String style, String key) {
+		try {
+			setTextPadding(screen.getStyle(style).getFloat(key));
+		} catch (Exception ex) {  }
+		try {
+			setTextPadding(screen.getStyle(style).getVector4f(key));
+		} catch (Exception ex) {  }
+	}
+	
+	public void setTextClipPaddingByKey(String style, String key) {
+		try {
+			setTextClipPadding(screen.getStyle(style).getFloat(key));
+		} catch (Exception ex) {  }
+		try {
+			setTextClipPadding(screen.getStyle(style).getVector4f(key));
+		} catch (Exception ex) {  }
 	}
 	
 	/**
@@ -2269,7 +2339,7 @@ public class Element extends Node {
 	 */
 	public void setAlphaMap(String alphaMap) {
 		Texture alpha = null;
-		if (screen.getUseTextureAtlas()) {
+		if (screen.getUseTextureAtlas() && !useLocalTexture) {
 			if (this.getElementTexture() != null)	alpha = getElementTexture();
 			else									alpha = screen.getAtlasTexture();
 			Vector2f alphaOffset = getAtlasTextureOffset(screen.parseAtlasCoords(alphaMap));
@@ -2284,7 +2354,7 @@ public class Element extends Node {
 		this.alphaMap = alpha;
 		
 		if (defaultTex == null) {
-			if (!screen.getUseTextureAtlas()) {
+			if (!screen.getUseTextureAtlas() || useLocalTexture) {
 				float imgWidth = alpha.getImage().getWidth();
 				float imgHeight = alpha.getImage().getHeight();
 				float pixelWidth = 1f/imgWidth;
@@ -2322,7 +2392,7 @@ public class Element extends Node {
 	
 	public void setColorMap(String colorMap) {
 		Texture color = null;
-		if (screen.getUseTextureAtlas()) {
+		if (screen.getUseTextureAtlas() && !useLocalTexture) {
 			if (this.getElementTexture() != null)	color = getElementTexture();
 			else									color = screen.getAtlasTexture();
 		} else {
@@ -2334,7 +2404,7 @@ public class Element extends Node {
 		
 		this.defaultTex = color;
 		
-		if (!screen.getUseTextureAtlas()) {
+		if (!screen.getUseTextureAtlas() || useLocalTexture) {
 			float imgWidth = color.getImage().getWidth();
 			float imgHeight = color.getImage().getHeight();
 			float pixelWidth = 1f/imgWidth;
@@ -2688,6 +2758,12 @@ public class Element extends Node {
 		);
 	}
 	
+	public void setClipPadding(Vector4f clipPadding) {
+		this.clipPadding.set(
+			clipPadding
+		);
+	}
+	
 	/**
 	 * Returns the current clipPadding
 	 * @return float clipPadding
@@ -2706,7 +2782,29 @@ public class Element extends Node {
 	 * @param textClipPadding The number of pixels to pad the clipping area with on each side
 	 */
 	public void setTextClipPadding(float textClipPadding) {
-		this.textClipPadding = textClipPadding;
+		this.textClipPadding.set(
+			textClipPadding,textClipPadding,textClipPadding,textClipPadding
+		);
+	}
+	
+	public void setTextClipPadding(float clipLeft, float clipRight, float clipTop, float clipBottom) {
+		this.textClipPadding.set(
+			clipLeft, clipTop, clipRight, clipBottom
+		);
+	}
+	
+	public void setTextClipPadding(Vector4f textClipPadding) {
+		this.textClipPadding.set(
+			textClipPadding
+		);
+	}
+	
+	public float getTextClipPadding() {
+		return textClipPadding.x;
+	}
+	
+	public Vector4f getTextClipPaddingVec() {
+		return textClipPadding;
 	}
 	
 	/**

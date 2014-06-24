@@ -6,6 +6,8 @@ package tonegod.gui.controls.buttons;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.font.LineWrapMode;
+import com.jme3.input.event.MouseButtonEvent;
+import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import tonegod.gui.controls.text.Label;
@@ -14,6 +16,8 @@ import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.Effect;
+import tonegod.gui.listeners.MouseButtonListener;
+import tonegod.gui.listeners.MouseFocusListener;
 
 /**
  *
@@ -21,7 +25,7 @@ import tonegod.gui.effects.Effect;
  */
 public class CheckBox extends ButtonAdapter {
 	
-	Label label;
+	ClickableLabel label;
 	float labelFontSize;
 	
 	/**
@@ -130,17 +134,17 @@ public class CheckBox extends ButtonAdapter {
 		
 		labelFontSize = screen.getStyle("CheckBox").getFloat("fontSize");
 		
-		label = new Label(
+		label = new ClickableLabel(
+			this,
 			screen,
 			UID + ":Label",
 			new Vector2f(getWidth(), 0),
 			new Vector2f(100,getHeight())
 		);
-		label.setDockS(true);
-		label.setDockW(true);
+		label.setDocking(Docking.SW);
 		label.setScaleEW(true);
-		label.setScaleEW(false);
-		label.setIgnoreMouse(true);
+		label.setScaleNS(false);
+		label.setIgnoreMouse(false);
 		
 		label.setFontColor(screen.getStyle("CheckBox").getColorRGBA("fontColor"));
 		label.setFontSize(labelFontSize);
@@ -190,11 +194,9 @@ public class CheckBox extends ButtonAdapter {
 		label.setWidth(width+getWidth()+4);
 		label.setX(getWidth()+4);
 		label.setY(-nextY);
-		label.setDockS(true);
-		label.setDockW(true);
+		label.setDocking(Docking.SW);
 		label.setScaleEW(true);
-		label.setScaleEW(false);
-		label.setIgnoreMouse(true);
+		label.setScaleNS(false);
 		label.setFontColor(screen.getStyle("CheckBox").getColorRGBA("fontColor"));
 		label.setFontSize(labelFontSize);
 		label.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("CheckBox").getString("textAlign")));
@@ -218,11 +220,90 @@ public class CheckBox extends ButtonAdapter {
 		setIsToggledNoCallback(isChecked);
 	}
 	
+	public Label getLabel() {
+		return this.label;
+	}
+	
 	/**
 	 * Returns if the checkbox is checked/unchecked
 	 * @return boolean
 	 */
 	public boolean getIsChecked() {
 		return this.getIsToggled();
+	}
+	
+	public class ClickableLabel extends Label implements MouseButtonListener, MouseFocusListener {
+		Button owner;
+		
+		public ClickableLabel(Button owner, ElementManager screen, String UID, Vector2f position, Vector2f dimensions) {
+			super(screen, UID, position, dimensions);
+			this.owner = owner;
+		}
+		
+		@Override
+		public void onMouseLeftPressed(MouseButtonEvent evt) {
+			MouseButtonEvent nEvt = new MouseButtonEvent(
+				0,
+				true,
+				(int)owner.getAbsoluteX(),
+				(int)owner.getAbsoluteY()
+			);
+			owner.onMouseLeftPressed(nEvt);
+		}
+
+		@Override
+		public void onMouseLeftReleased(MouseButtonEvent evt) {
+			MouseButtonEvent nEvt = new MouseButtonEvent(
+				0,
+				false,
+				(int)owner.getAbsoluteX(),
+				(int)owner.getAbsoluteY()
+			);
+			owner.onMouseLeftReleased(nEvt);
+		}
+
+		@Override
+		public void onMouseRightPressed(MouseButtonEvent evt) {
+			MouseButtonEvent nEvt = new MouseButtonEvent(
+				1,
+				true,
+				(int)owner.getAbsoluteX(),
+				(int)owner.getAbsoluteY()
+			);
+			owner.onMouseRightPressed(nEvt);
+		}
+
+		@Override
+		public void onMouseRightReleased(MouseButtonEvent evt) {
+			MouseButtonEvent nEvt = new MouseButtonEvent(
+				1,
+				false,
+				(int)owner.getAbsoluteX(),
+				(int)owner.getAbsoluteY()
+			);
+			owner.onMouseRightReleased(nEvt);
+		}
+
+		@Override
+		public void onGetFocus(MouseMotionEvent evt) {
+			MouseMotionEvent nEvt = new MouseMotionEvent(
+				(int)owner.getAbsoluteX(),
+				(int)owner.getAbsoluteY(),
+				0,0,
+				0,0
+			);
+			owner.onGetFocus(nEvt);
+		}
+
+		@Override
+		public void onLoseFocus(MouseMotionEvent evt) {
+			MouseMotionEvent nEvt = new MouseMotionEvent(
+				Screen.isAndroid() ? (int)screen.getTouchXY().x : (int)screen.getMouseXY().x,
+				Screen.isAndroid() ? (int)screen.getTouchXY().y : (int)screen.getMouseXY().y,
+				0,0,
+				0,0
+			);
+			owner.onLoseFocus(nEvt);
+		}
 	}
 }

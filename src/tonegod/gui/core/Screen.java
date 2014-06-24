@@ -531,7 +531,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					token = st.nextToken();
 					coords[3] = Float.parseFloat(token.substring(token.indexOf('=')+1));
 				} catch (Exception ex) { throwParserException(); }
-			} else throwParserException();
+			} // else throwParserException(texturePath);
 		}
 		return coords;
 	}
@@ -539,6 +539,14 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	private void throwParserException() {
 		try {
 			throw new java.text.ParseException("The provided texture information does not conform to the expected standard of x=(int)|y=(int)|w=(int)|h=(int)", 0);
+		} catch (ParseException ex) {
+			Logger.getLogger(Screen.class.getName()).log(Level.SEVERE, "The provided texture information does not conform to the expected standard of x=(int)|y=(int)|w=(int)|h=(int)", ex);
+		}
+	}
+	
+	private void throwParserException(String queryString) {
+		try {
+			throw new java.text.ParseException("The provided texture information (" + queryString + ") does not conform to the expected standard of x=(int)|y=(int)|w=(int)|h=(int)", 0);
 		} catch (ParseException ex) {
 			Logger.getLogger(Screen.class.getName()).log(Level.SEVERE, "The provided texture information does not conform to the expected standard of x=(int)|y=(int)|w=(int)|h=(int)", ex);
 		}
@@ -2537,7 +2545,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 				cursorEffects.start();
 			}
 		} else
-			cursorEffects.stop();
+			if (cursorEffects.getIsActive())
+				cursorEffects.stop();
 	}
 	
 	/**

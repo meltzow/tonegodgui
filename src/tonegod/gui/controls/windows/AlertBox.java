@@ -170,7 +170,7 @@ public abstract class AlertBox extends Window {
 	 * @param text String The message
 	 */
 	public void setMsg(String text) {
-		dlg.getScrollableArea().setText(text);
+		dlg.setText(text);
 	}
 	
 	/**

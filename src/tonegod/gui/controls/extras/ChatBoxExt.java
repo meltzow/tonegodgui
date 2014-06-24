@@ -13,12 +13,14 @@ import tonegod.gui.controls.buttons.CheckBox;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.lists.SelectBox;
 import tonegod.gui.controls.scrolling.ScrollArea;
+import tonegod.gui.controls.scrolling.ScrollPanel;
 import tonegod.gui.controls.text.Label;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.controls.windows.Panel;
 import tonegod.gui.controls.windows.Window;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
+import tonegod.gui.core.layouts.FlowLayout;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 
@@ -27,7 +29,7 @@ import tonegod.gui.core.utils.UIDUtil;
  * @author t0neg0d
  */
 public abstract class ChatBoxExt extends Panel {
-	private ScrollArea saChatArea;
+	private ScrollPanel saChatArea;
 	private TextField tfChatInput;
 	private ButtonAdapter btnChatSendMsg;
 	private ButtonAdapter btnChatFilter;
@@ -153,7 +155,7 @@ public abstract class ChatBoxExt extends Panel {
 		buttonWidth = screen.getStyle("Button").getVector2f("defaultSize").x;
 		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
 
-		saChatArea = new ScrollArea(screen, UID + ":ChatArea",
+		saChatArea = new ScrollPanel(screen, UID + ":ChatArea",
 			new Vector2f(
 				indents.y,
 				indents.x
@@ -161,43 +163,31 @@ public abstract class ChatBoxExt extends Panel {
 			new Vector2f(
 				getWidth()-indents.y-indents.z,
 				getHeight()-controlSize-(controlSpacing*2)-indents.x-indents.w
-			),
-			false
+			)
 		) {
 			@Override
 			public void controlResizeHook() {
-				float totalHeight = 0;
-				int index = 0;
 				for (Label l : displayMessages) {
+					l.setWidth(getScrollBoundsWidth()-(textPadding.x+textPadding.y));
 					l.setHeight(l.getTextElement().getHeight());
-					totalHeight += l.getHeight();
-					index++;
 				}
-				if (totalHeight > saChatArea.getHeight()) {
-					saChatArea.getScrollableArea().setHeight(totalHeight+(saChatArea.getPadding()*2));
-				}
-				totalHeight = 0;
-				for (Label l : displayMessages) {
-					totalHeight += l.getHeight();
-					l.setX(saContentPadding);
-					l.setWidth(saChatArea.getWidth()-(saContentPadding*2));
-					l.setY(saChatArea.getScrollableArea().getHeight()-totalHeight);
-				}
-				if (getVScrollBar() != null) {
-					getVScrollBar().setThumbScale();
-				}
-				adjustWidthForScroll();
+				getScrollableArea().layoutChildren();
+				reshape();
+				updateForResize();
+				if (getVerticalScrollDistance() > 0)
+					scrollToBottom();
 			}
 		};
 		saChatArea.setIsResizable(false);
 		saChatArea.setScaleEW(true);
 		saChatArea.setScaleNS(true);
-	//	saChatArea.setClippingLayer(saChatArea);
-	//	saChatArea.addClippingLayer(saChatArea);
-		saChatArea.getScrollableArea().setIgnoreMouse(true);
 		saChatArea.getScrollableArea().setDocking(Docking.SW);
-		saChatArea.setPadding(2);
-		saChatArea.setText("");
+		saChatArea.getScrollableArea().setTextPaddingByKey("ScrollArea", "textPadding");
+		saChatArea.setUseVerticalWrap(true);
+		saChatArea.getScrollableArea().setLayout(
+			new FlowLayout(screen, "margins 8 8 8 8", "padding 0 0 0 0")
+		);
+		
 		addChild(saChatArea);
 
 
@@ -328,7 +318,7 @@ public abstract class ChatBoxExt extends Panel {
 	 * Returns the chat display area (ScrollArea)
 	 * @return 
 	 */
-	public ScrollArea getChatArea() {
+	public ScrollPanel getChatArea() {
 		return saChatArea;
 	}
 
@@ -389,33 +379,30 @@ public abstract class ChatBoxExt extends Panel {
 	}
 
 	private void rebuildChat() {
-		String displayText = "";
 		int index = 0;
-		saChatArea.getScrollableArea().removeAllChildren();
-		saChatArea.getScrollableArea().setY(0);
-		saChatArea.getScrollableArea().setHeight(saChatArea.getHeight());
+		for (Label l : displayMessages) {
+			saChatArea.removeScrollableContent(l);
+		}
 		displayMessages.clear();
-
-		float totalHeight = 0;
+		
 		for (ChatMessage cm : chatMessages) {
 			if (!cm.getChannel().getIsFiltered()) {
 				Label l = createMessageLabel(index, cm);
+				l.getLayoutHints().define("wrap");
 				displayMessages.add(l);
-				saChatArea.addScrollableChild(l);
+				saChatArea.addScrollableContent(l,true);
+				l.setWidth(saChatArea.getScrollBoundsWidth()-(textPadding.x+textPadding.y));
 				l.setHeight(l.getTextElement().getHeight());
-				totalHeight += l.getHeight();
 				index++;
 			}
 		}
-		saChatArea.getScrollableArea().setHeight(totalHeight+(saChatArea.getPadding()*2));
-		totalHeight = 0;
-		for (Label l : displayMessages) {
-			totalHeight += l.getHeight();
-			l.setX(saContentPadding);
-			l.setWidth(saChatArea.getWidth()-(saContentPadding*2));
-			l.setY(saChatArea.getScrollableArea().getHeight()-totalHeight);
-		}
-		saChatArea.scrollToBottom();
+		saChatArea.getScrollableArea().layoutChildren();
+		saChatArea.reshape();
+		saChatArea.updateForResize();
+		saChatArea.controlResizeHook();
+		saChatArea.reshape();
+		if (saChatArea.getVerticalScrollDistance() > 0)
+			saChatArea.scrollToBottom();
 	}
 
 	private Label createMessageLabel(int index, ChatMessage cm) {
@@ -424,8 +411,8 @@ public abstract class ChatBoxExt extends Panel {
 			screen,
 			getUID() + ":Label" + index,
 			new Vector2f(0, 0),
-			new Vector2f(saChatArea.getWidth(),25)
-		);
+			new Vector2f(saChatArea.getScrollBoundsWidth()-(textPadding.x+textPadding.y),25)
+		);			
 		l.setTextWrap(LineWrapMode.Word);
 		l.setScaleEW(true);
 		l.setScaleNS(false);

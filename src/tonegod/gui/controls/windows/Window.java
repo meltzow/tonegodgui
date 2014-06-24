@@ -151,7 +151,7 @@ public class Window extends Element {
 		dragBar.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Window#Dragbar").getString("textAlign")));
 		dragBar.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("Window#Dragbar").getString("textVAlign")));
 		dragBar.setTextPosition(0,0);
-		dragBar.setTextPadding(screen.getStyle("Window#Dragbar").getFloat("textPadding"));
+		dragBar.setTextPaddingByKey("Window#Dragbar","textPadding");
 		dragBar.setTextWrap(LineWrapMode.valueOf(screen.getStyle("Window#Dragbar").getString("textWrap")));
 		dragBar.setIsResizable(false);
 		dragBar.setScaleEW(true);
@@ -162,8 +162,8 @@ public class Window extends Element {
 		
 		addChild(dragBar);
 		
-		float buttonHeight = (dragBar.getHeight() > 24) ? 24 : dragBar.getHeight();
-		buttonHeight -= 2;
+		float buttonHeight = (dragBar.getHeight() <= 25) ? 18 : dragBar.getHeight()-6;
+	//	buttonHeight -= 2;
 		
 		close = new ButtonAdapter(screen, Vector2f.ZERO, new Vector2f(buttonHeight,buttonHeight)) {
 			@Override
@@ -204,7 +204,7 @@ public class Window extends Element {
 		
 		contentArea = ControlUtil.getContainer(screen);
 		contentArea.setDimensions(dimensions.subtract(0, dragBar.getHeight()+dbIndents.y+2));
-		contentArea.setPosition(0,dragBar.getHeight()+dbIndents.y+2);
+		contentArea.setPosition(0,dragBar.getHeight()+dbIndents.y);
 		contentArea.setScaleEW(true);
 		contentArea.setScaleNS(true);
 		
@@ -353,7 +353,7 @@ public class Window extends Element {
 	public void sizeWindowToContent() {
 		contentArea.sizeToContent();
 		setDimensions(
-			contentArea.getWidth()+(dbIndents.x+dbIndents.z),
+			contentArea.getWidth()+(dbIndents.z),
 			contentArea.getHeight()+getDragBarHeight()+(dbIndents.y+dbIndents.w)
 		);
 		dragBar.setY(dbIndents.y+contentArea.getHeight());

@@ -34,7 +34,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	private Element highlight;
 	private float initWidth;
 	protected float menuItemHeight;
-	protected float menuPadding = 4;
+	protected Vector4f menuPadding = new Vector4f(4,4,4,4);
 	private Menu caller;
 	protected Element callerElement;
 	protected float menuOverhang;
@@ -156,7 +156,19 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg, false);
 		
 		menuOverhang = screen.getStyle("Menu").getFloat("menuOverhang");
-		menuPadding = screen.getStyle("Menu").getFloat("menuPadding");
+		try {
+			menuPadding.set(
+				screen.getStyle("Menu").getFloat("menuPadding"),
+				screen.getStyle("Menu").getFloat("menuPadding"),
+				screen.getStyle("Menu").getFloat("menuPadding"),
+				screen.getStyle("Menu").getFloat("menuPadding")
+			);
+		} catch (Exception ex) {  }
+		try {
+			menuPadding.set(
+				screen.getStyle("Menu").getVector4f("menuPadding")
+			);
+		} catch (Exception ex) {  }
 		highlightColor = screen.getStyle("Menu").getColorRGBA("highlightColor");
 		
 		// Load default font info
@@ -165,16 +177,17 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Menu").getString("textAlign")));
 		setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("Menu").getString("textVAlign")));
 		setTextWrap(LineWrapMode.valueOf(screen.getStyle("Menu").getString("textWrap")));
-		setTextPadding(screen.getStyle("Menu").getFloat("textPadding"));
-		setTextClipPadding(screen.getStyle("Menu").getFloat("textPadding"));
+	//	setTextPadding(screen.getStyle("Menu").getFloat("textPadding"));
+	//	setTextClipPaddingByKey("Menu","textPadding");
 		scrollableArea.setFontColor(screen.getStyle("Menu").getColorRGBA("fontColor"));
 		scrollableArea.setFontSize(screen.getStyle("Menu").getFloat("fontSize"));
 		scrollableArea.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Menu").getString("textAlign")));
 		scrollableArea.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("Menu").getString("textVAlign")));
 		scrollableArea.setTextWrap(LineWrapMode.valueOf(screen.getStyle("Menu").getString("textWrap")));
-		scrollableArea.setTextPadding(screen.getStyle("Menu").getFloat("textPadding"));
-		scrollableArea.setTextClipPadding(menuPadding+screen.getStyle("Menu").getFloat("textPadding"));
-		scrollableArea.setTextPosition(0, menuPadding);
+		scrollableArea.setTextPaddingByKey("Menu","textPadding");
+		scrollableArea.setTextClipPaddingByKey("Menu","textPadding");
+		scrollableArea.getTextClipPaddingVec().addLocal(menuPadding);
+		scrollableArea.setTextPosition(0, menuPadding.x);
 		
 		menuItemHeight = BitmapTextUtil.getTextLineHeight(this, "Xg");
 		
@@ -188,7 +201,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		if (!isScrollable) {
 			getVScrollBar().removeFromParent();
 		}
-		setWidth(initWidth+(menuPadding*2));
+		setWidth(initWidth+(menuPadding.x+menuPadding.y));
 		
 		highlight = new Element(
 			screen,
@@ -416,7 +429,19 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	 * @return 
 	 */
 	public float getMenuPadding() {
+		return this.menuPadding.x;
+	}
+	
+	public Vector4f getMenuPaddingVec() {
 		return this.menuPadding;
+	}
+	
+	private float getMPWidth() {
+		return menuPadding.x+menuPadding.y;
+	}
+	
+	private float getMPHeight() {
+		return menuPadding.z+menuPadding.w;
 	}
 	
 	/**
@@ -488,37 +513,37 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		scrollableArea.setText(finalString);
 		
 		if (preferredSize == Vector2f.ZERO) {
-			this.resize(getX()+width+(menuPadding*2), getY()+currentHeight+(menuPadding*2), Borders.SE);
-			this.setHeight(currentHeight+(menuPadding*2));
+			this.resize(getX()+width+getMPWidth(), getY()+currentHeight+getMPHeight(), Borders.SE);
+			this.setHeight(currentHeight+(menuPadding.z+menuPadding.w));
 		} else {
 			float nextWidth = preferredSize.x;
-			float nextHeight = (currentHeight > preferredSize.y+(menuPadding*2)) ? preferredSize.y : currentHeight+(menuPadding*2);
+			float nextHeight = (currentHeight > preferredSize.y+getMPHeight()) ? preferredSize.y : currentHeight+getMPHeight();
 			this.resize(getX()+nextWidth, getY()+nextHeight, Borders.SE);
 			this.setWidth(nextWidth);
 			this.setHeight(nextHeight);
 		}
 		
-		scrollableArea.setX(menuPadding);
-		scrollableArea.setWidth( ((getWidth() > width) ? getWidth() : width)-(menuPadding*2) );
-		scrollableArea.setY(menuPadding*2);
+		scrollableArea.setX(menuPadding.x);
+		scrollableArea.setWidth( ((getWidth() > width) ? getWidth() : width)-getMPWidth() );
+		scrollableArea.setY(getMPHeight());
 		scrollableArea.setHeight(currentHeight);
 		
 		
 		if (highlight.getParent() == null) {
-			highlight.setX(menuPadding);
-			highlight.setY(menuPadding);
-			highlight.setWidth( ((getWidth() > width) ? getWidth() : width)-(menuPadding*2) );
+			highlight.setX(menuPadding.x);
+			highlight.setY(menuPadding.z);
+			highlight.setWidth( ((getWidth() > width) ? getWidth() : width)-getMPWidth() );
 			highlight.setHeight(menuItemHeight);
 			highlight.getElementMaterial().setColor("Color", highlightColor);
-			highlight.setClippingLayer(this);
+			highlight.addClippingLayer(this);
 			highlight.setClipPadding(menuPadding);
 			scrollableArea.addChild(highlight);
 			highlight.hide();
 		} else {
-			highlight.setWidth( ((getWidth() > width) ? getWidth() : width)-(menuPadding*2) );
+			highlight.setWidth( ((getWidth() > width) ? getWidth() : width)-getMPWidth() );
 		}
 		
-		if(getScrollableHeight() > getHeight()-(menuPadding*2)) {
+		if(getScrollableHeight() > getHeight()-getMPHeight()) {
 			scrollToTop();
 			setWidth(getWidth());
 			getVScrollBar().setX(getWidth());
@@ -532,7 +557,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	
 	private void addSubmenuArrow(int index) {
 		Element elArrow = new Element(screen, getUID() + ":Arrow:" + index,
-				new Vector2f(getWidth()-menuItemHeight-(menuPadding*2), -(menuItems.size()*menuItemHeight)+(menuItemHeight+(index*menuItemHeight)+(menuPadding))),
+				new Vector2f(getWidth()-menuItemHeight-getMPWidth(), -(menuItems.size()*menuItemHeight)+(menuItemHeight+(index*menuItemHeight)+(menuPadding.z))),
 				new Vector2f(menuItemHeight, menuItemHeight),
 				new Vector4f(0,0,0,0),
 				screen.getStyle("Common").getString("arrowRight")
@@ -554,7 +579,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	
 	private void addCheckBox(int index, MenuItem mi) {
 		CheckBox checkbox = new CheckBox(screen, getUID() + ":CheckBox:" + index,
-			new Vector2f(menuPadding, -(menuItems.size()*menuItemHeight)+(menuItemHeight+(index*menuItemHeight)+(menuPadding)))
+			new Vector2f(menuPadding.x, -(menuItems.size()*menuItemHeight)+(menuItemHeight+(index*menuItemHeight)+(menuPadding.z)))
 		);
 		checkbox.setScaleEW(false);
 		checkbox.setScaleNS(false);
@@ -619,8 +644,10 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		this.caller = caller;
 		if (caller != null) {
 			if (x < 0) x = 0;
-			else if (x+getWidth() > screen.getWidth())
+			else if (x+getWidth() > screen.getWidth()) {
 				x = caller.getAbsoluteX()-getWidth()+menuOverhang;
+				if (x < 0) x = 0;
+			}
 			if (y < 0) y = 0;
 			else if (y+getHeight() > screen.getHeight())
 				y -= getAbsoluteHeight()-screen.getHeight();
@@ -687,7 +714,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	public void onMouseMove(MouseMotionEvent evt) {
 		if (!Screen.isAndroid()) {
 			float x = evt.getX()-getX();
-			float y = scrollableArea.getAbsoluteHeight()-menuPadding-evt.getY();
+			float y = scrollableArea.getAbsoluteHeight()-menuPadding.z-evt.getY();
 
 			if (currentMenuItemIndex != (int)Math.floor(y/menuItemHeight)) {
 				currentMenuItemIndex = (int)Math.floor(y/menuItemHeight);
@@ -714,7 +741,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 		currentHighlightIndex = index;
 		if (highlight.getParent() == null)
 			this.attachChild(highlight);
-		highlight.setY(scrollableArea.getHeight()+scrollableArea.getY()-(index*menuItemHeight)-menuItemHeight - menuPadding);
+		highlight.setY(scrollableArea.getHeight()+scrollableArea.getY()-(index*menuItemHeight)-menuItemHeight - menuPadding.z);
 	}
 	
 	public Element getHighlight() {
@@ -732,7 +759,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
                         
 		if (Screen.isAndroid()) {
 			float x = evt.getX()-getX();
-			float y = scrollableArea.getAbsoluteHeight()-menuPadding-evt.getY();
+			float y = scrollableArea.getAbsoluteHeight()-menuPadding.z-evt.getY();
 
 			if (currentMenuItemIndex != (int)Math.floor(y/menuItemHeight)) {
 				currentMenuItemIndex = (int)Math.floor(y/menuItemHeight);
@@ -784,7 +811,7 @@ public abstract class Menu extends ScrollArea implements MouseMovementListener, 
 	@Override
 	protected void onAdjustWidthForScroll() {
 		if(highlight != null) {
-			highlight.setWidth( getWidth()-(menuPadding*2));
+			highlight.setWidth( getWidth()-getMPWidth());
 		}
 	}
 }

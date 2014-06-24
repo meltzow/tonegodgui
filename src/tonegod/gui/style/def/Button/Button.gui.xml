@@ -27,10 +27,10 @@
 		</font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">
-				<x value="5" />
-				<y value="5" />
-				<z value="5" />
-				<w value="5" />
+				<x value="4" />
+				<y value="4" />
+				<z value="4" />
+				<w value="4" />
 			</property>
 			<property name="defaultSize" type="Vector2f">
 				<x value="100" />

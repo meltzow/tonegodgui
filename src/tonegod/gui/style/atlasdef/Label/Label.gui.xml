@@ -62,7 +62,7 @@
 			</property>
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=1|y=1|w=34|h=34" />
+			<property name="defaultImg" type="String" value="x=1|y=1|w=64|h=64" />
 		</images>
 		<effects></effects>
 	</element>

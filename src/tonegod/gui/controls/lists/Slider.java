@@ -269,8 +269,13 @@ public abstract class Slider extends ButtonAdapter {
 		elThumbLock.setScaleNS(false);
 		elThumbLock.setScaleEW(false);
 		elThumbLock.setDocking(Docking.SW);
-		elThumbLock.setlockToParentBounds(true);
+		elThumbLock.setLockToParentBounds(true);
 		addChild(elThumbLock);
+		
+		String texThumb = screen.getStyle("Button").getString("defaultImg");
+		if (screen.getStyle("Slider").getString("thumbHoverImg") != null) {
+			texThumb = screen.getStyle("Slider").getString("thumbImg");
+		}
 		
 		elThumb = new ButtonAdapter(
 			screen,
@@ -278,13 +283,26 @@ public abstract class Slider extends ButtonAdapter {
 			thumbPosition,
 			thumbSize,
 			new Vector4f(5,5,5,5),
-			screen.getStyle("Button").getString("defaultImg")
+			texThumb
 		) {
 			@Override
 			public void onButtonMouseLeftUp(MouseButtonEvent evt, boolean toggled) {
 				screen.setTabFocusElement(getElementParent());
 			}
 		};
+		if (screen.getStyle("Slider").getString("thumbHoverImg") != null) {
+			setButtonHoverInfo(
+				screen.getStyle("Slider").getString("thumbHoverImg"),
+				screen.getStyle("Button").getColorRGBA("hoverColor")
+			);
+		}
+		if (screen.getStyle("Slider").getString("thumbPressedImg") != null) {
+			setButtonPressedInfo(
+				screen.getStyle("Slider").getString("thumbPressedImg"),
+				screen.getStyle("Button").getColorRGBA("pressedColor")
+			);
+		}
+		
 		elThumbLock.addChild(elThumb);
 		
 		elThumb.setScaleNS(false);

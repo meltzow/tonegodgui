@@ -94,6 +94,7 @@ public class ScrollPanelBarH extends Element {
 		track.setScaleNS(false);
 		track.setDocking(Element.Docking.SW);
 		track.setInterval(100);
+		track.setTileImageByKey("ScrollArea#HScrollBar","tileTrackImg");
 		this.addChild(track);
 		
 		track.removeEffect(Effect.EffectEvent.Hover);

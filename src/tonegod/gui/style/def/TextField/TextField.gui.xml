@@ -16,14 +16,14 @@
 		</font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">
-				<x value="3" />
-				<y value="3" />
-				<z value="3" />
-				<w value="3" />
+				<x value="4" />
+				<y value="4" />
+				<z value="4" />
+				<w value="4" />
 			</property>
 			<property name="minSize" type="Vector2f">
 				<x value="120" />
-				<y value="25" />
+				<y value="24" />
 			</property>
 			<property name="defaultSize" type="Vector2f">
 				<x value="120" />

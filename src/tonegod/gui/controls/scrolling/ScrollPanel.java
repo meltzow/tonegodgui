@@ -12,8 +12,11 @@ import com.jme3.input.event.TouchEvent;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
+import java.util.Map;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
+import tonegod.gui.core.layouts.Layout;
+import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.framework.animation.Interpolation;
 import tonegod.gui.framework.core.util.GameTimer;
@@ -33,6 +36,7 @@ public class ScrollPanel extends Element {
 		Right
 	}
 	
+	private ScrollPanel self;
 	protected ScrollPanelBounds innerBounds;
 	protected Element scrollableArea;
 	protected ScrollPanelBarV vScrollBar;
@@ -52,7 +56,6 @@ public class ScrollPanel extends Element {
 	private float touchOffsetY = 0;
 	private boolean flingDir = true;
 	private float flingSpeed = 1;
-	private float clipPadding = 5;
 	
 	/**
 	 * Creates a new instance of the ScrollPanel control
@@ -152,11 +155,7 @@ public class ScrollPanel extends Element {
 		super(screen, UID, position, dimensions, Vector4f.ZERO, null);
 		setAsContainerOnly();
 		
-		// Load defaults
-	//	setMinDimensions(screen.getStyle("ScrollArea").getVector2f("minimumSize"));
-		
 		scrollSize = screen.getStyle("ScrollArea#VScrollBar").getFloat("defaultControlSize");
-		clipPadding = screen.getStyle("ScrollArea").getFloat("textPadding");
 		
 		innerBounds = new ScrollPanelBounds(screen, UID + "innerBounds", Vector2f.ZERO, dimensions, resizeBorders, defaultImg);	
 		innerBounds.setScaleEW(true);
@@ -171,7 +170,6 @@ public class ScrollPanel extends Element {
 				}
 			}
 		};
-		scrollableArea.setTextClipPadding(screen.getStyle("ScrollArea").getFloat("scrollAreaPadding"));
 		
 		scrollableArea.setScaleEW(false);
 		scrollableArea.setScaleNS(false);
@@ -183,8 +181,8 @@ public class ScrollPanel extends Element {
 		scrollableArea.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("ScrollArea").getString("textAlign")));
 		scrollableArea.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("ScrollArea").getString("textVAlign")));
 		scrollableArea.setTextWrap(LineWrapMode.valueOf(screen.getStyle("ScrollArea").getString("textWrap")));
-		scrollableArea.setTextPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
-	//	scrollableArea.setTextClipPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
+		scrollableArea.setTextPaddingByKey("ScrollArea","textPadding");
+		scrollableArea.setTextClipPaddingByKey("ScrollArea","scrollAreaPadding");
 		
 		innerBounds.addChild(scrollableArea);
 		scrollableArea.addClippingLayer(innerBounds);
@@ -195,11 +193,13 @@ public class ScrollPanel extends Element {
 		hScrollBar = new ScrollPanelBarH(this);
 		addChild(hScrollBar, true);
 		
-		setTextPadding(screen.getStyle("ScrollArea").getFloat("textPadding"));
+		setTextPaddingByKey("ScrollArea","textPadding");
 		
 		addClippingLayer(this);
 		
 		initFlingTimer();
+		
+		self = this;
 	}
 	
 	private void initFlingTimer() {
@@ -232,26 +232,33 @@ public class ScrollPanel extends Element {
 	}
 	
 	public void addScrollableContent(Element el) {
+		addScrollableContent(el, true);
+	}
+	
+	public void addScrollableContent(Element el, boolean reshape) {
 		scrollableArea.addChild(el);
-	//	el.setClippingLayer(innerBounds);
 		el.addClippingLayer(innerBounds);
-		el.setClipPadding(innerBounds.getClipPadding());
+		el.setClipPadding(innerBounds.getClipPaddingVec());
 		el.setDocking(Docking.SW);
-		reshape();
+		if (reshape)
+			reshape();
 	}
 	
 	public void removeScrollableContent(Element el) {
+		removeScrollableContent(el, true);
+	}
+	
+	public void removeScrollableContent(Element el, boolean reshape) {
 		scrollableArea.removeChild(el);
-		reshape();
+		if (reshape)
+			reshape();
 	}
 	
 	public void reshape() {
 		scrollableArea.sizeToContent();
-	//	scrollableArea.setY(innerBounds.getHeight()-scrollableArea.getHeight());
 		setVThumbSize();
 		setHThumbSize();
-		innerBounds.setClipPadding(clipPadding);
-		controlResizeHook();
+		updateForResize();
 		scrollToTop();
 		scrollToLeft();
 	}
@@ -284,24 +291,34 @@ public class ScrollPanel extends Element {
 	
 	@Override
 	public void setText(String text) {
+		scrollableArea.removeTextElement();
 		scrollableArea.setText(text);
-		scrollableArea.setTextPadding(textPadding);
-		scrollableArea.setTextClipPadding(clipPadding);
+		reshape();
+		scrollableArea.setTextPaddingByKey("ScrollArea","textPadding");
 	}
 	
-	@Override
-	public void controlResizeHook() {
+	public void updateForResize() { 
 		boolean vHide = false,
 				vShow = false,
 				hHide = false,
 				hShow = false;
 		boolean vResize = false,
 				hResize = false;
-		boolean vDir = true, hDir = true;
+		boolean vDir = true,
+				hDir = true;
 		
 		if (verticalWrap) {
-			if (scrollableArea.getTextElement() != null)
-				scrollableArea.setHeight(scrollableArea.getTextElement().getLineHeight()*scrollableArea.getTextElement().getLineCount()+(textPadding*2));
+			if (scrollableArea.getTextElement() != null) {
+				if (scrollableArea.getElements().size() > 0) {
+					if ((innerBounds.getWidth()-(textPadding.x+textPadding.y)) > scrollableArea.getWidth())
+						scrollableArea.setWidth(innerBounds.getWidth()-(textPadding.x+textPadding.y));
+					if (((scrollableArea.getTextElement().getLineHeight()*scrollableArea.getTextElement().getLineCount())+(textPadding.z+textPadding.w)) > scrollableArea.getHeight())
+						scrollableArea.setHeight((scrollableArea.getTextElement().getLineHeight()*scrollableArea.getTextElement().getLineCount())+(textPadding.z+textPadding.w));
+				} else {
+					scrollableArea.setWidth(innerBounds.getWidth()-(textPadding.x+textPadding.y));
+					scrollableArea.setHeight((scrollableArea.getTextElement().getLineHeight()*scrollableArea.getTextElement().getLineCount())+(textPadding.z+textPadding.w));
+				}
+			}
 			scrollToTop();
 		}
 		
@@ -386,6 +403,11 @@ public class ScrollPanel extends Element {
 			scrollToTop();
 		}
 		setVThumbPositionToScrollArea();
+	}
+	
+	@Override
+	public void controlResizeHook() {
+		updateForResize();
 	}
 	
 	public void setScrollAreaPadding(float padding) {

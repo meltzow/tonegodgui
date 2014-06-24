@@ -12,14 +12,19 @@
 			<property name="textAlign" type="String" value="Left" />
 			<property name="textVAlign" type="String" value="Top" />
 			<property name="textWrap" type="String" value="Word" />
-			<property name="textPadding" type="float" value="8" />
+			<property name="textPadding" type="Vector4f">
+				<x value="8" />
+				<y value="8" />
+				<z value="4" />
+				<w value="4" />
+			</property>
 		</font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">
-				<x value="14" />
-				<y value="14" />
-				<z value="14" />
-				<w value="14" />
+				<x value="8" />
+				<y value="8" />
+				<z value="8" />
+				<w value="8" />
 			</property>
 			<property name="defaultSize" type="Vector2f">
 				<x value="320" />
@@ -29,10 +34,10 @@
 				<x value="96" />
 				<y value="96" />
 			</property>
-			<property name="scrollAreaPadding" type="float" value="0" />
+			<property name="scrollAreaPadding" type="float" value="4" />
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=37|y=1|w=34|h=34" />
+			<property name="defaultImg" type="String" value="x=68|y=1|w=64|h=64" />
 		</images>
 		<effects></effects>
 	</element>
@@ -69,16 +74,16 @@
 			<property name="gap" type="float" value="0" />
 		</attributes>
 		<images>
-			<property name="trackImg" type="String" value="x=73|y=19|w=16|h=16" />
-			<property name="thumbImg" type="String" value="x=1|y=37|w=16|h=16" />
-			<property name="thumbHoverImg" type="String" value="x=19|y=37|w=16|h=16" />
-			<property name="thumbPressedImg" type="String" value="x=37|y=37|w=16|h=16" />
-			<property name="btnUpImg" type="String" value="x=1|y=37|w=16|h=16" />
-			<property name="btnUpHoverImg" type="String" value="x=19|y=37|w=16|h=16" />
-			<property name="btnUpPressedImg" type="String" value="x=37|y=37|w=16|h=16" />
-			<property name="btnDownImg" type="String" value="x=1|y=37|w=16|h=16" />
-			<property name="btnDownHoverImg" type="String" value="x=19|y=37|w=16|h=16" />
-			<property name="btnDownPressedImg" type="String" value="x=37|y=37|w=16|h=16" />
+			<property name="trackImg" type="String" value="x=171|y=55|w=16|h=16" />
+			<property name="thumbImg" type="String" value="x=153|y=1|w=16|h=16" />
+			<property name="thumbHoverImg" type="String" value="x=153|y=19|w=16|h=16" />
+			<property name="thumbPressedImg" type="String" value="x=153|y=37|w=16|h=16" />
+			<property name="btnUpImg" type="String" value="x=153|y=1|w=16|h=16" />
+			<property name="btnUpHoverImg" type="String" value="x=153|y=19|w=16|h=16" />
+			<property name="btnUpPressedImg" type="String" value="x=153|y=37|w=16|h=16" />
+			<property name="btnDownImg" type="String" value="x=153|y=1|w=16|h=16" />
+			<property name="btnDownHoverImg" type="String" value="x=153|y=19|w=16|h=16" />
+			<property name="btnDownPressedImg" type="String" value="x=153|y=37|w=16|h=16" />
 		</images>
 		<effects></effects>
 	</element>
@@ -115,7 +120,7 @@
 			<property name="gap" type="float" value="0" />
 		</attributes>
 		<images>
-			<property name="trackImg" type="String" value="x=73|y=19|w=16|h=16" />
+			<property name="trackImg" type="String" value="x=171|y=55|w=16|h=16" />
 			<property name="thumbImg" type="String" value="x=1|y=37|w=16|h=16" />
 			<property name="thumbHoverImg" type="String" value="x=19|y=37|w=16|h=16" />
 			<property name="thumbPressedImg" type="String" value="x=37|y=37|w=16|h=16" />

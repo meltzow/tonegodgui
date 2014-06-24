@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<element name="Spinner">
-		<font></font>
+		<font>
+			<property name="fontSize" type="float" value="20" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0" />
+				<g value="0" />
+				<b value="0" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Top" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="textPadding" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="3" />
+				<w value="0" />
+			</property>
+		</font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">
 				<x value="3" />
@@ -9,13 +26,17 @@
 				<z value="3" />
 				<w value="3" />
 			</property>
+			<property name="minSize" type="Vector2f">
+				<x value="120" />
+				<y value="24" />
+			</property>
 			<property name="defaultSize" type="Vector2f">
-				<x value="150" />
+				<x value="120" />
 				<y value="24" />
 			</property>
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=73|y=37|w=16|h=16" />
+			<property name="defaultImg" type="String" value="x=171|y=1|w=16|h=16" />
 		</images>
 		<effects></effects>
 	</element>

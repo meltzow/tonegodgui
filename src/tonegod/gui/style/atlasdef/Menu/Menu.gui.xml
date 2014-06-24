@@ -22,10 +22,10 @@
 				<a value="0.5" />
 			</property>
 			<property name="resizeBorders" type="Vector4f">
-				<x value="15" />
-				<y value="15" />
-				<z value="15" />
-				<w value="15" />
+				<x value="8" />
+				<y value="8" />
+				<z value="8" />
+				<w value="8" />
 			</property>
 			<property name="minSize" type="Vector2f">
 				<x value="150" />
@@ -35,11 +35,16 @@
 				<x value="350" />
 				<y value="200" />
 			</property>
-			<property name="menuPadding" type="float" value="4" />
+			<property name="menuPadding" type="Vector4f">
+				<x value="3" />
+				<y value="3" />
+				<z value="3" />
+				<w value="3" />
+			</property>
 			<property name="menuOverhang" type="float" value="8" />
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=1|y=1|w=34|h=34" />
+			<property name="defaultImg" type="String" value="x=68|y=1|w=64|h=64" />
 		</images>
 		<effects>
 			<property name="event0" type="Effect">
@@ -49,7 +54,6 @@
 			</property>
 		</effects>
 	</element>
-
 	<element name="MenuItem">
 		<font>
 			<property name="fontSize" type="float" value="20" />
