@@ -28,15 +28,22 @@
 		</font>
 		<attributes>
 			<property name="resizeBorders" type="Vector4f">
-				<x value="15" />
-				<y value="15" />
-				<z value="15" />
-				<w value="15" />
+				<x value="4" />
+				<y value="4" />
+				<z value="10" />
+				<w value="4" />
+			</property>
+			<property name="resizeBordersV" type="Vector4f">
+				<x value="4" />
+				<y value="4" />
+				<z value="4" />
+				<w value="10" />
 			</property>
 			<property name="defaultSize" type="Vector2f">
 				<x value="100" />
-				<y value="40" />
+				<y value="30" />
 			</property>
+			<property name="tabOverhang" type="float" value="6" />
 			<property name="pressedSound" type="String" value="button_pressed" />
 			<property name="usePressedSound" type="boolean" value="true" />
 			<property name="pressedSoundVolume" type="float" value="1" />
@@ -45,10 +52,13 @@
 			<property name="hoverSoundVolume" type="float" value=".5" />
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=37|y=91|w=34|h=34" />
-			<property name="hoverImg" type="String" value="x=1|y=1|w=34|h=34" />
-			<property name="pressedImg" type="String" value="x=1|y=1|w=34|h=34" />
-			<property name="panelImg" type="String" value="x=37|y=1|w=34|h=34" />
+			<property name="panelImg" type="String" value="x=68|y=1|w=64|h=64" />
+			<property name="defaultImg" type="String" value="x=171|y=73|w=16|h=16" />
+			<property name="hoverImg" type="String" value="x=153|y=73|w=16|h=16" />
+			<property name="pressedImg" type="String" value="x=135|y=73|w=16|h=16" />
+			<property name="defaultImgV" type="String" value="x=225|y=73|w=16|h=16" />
+			<property name="hoverImgV" type="String" value="x=207|y=73|w=16|h=16" />
+			<property name="pressedImgV" type="String" value="x=189|y=73|w=16|h=16" />
 		</images>
 		<effects>
 			<property name="event0" type="Effect">
