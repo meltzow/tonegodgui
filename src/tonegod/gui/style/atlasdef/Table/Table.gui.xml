@@ -27,12 +27,11 @@
 			<property name="tablePadding" type="float" value="4" />
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=37|y=1|w=34|h=34" />
+			<property name="defaultImg" type="String" value="x=68|y=1|w=64|h=64" />
 		</images>
 		<effects>
 		</effects>
 	</element>
-
 	<element name="Table#Row">
 		<font>
 		</font>
@@ -53,10 +52,9 @@
 		<effects>
 		</effects>
 	</element>
-
 	<element name="Table#Header">
 		<font>
-                        <property name="fontSize" type="float" value="20" />
+			<property name="fontSize" type="float" value="20" />
 			<property name="fontColor" type="ColorRGBA">
 				<r value="1" />
 				<g value="1" />
@@ -79,7 +77,7 @@
 				<z value="5" />
 				<w value="5" />
 			</property>
-                        <property name="hoverColor" type="ColorRGBA">
+			<property name="hoverColor" type="ColorRGBA">
 				<r value="1.0" />
 				<g value="1.0" />
 				<b value="1.0" />
@@ -97,11 +95,11 @@
 			</property>
 		</attributes>
 		<images>
-			<property name="defaultImg" type="String" value="x=1|y=37|w=16|h=16" />
-			<property name="hoverImg" type="String" value="x=19|y=37|w=16|h=16" />
-			<property name="pressedImg" type="String" value="x=37|y=37|w=16|h=16" />
-			<property name="arrowUpImg" type="String" value="x=91|y=1|w=16|h=16" />
-			<property name="arrowDownImg" type="String" value="x=91|y=19|w=16|h=16" />
+			<property name="defaultImg" type="String" value="x=153|y=1|w=16|h=16" />
+			<property name="hoverImg" type="String" value="x=153|y=19|w=16|h=16" />
+			<property name="pressedImg" type="String" value="x=153|y=37|w=16|h=16" />
+			<property name="arrowUpImg" type="String" value="x=189|y=19|w=16|h=16" />
+			<property name="arrowDownImg" type="String" value="x=189|y=1|w=16|h=16" />
 			<property name="noArrowImg" type="String" value="x=0|y=0|w=1|h=1" />
 		</images>
 		<effects>
