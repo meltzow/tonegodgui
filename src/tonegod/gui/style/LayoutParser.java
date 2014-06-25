@@ -55,6 +55,7 @@ import tonegod.gui.controls.windows.Panel;
 import tonegod.gui.controls.windows.TabControl;
 import tonegod.gui.controls.windows.Window;
 import tonegod.gui.core.Element;
+import tonegod.gui.core.Element.Orientation;
 import tonegod.gui.core.Screen;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.core.utils.XMLHelper;
@@ -440,7 +441,7 @@ public class LayoutParser {
                 } else if (className.equals("Panel")) {
                         return new Panel(screen, id, position, dimensions, resizeBorders, img);
                 } else if (className.equals("TabControl")) {
-                        return new TabControl(screen, id, position, dimensions, resizeBorders, img);
+                        return new TabControl(screen, id, position, dimensions, resizeBorders, img, Orientation.HORIZONTAL);
                 } else if (className.equals("ChatBox")) {
                         return new ChatBox(screen, id, position, dimensions, resizeBorders, img) {
                                 @Override

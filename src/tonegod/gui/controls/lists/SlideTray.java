@@ -4,6 +4,8 @@
  */
 package tonegod.gui.controls.lists;
 
+import com.jme3.font.BitmapFont.Align;
+import com.jme3.font.BitmapFont.VAlign;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
@@ -15,6 +17,7 @@ import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.BatchEffect;
 import tonegod.gui.effects.Effect;
+import tonegod.gui.framework.core.util.GameTimer;
 
 /**
  *
@@ -27,10 +30,18 @@ public class SlideTray extends Element {
 		HORIZONTAL
 	}
 	*/
+	
+	public static enum ZOrderSort {
+		FIRST_TO_LAST,
+		LAST_TO_FIRST
+	}
 	private Orientation orientation;
+	
+	private ZOrderSort sort = ZOrderSort.FIRST_TO_LAST;
 	
 	private ButtonAdapter btnPrevElement, btnNextElement;
 	private Element elTray;
+	private float btnSize;
 	
 	protected List<Element> trayElements = new ArrayList();
 	protected int currentElementIndex = 0;
@@ -41,7 +52,10 @@ public class SlideTray extends Element {
 	private Effect slideEffect;
 	
 	private BatchEffect batch = null;
+	private GameTimer timer;
 	
+	private float currentOffset = 0;
+						
 	/**
 	 * Creates a new instance of the SlideTray control
 	 * 
@@ -153,16 +167,42 @@ public class SlideTray extends Element {
 		this.orientation = orientation;
 		
 		this.setDocking(Docking.NW);
-		this.setScaleEW(true);
-		this.setScaleNS(false);
 		
+		if (orientation == Orientation.HORIZONTAL) {
+			this.setScaleEW(true);
+			this.setScaleNS(false);
+		} else {
+			this.setScaleEW(false);
+			this.setScaleNS(true);
+		}
+		this.setAsContainerOnly();
+		
+		initControl();
+	}
+	
+	private void initControl() {
+		btnSize = screen.getStyle("Button").getVector2f("defaultSize").y;
+				
 		slideEffect = new Effect(Effect.EffectType.SlideTo, Effect.EffectEvent.Show, .25f);
+		timer = new GameTimer(.25f) {
+			@Override
+			public void onComplete(float time) {
+				hideShowButtons();
+			}
+		};
 		
+		Vector2f pos = new Vector2f();
+		Vector2f dim = new Vector2f();
+		if (orientation == Orientation.HORIZONTAL) {
+			pos.set(-btnSize,0);
+			dim.set(btnSize, getHeight());
+		} else {
+			pos.set(0,-btnSize);
+			dim.set(getWidth(),btnSize);
+		}
+			
 		btnPrevElement = new ButtonAdapter(screen, getUID() + ":btnPrevElement",
-			new Vector2f(-20, 0),
-			new Vector2f(20, getHeight()),
-			new Vector4f(0,0,0,0),
-			null
+			pos, dim, Vector4f.ZERO, null
 		) {
 			@Override
 			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean isToggled) {
@@ -172,17 +212,23 @@ public class SlideTray extends Element {
 					prevElement();
 			}
 		};
-		btnPrevElement.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowLeft"));
+		if (orientation == Orientation.HORIZONTAL)
+			btnPrevElement.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowLeft"));
+		else
+			btnPrevElement.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowUp"));
 		btnPrevElement.clearAltImages();
 		btnPrevElement.setDocking(Docking.SW);
 		btnPrevElement.setScaleEW(false);
 		btnPrevElement.setScaleNS(false);
 		
+		if (orientation == Orientation.HORIZONTAL) {
+			pos.set(getWidth(),0);
+		} else {
+			pos.set(0,getHeight());
+		}
+		
 		btnNextElement = new ButtonAdapter(screen, getUID() + ":btnNextElement",
-			new Vector2f(getWidth(), 0),
-			new Vector2f(20, getHeight()),
-			new Vector4f(0,0,0,0),
-			null
+			pos, dim, Vector4f.ZERO, null
 		) {
 			@Override
 			public void onButtonMouseLeftDown(MouseButtonEvent evt, boolean isToggled) {
@@ -192,9 +238,15 @@ public class SlideTray extends Element {
 					nextElement();
 			}
 		};
-		btnNextElement.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowRight"));
+		if (orientation == Orientation.HORIZONTAL)
+			btnNextElement.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowRight"));
+		else
+			btnNextElement.setButtonIcon(18, 18, screen.getStyle("Common").getString("arrowDown"));
 		btnNextElement.clearAltImages();
-		btnNextElement.setDocking(Docking.SE);
+		if (orientation == Orientation.HORIZONTAL)
+			btnNextElement.setDocking(Docking.SE);
+		else
+			btnNextElement.setDocking(Docking.SW);
 		btnNextElement.setScaleEW(false);
 		btnNextElement.setScaleNS(false);
 		
@@ -203,14 +255,94 @@ public class SlideTray extends Element {
 			new Vector2f(getWidth(), getHeight()),
 			new Vector4f(0,0,0,0),
 			null
-		);
+		) {
+			@Override
+			public void controlResizeHook() {
+				if (orientation == Orientation.HORIZONTAL) {
+					btnNextElement.setX(getWidth());
+				} else {
+					btnPrevElement.setY(getHeight());
+				}
+				hideShowButtons();
+			}
+		};
 		elTray.setDocking(Docking.SW);
-		elTray.setScaleEW(true);
-		elTray.setScaleNS(false);
+		if (orientation == Orientation.HORIZONTAL) {
+			elTray.setScaleEW(true);
+			elTray.setScaleNS(false);
+		} else {
+			elTray.setScaleEW(false);
+			elTray.setScaleNS(true);
+		}
+		elTray.setAsContainerOnly();
 		
 		addChild(elTray);
 		addChild(btnPrevElement);
 		addChild(btnNextElement);
+	}
+	
+	public void setButtonSize(float size) {
+		if (orientation == Orientation.HORIZONTAL) {
+			btnPrevElement.setHeight(size);
+			btnPrevElement.getButtonIcon().centerToParentV();
+			btnNextElement.setHeight(size);
+			btnNextElement.getButtonIcon().centerToParentV();
+		} else {
+			btnPrevElement.setWidth(size);
+			btnPrevElement.getButtonIcon().centerToParentH();
+			btnNextElement.setWidth(size);
+			btnNextElement.getButtonIcon().centerToParentH();
+		}
+	}
+	
+	public void alignButtonsV(VAlign vAlign) {
+		if (vAlign == VAlign.Top) {
+			btnPrevElement.setY(getHeight()-btnPrevElement.getHeight());
+			btnNextElement.setY(getHeight()-btnNextElement.getHeight());
+		} else if (vAlign == VAlign.Center) {
+			btnPrevElement.centerToParentV();
+			btnNextElement.centerToParentV();
+		} else if (vAlign == VAlign.Center) {
+			btnPrevElement.setY(0);
+			btnNextElement.setY(0);
+		}	
+	}
+	
+	public void alignButtonsH(Align align) {
+		if (align == Align.Right) {
+			btnPrevElement.setX(getWidth()-btnPrevElement.getWidth());
+			btnNextElement.setX(getWidth()-btnNextElement.getWidth());
+		} else if (align == Align.Center) {
+			btnPrevElement.centerToParentH();
+			btnNextElement.centerToParentH();
+		} else if (align == Align.Left) {
+			btnPrevElement.setX(0);
+			btnNextElement.setX(0);
+		}	
+	}
+	
+	public void setZOrderSorting(ZOrderSort sort) {
+		this.sort = sort;
+	}
+	
+	public void resort(Element toFront) {
+		float step = screen.getZOrderStepMinor();
+		if (sort == ZOrderSort.FIRST_TO_LAST) {
+			for (int i = 0; i < trayElements.size(); i++) {
+				Element el = trayElements.get(i);
+				el.setLocalTranslation(el.getLocalTranslation().setZ(step));
+				step += screen.getZOrderStepMinor();
+			}
+		} else if (sort == ZOrderSort.LAST_TO_FIRST) {
+			for (int i = trayElements.size()-1; i >= 0; i--) {
+				Element el = trayElements.get(i);
+				if (el != toFront) {
+					el.setLocalTranslation(el.getLocalTranslation().setZ(step));
+					step += screen.getZOrderStepMinor();
+				}
+			}
+		}
+		toFront.setLocalTranslation(toFront.getLocalTranslation().setZ(step));
 	}
 	
 	/**
@@ -251,6 +383,7 @@ public class SlideTray extends Element {
 		element.setScaleNS(false);
 		trayElements.add(element);
 		elTray.addChild(element);
+		hideShowButtons();
 	}
 	
 	private void nextElement() {
@@ -288,6 +421,11 @@ public class SlideTray extends Element {
 				}
 			}
 			currentElementIndex++;
+			if (useSlideEffect) {
+				timer.reset(false);
+				screen.getAnimManager().addGameTimer(timer);
+			} else
+				hideShowButtons();
 		}
 	}
 	
@@ -326,7 +464,33 @@ public class SlideTray extends Element {
 				}
 			}
 			currentElementIndex--;
+			if (useSlideEffect) {
+				timer.reset(false);
+				screen.getAnimManager().addGameTimer(timer);
+			} else
+				hideShowButtons();
 		}
+	}
+	
+	private void hideShowButtons() {
+		if (currentElementIndex == 0)
+			btnPrevElement.hide();
+		else
+			btnPrevElement.show();
+		Element el = trayElements.get(trayElements.size()-1);
+		if (orientation == Orientation.HORIZONTAL) {
+			if (el.getX()+el.getWidth() < elTray.getWidth())
+				btnNextElement.hide();
+			else
+				btnNextElement.show();
+		} else {
+			if (el.getY() > 0)
+				btnNextElement.hide();
+			else
+				btnNextElement.show();
+		}
+		if (!trayElements.isEmpty())
+			currentOffset = (elTray.getHeight()-trayElements.get(0).getY());
 	}
 	
 	private float getNextPosition() {
@@ -345,9 +509,9 @@ public class SlideTray extends Element {
 	public void setControlClippingLayer(Element clippingLayer) {
 	//	setClippingLayer(clippingLayer);
 		addClippingLayer(clippingLayer);
-		for (Element el : elementChildren.values()) {
-			if (!trayElements.contains(el))
-				el.setControlClippingLayer(clippingLayer);
-		}
+	//	for (Element el : elementChildren.values()) {
+	//		if (!trayElements.contains(el))
+	//			el.setControlClippingLayer(clippingLayer);
+	//	}
 	}
 }
