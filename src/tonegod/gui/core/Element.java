@@ -622,6 +622,7 @@ public class Element extends Node {
 		setIgnoreMouseButtons(ignoreMouse);
 		setIgnoreMouseWheel(ignoreMouse);
 		setIgnoreMouseFocus(ignoreMouse);
+		setIgnoreTouchEvents(ignoreMouse);
 	}
 	
 	/**

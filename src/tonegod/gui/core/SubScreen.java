@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.lists.ComboBox;
+import tonegod.gui.controls.menuing.AutoHide;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.controls.util.ModalBackground;
@@ -218,7 +219,7 @@ public class SubScreen implements ElementManager, Control {
 	 */
 	@Override
 	public void addElement(Element element) {
-		if (element instanceof Menu)
+		if (element instanceof AutoHide)
 			element.hide();
 		
 		if (getElementById(element.getUID()) != null) {
@@ -251,7 +252,7 @@ public class SubScreen implements ElementManager, Control {
 	 */
 	@Override
 	public void addElement(Element element, boolean hide) {
-		if (element instanceof Menu)
+		if (element instanceof AutoHide)
 			element.hide();
 		
 		if (getElementById(element.getUID()) != null) {
@@ -842,7 +843,7 @@ public class SubScreen implements ElementManager, Control {
 			if (target instanceof TouchListener) {
 				((TouchListener)target).onTouchUp(evt);
 			}
-			if (!(target.getAbsoluteParent() instanceof Menu)) {
+			if (!(target.getAbsoluteParent() instanceof AutoHide)) {
 				handleAndroidMenuState(target);
 			}
 			if (target != null)
