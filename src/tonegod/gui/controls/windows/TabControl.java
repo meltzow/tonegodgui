@@ -443,9 +443,9 @@ public class TabControl extends Element {
 	 */
 	public void addTabChild(int index, Element element) {
 		if (index > -1 && index < tabs.size()) {
-			tabPanels.get(index).addChild(element);
+			tabPanels.get(index).addScrollableContent(element);
 		//	element.setClippingLayer(tabPanels.get(index));
-			element.addClippingLayer(tabPanels.get(index));
+		//	element.addClippingLayer(tabPanels.get(index));
 		}
 	}
 	
