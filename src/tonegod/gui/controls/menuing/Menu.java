@@ -29,7 +29,7 @@ import tonegod.gui.listeners.MouseWheelListener;
  *
  * @author t0neg0d
  */
-public abstract class Menu extends ScrollArea implements MouseMovementListener, MouseWheelListener, MouseButtonListener {
+public abstract class Menu extends ScrollArea implements AutoHide, MouseMovementListener, MouseWheelListener, MouseButtonListener {
 	private List<MenuItem> menuItems = new ArrayList();
 	private Element highlight;
 	private float initWidth;

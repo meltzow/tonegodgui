@@ -56,6 +56,7 @@ import java.util.logging.Logger;
 import tonegod.gui.controls.extras.android.Keyboard;
 import tonegod.gui.controls.form.Form;
 import tonegod.gui.controls.lists.ComboBox;
+import tonegod.gui.controls.menuing.AutoHide;
 import tonegod.gui.controls.menuing.Menu;
 import tonegod.gui.controls.text.TextField;
 import tonegod.gui.controls.util.ModalBackground;
@@ -343,7 +344,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 */
 	@Override
 	public void addElement(Element element) {
-		if (element instanceof Menu) {
+		if (element instanceof AutoHide) {
 			addElement(element, true);
 			return;
 		}
@@ -378,7 +379,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	 */
 	@Override
 	public void addElement(Element element, boolean hide) {
-		if (element instanceof Menu)
+		if (element instanceof AutoHide)
 			hide = true;
 		
 		if (getElementById(element.getUID()) != null) {
@@ -2281,21 +2282,21 @@ public class Screen implements ElementManager, Control, RawInputListener {
 					}
 				}
 			} else {
-				if (!(eventElement.getAbsoluteParent() instanceof Menu) && !(eventElement.getParent() instanceof ComboBox)) {
+				if (!(eventElement.getAbsoluteParent() instanceof AutoHide) && !(eventElement.getParent() instanceof ComboBox)) {
 					for (Element el : elements.values()) {
-						if (el instanceof Menu) {
+						if (el instanceof AutoHide) {
 							el.hide();
 						}
 					}
-				} else if (eventElement.getAbsoluteParent() instanceof Menu) {
+				} else if (eventElement.getAbsoluteParent() instanceof AutoHide) {
 					for (Element el : elements.values()) {
-						if (el instanceof Menu && el != eventElement.getAbsoluteParent()) {
+						if (el instanceof AutoHide && el != eventElement.getAbsoluteParent()) {
 							el.hide();
 						}
 					}
 				} else if (eventElement.getParent() instanceof ComboBox) {
 					for (Element el : elements.values()) {
-						if (el instanceof Menu && el != ((ComboBox)eventElement.getParent()).getMenu()) {
+						if (el instanceof AutoHide && el != ((ComboBox)eventElement.getParent()).getMenu()) {
 							el.hide();
 						}
 					}
@@ -2308,26 +2309,26 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	public void handleAndroidMenuState(Element target) {
 		if (target == null) {
 			for (Element el : elements.values()) {
-				if (el instanceof Menu) {
+				if (el instanceof AutoHide) {
 					el.hide();
 				}
 			}
 		} else {
-			if (!(target.getAbsoluteParent() instanceof Menu) && !(target.getParent() instanceof ComboBox)) {
+			if (!(target.getAbsoluteParent() instanceof AutoHide) && !(target.getParent() instanceof ComboBox)) {
 				for (Element el : elements.values()) {
-					if (el instanceof Menu) {
+					if (el instanceof AutoHide) {
 						el.hide();
 					}
 				}
-			} else if (target.getAbsoluteParent() instanceof Menu) {
+			} else if (target.getAbsoluteParent() instanceof AutoHide) {
 				for (Element el : elements.values()) {
-					if (el instanceof Menu && el != target.getAbsoluteParent()) {
+					if (el instanceof AutoHide && el != target.getAbsoluteParent()) {
 						el.hide();
 					}
 				}
 			} else if (target.getParent() instanceof ComboBox) {
 				for (Element el : elements.values()) {
-					if (el instanceof Menu && el != ((ComboBox)target.getParent()).getMenu()) {
+					if (el instanceof AutoHide && el != ((ComboBox)target.getParent()).getMenu()) {
 						el.hide();
 					}
 				}
