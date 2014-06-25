@@ -33,6 +33,7 @@ import tonegod.gui.core.layouts.Layout;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.framework.core.AnimText;
+import tonegod.gui.framework.core.QuadData;
 
 /**
  *
@@ -305,14 +306,15 @@ public class TabControl extends Element {
 		Vector2f dim = new Vector2f();
 		
 		LabelElement label = new LabelElement(screen);
+		label.setText(title);
+		label.setSizeToText(true);
+		label.setUseTextClipping(true);
+		label.setDocking(Docking.SW);
+
+		AnimText txt = label.getAnimText();
 		
 		if (orientation == Orientation.VERTICAL) {
-			label.setText(title);
-			label.setSizeToText(true);
-			label.setUseTextClipping(false);
-			AnimText txt = label.getAnimText();
-
-			txt.setPosition(-(txt.getLineWidth()+(label.getHeight()/2)),(txt.getLineHeight())+(label.getHeight()/2));
+			txt.setPosition(-((txt.getLineWidth()/2)),(txt.getLineHeight())+(label.getHeight()/2));
 			txt.setOrigin(txt.getLineWidth()/2,txt.getLineHeight()/2);
 			txt.setRotation(90);
 			label.setDimensions(label.getHeight(),label.getWidth());
@@ -340,7 +342,10 @@ public class TabControl extends Element {
 			tab.setWidth(fixedTabSize);
 		} else {
 			float width = BitmapTextUtil.getTextWidth(tab, title);
-			tab.setWidth(width+(labelPadding*2)+(tabResizeBorders.x+tabResizeBorders.z));
+			if (orientation == Orientation.HORIZONTAL)
+				tab.setWidth(width+(labelPadding*2)+(tabResizeBorders.x+tabResizeBorders.z));
+			else
+				tab.setHeight(width+(labelPadding*2)+(tabResizeBorders.x+tabResizeBorders.z));
 		}
 		tab.clearAltImages();
 		
@@ -416,7 +421,11 @@ public class TabControl extends Element {
 			tab.setIsToggled(true);
 		
 		tab.addClippingLayer(tab);
-		label.addClippingLayer(label);
+		label.addClippingLayer(tab);
+		label.removeClippingLayer(label);
+		
+		if (orientation == Orientation.VERTICAL)
+			tab.resetTextElement();
 		
 		tabButtonIndex++;
 	}

@@ -63,6 +63,7 @@ public abstract class AnimElement extends Node implements Transformable {
 	private float worldRotation = 0;
 	private Vector2f tempV = new Vector2f(),
 			tempV2 = new Vector2f();
+	private Vector4f clippingPosition = new Vector4f(-10000,-10000,10000,10000);
 	
 	public AnimElement(AssetManager am) {
 		this.am = am;
@@ -634,6 +635,10 @@ public abstract class AnimElement extends Node implements Transformable {
 			else
 				a = null;
 		}
+		if (worldPosition.x > clippingPosition.x) clippingPosition.x = worldPosition.x;
+		if (worldPosition.y > clippingPosition.y) clippingPosition.y = worldPosition.y;
+		if (worldPosition.x+qd.getWidth() < clippingPosition.z) clippingPosition.z = worldPosition.x+qd.getWidth();
+		if (worldPosition.y+qd.getHeight() < clippingPosition.w) clippingPosition.w = worldPosition.y+qd.getHeight();
 	}
 	
 	public Vector2f getQuadWorldPosition(QuadData qd) {
@@ -645,4 +650,13 @@ public abstract class AnimElement extends Node implements Transformable {
 		setWorldTransforms(qd);
 		return worldRotation;
 	}
+	
+	public void setClippingBounds() {
+		resetClippingPosition();
+		for (QuadData qd : quads.values()) {
+			setWorldTransforms(qd);
+		}
+	}
+	public void resetClippingPosition() { clippingPosition.set(-10000,-10000,10000,10000); }
+	public Vector4f getClippingPosition() { return clippingPosition; }
 }
