@@ -6,15 +6,8 @@ package tonegod.gui.controls.windows;
 
 import com.jme3.font.BitmapFont.Align;
 import com.jme3.font.BitmapFont.VAlign;
-import com.jme3.font.BitmapText;
-import com.jme3.font.Rectangle;
-import com.jme3.math.FastMath;
-import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,13 +26,12 @@ import tonegod.gui.core.layouts.Layout;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.framework.core.AnimText;
-import tonegod.gui.framework.core.QuadData;
 
 /**
  *
  * @author t0neg0d
  */
-public class TabControl extends Element {
+public abstract class TabControl extends Element {
 	private Orientation orientation = Orientation.HORIZONTAL;
 	protected List<Button> tabs = new ArrayList();
 	protected Map<Integer,ITabPanel> tabPanels = new HashMap();
@@ -225,6 +217,7 @@ public class TabControl extends Element {
 				selectedTab.getElementParent().attachChild(selectedTab);
 				selectedPanel.hide();
 				selectedPanel.show();
+				onTabSelect(index);
 			}
 		};
 		
@@ -262,6 +255,8 @@ public class TabControl extends Element {
 		}
 		addChild(tabSlider);
 	}
+	
+	public abstract void onTabSelect(int index);
 	
 	public Orientation getOrientation() {
 		return this.orientation;

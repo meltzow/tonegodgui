@@ -441,28 +441,47 @@ public class LayoutParser {
                 } else if (className.equals("Panel")) {
                         return new Panel(screen, id, position, dimensions, resizeBorders, img);
                 } else if (className.equals("TabControl")) {
-                        return new TabControl(screen, id, position, dimensions, resizeBorders, img, Orientation.HORIZONTAL);
+                        return new TabControl(screen, id, position, dimensions, resizeBorders, img, Orientation.HORIZONTAL) {
+						@Override
+						public void onTabSelect(int index) {
+							for (int n = 0; n < childNodes.getLength(); n++) {
+								org.w3c.dom.Node childNode = childNodes.item(n);
+								if (childNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+									if (childNode.getNodeName().equals("eventMethod")) {
+										if (XMLHelper.getNodeAttributeValue(childNode, "name").equals("onTabSelect")) {
+											try {
+												for (Method method : state.getClass().getDeclaredMethods()) {
+													if (method.getName().equals(XMLHelper.getNodeAttributeValue(childNode, "stateMethodName")))
+														method.invoke(state.getClass().cast(state), index);
+												}
+											} catch (Exception ex) { ex.printStackTrace(); }
+										}
+									}
+								}
+							}
+						}
+					};
                 } else if (className.equals("ChatBox")) {
-                        return new ChatBox(screen, id, position, dimensions, resizeBorders, img) {
-                                @Override
-                                public void onSendMsg(String msg) {
-                                        for (int n = 0; n < childNodes.getLength(); n++) {
-                                                org.w3c.dom.Node childNode = childNodes.item(n);
-                                                if (childNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-                                                        if (childNode.getNodeName().equals("eventMethod")) {
-                                                                if (XMLHelper.getNodeAttributeValue(childNode, "name").equals("onSendMsg")) {
-                                                                        try {
-                                                                                for (Method method : state.getClass().getDeclaredMethods()) {
-                                                                                        if (method.getName().equals(XMLHelper.getNodeAttributeValue(childNode, "stateMethodName")))
-                                                                                                method.invoke(state.getClass().cast(state), msg);
-                                                                                }
-                                                                        } catch (Exception ex) { ex.printStackTrace(); }
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        };
+					return new ChatBox(screen, id, position, dimensions, resizeBorders, img) {
+						@Override
+						public void onSendMsg(String msg) {
+							for (int n = 0; n < childNodes.getLength(); n++) {
+								org.w3c.dom.Node childNode = childNodes.item(n);
+								if (childNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+									if (childNode.getNodeName().equals("eventMethod")) {
+										if (XMLHelper.getNodeAttributeValue(childNode, "name").equals("onSendMsg")) {
+											try {
+												for (Method method : state.getClass().getDeclaredMethods()) {
+													if (method.getName().equals(XMLHelper.getNodeAttributeValue(childNode, "stateMethodName")))
+														method.invoke(state.getClass().cast(state), msg);
+												}
+											} catch (Exception ex) { ex.printStackTrace(); }
+										}
+									}
+								}
+							}
+						}
+					};
                 } else if (className.equals("ChatBoxExt")) {
                         return new ChatBoxExt(screen, id, position, dimensions, resizeBorders, img) {
                                 @Override
