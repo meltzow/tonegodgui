@@ -7,6 +7,7 @@ package tonegod.gui.controls.lists;
 import com.jme3.font.BitmapFont.Align;
 import com.jme3.font.BitmapFont.VAlign;
 import com.jme3.input.event.MouseButtonEvent;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
 import java.util.ArrayList;
@@ -390,11 +391,7 @@ public class SlideTray extends Element {
 		if (currentElementIndex+1 < trayElements.size()) {
 			if (useSlideEffect) {
 				batch = new BatchEffect();
-				float diff;
-				if (orientation == Orientation.HORIZONTAL)
-					diff = (trayElements.get(currentElementIndex).getWidth()+trayPadding);
-				else
-					diff = (trayElements.get(currentElementIndex).getHeight()+trayPadding);
+				float diff = getNextOffset(true);
 				for (Element el : trayElements) {
 					if (orientation == Orientation.HORIZONTAL) {
 						Vector2f destination = new Vector2f(el.getX()-diff,el.getY());
@@ -433,11 +430,7 @@ public class SlideTray extends Element {
 		if (currentElementIndex-1 > -1) {
 			if (useSlideEffect) {
 				batch = new BatchEffect();
-				float diff;
-				if (orientation == Orientation.HORIZONTAL)
-					diff = (trayElements.get(currentElementIndex-1).getWidth()+trayPadding);
-				else
-					diff = (trayElements.get(currentElementIndex-1).getHeight()+trayPadding);
+				float diff = getNextOffset(false);
 				for (Element el : trayElements) {
 					if (orientation == Orientation.HORIZONTAL) {
 						Vector2f destination = new Vector2f(el.getX()+diff,el.getY());
@@ -472,6 +465,63 @@ public class SlideTray extends Element {
 		}
 	}
 	
+	private float getNextOffset(boolean dir) {
+		float diff, end, offset;
+		if (dir) {
+			if (orientation == Orientation.HORIZONTAL) {
+				diff = (trayElements.get(currentElementIndex).getWidth()+trayPadding);
+			} else {
+				diff = (trayElements.get(currentElementIndex).getHeight()+trayPadding);
+			}
+		} else {
+			if (orientation == Orientation.HORIZONTAL) {
+				diff = FastMath.abs(trayElements.get(currentElementIndex-1).getX());
+			} else {
+				diff = FastMath.abs(trayElements.get(currentElementIndex-1).getY());
+			}
+		}
+		
+		if (orientation == Orientation.HORIZONTAL) {
+			if (dir) {
+				Element el = trayElements.get(trayElements.size()-1);
+				end = el.getX()+el.getWidth()+trayPadding;
+				end -= diff;
+				offset = elTray.getWidth()-end;
+				if (offset > 0)
+					diff -= offset;
+				diff = FastMath.floor(diff);
+			} else {
+				Element el = trayElements.get(0);
+				end = el.getWidth()+trayPadding;
+				end -= diff;
+				offset = end;
+				if (offset > 0)
+					diff -= offset;
+				diff = FastMath.ceil(diff);
+			}
+		} else {
+			if (dir) {
+				Element el = trayElements.get(trayElements.size()-1);
+				end = el.getY();
+				end += diff;
+				offset = end;
+				if (offset > 0)
+					diff -= offset;
+				diff = FastMath.ceil(diff);
+			} else {
+				Element el = trayElements.get(currentElementIndex-1);
+				end = el.getY()+el.getHeight();
+				end -= diff;
+				offset = elTray.getHeight()-end;
+				if (offset > 0)
+					diff -= offset;
+				diff = FastMath.floor(diff);
+			}
+		}
+		
+		return diff;
+	}
+	
 	private void hideShowButtons() {
 		if (currentElementIndex == 0)
 			btnPrevElement.hide();
@@ -479,12 +529,12 @@ public class SlideTray extends Element {
 			btnPrevElement.show();
 		Element el = trayElements.get(trayElements.size()-1);
 		if (orientation == Orientation.HORIZONTAL) {
-			if (el.getX()+el.getWidth() < elTray.getWidth())
+			if (el.getX()+el.getWidth() <= elTray.getWidth()+5)
 				btnNextElement.hide();
 			else
 				btnNextElement.show();
 		} else {
-			if (el.getY() > 0)
+			if (el.getY() >= 0)
 				btnNextElement.hide();
 			else
 				btnNextElement.show();
@@ -507,11 +557,6 @@ public class SlideTray extends Element {
 	
 	@Override
 	public void setControlClippingLayer(Element clippingLayer) {
-	//	setClippingLayer(clippingLayer);
 		addClippingLayer(clippingLayer);
-	//	for (Element el : elementChildren.values()) {
-	//		if (!trayElements.contains(el))
-	//			el.setControlClippingLayer(clippingLayer);
-	//	}
 	}
 }
