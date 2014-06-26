@@ -263,6 +263,10 @@ public class TabControl extends Element {
 		addChild(tabSlider);
 	}
 	
+	public Orientation getOrientation() {
+		return this.orientation;
+	}
+	
 	/**
 	 * Sets the resize borders for use with ElementQuadGrid per tab
 	 * @param tabResizeBorders 
