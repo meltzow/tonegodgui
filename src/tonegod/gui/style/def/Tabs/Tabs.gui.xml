@@ -43,7 +43,9 @@
 				<x value="100" />
 				<y value="30" />
 			</property>
-			<property name="tabOverhang" type="float" value="6" />
+			<property name="tabOverhang" type="float" value="4" />
+			<property name="labelPadding" type="float" value="24" />
+			<property name="tabTrayOverlap" type="float" value="3" />
 			<property name="pressedSound" type="String" value="button_pressed" />
 			<property name="usePressedSound" type="boolean" value="true" />
 			<property name="pressedSoundVolume" type="float" value="1" />

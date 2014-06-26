@@ -42,7 +42,7 @@ import tonegod.gui.framework.core.QuadData;
 public class TabControl extends Element {
 	private Orientation orientation = Orientation.HORIZONTAL;
 	protected List<Button> tabs = new ArrayList();
-	protected Map<Integer,TabPanel> tabPanels = new HashMap();
+	protected Map<Integer,ITabPanel> tabPanels = new HashMap();
 	protected int tabButtonIndex = 0;
 	protected float tabWidth, tabHeight, tabInc;
 	protected RadioButtonGroup tabButtonGroup;
@@ -51,7 +51,11 @@ public class TabControl extends Element {
 	protected boolean isFixedTabSize = false;
 	protected float fixedTabSize = 0;
 	protected float tabTraySize, tabTrayOverlap = 3;
+	protected float tabOverhang = 6;
 	protected float labelPadding = 24;
+	
+	private Vector2f pos = new Vector2f(),
+					dim = new Vector2f();
 	
 	/**
 	 * Creates a new instance of the TabControl control
@@ -181,11 +185,15 @@ public class TabControl extends Element {
 			tabInc = screen.getStyle("Tab").getVector2f("defaultSize").y-screen.getStyle("Tab").getFloat("tabOverhang");
 		}
 		
+		tabOverhang = screen.getStyle("Tab").getFloat("tabOverhang");
+		labelPadding = screen.getStyle("Tab").getFloat("labelPadding");
+		tabTrayOverlap = screen.getStyle("Tab").getFloat("tabTrayOverlap");
+		
 		tabButtonGroup = new RadioButtonGroup(screen, getUID() + ":TabButtonGroup") {
 			@Override
 			public void onSelect(int index, Button value) {
 				Set<Integer> keys = tabPanels.keySet();
-				TabPanel selectedPanel = tabPanels.get(index);
+				Element selectedPanel = (Element)tabPanels.get(index);
 				Button selectedTab = tabs.get(index);
 				tabSlider.resort(selectedTab);
 				if (tabTrayOverlap != 0) {
@@ -209,7 +217,7 @@ public class TabControl extends Element {
 				}
 				for (Integer key : keys) {
 					if (key != index) {
-						tabPanels.get(key).hide();
+						((Element)tabPanels.get(key)).hide();
 					}
 				}
 				selectedPanel.show();
@@ -301,16 +309,54 @@ public class TabControl extends Element {
 	 * Adds a new Tab and TabPanel to the TabControl
 	 * @param title String The Title to set for the Tab
 	 */
-	public void addTab(String title) {
-		Vector2f pos = new Vector2f();
-		Vector2f dim = new Vector2f();
+	private ButtonAdapter getTabButton() {
+		if (orientation == Orientation.HORIZONTAL) {
+			pos.set(tabInc*tabButtonIndex,0);
+			dim.set(screen.getStyle("Tab").getVector2f("defaultSize"));
+		} else {
+			pos.set(0,tabInc*tabButtonIndex);
+			dim.set(screen.getStyle("Tab").getVector2f("defaultSize").y,screen.getStyle("Tab").getVector2f("defaultSize").x);
+		}
+		ButtonAdapter tab = new ButtonAdapter(
+			screen,
+			getUID() + ":Tab" + tabButtonIndex,
+			pos,
+			dim,
+			(orientation == Orientation.HORIZONTAL) ? screen.getStyle("Tab").getVector4f("resizeBorders") : screen.getStyle("Tab").getVector4f("resizeBordersV"),
+			(orientation == Orientation.HORIZONTAL) ? screen.getStyle("Tab").getString("defaultImg") : screen.getStyle("Tab").getString("defaultImgV")
+		);
+		tab.setDocking(Docking.NW);
+		tab.setScaleEW(false);
+		tab.setScaleNS(false);
 		
+		return tab;
+	}
+	
+	private LabelElement getButtonLabel(String title) {
 		LabelElement label = new LabelElement(screen);
 		label.setText(title);
 		label.setSizeToText(true);
 		label.setUseTextClipping(true);
 		label.setDocking(Docking.SW);
-
+		return label;
+	}
+	
+	public void addTab(String title) {
+		ButtonAdapter tab = getTabButton();
+		addTab(title, tab, false, false);
+	}
+	
+	public void addTab(String title, ButtonAdapter tab) {
+		addTab(title, tab, false, true);
+	}
+	
+	public void addTab(String title, boolean useScrollPanel) {
+		ButtonAdapter tab = getTabButton();
+		addTab(title, tab, useScrollPanel, false);
+	}
+	
+	public void addTab(String title, ButtonAdapter tab, boolean useScrollPanel, boolean isCustomButton) {
+		LabelElement label = getButtonLabel(title);
 		AnimText txt = label.getAnimText();
 		
 		if (orientation == Orientation.VERTICAL) {
@@ -322,22 +368,6 @@ public class TabControl extends Element {
 			txt.update(0);
 		}
 		
-		if (orientation == Orientation.HORIZONTAL) {
-			pos.set(tabInc*tabButtonIndex,0);
-			dim.set(screen.getStyle("Tab").getVector2f("defaultSize"));
-		} else {
-			pos.set(0,tabInc*tabButtonIndex);
-			dim.set(screen.getStyle("Tab").getVector2f("defaultSize").y,screen.getStyle("Tab").getVector2f("defaultSize").x);
-		}
-		
-		ButtonAdapter tab = new ButtonAdapter(
-			screen,
-			getUID() + ":Tab" + tabButtonIndex,
-			pos,
-			dim,
-			(orientation == Orientation.HORIZONTAL) ? screen.getStyle("Tab").getVector4f("resizeBorders") : screen.getStyle("Tab").getVector4f("resizeBordersV"),
-			(orientation == Orientation.HORIZONTAL) ? screen.getStyle("Tab").getString("defaultImg") : screen.getStyle("Tab").getString("defaultImgV")
-		);
 		if (isFixedTabSize) {
 			tab.setWidth(fixedTabSize);
 		} else {
@@ -347,23 +377,15 @@ public class TabControl extends Element {
 			else
 				tab.setHeight(width+(labelPadding*2)+(tabResizeBorders.x+tabResizeBorders.z));
 		}
-		tab.clearAltImages();
 		
-		String hImg = (orientation == Orientation.HORIZONTAL) ? screen.getStyle("Tab").getString("hoverImg") : screen.getStyle("Tab").getString("hoverImgV");
-		String pImg = (orientation == Orientation.HORIZONTAL) ? screen.getStyle("Tab").getString("pressedImg") : screen.getStyle("Tab").getString("pressedImgV");
+		if (!isCustomButton) {
+			tab.clearAltImages();
+			String hImg = (orientation == Orientation.HORIZONTAL) ? screen.getStyle("Tab").getString("hoverImg") : screen.getStyle("Tab").getString("hoverImgV");
+			String pImg = (orientation == Orientation.HORIZONTAL) ? screen.getStyle("Tab").getString("pressedImg") : screen.getStyle("Tab").getString("pressedImgV");
+			tab.setButtonHoverInfo(hImg, screen.getStyle("Tab").getColorRGBA("hoverColor"));
+			tab.setButtonPressedInfo(pImg, screen.getStyle("Tab").getColorRGBA("pressedColor"));
+		}
 		
-		tab.setButtonHoverInfo(
-			hImg,
-			screen.getStyle("Tab").getColorRGBA("hoverColor")
-		);
-		tab.setButtonPressedInfo(
-			pImg,
-			screen.getStyle("Tab").getColorRGBA("pressedColor")
-		);
-		
-		tab.setDocking(Docking.NW);
-		tab.setScaleEW(false);
-		tab.setScaleNS(false);
 		tab.setElementUserData(tabButtonIndex);
 		
 		if (orientation == Orientation.VERTICAL) {
@@ -377,47 +399,29 @@ public class TabControl extends Element {
 		tabs.add(tab);
 		
 		if (orientation == Orientation.HORIZONTAL) {
-			pos.set(
-				0,
-				tabHeight-screen.getStyle("Tab").getVector4f("resizeBorders").w
-			);
+			pos.set(0, tabHeight-tabTrayOverlap);
 			dim.set(
 				getDimensions().subtract(
-					new Vector2f(
-						0,
-						tabHeight-screen.getStyle("Tab").getVector4f("resizeBorders").w
-					)
+					new Vector2f(0, tabHeight-tabTrayOverlap)
 				)
 			);
 		} else {
-			pos.set(
-				tabWidth-screen.getStyle("Tab").getVector4f("resizeBorders").x,
-				0
-			);
+			pos.set(tabWidth-tabTrayOverlap, 0);
 			dim.set(
 				getDimensions().subtract(
-					new Vector2f(
-						tabWidth-screen.getStyle("Tab").getVector4f("resizeBorders").x,
-						0
-					)
+					new Vector2f(tabWidth-tabTrayOverlap, 0)
 				)
 			);
 		}
 		
-		TabPanel panel = new TabPanel(
-			screen,
-			getUID() + ":TabPanel" + tabButtonIndex,
-			pos,
-			dim
-		);
-		addChild(panel);
-		tabPanels.put(tabButtonIndex,panel);
+		if (useScrollPanel) {
+			addTabScrollPanel();
+		} else {
+			addTabPanel();
+		}
 		
 		tabSlider.addTrayElement(tab);
-		
-		if (tabButtonIndex != 0)
-			panel.hide();
-		else
+		if (tabButtonIndex == 0)
 			tab.setIsToggled(true);
 		
 		tab.addClippingLayer(tab);
@@ -428,6 +432,34 @@ public class TabControl extends Element {
 			tab.resetTextElement();
 		
 		tabButtonIndex++;
+	}
+	
+	private void addTabPanel() {
+		TabPanel panel = new TabPanel(
+			screen,
+			getUID() + ":TabPanel" + tabButtonIndex,
+			pos,
+			dim
+		);
+		addChild(panel);
+		tabPanels.put(tabButtonIndex,panel);
+		
+		if (tabButtonIndex != 0)
+			panel.hide();
+	}
+	
+	private void addTabScrollPanel() { 
+		TabScrollPanel panel = new TabScrollPanel(
+			screen,
+			getUID() + ":TabPanel" + tabButtonIndex,
+			pos,
+			dim
+		);
+		addChild(panel);
+		tabPanels.put(tabButtonIndex,panel);
+		
+		if (tabButtonIndex != 0)
+			panel.hide();
 	}
 	
 	public void setSelectedTab(int index) {
@@ -443,29 +475,42 @@ public class TabControl extends Element {
 	 */
 	public void addTabChild(int index, Element element) {
 		if (index > -1 && index < tabs.size()) {
-			tabPanels.get(index).addScrollableContent(element);
-		//	element.setClippingLayer(tabPanels.get(index));
-		//	element.addClippingLayer(tabPanels.get(index));
+			Element tabPanel = (Element)tabPanels.get(index);
+			if (tabPanel instanceof ScrollPanel)
+				((ScrollPanel)tabPanel).addScrollableContent(element);
+			else {
+				tabPanel.addChild(element);
+				element.addClippingLayer(tabPanel);
+			}
 		}
 	}
 	
 	public void setTabPanelLayout(int index, Layout layout) {
-		tabPanels.get(index).getScrollableArea().setLayout(layout);
+		Element tabPanel = (Element)tabPanels.get(index);
+		if (tabPanel instanceof ScrollPanel)
+			((ScrollPanel)tabPanel).getScrollableArea().setLayout(layout);
+		else
+			tabPanel.setLayout(layout);
 	}
 	
 	public void layoutTabPanelChildren(int index) {
-		tabPanels.get(index).getScrollableArea().layoutChildren();
+		Element tabPanel = (Element)tabPanels.get(index);
+		if (tabPanel instanceof ScrollPanel)
+			((ScrollPanel)tabPanel).getScrollableArea().layoutChildren();
+		else
+			tabPanel.layoutChildren();
 	}
 	
-	public class TabPanel extends ScrollPanel {
-		
+	public interface ITabPanel {  }
+	
+	public class TabPanel extends Panel implements ITabPanel {
 		/**
-	 * Creates a new instance of the Panel control
-	 * 
-	 * @param screen The screen control the Element is to be added to
-	 * @param UID A unique String identifier for the Element
-	 * @param position A Vector2f containing the x/y position of the Element
-	 */
+		 * Creates a new instance of the Panel control
+		 * 
+		 * @param screen The screen control the Element is to be added to
+		 * @param UID A unique String identifier for the Element
+		 * @param position A Vector2f containing the x/y position of the Element
+		 */
 		public TabPanel(ElementManager screen, String UID, Vector2f position) {
 			this(screen, UID, position,
 				screen.getStyle("Window").getVector2f("defaultSize"),
@@ -501,24 +546,60 @@ public class TabControl extends Element {
 		 */
 		public TabPanel(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 			super(screen, UID, position, dimensions, resizeBorders, defaultImg);
-			
 			this.setIsMovable(false);
 			this.setIsResizable(false);
 			this.setScaleNS(true);
 			this.setScaleEW(true);
-		//	this.setClipPadding(screen.getStyle("Window").getFloat("clipPadding"));
 		}
 	}
 	
-	private void slideLeft() {
+	public class TabScrollPanel extends ScrollPanel implements ITabPanel {
+		/**
+		 * Creates a new instance of the Panel control
+		 * 
+		 * @param screen The screen control the Element is to be added to
+		 * @param UID A unique String identifier for the Element
+		 * @param position A Vector2f containing the x/y position of the Element
+		 */
+		public TabScrollPanel(ElementManager screen, String UID, Vector2f position) {
+			this(screen, UID, position,
+				screen.getStyle("Window").getVector2f("defaultSize"),
+				screen.getStyle("Window").getVector4f("resizeBorders"),
+				screen.getStyle("Tab").getString("panelImg")
+			);
+		}
 		
-	}
-	
-	private void slideRight() {
+		/**
+		 * Creates a new instance of the Panel control
+		 * 
+		 * @param screen The screen control the Element is to be added to
+		 * @param UID A unique String identifier for the Element
+		 * @param position A Vector2f containing the x/y position of the Element
+		 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+		 */
+		public TabScrollPanel(ElementManager screen, String UID, Vector2f position, Vector2f dimensions) {
+			this(screen, UID, position, dimensions,
+				screen.getStyle("Window").getVector4f("resizeBorders"),
+				screen.getStyle("Tab").getString("panelImg")
+			);
+		}
 		
-	}
-	
-	private void slideToTab(int index) {
-		
+		/**
+		 * Creates a new instance of the Panel control
+		 * 
+		 * @param screen The screen control the Element is to be added to
+		 * @param UID A unique String identifier for the Element
+		 * @param position A Vector2f containing the x/y position of the Element
+		 * @param dimensions A Vector2f containing the width/height dimensions of the Element
+		 * @param resizeBorders A Vector4f containg the border information used when resizing the default image (x = N, y = W, z = E, w = S)
+		 * @param defaultImg The default image to use for the Slider's track
+		 */
+		public TabScrollPanel(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
+			super(screen, UID, position, dimensions, resizeBorders, defaultImg);
+			this.setIsMovable(false);
+			this.setIsResizable(false);
+			this.setScaleNS(true);
+			this.setScaleEW(true);
+		}
 	}
 }
