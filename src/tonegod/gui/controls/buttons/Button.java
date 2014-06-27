@@ -20,11 +20,10 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.texture.Texture;
-import tonegod.gui.controls.text.LabelElement;
+import tonegod.gui.controls.text.TextElement;
 import tonegod.gui.core.Element;
 import tonegod.gui.core.ElementManager;
 import tonegod.gui.core.Screen;
-import tonegod.gui.core.layouts.LayoutHelper;
 import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.core.utils.BitmapTextUtil;
 import tonegod.gui.core.utils.UIDUtil;
@@ -60,7 +59,7 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	protected Vector2f hoverImgOffset, pressedImgOffset;
 	// Optional LabelElement
 	protected boolean useOptionalLabel = false;
-	protected LabelElement buttonLabel;
+	protected TextElement buttonLabel;
 	
 	/**
 	 * Creates a new instance of the Button control
@@ -208,16 +207,27 @@ public abstract class Button extends Element implements Control, MouseButtonList
 			removeEffect(Effect.EffectEvent.LoseTabFocus);
 		}
 		
-		buttonLabel = new LabelElement(screen, Vector2f.ZERO, LayoutHelper.dimensions(getWidth(),getHeight()));
+		buttonLabel = new TextElement(screen, Vector2f.ZERO, getDimensions(), screen.getDefaultGUIFont()) {
+			@Override
+			public void onUpdate(float tpf) {  }
+			@Override
+			public void onEffectStart() {  }
+			@Override
+			public void onEffectStop() {  }
+		};
+		buttonLabel.setIgnoreMouse(true);
+		buttonLabel.setIsResizable(false);
+		buttonLabel.setIsMovable(false);
 		buttonLabel.setScaleEW(true);
 		buttonLabel.setScaleNS(true);
 		buttonLabel.setFontSize(fontSize);
 		buttonLabel.setFontColor(fontColor);
+		buttonLabel.setUseTextClipping(true);
 		buttonLabel.setTextAlign(textAlign);
 		buttonLabel.setTextVAlign(textVAlign);
-		buttonLabel.setTextWrap(textWrap);
 		buttonLabel.setDocking(Docking.SW);
 		buttonLabel.addClippingLayer(this);
+		
 		/*
 		String defaultIcon = screen.getStyle("Button").getString("defaultIcon");
 		if (defaultIcon != null) {
@@ -791,17 +801,12 @@ public abstract class Button extends Element implements Control, MouseButtonList
 	public void setLabelText(String text) {
 		this.useOptionalLabel = true;
 	//	buttonLabel.setSizeToText(true);
+		buttonLabel.setDimensions(getDimensions());
+		buttonLabel.getAnimText().setBounds(getDimensions());
 		buttonLabel.setText(text);
 		if (buttonLabel.getParent() == null) {
 			addChild(buttonLabel);
-		//	for (ClippingDefine def : clippingLayers) {
-		//		if(def.clip != null)
-		//			buttonLabel.addClippingLayer(def.getElement(),def.clip);
-		//		else
-		//			buttonLabel.addClippingLayer(def.getElement());
-		//	}
 		}
-	//	buttonLabel.centerToParent();
 	}
 	
 	public void setFontColor(ColorRGBA fontColor, boolean makeDefault) {
