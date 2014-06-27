@@ -294,7 +294,7 @@ public class MigLayout extends AbstractLayout {
 			el.setY(cells[r][c].pos.y);
 			float minx = 0, miny = 0;
 			
-			el.resize(el.getAbsoluteX()+(w-(padLeft+padRight)),el.getAbsoluteY()+(h-(padTop+padBottom)), Borders.SE);
+			el.resize((int)(el.getAbsoluteX()+(w-(padLeft+padRight))),(int)(el.getAbsoluteY()+(h-(padTop+padBottom))), Borders.SE);
 			
 			if (!growx) {
 				float newX = 0;

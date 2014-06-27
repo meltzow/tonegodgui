@@ -157,7 +157,7 @@ public class WindowExt extends Element {
 		dragBarTitle.setFontColor(screen.getStyle("Window#Dragbar").getColorRGBA("fontColor"));
 		dragBarTitle.setTextAlign(BitmapFont.Align.valueOf(screen.getStyle("Window#Dragbar").getString("textAlign")));
 		dragBarTitle.setTextVAlign(BitmapFont.VAlign.valueOf(screen.getStyle("Window#Dragbar").getString("textVAlign")));
-		dragBarTitle.setTextPadding(screen.getStyle("Window#Dragbar").getFloat("textPadding"));
+		dragBarTitle.setTextPaddingByKey("Window#Dragbar","textPadding");
 		dragBarTitle.setTextWrap(LineWrapMode.valueOf(screen.getStyle("Window#Dragbar").getString("textWrap")));
 		dragBar.addChild(dragBarTitle);
 		

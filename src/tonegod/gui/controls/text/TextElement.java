@@ -191,7 +191,7 @@ public abstract class TextElement extends Element implements Control {
 	@Override
 	public void controlResizeHook() {
 		if (this.getIsResizable()) {
-			animText.setPositionY(getHeight()-animText.getLineHeight());
+		//	animText.setPositionY(getHeight()-animText.getLineHeight());
 			animText.setBounds(getDimensions());
 			switch (textWrap) {
 				case Character:
