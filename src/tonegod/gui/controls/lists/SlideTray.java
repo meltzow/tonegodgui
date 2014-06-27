@@ -57,6 +57,7 @@ public class SlideTray extends Element {
 	
 	private float currentOffset = 0;
 	private float currentPosition = 0;
+	private float lastOffset = 0;
 	
 	/**
 	 * Creates a new instance of the SlideTray control
@@ -199,7 +200,10 @@ public class SlideTray extends Element {
 		timer = new GameTimer(.26f) {
 			@Override
 			public void onComplete(float time) {
-				currentPosition = elTray.getHeight()-trayElements.get(0).getY();
+				if (orientation == Orientation.HORIZONTAL)
+					currentPosition = trayElements.get(0).getX();
+				else
+					currentPosition = elTray.getHeight()-trayElements.get(0).getY();
 				hideShowButtons();
 			}
 		};
@@ -395,11 +399,11 @@ public class SlideTray extends Element {
 	 * @param element 
 	 */
 	public void addTrayElement(Element element) {
-		if (orientation == Orientation.HORIZONTAL)
+		if (orientation == Orientation.HORIZONTAL) {
 			element.setPosition(getNextPosition(),0);
-		else
+		} else {
 			element.setPosition(0,getNextPosition());
-	//	element.setClippingLayer(elTray);
+		}
 		element.addClippingLayer(elTray);
 		element.setDocking(Docking.SW);
 		element.setScaleEW(false);
@@ -407,8 +411,11 @@ public class SlideTray extends Element {
 		trayElements.add(element);
 		elTray.addChild(element);
 		hideShowButtons();
-		
-		currentPosition = elTray.getHeight()-trayElements.get(0).getY();
+		if (orientation == Orientation.HORIZONTAL) {
+			currentPosition = elTray.getX();
+		} else {
+			currentPosition = elTray.getHeight()-trayElements.get(0).getY();
+		}
 	}
 	
 	private void nextElement() {
@@ -423,7 +430,10 @@ public class SlideTray extends Element {
 			} else
 				hideShowButtons();
 		}
-		currentPosition = elTray.getHeight()-trayElements.get(0).getY();
+		if (orientation == Orientation.HORIZONTAL)
+			currentPosition = trayElements.get(0).getX();
+		else
+			currentPosition = elTray.getHeight()-trayElements.get(0).getY();
 	}
 	
 	private void prevElement() {
@@ -438,19 +448,49 @@ public class SlideTray extends Element {
 			} else
 				hideShowButtons();
 		}
-		currentPosition = elTray.getHeight()-trayElements.get(0).getY();
+		if (orientation == Orientation.HORIZONTAL)
+			currentPosition = trayElements.get(0).getX();
+		else
+			currentPosition = elTray.getHeight()-trayElements.get(0).getY();
 	}
 	
 	private float getNextOffset(boolean dir) {
 		float diff;
+		Element el = trayElements.get(trayElements.size()-1);
 		if (orientation == Orientation.HORIZONTAL) {
 			diff = (dir) ? 
 				(int)(trayElements.get(currentElementIndex).getWidth()+trayPadding) :
 				(int)(trayElements.get(currentElementIndex-1).getWidth()+trayPadding);
+			if (dir) {
+				if (lastOffset != 0)
+					diff = (int)FastMath.abs(trayElements.get(currentElementIndex).getX());
+				if ((el.getX()+el.getWidth())-diff < elTray.getWidth()) {
+					diff = FastMath.abs(elTray.getWidth()-(el.getX()+el.getWidth()));
+					lastOffset = diff;
+				}
+			} else {
+				if (lastOffset != 0) {
+					diff = (int)FastMath.abs(trayElements.get(currentElementIndex-1).getX());
+					lastOffset = 0;
+				}
+			}
 		} else {
 			diff = (dir) ? 
 				(int)(trayElements.get(currentElementIndex).getHeight()+trayPadding) :
 				(int)(trayElements.get(currentElementIndex-1).getHeight()+trayPadding);
+			if (dir) {
+				if (lastOffset != 0)
+					diff = (int)((elTray.getHeight()-trayElements.get(currentElementIndex).getY())-(trayElements.get(currentElementIndex).getHeight()+trayPadding));
+				if (el.getY()+diff > 0) {
+					diff -= (el.getY()+diff);
+					lastOffset = diff;
+				}
+			} else {
+				if (lastOffset != 0) {
+					diff = lastOffset;
+					lastOffset = 0;
+				}
+			}
 		}
 		return diff;
 	}
