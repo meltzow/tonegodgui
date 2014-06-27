@@ -5,6 +5,9 @@
 package tonegod.gui.controls.windows;
 
 import com.jme3.font.BitmapFont.Align;
+import static com.jme3.font.BitmapFont.Align.Center;
+import static com.jme3.font.BitmapFont.Align.Left;
+import static com.jme3.font.BitmapFont.Align.Right;
 import com.jme3.font.BitmapFont.VAlign;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector4f;
@@ -233,7 +236,8 @@ public abstract class TabControl extends Element {
 					this.updateClippingLayers();
 				}
 			};
-			tabSlider.setTrayPadding(-(tabResizeBorders.z/5*2));
+//			tabSlider.setTrayPadding(-(tabResizeBorders.z/5*2));
+			tabSlider.setTrayPadding(-tabOverhang);
 			tabSlider.setZOrderSorting(ZOrderSort.LAST_TO_FIRST);
 			tabSlider.setButtonSize(tabHeight);
 			tabSlider.alignButtonsV(VAlign.Top);
@@ -248,7 +252,8 @@ public abstract class TabControl extends Element {
 					this.updateClippingLayers();
 				}
 			};
-			tabSlider.setTrayPadding(-(tabResizeBorders.z/5*2));
+			tabSlider.setTrayPadding(-tabOverhang);
+//			tabSlider.setTrayPadding(-(tabResizeBorders.z/5*2));
 			tabSlider.setZOrderSorting(ZOrderSort.FIRST_TO_LAST);
 			tabSlider.setButtonSize(tabWidth);
 			tabSlider.alignButtonsH(Align.Left);
@@ -372,9 +377,9 @@ public abstract class TabControl extends Element {
 		} else {
 			float width = BitmapTextUtil.getTextWidth(tab, title);
 			if (orientation == Orientation.HORIZONTAL)
-				tab.setWidth(width+(labelPadding*2)+(tabResizeBorders.x+tabResizeBorders.z));
+				tab.setWidth(Math.round(width+(labelPadding*2)+(tabResizeBorders.x+tabResizeBorders.z)));
 			else
-				tab.setHeight(width+(labelPadding*2)+(tabResizeBorders.x+tabResizeBorders.z));
+				tab.setHeight(Math.round(width+(labelPadding*2)+(tabResizeBorders.x+tabResizeBorders.z)));
 		}
 		
 		if (!isCustomButton) {
@@ -389,8 +394,38 @@ public abstract class TabControl extends Element {
 		
 		if (orientation == Orientation.VERTICAL) {
 			tab.addChild(label);
+                        
+                        final Align hal = Align.valueOf(screen.getStyle("Tab").getString("textAlign"));
+                        final VAlign val = VAlign.valueOf(screen.getStyle("Tab").getString("textVAlign"));
+                        
+                        // Flip the alignments
+//                        switch(hal) {
+//                            case Center:
+//                                label.setTextVAlign(VAlign.Center);
+//                                break;
+//                            case Left:
+//                                label.setTextVAlign(VAlign.Top);
+//                                break;
+//                            case Right:
+//                                label.setTextVAlign(VAlign.Bottom);
+//                                break;
+//
+//                        }
+//                        switch(val) {
+//                            case Center:
+//                                label.setTextAlign(Align.Center);
+//                                break;
+//                            case Top:
+//                                label.setTextAlign(Align.Left);
+//                                break;
+//                            case Bottom:
+//                                label.setTextAlign(Align.Right);
+//                                break;
+//
+//                        }
 			label.centerToParent();
 		} else {
+                        
 			tab.setText(title);
 		}
 		

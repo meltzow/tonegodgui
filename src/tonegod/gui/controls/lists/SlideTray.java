@@ -56,7 +56,8 @@ public class SlideTray extends Element {
 	private GameTimer timer;
 	
 	private float currentOffset = 0;
-						
+	private float currentPosition = 0;
+	
 	/**
 	 * Creates a new instance of the SlideTray control
 	 * 
@@ -176,7 +177,7 @@ public class SlideTray extends Element {
 			this.setScaleEW(false);
 			this.setScaleNS(true);
 		}
-		this.setAsContainerOnly();
+//		this.setAsContainerOnly();
 		
 		initControl();
 	}
@@ -185,9 +186,20 @@ public class SlideTray extends Element {
 		btnSize = screen.getStyle("Button").getVector2f("defaultSize").y;
 				
 		slideEffect = new Effect(Effect.EffectType.SlideTo, Effect.EffectEvent.Show, .25f);
-		timer = new GameTimer(.25f) {
+                
+                // Note to tonegod
+                
+                // Must take longer than the slide itself or the buttons will still be
+                // in the right place.
+                //
+                // Is there no way to execute code when an event finishes instead of
+                // relying on a separate timed event?
+                // 
+                // Rockfire
+		timer = new GameTimer(.26f) {
 			@Override
 			public void onComplete(float time) {
+				currentPosition = elTray.getHeight()-trayElements.get(0).getY();
 				hideShowButtons();
 			}
 		};
@@ -262,6 +274,16 @@ public class SlideTray extends Element {
 				if (orientation == Orientation.HORIZONTAL) {
 					btnNextElement.setX(getWidth());
 				} else {
+					if (!trayElements.isEmpty()) {
+						float nextY = currentPosition;
+						int index = 0;
+						for (Element el : trayElements) {
+							if (index  > 0)
+								nextY += el.getHeight()+trayPadding;
+							el.setY(elTray.getHeight()-nextY);
+							index++;
+						}
+					}
 					btnPrevElement.setY(getHeight());
 				}
 				hideShowButtons();
@@ -385,38 +407,15 @@ public class SlideTray extends Element {
 		trayElements.add(element);
 		elTray.addChild(element);
 		hideShowButtons();
+		
+		currentPosition = elTray.getHeight()-trayElements.get(0).getY();
 	}
 	
 	private void nextElement() {
 		if (currentElementIndex+1 < trayElements.size()) {
-			if (useSlideEffect) {
-				batch = new BatchEffect();
-				float diff = getNextOffset(true);
-				for (Element el : trayElements) {
-					if (orientation == Orientation.HORIZONTAL) {
-						Vector2f destination = new Vector2f(el.getX()-diff,el.getY());
-						Effect effect = slideEffect.clone();
-						effect.setElement(el);
-						effect.setEffectDestination(destination);
-						batch.addEffect(effect);
-					} else {
-						Vector2f destination = new Vector2f(el.getX(),el.getY()+diff);
-						Effect effect = slideEffect.clone();
-						effect.setElement(el);
-						effect.setEffectDestination(destination);
-						batch.addEffect(effect);
-					}
-				}
-				screen.getEffectManager().applyBatchEffect(batch);
-			} else {
-				for (Element el : trayElements) {
-					if (orientation == Orientation.HORIZONTAL) {
-						el.setX(el.getX()-(trayElements.get(currentElementIndex).getWidth()+trayPadding));
-					} else {
-						el.setY(el.getY()+(trayElements.get(currentElementIndex).getHeight()+trayPadding));
-					}
-				}
-			}
+			float diff =		getNextOffset(true);
+			if (useSlideEffect)	slideTabs(diff, true);
+			else				moveTabs(diff, true);
 			currentElementIndex++;
 			if (useSlideEffect) {
 				timer.reset(false);
@@ -424,38 +423,14 @@ public class SlideTray extends Element {
 			} else
 				hideShowButtons();
 		}
+		currentPosition = elTray.getHeight()-trayElements.get(0).getY();
 	}
 	
 	private void prevElement() {
 		if (currentElementIndex-1 > -1) {
-			if (useSlideEffect) {
-				batch = new BatchEffect();
-				float diff = getNextOffset(false);
-				for (Element el : trayElements) {
-					if (orientation == Orientation.HORIZONTAL) {
-						Vector2f destination = new Vector2f(el.getX()+diff,el.getY());
-						Effect effect = slideEffect.clone();
-						effect.setElement(el);
-						effect.setEffectDestination(destination);
-						batch.addEffect(effect);
-					} else {
-						Vector2f destination = new Vector2f(el.getX(),el.getY()-diff);
-						Effect effect = slideEffect.clone();
-						effect.setElement(el);
-						effect.setEffectDestination(destination);
-						batch.addEffect(effect);
-					}
-				}
-				screen.getEffectManager().applyBatchEffect(batch);
-			} else {
-				for (Element el : trayElements) {
-					if (orientation == Orientation.HORIZONTAL) {
-						el.setX(el.getX()+(trayElements.get(currentElementIndex-1).getWidth()+trayPadding));
-					} else {
-						el.setY(el.getY()-(trayElements.get(currentElementIndex-1).getHeight()+trayPadding));
-					}
-				}
-			}
+			float diff =		getNextOffset(false);
+			if (useSlideEffect)	slideTabs(diff, false);
+			else				moveTabs(diff, false);
 			currentElementIndex--;
 			if (useSlideEffect) {
 				timer.reset(false);
@@ -463,63 +438,55 @@ public class SlideTray extends Element {
 			} else
 				hideShowButtons();
 		}
+		currentPosition = elTray.getHeight()-trayElements.get(0).getY();
 	}
 	
 	private float getNextOffset(boolean dir) {
-		float diff, end, offset;
-		if (dir) {
-			if (orientation == Orientation.HORIZONTAL) {
-				diff = (trayElements.get(currentElementIndex).getWidth()+trayPadding);
-			} else {
-				diff = (trayElements.get(currentElementIndex).getHeight()+trayPadding);
-			}
-		} else {
-			if (orientation == Orientation.HORIZONTAL) {
-				diff = FastMath.abs(trayElements.get(currentElementIndex-1).getX());
-			} else {
-				diff = FastMath.abs(trayElements.get(currentElementIndex-1).getY());
-			}
-		}
-		
+		float diff;
 		if (orientation == Orientation.HORIZONTAL) {
-			if (dir) {
-				Element el = trayElements.get(trayElements.size()-1);
-				end = el.getX()+el.getWidth()+trayPadding;
-				end -= diff;
-				offset = elTray.getWidth()-end;
-				if (offset > 0)
-					diff -= offset;
-				diff = FastMath.floor(diff);
-			} else {
-				Element el = trayElements.get(0);
-				end = el.getWidth()+trayPadding;
-				end -= diff;
-				offset = end;
-				if (offset > 0)
-					diff -= offset;
-				diff = FastMath.ceil(diff);
-			}
+			diff = (dir) ? 
+				(int)(trayElements.get(currentElementIndex).getWidth()+trayPadding) :
+				(int)(trayElements.get(currentElementIndex-1).getWidth()+trayPadding);
 		} else {
-			if (dir) {
-				Element el = trayElements.get(trayElements.size()-1);
-				end = el.getY();
-				end += diff;
-				offset = end;
-				if (offset > 0)
-					diff -= offset;
-				diff = FastMath.ceil(diff);
+			diff = (dir) ? 
+				(int)(trayElements.get(currentElementIndex).getHeight()+trayPadding) :
+				(int)(trayElements.get(currentElementIndex-1).getHeight()+trayPadding);
+		}
+		return diff;
+	}
+	
+	private void slideTabs(float diff, boolean dir) {
+		batch = new BatchEffect();
+		for (Element el : trayElements) {
+			if (orientation == Orientation.HORIZONTAL) {
+				float nextX = (!dir) ? el.getX()+diff : el.getX()-diff;
+				Vector2f destination = new Vector2f(nextX,el.getY());
+				Effect effect = slideEffect.clone();
+				effect.setElement(el);
+				effect.setEffectDestination(destination);
+				batch.addEffect(effect);
 			} else {
-				Element el = trayElements.get(currentElementIndex-1);
-				end = el.getY()+el.getHeight();
-				end -= diff;
-				offset = elTray.getHeight()-end;
-				if (offset > 0)
-					diff -= offset;
-				diff = FastMath.floor(diff);
+				float nextY = (!dir) ? el.getY()-diff : el.getY()+diff;
+				Vector2f destination = new Vector2f(el.getX(),nextY);
+				Effect effect = slideEffect.clone();
+				effect.setElement(el);
+				effect.setEffectDestination(destination);
+				batch.addEffect(effect);
 			}
 		}
-		
-		return diff;
+		screen.getEffectManager().applyBatchEffect(batch);
+	}
+	
+	private void moveTabs(float diff, boolean dir) {
+		for (Element el : trayElements) {
+			if (orientation == Orientation.HORIZONTAL) {
+				float nextX = (!dir) ? el.getX()+diff : el.getX()-diff;
+				el.setX(nextX);
+			} else {
+				float nextY = (!dir) ? el.getY()-diff : el.getY()+diff;
+				el.setY(nextY);
+			}
+		}
 	}
 	
 	private void hideShowButtons() {
@@ -529,7 +496,7 @@ public class SlideTray extends Element {
 			btnPrevElement.show();
 		Element el = trayElements.get(trayElements.size()-1);
 		if (orientation == Orientation.HORIZONTAL) {
-			if (el.getX()+el.getWidth() <= elTray.getWidth()+5)
+			if (el.getX()+el.getWidth()-el.borders.z <= elTray.getWidth())
 				btnNextElement.hide();
 			else
 				btnNextElement.show();
