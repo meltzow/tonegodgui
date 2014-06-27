@@ -487,7 +487,7 @@ public class SlideTray extends Element {
 				}
 			} else {
 				if (lastOffset != 0) {
-					diff = lastOffset;
+					diff = -(int)((elTray.getHeight()-trayElements.get(currentElementIndex-1).getY())-(trayElements.get(currentElementIndex-1).getHeight()+trayPadding));
 					lastOffset = 0;
 				}
 			}
