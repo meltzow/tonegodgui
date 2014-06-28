@@ -166,9 +166,9 @@ public abstract class AnimElement extends Node implements Transformable {
 	public QuadData addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin) {
 		if (zOrder == -1)
 			zOrder = getPositionZ();
-		position.subtractLocal(origin);
+		Vector2f pos = new Vector2f(position).subtract(origin);
 		
-		QuadData qd = new QuadData(this, quadKey, uvs.get(regionKey), position.x, position.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
+		QuadData qd = new QuadData(this, quadKey, uvs.get(regionKey), pos.x, pos.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
 		quads.put(quadKey, qd);
 		qd.setPositionZ(zOrder);
 		zOrder += zOrderStepMinor;
@@ -179,9 +179,9 @@ public abstract class AnimElement extends Node implements Transformable {
 	public QuadData addQuad(String quadKey, String regionKey, Vector2f position, Vector2f origin, String parentKey) {
 		if (zOrder == -1)
 			zOrder = getPositionZ();
-		position.subtractLocal(origin);
+		Vector2f pos = new Vector2f(position).subtract(origin);
 		
-		QuadData qd = new QuadData(this, quadKey, uvs.get(regionKey), position.x, position.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
+		QuadData qd = new QuadData(this, quadKey, uvs.get(regionKey), pos.x, pos.y, uvs.get(regionKey).getRegionWidth(), uvs.get(regionKey).getRegionHeight(), origin);
 		qd.parent = quads.get(parentKey);
 	//	qd.setPositionX(qd.getPositionX()-qd.parent.getPositionX());
 	//	qd.setPositionY(qd.getPositionY()-qd.parent.getPositionY());
