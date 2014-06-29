@@ -305,6 +305,9 @@ public abstract class AnimElement extends Node implements Transformable {
 		
 		for (TemporalAction a : actions) {
 			a.act(tpf);
+			if (a.getTime() >= a.getDuration() && a.getAutoRestart()) {
+				a.restart();
+			}
 		}
 		for (TemporalAction a : actions) {
 			if (a.getTime() >= a.getDuration()) {

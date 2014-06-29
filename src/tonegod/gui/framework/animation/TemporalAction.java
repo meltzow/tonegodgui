@@ -18,6 +18,8 @@ public abstract class TemporalAction {
 //	protected AnimElement batch;
 	protected Transformable quad;
 	protected boolean forceJmeTransform = false;
+	private boolean autoRestart = false;
+	private int runCount = 0;
 	
 	public TemporalAction () {
 	}
@@ -51,6 +53,16 @@ public abstract class TemporalAction {
 		return complete;
 	}
 
+	public void setAutoRestart(boolean autoRestart) {
+		this.autoRestart = autoRestart;
+	}
+	
+	public boolean getAutoRestart() {
+		return this.autoRestart;
+	}
+	
+	public int getRunCount() { return this.runCount; }
+	
 	protected void begin () {  }
 	protected void end () {  }
 	abstract protected void update (float percent);
@@ -58,12 +70,14 @@ public abstract class TemporalAction {
 	public void finish () { time = duration; }
 	
 	public void restart () {
+		if (!reverse) runCount++;
 		time = 0;
 		complete = false;
 	}
 	
 	public void reset () {
 		reverse = false;
+		runCount = 0;
 	//	interpolation = null;
 	}
 	

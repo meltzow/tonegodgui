@@ -66,6 +66,8 @@ public class QuadData implements Transformable {
 	public void update(float tpf) {
 		for (TemporalAction a : actions) {
 			a.act(tpf);
+			if (a.getTime() >= a.getDuration() && a.getAutoRestart())
+				a.restart();
 		}
 		
 		for (TemporalAction a : actions) {
