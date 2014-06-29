@@ -131,4 +131,16 @@ public class ScaleByAction extends TemporalAction {
 		this.autoReverse = autoReverse;
 		initAutoReverse = autoReverse;
 	}
+	
+	@Override
+	public ScaleByAction clone() {
+		ScaleByAction sba = new ScaleByAction();
+		sba.setAmount(amountX, amountY);
+		sba.setDuration(getDuration());
+		sba.setAutoRestart(getAutoRestart());
+		sba.setAutoReverse(autoReverse);
+		sba.setInterpolation(getInterpolation());
+		sba.setForceJmeTransform(forceJmeTransform);
+		return sba;
+	}
 }

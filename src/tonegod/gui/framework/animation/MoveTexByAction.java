@@ -92,4 +92,16 @@ public class MoveTexByAction extends TemporalAction {
 		this.autoReverse = autoReverse;
 		initAutoReverse = autoReverse;
 	}
+	
+	@Override
+	public MoveTexByAction clone() {
+		MoveTexByAction mba = new MoveTexByAction();
+		mba.setAmount(amountX, amountY);
+		mba.setDuration(getDuration());
+		mba.setAutoRestart(getAutoRestart());
+		mba.setAutoReverse(autoReverse);
+		mba.setInterpolation(getInterpolation());
+		mba.setForceJmeTransform(forceJmeTransform);
+		return mba;
+	}
 }

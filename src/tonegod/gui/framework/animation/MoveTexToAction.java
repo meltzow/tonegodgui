@@ -40,4 +40,11 @@ public class MoveTexToAction extends TemporalAction {
 		this.y = y;
 		setDuration(1);
 	}
+	
+	@Override
+	public MoveTexToAction clone() {
+		MoveTexToAction mta = new MoveTexToAction();
+		mta.setPosition(x, y);
+		return mta;
+	}
 }

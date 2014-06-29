@@ -11,7 +11,7 @@ import tonegod.gui.framework.core.Transformable;
  * a single quad from a mesh of x number of quads.
  * @author t0neg0d
  */
-public abstract class TemporalAction {
+public abstract class TemporalAction implements Cloneable {
 	private float duration, time = 0;
 	private Interpolation interpolation;
 	private boolean reverse, complete;

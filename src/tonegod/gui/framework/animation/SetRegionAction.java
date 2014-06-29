@@ -37,4 +37,12 @@ public class SetRegionAction extends TemporalAction {
 	public void setTextureRegion(TextureRegion tr) {
 		this.tr = tr;
 	}
+	
+	@Override
+	public SetRegionAction clone() {
+		SetRegionAction sra = new SetRegionAction();
+		sra.setTextureRegion(tr);
+		
+		return sra;
+	}
 }

@@ -59,4 +59,15 @@ public class SplineAction extends TemporalAction {
 			);
 		}
 	}
+	
+	@Override
+	public SplineAction clone() {
+		SplineAction sa = new SplineAction();
+		sa.setPath(path);
+		sa.setDuration(getDuration());
+		sa.setInterpolation(getInterpolation());
+		sa.setAutoRestart(getAutoRestart());
+		sa.setForceJmeTransform(forceJmeTransform);
+		return sa;
+	}
 }

@@ -64,4 +64,16 @@ public class RotateByAction extends TemporalAction {
 		this.autoReverse = autoReverse;
 		initAutoReverse = autoReverse;
 	}
+	
+	@Override
+	public RotateByAction clone() {
+		RotateByAction rba = new RotateByAction();
+		rba.setAmount(amount);
+		rba.setDuration(getDuration());
+		rba.setInterpolation(getInterpolation());
+		rba.setAutoRestart(getAutoRestart());
+		rba.setAutoReverse(autoReverse);
+		rba.setForceJmeTransform(forceJmeTransform);
+		return rba;
+	}
 }

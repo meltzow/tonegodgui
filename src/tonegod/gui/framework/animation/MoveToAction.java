@@ -37,4 +37,11 @@ public class MoveToAction extends TemporalAction {
 		this.y = y;
 		setDuration(1);
 	}
+	
+	@Override
+	public MoveToAction clone() {
+		MoveToAction mta = new MoveToAction();
+		mta.setPosition(x, y);
+		return mta;
+	}
 }

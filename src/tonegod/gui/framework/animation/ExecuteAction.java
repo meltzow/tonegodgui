@@ -4,8 +4,6 @@
  */
 package tonegod.gui.framework.animation;
 
-import tonegod.gui.framework.core.QuadData;
-
 /**
  *
  * @author t0neg0d
