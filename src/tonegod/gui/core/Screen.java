@@ -29,6 +29,7 @@ import com.jme3.math.Ray;
 import com.jme3.math.Triangle;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
@@ -64,6 +65,7 @@ import tonegod.gui.controls.util.ToolTip;
 import tonegod.gui.core.Element.Borders;
 import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.core.utils.BitmapTextUtil;
+import tonegod.gui.core.utils.ScaleUtil;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.EffectManager;
 import tonegod.gui.effects.cursor.CursorEffects;
@@ -223,6 +225,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	
 	float orWidth, orHeight;
 	boolean orDim = false;
+	
+	private ScaleUtil scaleManager;
+	
 	/**
 	 * Creates a new instance of the Screen control using the default style information
 	 * provided with the library.
@@ -263,6 +268,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		defaultGUIFont = app.getAssetManager().loadFont(styleManager.getStyle("Font").getString("defaultFont"));
 		
 		scenes.add((Node)app.getViewPort().getScenes().get(0));
+		
+		scaleManager = new ScaleUtil(this);
+		scaleManager.initialize();
 	}
 	
 	public Screen(Application app, String styleMap, float width, float height) {
@@ -291,6 +299,9 @@ public class Screen implements ElementManager, Control, RawInputListener {
 		layoutParser = new LayoutParser(this);
 		
 		scenes.add((Node)app.getViewPort().getScenes().get(0));
+		
+		scaleManager = new ScaleUtil(this);
+		scaleManager.initialize();
 	}
 	
 	/**
@@ -301,6 +312,37 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	public Application getApplication() {
 		return this.app;
 	}
+	
+	@Override
+	public ScaleUtil getScaleManager() {
+		return this.scaleManager;
+	}
+	
+	@Override
+	public float scaleFloat(float in) {
+		return in*scaleManager.getGameScale();
+	};
+	
+	@Override
+	public Vector2f scaleVector2f(Vector2f in) {
+		return in.mult(scaleManager.getGameScale());
+	};
+	
+	@Override
+	public Vector3f scaleVector3f(Vector3f in) {
+		return in.mult(scaleManager.getGameScale());
+	};
+	
+	@Override
+	public Vector4f scaleVector4f(Vector4f in) {
+		return in.mult(scaleManager.getGameScale());
+	};
+	
+	@Override
+	public float scaleFontSize(float in) {
+		return in*scaleManager.getFontScale();
+	};
+	
 	
 	/**
 	 * Return the width of the current Viewport

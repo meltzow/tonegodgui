@@ -141,7 +141,7 @@ public abstract class SelectList extends ScrollArea implements MouseMovementList
 	public SelectList(ElementManager screen, String UID, Vector2f position, Vector2f dimensions, Vector4f resizeBorders, String defaultImg) {
 		super(screen, UID, position, dimensions, resizeBorders, defaultImg, false);
 		
-		listPadding = screen.getStyle("Menu").getFloat("menuPadding");
+		listPadding = screen.getStyle("Menu").getVector4f("menuPadding").x;
 		highlightColor = screen.getStyle("Menu").getColorRGBA("highlightColor");
 		// Load default font info
 		setFontColor(screen.getStyle("Menu").getColorRGBA("fontColor"));

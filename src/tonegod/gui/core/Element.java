@@ -2436,6 +2436,34 @@ public class Element extends Node {
 		mat.setTexture("ColorMap", color);
 		mat.setColor("Color", ColorRGBA.White);
 	}
+	
+	public void rebuildModel() {
+		if (!screen.getUseTextureAtlas() || useLocalTexture) {
+			float imgWidth = defaultTex.getImage().getWidth();
+			float imgHeight = defaultTex.getImage().getHeight();
+			float pixelWidth = 1f/imgWidth;
+			float pixelHeight = 1f/imgHeight;
+
+			this.model = new ElementQuadGrid(this.dimensions, borders, imgWidth, imgHeight, pixelWidth, pixelHeight, 0, 0, imgWidth, imgHeight);
+			geom.setMesh(model);
+		} else {
+			float[] coords = screen.parseAtlasCoords(this.atlasCoords);
+			float textureAtlasX = coords[0];
+			float textureAtlasY = coords[1];
+			float textureAtlasW = coords[2];
+			float textureAtlasH = coords[3];
+
+			float imgWidth = defaultTex.getImage().getWidth();
+			float imgHeight = defaultTex.getImage().getHeight();
+			float pixelWidth = 1f/imgWidth;
+			float pixelHeight = 1f/imgHeight;
+
+			textureAtlasY = imgHeight-textureAtlasY-textureAtlasH;
+
+			model = new ElementQuadGrid(this.getDimensions(), borders, imgWidth, imgHeight, pixelWidth, pixelHeight, textureAtlasX, textureAtlasY, textureAtlasW, textureAtlasH);
+			geom.setMesh(model);
+		}
+	}
 	//</editor-fold>
 	
 	//<editor-fold desc="Visibility">

@@ -10,9 +10,12 @@ import com.jme3.collision.CollisionResult;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.event.KeyInputEvent;
 import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
 import tonegod.gui.controls.util.ModalBackground;
+import tonegod.gui.core.utils.ScaleUtil;
 import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.effects.EffectManager;
 import tonegod.gui.effects.cursor.CursorEffects;
@@ -58,8 +61,14 @@ public interface ElementManager {
 	public void setGlobalAlpha(float alpha);
 	public float getGlobalAlpha();
 	
-	public BitmapFont getDefaultGUIFont();
+	public ScaleUtil getScaleManager();
+	public float scaleFloat(float in);
+	public Vector2f scaleVector2f(Vector2f in);
+	public Vector3f scaleVector3f(Vector3f in);
+	public Vector4f scaleVector4f(Vector4f in);
+	public float scaleFontSize(float in);
 	
+	public BitmapFont getDefaultGUIFont();
 	public EffectManager getEffectManager();
 	public AnimManager getAnimManager();
 	

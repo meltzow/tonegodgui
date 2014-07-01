@@ -16,6 +16,7 @@ import com.jme3.material.Material;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
@@ -39,6 +40,7 @@ import tonegod.gui.controls.text.TextField;
 import tonegod.gui.controls.util.ModalBackground;
 import tonegod.gui.controls.util.ToolTip;
 import tonegod.gui.core.Element.Borders;
+import tonegod.gui.core.utils.ScaleUtil;
 import tonegod.gui.style.StyleManager.CursorType;
 import tonegod.gui.core.utils.UIDUtil;
 import tonegod.gui.effects.EffectManager;
@@ -1323,6 +1325,36 @@ public class SubScreen implements ElementManager, Control {
 	public BitmapFont getDefaultGUIFont() {
 		return screen.getDefaultGUIFont();
 	}
+	
+	@Override
+	public ScaleUtil getScaleManager() {
+		return screen.getScaleManager();
+	}
+	
+	@Override
+	public float scaleFloat(float in) {
+		return screen.scaleFloat(in);
+	};
+	
+	@Override
+	public Vector2f scaleVector2f(Vector2f in) {
+		return screen.scaleVector2f(in);
+	};
+	
+	@Override
+	public Vector3f scaleVector3f(Vector3f in) {
+		return screen.scaleVector3f(in);
+	};
+	
+	@Override
+	public Vector4f scaleVector4f(Vector4f in) {
+		return screen.scaleVector4f(in);
+	};
+	
+	@Override
+	public float scaleFontSize(float in) {
+		return screen.scaleFontSize(in);
+	};
 
 	@Override
 	public void setUseUIAudio(boolean use) {

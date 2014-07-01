@@ -32,6 +32,7 @@ import tonegod.gui.listeners.KeyboardListener;
 import tonegod.gui.listeners.MouseButtonListener;
 import tonegod.gui.listeners.MouseFocusListener;
 import tonegod.gui.listeners.TabFocusListener;
+import tonegod.gui.style.Style;
 
 /**
  *
@@ -817,6 +818,64 @@ public abstract class Button extends Element implements Control, MouseButtonList
 		if (makeDefault)
 			originalFontColor = fontColor.clone();
 	}
+	
+	public void setStyles(String styleName) {
+		Style style = screen.getStyle(styleName);
+
+		// images and state colours
+		String img = style.getString("defaultImg");
+		
+		if (img != null)
+			setColorMap(img);
+		if (style.getString("hoverImg") != null) {
+			setButtonHoverInfo(
+				style.getString("hoverImg"),
+				style.getColorRGBA("hoverColor"));
+		}
+		if (style.getString("pressedImg") != null) {
+			setButtonPressedInfo(
+				style.getString("pressedImg"),
+				style.getColorRGBA("pressedColor"));
+		}
+
+		// fonts and text
+		setFontSize(style.getFloat("fontSize"));
+	//	setFont((Screen)screen.getDefaultGUIFont());
+		setFontColor(style.getColorRGBA("fontColor"));
+		setTextVAlign(BitmapFont.VAlign.valueOf(style.getString("textVAlign")));
+		setTextAlign(BitmapFont.Align.valueOf(style.getString("textAlign")));
+		setTextWrap(LineWrapMode.valueOf(style.getString("textWrap")));
+		setTextPaddingByKey("Button","textPadding");
+	//	buttonTextInsets = style.getFloat("buttonTextInsets");
+
+		// borders
+		borders.set(style.getVector4f("resizeBorders"));
+
+		// audio
+		hoverSound = style.getString("hoverSound");
+		useHoverSound = style.getBoolean("useHoverSound");
+		hoverSoundVolume = style.getFloat("hoverSoundVolume");
+		pressedSound = style.getString("pressedSound");
+		usePressedSound = style.getBoolean("usePressedSound");
+		pressedSoundVolume = style.getFloat("pressedSoundVolume");
+
+		// Fx
+		populateEffects(styleName);
+		if (Screen.isAndroid()) {
+			removeEffect(Effect.EffectEvent.Hover);
+			removeEffect(Effect.EffectEvent.TabFocus);
+			removeEffect(Effect.EffectEvent.LoseTabFocus);
+		}
+
+	//	defaultSize = style.getVector2f(“defaultSize”);
+		setDimensions(getOrgDimensions());
+		getModel().updateDimensions(getWidth(), getHeight());
+
+		// TODO
+		rebuildModel();
+		
+		originalFontColor = fontColor.clone();
+    }
 	
 	/**
 	 * Fix for BitmapFont.VAlign
