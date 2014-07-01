@@ -543,11 +543,31 @@ public class Element extends Node {
 	}
 	
 	//<editor-fold desc="Z-Order">
+	private int getParentCount() {
+		int count = 0;
+		Element n = getElementParent();
+		while (n != null) {
+			count++;
+			n = n.getElementParent();
+		}
+		return count;
+	}
+	
 	public void resetChildZOrder() {
-		float step = screen.getZOrderStepMinor();
+		int pCount = getParentCount();
+		float nStep = screen.getZOrderStepMinor();
+		if (pCount > 0)
+			nStep /= pCount;
+		float step = nStep;
 		for (Element el : elementChildren.values()) {
 			el.setLocalTranslation(el.getLocalTranslation().setZ(step));
-			step += screen.getZOrderStepMinor();
+			step += nStep;
+			if (getTextElement() != null) {
+				getTextElement().setLocalTranslation(getTextElement().getLocalTranslation().setZ(
+					step
+				));
+				step += nStep;
+			}
 		}
 	}
 	
@@ -568,13 +588,21 @@ public class Element extends Node {
 		setLocalTranslation(getLocalTranslation().setZ(
 			zOrder
 		));
-		if (getTextElement() != null)
+		int pCount = getParentCount();
+		float nStep = screen.getZOrderStepMinor();
+		if (pCount > 0)
+			nStep /= pCount;
+		float step = nStep;
+		if (getTextElement() != null) {
 			getTextElement().setLocalTranslation(getTextElement().getLocalTranslation().setZ(
-				screen.getZOrderStepMinor()
+				step
 			));
+			step += nStep;
+		}
 		
 		for (Element el : elementChildren.values()) {
-			el.initZOrder(screen.getZOrderStepMinor());
+			el.initZOrder(step);
+			step += nStep;
 		}
 	}
 	
