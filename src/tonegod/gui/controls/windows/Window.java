@@ -28,7 +28,7 @@ public class Window extends Element {
 	private boolean useShowSound, useHideSound;
 	private String showSound, hideSound;
 	private float showSoundVolume, hideSoundVolume;
-	private Vector4f dbIndents = new Vector4f();
+	protected Vector4f dbIndents = new Vector4f();
 	private Window self;
 	private boolean useClose = false, useCollapse = false, isCollapsed = false;
 	private float winDif = 0;
