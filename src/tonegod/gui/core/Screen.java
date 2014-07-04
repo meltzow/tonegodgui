@@ -714,16 +714,7 @@ public class Screen implements ElementManager, Control, RawInputListener {
 	@Override
 	public void onMouseMotionEvent(MouseMotionEvent evt) {
 		setMouseXY(evt.getX(),evt.getY());
-		/*
-		MouseMotionEvent evt = new MouseMotionEvent(
-			(int)mouseXY.x,
-			(int)mouseXY.y,
-			(int)(evtIn.getDX()*inputScale),
-			(int)(evtIn.getDY()*inputScale),
-			evtIn.getWheel(),
-			evtIn.getDeltaWheel()
-		);
-		*/
+		
 		if (this.useCursorEffects) {
 			if (app.getInputManager().isCursorVisible())
 				cursorEffects.updatePosition(mouseXY);
@@ -871,14 +862,8 @@ public class Screen implements ElementManager, Control, RawInputListener {
 
 	@Override
 	public void onMouseButtonEvent(MouseButtonEvent evt) {
-		/*
-		MouseButtonEvent evt = new MouseButtonEvent(
-			evtIn.getButtonIndex(),
-			evtIn.isPressed(),
-			(int)mouseXY.x,
-			(int)mouseXY.y
-		);
-		*/
+		setMouseXY(evt.getX(),evt.getY());
+		
 		EventCheckType check = null;
 		if (evt.getButtonIndex() == 0)
 			check = EventCheckType.MouseLeft;
