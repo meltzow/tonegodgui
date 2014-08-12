@@ -40,7 +40,7 @@ public class SlideTray extends Element {
 	
 	private ZOrderSort sort = ZOrderSort.FIRST_TO_LAST;
 	
-	private ButtonAdapter btnPrevElement, btnNextElement;
+	protected ButtonAdapter btnPrevElement, btnNextElement;
 	private Element elTray;
 	private float btnSize;
 	
@@ -418,7 +418,7 @@ public class SlideTray extends Element {
 		}
 	}
 	
-	private void nextElement() {
+	public void nextElement() {
 		if (currentElementIndex+1 < trayElements.size()) {
 			float diff =		getNextOffset(true);
 			if (useSlideEffect)	slideTabs(diff, true);
@@ -436,7 +436,7 @@ public class SlideTray extends Element {
 			currentPosition = elTray.getHeight()-trayElements.get(0).getY();
 	}
 	
-	private void prevElement() {
+	public void prevElement() {
 		if (currentElementIndex-1 > -1) {
 			float diff =		getNextOffset(false);
 			if (useSlideEffect)	slideTabs(diff, false);
