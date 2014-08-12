@@ -119,9 +119,11 @@ public class AnimLayer extends Element implements Control {
 	@Override
 	public void update(float tpf) {
 		if (!isPaused) {
-			for (AnimElement el : animElements.values()) {
-				el.update(tpf);
-			}
+			try {
+				for (AnimElement el : animElements.values()) {
+					el.update(tpf);
+				}
+			} catch (Exception ex) {  }
 		}
 	}
 
