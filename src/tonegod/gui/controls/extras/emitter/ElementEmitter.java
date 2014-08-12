@@ -199,6 +199,11 @@ public class ElementEmitter implements Control, Transformable {
 		return this.interpolation;
 	}
 	
+	public void setEmitterShape(Texture texture) {
+		emitterShape = texture;
+		ir = ImageRaster.create(emitterShape.getImage());
+	}
+	
 	public void setEmitterShape(String texturePath) {
 		emitterShape = app.getAssetManager().loadTexture(texturePath);
 		ir = ImageRaster.create(emitterShape.getImage());
