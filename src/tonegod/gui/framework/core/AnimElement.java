@@ -140,6 +140,10 @@ public abstract class AnimElement extends Node implements Transformable {
 		return tex;
 	}
 	
+	public void addTextureRegion(String regionKey, TextureRegion tr) {
+		uvs.put(regionKey, tr);
+	}
+	
 	public TextureRegion addTextureRegion(String regionKey, int x, int y, int w, int h) {
 		TextureRegion tr = new TextureRegion(tex, x, y, w, h);
 		tr.flip(false, true);
@@ -656,6 +660,18 @@ public abstract class AnimElement extends Node implements Transformable {
 	public float getQuadWorldRotation(QuadData qd) {
 		setWorldTransforms(qd);
 		return worldRotation;
+	}
+	
+	public void setClippingBounds(float x, float y, float z, float w) {
+		clippingPosition.set(x,y,z,w);
+		mat.setVector4("Clipping", clippingPosition);
+		mat.setBoolean("UseClipping", true);
+	}
+	
+	public void setClippingBounds(Vector4f clip) {
+		clippingPosition.set(clip);
+		mat.setVector4("Clipping", clippingPosition);
+		mat.setBoolean("UseClipping", true);
 	}
 	
 	public void setClippingBounds() {
