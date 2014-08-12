@@ -23,9 +23,9 @@ public class MoveByAction extends TemporalAction {
 	protected void begin() {
 		lastPercent = 0;
 		nextPercent = 0;
+		if (initX == -1) initX = quad.getPositionX();
+		if (initY == -1) initY = quad.getPositionY();
 		if (autoReverse) {
-			if (initX == -1) initX = quad.getPositionX();
-			if (initY == -1) initY = quad.getPositionY();
 			if (initDuration == -1)	{
 				initDuration = getDuration();
 				setDuration(initDuration*.5f);
