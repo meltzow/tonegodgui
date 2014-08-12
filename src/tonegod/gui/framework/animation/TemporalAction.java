@@ -18,7 +18,7 @@ public abstract class TemporalAction implements Cloneable {
 //	protected AnimElement batch;
 	protected Transformable quad;
 	protected boolean forceJmeTransform = false;
-	private boolean autoRestart = false;
+	protected boolean autoRestart = false;
 	private int runCount = 0;
 	
 	public TemporalAction () {
