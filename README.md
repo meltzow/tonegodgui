@@ -16,7 +16,3 @@ in build.gradle
 * dependencies {
 	compile 'com.github.meltzow:tonegodgui:-SNAPSHOT'
 }
-
-
-## working alternative 
-* compile 'net.sf.sociaal:jME3-tonegod-gui:0.4.6.1484'
