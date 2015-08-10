@@ -10,9 +10,12 @@ Hi, I adopt this repository to save it. I will try to understand the code and se
 ## gradle:
 in build.gradle
 * repositories {
-	  maven { url 'https://dl.bintray.com/brainless-studios/tonegodgui' } 
-	}
-* compile 'brainless-studios:tonegodgui:tonegodgui:0.0.1'
+	mavenCentral() 
+	maven { url "https://jitpack.io" }
+}
+* dependencies {
+	compile 'com.github.meltzow:tonegodgui:-SNAPSHOT'
+}
 
 
 ## working alternative 
