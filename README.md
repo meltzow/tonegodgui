@@ -12,3 +12,7 @@ in build.gradle
 	  maven { url 'http://jcenter.bintray.com' }
 	}
 * compile 'tonegodgui:tonegodgui:0.0.1'
+
+
+## working alternative 
+* compile 'net.sf.sociaal:jME3-tonegod-gui:0.4.6.1484'
