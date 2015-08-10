@@ -10,7 +10,7 @@ Hi, I adopt this repository to save it. I will try to understand the code and se
 ## gradle:
 in build.gradle
 * repositories {
-	  maven { url 'http://jcenter.bintray.com' }
+	  maven { url 'https://dl.bintray.com/brainless-studios/tonegodgui' } 
 	}
 * compile 'brainless-studios:tonegodgui:tonegodgui:0.0.1'
 
