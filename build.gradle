@@ -64,7 +64,7 @@ eclipse.classpath.file {
 	withXml {
 		def node = it.asNode()
 
-		node.appendNode('classpathentry kind="src" path="src"')
+//		node.appendNode('classpathentry kind="src" path="src"')
 
 		node.children().removeAll() { c ->
 			def path = c.attribute('path')
@@ -79,7 +79,7 @@ eclipse.classpath.file {
 sourceSets {
 	main {
 		java { srcDir 'src'}
-		resources { srcDir 'assets' }
+		resources { srcDir 'src' }
 	}
 	test {
 		java { srcDir 'test/java' }
@@ -128,9 +128,12 @@ test {
 eclipse {
 	// need to specify Java source sets explicitely, SpringSource Gradle Eclipse plugin
 	// ignores any nodes added in classpath.file.withXml
-	sourceSets {
-		main { java.srcDirs "src" }
-	}
+//	sourceSets {
+//		main { 
+//			java.srcDirs "src"
+//			resources.srcDirs = ["src"]
+//		}
+//	}
 	classpath {
 		downloadSources=true
 	 }
@@ -140,7 +143,10 @@ eclipse {
 		targetCompatibility = 1.8
 	}
 
-	project { name = appName }
+	project {
+		name = appName 
+		natures 'org.springsource.ide.eclipse.gradle.core.nature'
+	}
 }
 
 // custom tasks for creating source/javadoc jars
