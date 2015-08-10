@@ -11,7 +11,7 @@ in build.gradle
 * repositories {
 	  maven { url 'http://jcenter.bintray.com' }
 	}
-* compile 'tonegodgui:tonegodgui:0.0.1'
+* compile 'brainless-studios:tonegodgui:tonegodgui:0.0.1'
 
 
 ## working alternative 
