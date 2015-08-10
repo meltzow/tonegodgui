@@ -11,8 +11,8 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'eclipse'
 apply plugin: "idea"
-apply plugin: 'pmd'
-apply plugin: 'findbugs'
+//apply plugin: 'pmd'
+//apply plugin: 'findbugs'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
@@ -32,13 +32,13 @@ ext {
 		maven { url 'http://updates.jmonkeyengine.org/maven' }		
 	}
 	
-	pmd {
-		ignoreFailures = true
-	}
-	
-	findbugs {
-		ignoreFailures = true
-	}
+//	pmd {
+//		ignoreFailures = true
+//	}
+//	
+//	findbugs {
+//		ignoreFailures = true
+//	}
 
 
 mainClassName = 'app.MainRTS'
