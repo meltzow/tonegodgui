@@ -14,5 +14,5 @@ in build.gradle
 	maven { url "https://jitpack.io" }
 }
 * dependencies {
-	compile 'com.github.meltzow:tonegodgui:-SNAPSHOT'
+	compile 'com.github.brainless-studios:tonegodgui:-SNAPSHOT'
 }
