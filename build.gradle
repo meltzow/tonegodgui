@@ -24,8 +24,13 @@ repositories {
 
 //mainClassName = 'app.MainRTS'
 //if (!hasProperty('mainClass')) {
-//	ext.mainClass = 'app.MainRTS'
+//	ext.mainClass = ''
 //}
+
+task execute(type:JavaExec) {
+   main = mainClass
+   classpath = sourceSets.main.runtimeClasspath
+}
 
 dependencies {
 	compile fileTree(dir: 'lib', include: ['*.jar'])
