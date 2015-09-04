@@ -862,7 +862,7 @@ public class ElementEmitter implements Control, Transformable {
 			}
 			
 			if (useFixedDirection)
-				velocity.interpolateLocal(fixedDirection, fixedDirectionStrength);
+				velocity.interpolate(fixedDirection, fixedDirectionStrength);
 			
 			velocity.multLocal(randforce);
 			
