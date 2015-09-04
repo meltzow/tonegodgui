@@ -48,3 +48,6 @@ local.properties
 *.log
 /.nb-gradle/private/
 *.dll
+/.nb-gradle/
+/tonegodTest/.nb-gradle/
+/teset/.nb-gradle/
