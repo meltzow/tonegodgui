@@ -26,11 +26,6 @@ repositories {
 //	ext.mainClass = ''
 //}
 
-task execute(type:JavaExec) {
-   main = mainClass
-   classpath = sourceSets.main.runtimeClasspath
-}
-
 dependencies {
 	compile fileTree(dir: 'lib', include: ['*.jar'])
         compile "com.jme3:jme3-core:$jmonkeyengine_version"
