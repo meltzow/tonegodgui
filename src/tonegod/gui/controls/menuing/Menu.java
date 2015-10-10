@@ -693,6 +693,20 @@ public abstract class Menu extends ScrollArea implements AutoHide, MouseMovement
 			caller.hideAllSubmenus(upChain);
 		}
 	}
+
+    @Override
+    public void hide() {
+        super.hide();
+        hideAllSubmenus(false);
+    }
+
+    @Override
+    public void hideWithEffect() {
+        super.hideWithEffect();
+        hideAllSubmenus(false);
+    }
+        
+        
 	
 	private void handleMenuItemClick(MenuItem menuItem, int menuItemIndex, Object value) {
 		if (menuItem.getIsToggleItem())
