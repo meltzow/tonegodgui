@@ -701,7 +701,19 @@ public abstract class Menu extends ScrollArea implements AutoHide, MouseMovement
 		if (!Screen.isAndroid())
 			hide();
 	}
-	
+
+        @Override
+        public void hide() {
+            super.hide();
+            hideAllSubmenus(false);
+        }
+
+        @Override
+        public void hideWithEffect() {
+            super.hideWithEffect();
+            hideAllSubmenus(false);
+        }
+        
 	/**
 	 * Abstract method for handling menu item selection
 	 * 
