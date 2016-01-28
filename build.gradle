@@ -10,7 +10,7 @@ ext {
 	appName = 'tonegodgui'
 	jmonkeyengine_version = '3.0.10'
 }
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 
 repositories {
 	mavenLocal()
@@ -52,8 +52,8 @@ eclipse {
 	classpath { downloadSources=true }
 
 	jdt {
-		sourceCompatibility = 1.7
-		targetCompatibility = 1.7
+		sourceCompatibility = 1.8
+		targetCompatibility = 1.8
 	}
 
 	project {
@@ -77,10 +77,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
 	archives sourcesJar
 	//, javadocJar
-}
-
-repositories {
-	jcenter()
 }
 
 task wrapper(type: Wrapper) {
